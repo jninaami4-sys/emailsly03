@@ -341,7 +341,10 @@ function ResetPasswordPage() {
                           onBlur={() => {
                             setTouched((t) => ({ ...t, password: true }));
                             validate("password");
+                            setCapsLock(false);
                           }}
+                          onKeyDown={(e) => setCapsLock(e.getModifierState && e.getModifierState("CapsLock"))}
+                          onKeyUp={(e) => setCapsLock(e.getModifierState && e.getModifierState("CapsLock"))}
                           className={`w-full rounded-xl border bg-input/50 py-2.5 pl-10 pr-10 text-sm text-foreground placeholder:text-muted-foreground/60 outline-none transition-all focus:bg-background focus:ring-2 ${
                             errors.password
                               ? "border-destructive/60 focus:border-destructive focus:ring-destructive/20"

@@ -46,7 +46,7 @@ const stats = [
   { k: "500+", v: "clients served" },
   { k: "100M+", v: "leads delivered" },
   { k: "24h", v: "avg. delivery" },
-  { k: "99%", v: "deliverability" },
+  { k: "250M+", v: "contacts sourced" },
 ];
 
 const faqs = [

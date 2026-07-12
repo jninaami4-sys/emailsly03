@@ -23,9 +23,11 @@ export function OrderDrawer() {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
     document.body.style.overflow = "hidden";
+    document.body.classList.add("order-open");
     window.addEventListener("keydown", onKey);
     return () => {
       document.body.style.overflow = "";
+      document.body.classList.remove("order-open");
       window.removeEventListener("keydown", onKey);
     };
   }, [open]);

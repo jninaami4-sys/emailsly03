@@ -77,6 +77,7 @@ export function OrderBuilder() {
   const [step, setStep] = useState(1);
   const [serviceId, setServiceId] = useState("apollo");
   const service = SERVICES.find((s) => s.id === serviceId)!;
+  const [mobileGroup, setMobileGroup] = useState<"data" | "growth" | "design">(service.group);
   const [quantity, setQuantity] = useState(service.minQty);
   const [extraUrls, setExtraUrls] = useState(1);
   const [verifier, setVerifier] = useState(false);
@@ -119,11 +120,11 @@ export function OrderBuilder() {
   const goPrev = () => setStep((s) => Math.max(1, s - 1));
 
   return (
-    <section id="order" className="relative overflow-hidden px-6 py-24 lg:py-32">
+    <section id="order" className="relative overflow-hidden px-4 py-6 sm:px-6 sm:py-10 lg:py-12">
       {/* Ambient background */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 mx-auto h-[560px] max-w-7xl bg-[radial-gradient(ellipse_at_top,var(--violet-soft),transparent_70%)]" />
-      <div className="pointer-events-none absolute bottom-0 right-0 -z-10 h-96 w-96 rounded-full bg-coral-soft blur-3xl" />
-      <div className="pointer-events-none absolute -left-24 top-1/3 -z-10 h-96 w-96 rounded-full bg-violet-soft blur-3xl" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 mx-auto h-[360px] max-w-7xl bg-[radial-gradient(ellipse_at_top,var(--violet-soft),transparent_70%)] sm:h-[560px]" />
+      <div className="pointer-events-none absolute bottom-0 right-0 -z-10 h-64 w-64 rounded-full bg-coral-soft blur-3xl sm:h-96 sm:w-96" />
+      <div className="pointer-events-none absolute -left-16 top-1/3 -z-10 h-64 w-64 rounded-full bg-violet-soft blur-3xl sm:-left-24 sm:h-96 sm:w-96" />
 
       <div className="mx-auto max-w-7xl">
         {/* Header */}
@@ -134,40 +135,40 @@ export function OrderBuilder() {
               Guided order builder
             </span>
           </div>
-          <h2 className="mt-6 font-display text-4xl font-bold leading-[1.05] tracking-tighter md:text-6xl">
+          <h2 className="mt-3 font-display text-2xl font-bold leading-[1.05] tracking-tighter sm:text-4xl md:text-5xl">
             Build your order, <span className="text-violet">step by step</span>.
           </h2>
-          <p className="mt-5 text-lg leading-relaxed text-muted-foreground">
+          <p className="mt-3 text-sm leading-relaxed text-muted-foreground sm:text-base">
             Four quick steps. No hidden fees, no back-and-forth — see your exact price the moment you finish.
           </p>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 font-mono text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
-            <span className="inline-flex items-center gap-2">
-              <BadgeCheck className="size-4 text-emerald" /> 99% verified data
+          <div className="mt-4 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 font-mono text-[10px] font-semibold uppercase tracking-widest text-muted-foreground sm:gap-x-8 sm:gap-y-3 sm:text-[11px]">
+            <span className="inline-flex items-center gap-1.5 sm:gap-2">
+              <BadgeCheck className="size-3.5 text-emerald sm:size-4" /> 99% verified data
             </span>
             <span className="hidden size-1 rounded-full bg-border sm:inline-block" />
-            <span className="inline-flex items-center gap-2">
-              <Clock className="size-4 text-violet" /> Delivered in ≤24h
+            <span className="inline-flex items-center gap-1.5 sm:gap-2">
+              <Clock className="size-3.5 text-violet sm:size-4" /> Delivered in ≤24h
             </span>
             <span className="hidden size-1 rounded-full bg-border sm:inline-block" />
-            <span className="inline-flex items-center gap-2">
-              <ShieldCheck className="size-4 text-coral" /> Pay after preview
+            <span className="inline-flex items-center gap-1.5 sm:gap-2">
+              <ShieldCheck className="size-3.5 text-coral sm:size-4" /> Pay after preview
             </span>
           </div>
         </div>
 
         {/* Stepper */}
-        <div className="mx-auto mt-14 max-w-5xl">
-          <div className="relative flex items-center justify-between gap-2 rounded-2xl border border-border bg-card/60 p-3 backdrop-blur">
+        <div className="mx-auto mt-6 max-w-5xl sm:mt-10">
+          <div className="relative flex items-center justify-between gap-1.5 rounded-2xl border border-border bg-card/60 p-2 backdrop-blur sm:gap-2 sm:p-3">
             {STEPS.map((s, i) => {
               const Icon = s.icon;
               const done = step > s.id;
               const active = step === s.id;
               return (
-                <div key={s.id} className="flex flex-1 items-center gap-2">
+                <div key={s.id} className="flex flex-1 items-center gap-1.5 sm:gap-2">
                   <button
                     type="button"
                     onClick={() => (done ? setStep(s.id) : null)}
-                    className={`group flex flex-1 items-center gap-3 rounded-xl px-3 py-3 text-left transition-all ${
+                    className={`group flex flex-1 items-center gap-2 rounded-xl px-2 py-2 text-left transition-all sm:gap-3 sm:px-3 sm:py-3 ${
                       active
                         ? "bg-violet text-white shadow-lg shadow-violet/25"
                         : done
@@ -176,7 +177,7 @@ export function OrderBuilder() {
                     }`}
                   >
                     <span
-                      className={`grid size-8 shrink-0 place-items-center rounded-lg ${
+                      className={`grid size-7 shrink-0 place-items-center rounded-lg sm:size-8 ${
                         active
                           ? "bg-white/15"
                           : done
@@ -184,13 +185,13 @@ export function OrderBuilder() {
                             : "bg-secondary"
                       }`}
                     >
-                      {done ? <Check className="size-4" /> : <Icon className="size-4" />}
+                      {done ? <Check className="size-3.5 sm:size-4" /> : <Icon className="size-3.5 sm:size-4" />}
                     </span>
                     <span className="min-w-0">
-                      <span className={`block font-mono text-[10px] font-bold uppercase tracking-widest ${active ? "text-white/70" : done ? "text-emerald/80" : "text-muted-foreground/70"}`}>
+                      <span className={`hidden font-mono text-[10px] font-bold uppercase tracking-widest sm:block ${active ? "text-white/70" : done ? "text-emerald/80" : "text-muted-foreground/70"}`}>
                         Step {s.id}
                       </span>
-                      <span className="block truncate text-sm font-semibold">{s.label}</span>
+                      <span className="block truncate text-xs font-semibold sm:text-sm">{s.label}</span>
                     </span>
                   </button>
                   {i < STEPS.length - 1 && (
@@ -203,9 +204,9 @@ export function OrderBuilder() {
         </div>
 
         {/* Body */}
-        <div className={`mt-8 grid gap-6 ${step === 4 ? "lg:grid-cols-[1.4fr_1fr]" : "lg:grid-cols-1"}`}>
+        <div className={`mt-6 grid gap-4 sm:mt-8 sm:gap-6 ${step === 4 ? "lg:grid-cols-[1.4fr_1fr]" : "lg:grid-cols-1"}`}>
           {/* MAIN PANEL */}
-          <div className="rounded-3xl border border-border bg-card p-6 shadow-[0_20px_60px_-30px_rgba(24,24,60,0.25)] md:p-10">
+          <div className="rounded-3xl border border-border bg-card p-4 shadow-[0_20px_60px_-30px_rgba(24,24,60,0.25)] sm:p-6 md:p-8 lg:p-10">
             {step === 1 && (
               <div>
                 <StepHeader
@@ -213,7 +214,23 @@ export function OrderBuilder() {
                   title="What are we building today?"
                   subtitle="Pick the service that fits your growth goal. You can change it any time."
                 />
-                <div className="mt-8 grid gap-6 lg:grid-cols-3">
+                {/* Mobile tab switcher */}
+                <div className="mt-4 block lg:hidden">
+                  <CategoryTabs active={mobileGroup} onChange={setMobileGroup} />
+                  <div className="mt-3 space-y-2">
+                    {SERVICES.filter((s) => s.group === mobileGroup).map((s) => (
+                      <ServiceChip
+                        key={s.id}
+                        service={s}
+                        active={serviceId === s.id}
+                        onClick={() => { setServiceId(s.id); setQuantity(s.fixed ? 1 : s.minQty); setMobileGroup(s.group); }}
+                        accent={s.group === "data" ? "violet" : s.group === "growth" ? "coral" : "emerald"}
+                      />
+                    ))}
+                  </div>
+                </div>
+                {/* Desktop grid */}
+                <div className="mt-6 hidden gap-6 lg:grid lg:grid-cols-3">
                   <CategoryColumn title="Lead generation" accent="violet" services={dataServices} serviceId={serviceId} onPick={(s) => { setServiceId(s.id); setQuantity(s.minQty); }} />
                   <CategoryColumn title="Growth add-ons" accent="coral" services={growthServices} serviceId={serviceId} onPick={(s) => { setServiceId(s.id); setQuantity(s.fixed ? 1 : s.minQty); }} />
                   <CategoryColumn title="Design & web" accent="emerald" services={designServices} serviceId={serviceId} onPick={(s) => { setServiceId(s.id); setQuantity(1); }} />
@@ -229,26 +246,26 @@ export function OrderBuilder() {
                   subtitle={service.fixed ? "This is a flat-price service — review the details below." : "Slide to your target volume. Watch the price update live."}
                 />
 
-                <div className="mt-8 rounded-2xl border border-violet/20 bg-violet-soft/50 p-5">
+                <div className="mt-6 rounded-2xl border border-violet/20 bg-violet-soft/50 p-4 sm:mt-8 sm:p-5">
                   <div className="flex items-center gap-3">
-                    <span className="grid size-10 place-items-center rounded-xl bg-violet text-white">
-                      <service.icon className="size-5" />
+                    <span className="grid size-9 place-items-center rounded-xl bg-violet text-white sm:size-10">
+                      <service.icon className="size-4 sm:size-5" />
                     </span>
                     <div>
                       <div className="font-mono text-[10px] font-bold uppercase tracking-widest text-violet/80">Selected service</div>
-                      <div className="text-lg font-bold">{service.name}</div>
+                      <div className="text-base font-bold sm:text-lg">{service.name}</div>
                     </div>
                   </div>
                 </div>
 
                 {!service.fixed && (
-                  <div className="mt-8">
+                  <div className="mt-6 sm:mt-8">
                     <SectionLabel icon={Layers} rightText={`Min ${service.minQty.toLocaleString()}`}>
                       {service.unit === "lead" ? "Lead quantity" : "Quantity"}
                     </SectionLabel>
-                    <div className="rounded-2xl border border-border bg-secondary/40 p-6">
+                    <div className="rounded-2xl border border-border bg-secondary/40 p-4 sm:p-6">
                       <div className="flex items-baseline justify-between">
-                        <div className="font-display text-4xl font-bold tracking-tight md:text-5xl">
+                        <div className="font-display text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
                           {effectiveQty.toLocaleString()}
                           <span className="ml-2 font-sans text-sm font-medium text-muted-foreground">{service.unit}s</span>
                         </div>
@@ -284,7 +301,7 @@ export function OrderBuilder() {
                       </div>
                     </div>
 
-                    <div className="mt-8">
+                    <div className="mt-6 sm:mt-8">
                       <SectionLabel icon={Tag}>Price comparison</SectionLabel>
                       <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
                         <ComparePill label="Apollo.io retail" price={comparePriceApollo} note={`${(comparePriceApollo / base).toFixed(0)}× more`} tone="muted" />
@@ -297,7 +314,7 @@ export function OrderBuilder() {
                 )}
 
                 {service.id === "apollo" && (
-                  <div className="mt-8 grid gap-6 md:grid-cols-2">
+                  <div className="mt-6 grid gap-4 sm:mt-8 md:grid-cols-2 md:gap-6">
                     <div>
                       <SectionLabel icon={Zap} rightText="1st free · +$5 each extra">
                         Apollo search URLs
@@ -333,11 +350,11 @@ export function OrderBuilder() {
                   </div>
                 )}
 
-                <div className="mt-6">
+                <div className="mt-5 sm:mt-6">
                   <Field label="Notes (optional)">
                     <textarea
                       placeholder="Any specific instructions, ICP notes, or delivery preferences…"
-                      rows={3}
+                      rows={2}
                       className="w-full resize-none rounded-xl border border-input bg-background px-4 py-3 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-violet focus:ring-4 focus:ring-violet/10"
                     />
                   </Field>
@@ -352,7 +369,7 @@ export function OrderBuilder() {
                   title="Boost your order"
                   subtitle="Optional upgrades that make the delivery faster and cleaner."
                 />
-                <div className="mt-8 grid gap-3 md:grid-cols-2">
+                <div className="mt-6 grid gap-3 sm:mt-8 md:grid-cols-2">
                   <AddonToggle
                     active={verifier}
                     onToggle={() => setVerifier((v) => !v)}
@@ -371,7 +388,7 @@ export function OrderBuilder() {
                   />
                 </div>
 
-                <div className="mt-10 rounded-2xl border border-border bg-secondary/40 p-6">
+                <div className="mt-6 rounded-2xl border border-border bg-secondary/40 p-4 sm:mt-10 sm:p-6">
                   <div className="flex items-center gap-3">
                     <span className="grid size-10 place-items-center rounded-xl bg-violet/10 text-violet">
                       <Sparkles className="size-5" />
@@ -395,7 +412,7 @@ export function OrderBuilder() {
                   title="Almost there — your details"
                   subtitle="We'll send the preview and delivery link to this address."
                 />
-                <div className="mt-8 grid gap-4 md:grid-cols-2">
+                <div className="mt-6 grid gap-4 sm:mt-8 md:grid-cols-2">
                   <Field label="Your name">
                     <input
                       type="text"
@@ -416,7 +433,7 @@ export function OrderBuilder() {
                   </Field>
                 </div>
 
-                <label className="mt-8 flex items-start gap-3 text-sm text-muted-foreground">
+                <label className="mt-6 flex items-start gap-3 text-sm text-muted-foreground sm:mt-8">
                   <input
                     type="checkbox"
                     checked={agree}
@@ -435,12 +452,12 @@ export function OrderBuilder() {
             )}
 
             {/* Nav */}
-            <div className="mt-10 flex items-center justify-between gap-3 border-t border-border pt-6">
+            <div className="mt-6 flex items-center justify-between gap-3 border-t border-border pt-4 sm:mt-10 sm:pt-6">
               <button
                 type="button"
                 onClick={goPrev}
                 disabled={step === 1}
-                className="inline-flex items-center gap-2 rounded-xl border border-border bg-background px-5 py-3 text-sm font-semibold text-foreground transition-all hover:border-foreground/20 disabled:cursor-not-allowed disabled:opacity-40"
+                className="inline-flex items-center gap-2 rounded-xl border border-border bg-background px-4 py-2.5 text-sm font-semibold text-foreground transition-all hover:border-foreground/20 disabled:cursor-not-allowed disabled:opacity-40 sm:px-5 sm:py-3"
               >
                 <ArrowLeft className="size-4" /> Back
               </button>
@@ -452,7 +469,7 @@ export function OrderBuilder() {
                   type="button"
                   onClick={goNext}
                   disabled={!canNext}
-                  className="inline-flex items-center gap-2 rounded-xl bg-violet px-6 py-3 text-sm font-bold text-white shadow-lg shadow-violet/30 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-violet/40 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
+                  className="inline-flex items-center gap-2 rounded-xl bg-violet px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-violet/30 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-violet/40 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 sm:px-6 sm:py-3"
                 >
                   Continue <ArrowRight className="size-4" />
                 </button>
@@ -560,10 +577,10 @@ export function OrderBuilder() {
 
         {/* Live mini-total on steps 1-3 */}
         {step < 4 && (
-          <div className="mx-auto mt-6 flex max-w-5xl items-center justify-between rounded-2xl border border-border bg-card/60 px-6 py-4 backdrop-blur">
-            <div className="flex items-center gap-3">
-              <span className="grid size-9 place-items-center rounded-lg bg-violet/10 text-violet">
-                <Wallet className="size-4" />
+          <div className="mx-auto mt-4 flex max-w-5xl items-center justify-between rounded-2xl border border-border bg-card/60 px-4 py-3 backdrop-blur sm:mt-6 sm:px-6 sm:py-4">
+            <div className="flex items-center gap-2.5 sm:gap-3">
+              <span className="grid size-8 place-items-center rounded-lg bg-violet/10 text-violet sm:size-9">
+                <Wallet className="size-3.5 sm:size-4" />
               </span>
               <div>
                 <div className="font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Live estimate</div>
@@ -571,7 +588,7 @@ export function OrderBuilder() {
               </div>
             </div>
             <div className="text-right">
-              <div className="font-display text-2xl font-bold tracking-tight text-violet">{formatUSD(subtotal)}</div>
+              <div className="font-display text-xl font-bold tracking-tight text-violet sm:text-2xl">{formatUSD(subtotal)}</div>
               <div className="font-mono text-[10px] text-muted-foreground">before Stripe fee</div>
             </div>
           </div>
@@ -587,8 +604,46 @@ function StepHeader({ eyebrow, title, subtitle }: { eyebrow: string; title: stri
   return (
     <div className="max-w-2xl">
       <div className="font-mono text-[10px] font-bold uppercase tracking-widest text-violet">{eyebrow}</div>
-      <h3 className="mt-2 font-display text-2xl font-bold tracking-tight md:text-3xl">{title}</h3>
+      <h3 className="mt-2 font-display text-xl font-bold tracking-tight sm:text-2xl md:text-3xl">{title}</h3>
       <p className="mt-2 text-sm text-muted-foreground md:text-base">{subtitle}</p>
+    </div>
+  );
+}
+
+function CategoryTabs({
+  active,
+  onChange,
+}: {
+  active: "data" | "growth" | "design";
+  onChange: (g: "data" | "growth" | "design") => void;
+}) {
+  const tabs = [
+    { id: "data" as const, label: "Lead generation", accent: "violet" as const },
+    { id: "growth" as const, label: "Growth", accent: "coral" as const },
+    { id: "design" as const, label: "Design", accent: "emerald" as const },
+  ];
+  return (
+    <div className="flex gap-2 overflow-x-auto pb-1">
+      {tabs.map((t) => {
+        const isActive = active === t.id;
+        const activeClasses = {
+          violet: "border-violet bg-violet text-white shadow-md shadow-violet/25",
+          coral: "border-coral bg-coral text-white shadow-md shadow-coral/25",
+          emerald: "border-emerald bg-emerald text-white shadow-md shadow-emerald/25",
+        }[t.accent];
+        return (
+          <button
+            key={t.id}
+            type="button"
+            onClick={() => onChange(t.id)}
+            className={`shrink-0 rounded-full border px-3 py-1.5 text-xs font-semibold transition-all ${
+              isActive ? activeClasses : "border-border bg-background text-muted-foreground hover:border-foreground/20"
+            }`}
+          >
+            {t.label}
+          </button>
+        );
+      })}
     </div>
   );
 }
@@ -695,12 +750,12 @@ function ServiceChip({
     <button
       type="button"
       onClick={onClick}
-      className={`group flex w-full items-center gap-3 rounded-xl border bg-background px-3 py-3 text-left transition-all ${
+      className={`group flex w-full items-center gap-2.5 rounded-xl border bg-background px-3 py-2.5 text-left transition-all sm:gap-3 sm:py-3 ${
         active ? activeClasses : "border-border hover:border-foreground/20"
       }`}
     >
-      <span className={`grid size-8 shrink-0 place-items-center rounded-lg ${iconBg}`}>
-        <Icon className="size-4" />
+      <span className={`grid size-7 shrink-0 place-items-center rounded-lg sm:size-8 ${iconBg}`}>
+        <Icon className="size-3.5 sm:size-4" />
       </span>
       <span className="min-w-0 flex-1">
         <span className={`block truncate text-xs font-semibold ${active ? "" : "text-foreground"}`}>
@@ -774,11 +829,11 @@ function AddonToggle({
     <button
       type="button"
       onClick={onToggle}
-      className={`flex items-center justify-between rounded-2xl border px-5 py-4 text-left transition-all ${
+      className={`flex items-center justify-between rounded-2xl border px-4 py-3 text-left transition-all sm:px-5 sm:py-4 ${
         active ? activeClasses : "border-border bg-background hover:border-foreground/20"
       }`}
     >
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2.5 sm:gap-3">
         <span
           className={`grid size-5 place-items-center rounded-full border ${
             active ? `border-transparent ${dotColor}` : "border-input bg-background"

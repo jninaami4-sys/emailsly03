@@ -455,13 +455,13 @@ function Home() {
               <div className="mt-10 flex flex-wrap justify-center gap-3">
                 <button
                   onClick={openOrderDrawer}
-                  className="inline-flex items-center gap-2 rounded-full bg-white px-8 py-4 text-base font-bold text-indigo shadow-xl transition-transform hover:-translate-y-0.5"
+                  className="inline-flex items-center gap-2 rounded-full bg-gold px-8 py-4 text-base font-bold text-black shadow-[0_10px_40px_-10px_rgba(212,168,83,0.5)] transition-transform hover:-translate-y-0.5"
                 >
                   Build your order <ArrowUpRight className="size-4" />
                 </button>
                 <Link
                   to="/contact"
-                  className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-transparent px-8 py-4 text-base font-bold text-foreground transition-colors hover:bg-white/10"
+                  className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-transparent px-8 py-4 text-base font-bold text-foreground transition-colors hover:bg-white/10 hover:border-gold/30"
                 >
                   Talk to sales
                 </Link>

@@ -1,4 +1,4 @@
-import { Home, Store, ShoppingBag, Mail } from "lucide-react";
+import { Home, Store, Tag, Mail } from "lucide-react";
 import { useNavigate, useRouterState } from "@tanstack/react-router";
 import { LimelightNav, type NavItem } from "@/components/ui/limelight-nav";
 
@@ -9,7 +9,7 @@ export function MobileBottomNav() {
   const items: NavItem[] = [
     { id: "home", icon: <Home />, label: "Home", onClick: () => navigate({ to: "/" }) },
     { id: "store", icon: <Store />, label: "Store", onClick: () => navigate({ to: "/store" }) },
-    { id: "order", icon: <ShoppingBag />, label: "Order", onClick: () => navigate({ to: "/order" }) },
+    { id: "pricing", icon: <Tag />, label: "Pricing", onClick: () => navigate({ to: "/pricing" }) },
     { id: "contact", icon: <Mail />, label: "Contact", onClick: () => navigate({ to: "/contact" }) },
   ];
 

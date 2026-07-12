@@ -13,6 +13,7 @@ import { Route as ZoominfoLeadsRouteImport } from './routes/zoominfo-leads'
 import { Route as WebsiteDesignRouteImport } from './routes/website-design'
 import { Route as TrackOrderRouteImport } from './routes/track-order'
 import { Route as StoreRouteImport } from './routes/store'
+import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as ManualLeadResearchRouteImport } from './routes/manual-lead-research'
 import { Route as LinkedinSalesNavigatorLeadsRouteImport } from './routes/linkedin-sales-navigator-leads'
@@ -38,6 +39,11 @@ const TrackOrderRoute = TrackOrderRouteImport.update({
 const StoreRoute = StoreRouteImport.update({
   id: '/store',
   path: '/store',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
+  id: '/privacy-policy',
+  path: '/privacy-policy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PricingRoute = PricingRouteImport.update({
@@ -79,6 +85,7 @@ export interface FileRoutesByFullPath {
   '/linkedin-sales-navigator-leads': typeof LinkedinSalesNavigatorLeadsRoute
   '/manual-lead-research': typeof ManualLeadResearchRoute
   '/pricing': typeof PricingRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
   '/store': typeof StoreRoute
   '/track-order': typeof TrackOrderRoute
   '/website-design': typeof WebsiteDesignRoute
@@ -91,6 +98,7 @@ export interface FileRoutesByTo {
   '/linkedin-sales-navigator-leads': typeof LinkedinSalesNavigatorLeadsRoute
   '/manual-lead-research': typeof ManualLeadResearchRoute
   '/pricing': typeof PricingRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
   '/store': typeof StoreRoute
   '/track-order': typeof TrackOrderRoute
   '/website-design': typeof WebsiteDesignRoute
@@ -104,6 +112,7 @@ export interface FileRoutesById {
   '/linkedin-sales-navigator-leads': typeof LinkedinSalesNavigatorLeadsRoute
   '/manual-lead-research': typeof ManualLeadResearchRoute
   '/pricing': typeof PricingRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
   '/store': typeof StoreRoute
   '/track-order': typeof TrackOrderRoute
   '/website-design': typeof WebsiteDesignRoute
@@ -118,6 +127,7 @@ export interface FileRouteTypes {
     | '/linkedin-sales-navigator-leads'
     | '/manual-lead-research'
     | '/pricing'
+    | '/privacy-policy'
     | '/store'
     | '/track-order'
     | '/website-design'
@@ -130,6 +140,7 @@ export interface FileRouteTypes {
     | '/linkedin-sales-navigator-leads'
     | '/manual-lead-research'
     | '/pricing'
+    | '/privacy-policy'
     | '/store'
     | '/track-order'
     | '/website-design'
@@ -142,6 +153,7 @@ export interface FileRouteTypes {
     | '/linkedin-sales-navigator-leads'
     | '/manual-lead-research'
     | '/pricing'
+    | '/privacy-policy'
     | '/store'
     | '/track-order'
     | '/website-design'
@@ -155,6 +167,7 @@ export interface RootRouteChildren {
   LinkedinSalesNavigatorLeadsRoute: typeof LinkedinSalesNavigatorLeadsRoute
   ManualLeadResearchRoute: typeof ManualLeadResearchRoute
   PricingRoute: typeof PricingRoute
+  PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   StoreRoute: typeof StoreRoute
   TrackOrderRoute: typeof TrackOrderRoute
   WebsiteDesignRoute: typeof WebsiteDesignRoute
@@ -189,6 +202,13 @@ declare module '@tanstack/react-router' {
       path: '/store'
       fullPath: '/store'
       preLoaderRoute: typeof StoreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy-policy': {
+      id: '/privacy-policy'
+      path: '/privacy-policy'
+      fullPath: '/privacy-policy'
+      preLoaderRoute: typeof PrivacyPolicyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pricing': {
@@ -243,6 +263,7 @@ const rootRouteChildren: RootRouteChildren = {
   LinkedinSalesNavigatorLeadsRoute: LinkedinSalesNavigatorLeadsRoute,
   ManualLeadResearchRoute: ManualLeadResearchRoute,
   PricingRoute: PricingRoute,
+  PrivacyPolicyRoute: PrivacyPolicyRoute,
   StoreRoute: StoreRoute,
   TrackOrderRoute: TrackOrderRoute,
   WebsiteDesignRoute: WebsiteDesignRoute,

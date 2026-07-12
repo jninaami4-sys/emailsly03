@@ -136,7 +136,7 @@ function FooterColumn({
 }) {
   return (
     <div className="space-y-5">
-      <h4 className="font-mono text-[10px] font-bold uppercase tracking-widest text-white">
+      <h4 className="font-mono text-[10px] font-bold uppercase tracking-widest text-gold">
         {heading}
       </h4>
       <div className="flex flex-col gap-3 text-white/60">

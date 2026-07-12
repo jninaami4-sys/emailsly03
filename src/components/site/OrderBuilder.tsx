@@ -750,12 +750,12 @@ function ServiceChip({
     <button
       type="button"
       onClick={onClick}
-      className={`group flex w-full items-center gap-3 rounded-xl border bg-background px-3 py-3 text-left transition-all ${
+      className={`group flex w-full items-center gap-2.5 rounded-xl border bg-background px-3 py-2.5 text-left transition-all sm:gap-3 sm:py-3 ${
         active ? activeClasses : "border-border hover:border-foreground/20"
       }`}
     >
-      <span className={`grid size-8 shrink-0 place-items-center rounded-lg ${iconBg}`}>
-        <Icon className="size-4" />
+      <span className={`grid size-7 shrink-0 place-items-center rounded-lg sm:size-8 ${iconBg}`}>
+        <Icon className="size-3.5 sm:size-4" />
       </span>
       <span className="min-w-0 flex-1">
         <span className={`block truncate text-xs font-semibold ${active ? "" : "text-foreground"}`}>

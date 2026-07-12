@@ -205,13 +205,13 @@ function Home() {
         <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[1.1fr_1fr] lg:items-center">
           <div>
             <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-violet">
-              Real sample export
+              Real Apollo scrape
             </span>
             <h2 className="mt-3 font-display text-3xl font-bold tracking-tight md:text-4xl">
-              See exactly what you'll receive — 365 verified leads, every column.
+              See exactly what you'll receive — 365 sample leads, every column.
             </h2>
             <p className="mt-4 max-w-xl text-muted-foreground">
-              Not a mockup. This is a real Apollo export with all 48 columns intact — emails, phones,
+              Not a mockup. This is a raw Apollo scrape with all 48 columns intact — emails, phones,
               LinkedIn URLs, funding, technologies, and everything else. Search it, scroll it, download the CSV.
             </p>
             <div className="mt-6 flex flex-wrap items-center gap-3">

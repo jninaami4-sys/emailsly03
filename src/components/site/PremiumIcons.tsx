@@ -212,6 +212,15 @@ export function PremiumLogOut({ className }: IconProps) {
   );
 }
 
+export function PremiumX({ className }: IconProps) {
+  return (
+    <Icon className={className}>
+      <path d="m18 6-12 12" />
+      <path d="m6 6 12 12" />
+    </Icon>
+  );
+}
+
 export function PremiumLogoMark({ className }: IconProps) {
   return (
     <svg

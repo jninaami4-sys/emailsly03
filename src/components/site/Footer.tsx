@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowRight, Zap } from "lucide-react";
+import { ArrowRight, ShieldCheck, Zap } from "lucide-react";
+import { PaymentLogos } from "./PaymentLogos";
 
 const productLinks = [
   { to: "/store", label: "Lead Store" },

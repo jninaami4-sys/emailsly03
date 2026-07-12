@@ -11,20 +11,16 @@ const { fontFamily } = loadFont("normal", {
 
 export const MainVideo: React.FC = () => {
   const frame = useCurrentFrame();
-  const { fps, durationInFrames } = useVideoConfig();
+  const { fps } = useVideoConfig();
 
-  const intro = interpolate(frame, [0, 20], [0, 1], {
+  // Entrance: quick fade/scale-up over first 20 frames, then hold
+  const intro = spring({ frame, fps, config: { damping: 22, stiffness: 180 } });
+
+  // Ambient particles fade in slowly
+  const ambientOpacity = interpolate(frame, [0, 45], [0, 0.1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
-
-  const hold = interpolate(frame, [durationInFrames - 20, durationInFrames - 5], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
-  const outro = 1 - hold;
-
-  const ambientOpacity = interpolate(intro * outro, [0, 1], [0, 0.08]);
 
   return (
     <AbsoluteFill
@@ -43,8 +39,8 @@ export const MainVideo: React.FC = () => {
           alignItems: "center",
           justifyContent: "center",
           gap: 36,
-          transform: `scale(${intro * outro * 0.15 + 0.85})`,
-          opacity: intro * outro,
+          transform: `scale(${intro * 0.12 + 0.88})`,
+          opacity: interpolate(intro, [0, 1], [0.6, 1]),
         }}
       >
         <LogoMark frame={frame} fps={fps} />
@@ -56,7 +52,7 @@ export const MainVideo: React.FC = () => {
         style={{
           position: "absolute",
           inset: 0,
-          background: "radial-gradient(circle at center, transparent 50%, rgba(15, 23, 42, 0.04) 100%)",
+          background: "radial-gradient(circle at center, transparent 55%, rgba(15, 23, 42, 0.04) 100%)",
           pointerEvents: "none",
         }}
       />

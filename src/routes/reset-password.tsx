@@ -45,11 +45,11 @@ const passwordSchema = z
       .string()
       .min(8, { message: "Password must be at least 8 characters" })
       .max(72, { message: "Password must be under 72 characters" })
-      .refine((v) => v === v.trim(), { message: "Password can't start or end with a space" })
-      .refine((v) => !/\s{2,}/.test(v), { message: "Password can't contain consecutive spaces" })
       .regex(/[A-Z]/, { message: "Add at least one uppercase letter" })
       .regex(/[a-z]/, { message: "Add at least one lowercase letter" })
       .regex(/[0-9]/, { message: "Add at least one number" })
+      .refine((v) => v === v.trim(), { message: "Password can't start or end with a space" })
+      .refine((v) => !/\s{2,}/.test(v), { message: "Password can't contain consecutive spaces" })
       .refine((v) => !COMMON_PASSWORDS.has(v.toLowerCase()), {
         message: "This password is too common — choose something more unique",
       })

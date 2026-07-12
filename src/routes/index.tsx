@@ -232,7 +232,7 @@ function Home() {
             {[
               { label: "Rows", value: "365" },
               { label: "Columns", value: "48" },
-              { label: "Verified emails", value: "100%" },
+              { label: "Raw emails", value: "Apollo" },
               { label: "Source", value: "Apollo" },
             ].map((s) => (
               <div

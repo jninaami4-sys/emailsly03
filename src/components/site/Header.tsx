@@ -35,7 +35,7 @@ export function Header() {
       <div className="sticky top-4 z-40 px-4">
         <nav
           aria-label="Primary"
-          className="mx-auto flex h-12 max-w-6xl items-center justify-between rounded-full border border-white/50 bg-ink/20 px-5 shadow-[0_8px_32px_-12px_rgba(24,24,60,0.12)] backdrop-blur-2xl backdrop-saturate-[180%]"
+          className="relative mx-auto flex h-12 max-w-6xl items-center justify-between overflow-hidden rounded-full border border-white/20 bg-white/[0.03] px-5 shadow-[0_20px_50px_rgba(0,0,0,0.3),inset_0_1px_1px_0_rgba(255,255,255,0.3),inset_0_-1px_1px_0_rgba(255,255,255,0.05)] backdrop-blur-3xl before:pointer-events-none before:absolute before:inset-0 before:rounded-full before:bg-gradient-to-b before:from-white/10 before:to-transparent"
         >
           <div className="flex items-center gap-8">
             <Link

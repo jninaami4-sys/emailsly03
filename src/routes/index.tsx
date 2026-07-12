@@ -218,9 +218,18 @@ const faqs = [
 function Home() {
   const featured = PRODUCTS.filter((p) => p.featured).concat(PRODUCTS.filter((p) => !p.featured)).slice(0, 6);
   const [activeSource, setActiveSource] = useState<SourceKey>("apollo");
+  const [query, setQuery] = useState("");
   const active = SOURCES.find((s) => s.key === activeSource)!;
   const accent = ACCENT_CLASSES[active.accent];
   const totalRows = SOURCES.reduce((a, s) => a + s.rows, 0);
+  const rawActive = SOURCE_DATA[activeSource];
+  const filteredRows = useMemo(() => {
+    if (!query.trim()) return rawActive.rows;
+    const q = query.toLowerCase();
+    return rawActive.rows.filter((r) =>
+      rawActive.headers.some((h) => String(r[h] ?? "").toLowerCase().includes(q)),
+    );
+  }, [query, rawActive]);
 
   return (
     <SiteShell>

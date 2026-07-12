@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
-import { ArrowRight, Loader2, Mail, Lock, ShieldCheck, Zap, Sparkles, Eye, EyeOff, AlertCircle, CheckCircle2, ArrowLeft } from "lucide-react";
+import { ArrowRight, Loader2, Mail, Lock, ShieldCheck, Zap, BadgeCheck, Eye, EyeOff, AlertCircle, CheckCircle2, ArrowLeft } from "lucide-react";
 
 const searchSchema = z.object({
   mode: z.enum(["signin", "signup", "forgot"]).optional(),
@@ -203,7 +203,7 @@ function AuthPage() {
           </Link>
 
           <div className="mt-10 inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground shadow-sm">
-            <Sparkles className="size-3.5 text-primary" /> Free account · No card required
+            <BadgeCheck className="size-3.5 text-primary" /> Free account · No card required
           </div>
 
           <h1 className="mt-4 font-display text-4xl font-bold leading-[1.08] tracking-tight lg:text-5xl">

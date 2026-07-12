@@ -1,10 +1,29 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { z } from "zod";
+import { fallback, zodValidator } from "@tanstack/zod-adapter";
 import { supabase } from "@/integrations/supabase/client";
 import { ArrowRight, Loader2, Lock, CheckCircle2, AlertCircle, Eye, EyeOff, Check, X } from "lucide-react";
 
+const searchSchema = z.object({
+  redirectTo: fallback(z.string(), "").default(""),
+});
+
+// Only allow same-origin relative paths to prevent open-redirect attacks.
+function sanitizeRedirect(raw: string): string | null {
+  if (!raw) return null;
+  try {
+    const decoded = decodeURIComponent(raw);
+    if (!decoded.startsWith("/") || decoded.startsWith("//")) return null;
+    if (decoded.startsWith("/auth") || decoded.startsWith("/reset-password")) return null;
+    return decoded;
+  } catch {
+    return null;
+  }
+}
+
 export const Route = createFileRoute("/reset-password")({
+  validateSearch: zodValidator(searchSchema),
   head: () => ({
     meta: [
       { title: "Reset your password | LyraData" },

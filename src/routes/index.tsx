@@ -1,8 +1,11 @@
+import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteShell } from "@/components/site/SiteShell";
 import { ProductCard } from "@/components/site/ProductCard";
 import { PRODUCTS } from "@/lib/products";
 import rawApollo from "@/lib/apollo-leads-raw.json";
+import rawLinkedin from "@/lib/linkedin-leads-raw.json";
+import rawZoominfo from "@/lib/zoominfo-leads-raw.json";
 
 import {
   ArrowRight,
@@ -12,17 +15,117 @@ import {
   CheckCircle2,
   Star,
   Sparkles,
-  Circle,
 } from "lucide-react";
 import { Testimonials } from "@/components/site/Testimonials";
 import { OrderBuilder } from "@/components/site/OrderBuilder";
 
-type RawApollo = {
+type RawData = {
   headers: string[];
   rows: Record<string, string | number | boolean>[];
 };
-const apolloData = rawApollo as RawApollo;
-const previewRows = apolloData.rows.slice(0, 4);
+const apolloData = rawApollo as RawData;
+const linkedinData = rawLinkedin as RawData;
+const zoominfoData = rawZoominfo as RawData;
+
+type SourceKey = "apollo" | "linkedin" | "zoominfo";
+
+type SourceMeta = {
+  key: SourceKey;
+  label: string;
+  file: string;
+  accent: "violet" | "coral" | "emerald";
+  rows: number;
+  cols: number;
+  highlight: string;
+  preview: Array<{
+    name: string;
+    title: string;
+    company: string;
+    email: string;
+    tag: string;
+  }>;
+};
+
+const nameOf = (r: Record<string, string | number | boolean>, keys: string[]) =>
+  keys.map((k) => String(r[k] ?? "").trim()).filter(Boolean).join(" ");
+
+const SOURCES: SourceMeta[] = [
+  {
+    key: "apollo",
+    label: "Apollo",
+    file: "apollo_sample_leads.csv",
+    accent: "violet",
+    rows: apolloData.rows.length,
+    cols: apolloData.headers.length,
+    highlight: "Verified emails + firmographics",
+    preview: apolloData.rows.slice(0, 4).map((r) => ({
+      name: nameOf(r, ["First Name", "Last Name"]),
+      title: String(r["Title"] ?? ""),
+      company: String(r["Company Name"] ?? ""),
+      email: String(r["Email"] ?? ""),
+      tag: String(r["Email Status"] ?? "Verified"),
+    })),
+  },
+  {
+    key: "linkedin",
+    label: "LinkedIn",
+    file: "linkedin_sales_nav.csv",
+    accent: "coral",
+    rows: linkedinData.rows.length,
+    cols: linkedinData.headers.length,
+    highlight: "Sales Nav scrape + direct dials",
+    preview: linkedinData.rows.slice(0, 4).map((r) => ({
+      name: nameOf(r, ["first_name", "last_name"]),
+      title: String(r["job_title"] ?? ""),
+      company: String(r["company_name"] ?? ""),
+      email: String(r["email_first"] ?? ""),
+      tag: String(r["phone"] ? "+ Phone" : "LinkedIn"),
+    })),
+  },
+  {
+    key: "zoominfo",
+    label: "ZoomInfo",
+    file: "zoominfo_export.csv",
+    accent: "emerald",
+    rows: zoominfoData.rows.length,
+    cols: zoominfoData.headers.length,
+    highlight: "Mobile phones + revenue bands",
+    preview: zoominfoData.rows.slice(0, 4).map((r) => ({
+      name: String(r["name"] ?? ""),
+      title: String(r["lead_titles"] ?? ""),
+      company: String(r["company_name"] ?? ""),
+      email: String(r["email"] ?? ""),
+      tag: r["email_score"] ? `Score ${r["email_score"]}` : "Enriched",
+    })),
+  },
+];
+
+const ACCENT_CLASSES: Record<
+  SourceMeta["accent"],
+  { dot: string; text: string; soft: string; ring: string; solid: string }
+> = {
+  violet: {
+    dot: "bg-violet",
+    text: "text-violet",
+    soft: "bg-violet-soft",
+    ring: "ring-violet/30",
+    solid: "bg-violet text-white",
+  },
+  coral: {
+    dot: "bg-coral",
+    text: "text-coral",
+    soft: "bg-coral-soft",
+    ring: "ring-coral/30",
+    solid: "bg-coral text-white",
+  },
+  emerald: {
+    dot: "bg-emerald",
+    text: "text-emerald",
+    soft: "bg-emerald-soft",
+    ring: "ring-emerald/30",
+    solid: "bg-emerald text-white",
+  },
+};
 
 export const Route = createFileRoute("/")({
   head: () => ({

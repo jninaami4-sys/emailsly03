@@ -437,7 +437,7 @@ function AuthPage() {
                             Password
                           </span>
                           <div className="group relative">
-                            <Lock className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-foreground" />
+                            <Lock className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-foreground" aria-hidden="true" />
                             <input
                               type={showPassword ? "text" : "password"}
                               autoComplete={mode === "signup" ? "new-password" : "current-password"}

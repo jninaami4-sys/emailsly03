@@ -1,11 +1,19 @@
-import { Link } from "@tanstack/react-router";
-import { ShoppingCart, Menu } from "lucide-react";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { ShoppingCart, Menu, LogOut, User as UserIcon } from "lucide-react";
 import { useCart } from "@/lib/cart";
+import { useAuth } from "@/hooks/use-auth";
 import { useState } from "react";
 
 export function Header() {
   const { count, open } = useCart();
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  async function handleSignOut() {
+    await signOut();
+    navigate({ to: "/auth", replace: true });
+  }
 
   return (
     <nav className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-md">

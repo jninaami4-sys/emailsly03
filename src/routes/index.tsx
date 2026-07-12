@@ -52,7 +52,7 @@ const stats = [
 const faqs = [
   { q: "How fast will I receive my data?", a: "Most orders are delivered within 24 hours. Larger or custom research orders may take 48–72 hours. You'll get an email update at every step." },
   { q: "What format will the data be in?", a: "All data is delivered as a clean, ready-to-import CSV file with verified work emails, job titles, company info, and LinkedIn URLs (where available)." },
-  { q: "How accurate is the data?", a: "Emails are validated in real-time before delivery. If any leads bounce, we replace them free of charge." },
+  { q: "How accurate is the data?", a: "Data is sourced from pre-built, verified databases and cleaned/formatted for your ICP before delivery." },
   { q: "Do you offer custom ICP / niche research?", a: "Yes — our Manual Lead Research service is 100% human-verified and perfect for complex ICPs that automated tools miss." },
   { q: "What payment methods do you accept?", a: "We accept secure payments via card, bank transfer, and crypto. Payment links are sent after order confirmation." },
   { q: "Can I track my order status?", a: "Absolutely. Use our Track Order page with your order ID or email, or create a free account to see all your orders in one dashboard." },

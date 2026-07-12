@@ -374,7 +374,7 @@ export function OrderBuilder() {
                     active={verifier}
                     onToggle={() => setVerifier((v) => !v)}
                     title="MillionVerifier"
-                    sub="99% deliverability, bounce-safe"
+                    sub="99% deliverability estimate"
                     price="+$0.002 / lead"
                     accent="emerald"
                   />

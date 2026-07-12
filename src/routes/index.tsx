@@ -167,7 +167,6 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
-const logos = ["Apollo", "Salesforce", "HubSpot", "LinkedIn", "ZoomInfo", "Pipedrive"];
 
 const features = [
   {
@@ -487,24 +486,6 @@ function Home() {
         </div>
       </section>
 
-
-
-
-      {/* Logo strip */}
-      <section className="border-y border-border py-12">
-        <div className="mx-auto max-w-7xl px-6">
-          <p className="text-center font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70">
-            Trusted by growth teams at
-          </p>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-x-12 gap-y-4 opacity-40">
-            {logos.map((l) => (
-              <span key={l} className="font-display text-xl font-bold tracking-tight text-foreground">
-                {l}
-              </span>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* Features grid */}
       <section className="px-6 py-32">

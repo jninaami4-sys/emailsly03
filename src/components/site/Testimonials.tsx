@@ -19,6 +19,9 @@ type VideoTestimonial = {
   poster: string;
   src: string;
   quote: string;
+  verified?: boolean;
+  country?: string;
+  flag?: string;
 };
 
 // --- Data ---

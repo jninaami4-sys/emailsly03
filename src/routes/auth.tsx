@@ -95,11 +95,35 @@ function AuthPage() {
     return () => clearInterval(timer);
   }, [cooldown]);
 
+  useEffect(() => {
+    if (resendState.cooldown <= 0) return;
+    const t = setInterval(
+      () => setResendState((s) => ({ ...s, cooldown: Math.max(0, s.cooldown - 1) })),
+      1000,
+    );
+    return () => clearInterval(t);
+  }, [resendState.cooldown]);
+
+  async function handleResendConfirmation(target: string) {
+    setResendState((s) => ({ ...s, busy: true, error: null }));
+    try {
+      const { error } = await supabase.auth.resend({
+        type: "signup",
+        email: target,
+        options: { emailRedirectTo: `${window.location.origin}/` },
+      });
+      if (error) throw error;
+      setResendState({ busy: false, sentAt: Date.now(), error: null, cooldown: 60 });
+    } catch (err) {
+      setResendState((s) => ({
+        ...s,
+        busy: false,
+        error: err instanceof Error ? err.message : "Could not resend confirmation email",
+      }));
+    }
+  }
+
   function validateField(name: keyof FieldErrors, value: string) {
-    const partial = credentials.partial();
-    const parsed = partial.safeParse({ [name]: value });
-    if (!parsed.success) {
-      const issue = parsed.error.issues.find((i) => i.path[0] === name);
       setFieldErrors((prev) => ({ ...prev, [name]: issue?.message }));
       return false;
     }

@@ -72,7 +72,7 @@ function BlogList() {
               </p>
               <div className="mt-8 flex items-center justify-between border-t border-border pt-6">
                 <div className="flex items-center gap-3">
-                  <div className="grid size-10 place-items-center rounded-full bg-violet font-bold text-white">
+                  <div className="grid size-10 place-items-center rounded-full bg-gold font-bold text-black">
                     {featured.author.initials}
                   </div>
                   <div>

@@ -6,7 +6,7 @@ import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 
 const focusRing =
-  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet focus-visible:ring-offset-2 focus-visible:ring-offset-background";
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-background";
 
 export function Header() {
   const { count, open } = useCart();
@@ -28,7 +28,7 @@ export function Header() {
     <>
       <a
         href="#main-content"
-        className={`sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-full focus:bg-ink focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white ${focusRing}`}
+        className={`sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-full focus:bg-obsidian-elev focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white ${focusRing}`}
       >
         Skip to main content
       </a>
@@ -36,7 +36,7 @@ export function Header() {
         <div className="relative">
           <nav
             aria-label="Primary"
-            className="relative mx-auto flex h-12 max-w-6xl items-center justify-between overflow-hidden rounded-full border border-white/40 bg-white/85 px-5 shadow-[0_4px_24px_rgba(0,0,0,0.06),inset_0_0.5px_0_0_rgba(255,255,255,0.72),inset_0_-0.5px_0_0_rgba(0,0,0,0.05)] backdrop-blur-2xl backdrop-saturate-[180%]"
+            className="relative mx-auto flex h-12 max-w-6xl items-center justify-between overflow-hidden rounded-full border border-white/10 bg-obsidian-surface/80 px-5 shadow-[0_4px_24px_rgba(0,0,0,0.4),inset_0_0.5px_0_0_rgba(255,255,255,0.08)] backdrop-blur-2xl backdrop-saturate-[180%]"
           >
           <div className="z-10 flex items-center gap-8">
             <Link
@@ -74,14 +74,14 @@ export function Header() {
             <button
               type="button"
               onClick={open}
-              className={`relative rounded-lg p-2 text-foreground transition-colors hover:bg-secondary hover:text-violet ${focusRing}`}
+              className={`relative rounded-lg p-2 text-foreground transition-colors hover:bg-secondary hover:text-gold ${focusRing}`}
               aria-label={cartLabel}
             >
               <ShoppingCart className="size-5" aria-hidden="true" />
               {count > 0 && (
                 <span
                   aria-hidden="true"
-                  className="absolute -right-0.5 -top-0.5 grid size-4 place-items-center rounded-full bg-coral text-[10px] font-bold text-white"
+                  className="absolute -right-0.5 -top-0.5 grid size-4 place-items-center rounded-full bg-gold text-[10px] font-bold text-black"
                 >
                   {count}
                 </span>
@@ -90,7 +90,7 @@ export function Header() {
             {user ? (
               <>
                 <span className="hidden items-center gap-1.5 rounded-lg bg-secondary px-3 py-2 text-xs font-semibold lg:inline-flex">
-                  <UserIcon className="size-3.5 text-violet" aria-hidden="true" />
+                  <UserIcon className="size-3.5 text-gold" aria-hidden="true" />
                   <span className="max-w-[140px] truncate" aria-label={`Signed in as ${user.email}`}>
                     {user.email}
                   </span>
@@ -98,7 +98,7 @@ export function Header() {
                 <button
                   type="button"
                   onClick={handleSignOut}
-                  className={`hidden items-center gap-1.5 rounded-lg bg-ink px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-violet lg:inline-flex ${focusRing}`}
+                  className={`hidden items-center gap-1.5 rounded-lg bg-obsidian-elev px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-gold hover:text-black lg:inline-flex ${focusRing}`}
                 >
                   <LogOut className="size-3.5" aria-hidden="true" /> Sign out
                 </button>
@@ -106,7 +106,7 @@ export function Header() {
             ) : (
               <Link
                 to="/auth"
-                className={`hidden rounded-full bg-ink px-5 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:bg-violet lg:inline-flex ${focusRing}`}
+                className={`hidden rounded-full bg-gold px-5 py-2 text-sm font-semibold text-black shadow-sm transition-all hover:bg-amber-accent lg:inline-flex ${focusRing}`}
               >
                 Get Started
               </Link>
@@ -126,8 +126,8 @@ export function Header() {
       </nav>
       <div className="absolute -inset-1.5 -z-10 rounded-full bg-white/10 blur-2xl" aria-hidden="true" />
     </div>
-    {mobileOpen && (
-      <div id="mobile-nav" className="relative mt-2 overflow-hidden rounded-2xl border border-white/40 bg-white/85 shadow-[0_4px_24px_rgba(0,0,0,0.06),inset_0_0.5px_0_0_rgba(255,255,255,0.72),inset_0_-0.5px_0_0_rgba(0,0,0,0.05)] backdrop-blur-2xl backdrop-saturate-[180%] lg:hidden">
+      {mobileOpen && (
+        <div id="mobile-nav" className="relative mt-2 overflow-hidden rounded-2xl border border-white/10 bg-obsidian-surface/90 shadow-[0_4px_24px_rgba(0,0,0,0.4),inset_0_0.5px_0_0_rgba(255,255,255,0.08)] backdrop-blur-2xl backdrop-saturate-[180%] lg:hidden">
         <ul className="relative z-10 flex flex-col gap-1 px-3 py-3 text-sm font-medium text-foreground">
           {[
             { to: "/store", label: "Lead Store" },

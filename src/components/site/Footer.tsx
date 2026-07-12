@@ -25,17 +25,17 @@ const legalLinks = [
 
 export function Footer() {
   return (
-    <footer className="relative overflow-hidden bg-ink text-white/70">
-      {/* soft violet glow, matches homepage editorial system */}
-      <div className="pointer-events-none absolute -left-32 top-0 size-96 rounded-full bg-violet/15 blur-[120px]" />
-      <div className="pointer-events-none absolute -right-32 bottom-0 size-96 rounded-full bg-coral/10 blur-[120px]" />
+    <footer className="relative overflow-hidden bg-obsidian text-white/70">
+      {/* soft gold glow, matches homepage editorial system */}
+      <div className="pointer-events-none absolute -left-32 top-0 size-96 rounded-full bg-gold/15 blur-[120px]" />
+      <div className="pointer-events-none absolute -right-32 bottom-0 size-96 rounded-full bg-amber-accent/10 blur-[120px]" />
 
       <div className="relative mx-auto max-w-7xl px-6 pt-24 pb-10">
         {/* Newsletter row */}
         <div className="grid gap-12 border-b border-white/10 pb-16 lg:grid-cols-[1.1fr_1fr] lg:items-end">
           <div>
             <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1">
-              <Zap className="size-3 text-violet" />
+              <Zap className="size-3 text-gold" />
               <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-white">
                 Premium Brief
               </span>
@@ -43,7 +43,7 @@ export function Footer() {
             <h3 className="font-display text-4xl font-bold leading-tight tracking-tight text-white md:text-5xl">
               Verified insights.
               <br />
-              <span className="text-violet">No free samples.</span>
+              <span className="text-gold">Nothing is free.</span>
             </h3>
             <p className="mt-4 max-w-md text-white/60">
               Join 4,000+ paid operators who get the market edge before the week starts.
@@ -57,11 +57,11 @@ export function Footer() {
               type="email"
               required
               placeholder="work@company.com"
-              className="flex-1 rounded-full border border-white/10 bg-white/5 px-5 py-3.5 text-white placeholder:text-white/40 outline-none transition-colors focus:border-violet focus:bg-white/[0.08]"
+              className="flex-1 rounded-full border border-white/10 bg-white/5 px-5 py-3.5 text-white placeholder:text-white/40 outline-none transition-colors focus:border-gold focus:bg-white/[0.08]"
             />
             <button
               type="submit"
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-violet px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-violet/25 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-violet/30"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-gold px-6 py-3.5 text-sm font-semibold text-black shadow-lg shadow-gold/25 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-gold/30"
             >
               Subscribe <ArrowRight className="size-4" />
             </button>
@@ -75,10 +75,10 @@ export function Footer() {
               to="/"
               className="inline-flex items-center gap-2 font-display text-2xl font-bold tracking-tight text-white"
             >
-              <span className="grid size-7 place-items-center rounded-md bg-violet">
-                <span className="size-2 rounded-full bg-white" />
+              <span className="grid size-7 place-items-center rounded-md bg-gold">
+                <span className="size-2 rounded-full bg-black" />
               </span>
-              LYRA<span className="text-violet">DATA</span>
+              LYRA<span className="text-gold">DATA</span>
             </Link>
             <p className="mt-5 max-w-sm text-sm leading-relaxed text-white/50">
               Verified B2B leads delivered to your CRM in 24 hours. Priced by the lead, never by the seat.
@@ -87,7 +87,7 @@ export function Footer() {
               {["24h delivery", "Verified", "GDPR aware"].map((t) => (
                 <span
                   key={t}
-                  className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-white/70"
+                  className="rounded-full border border-gold/20 bg-gold/5 px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-gold/80"
                 >
                   {t}
                 </span>
@@ -136,7 +136,7 @@ function FooterColumn({
 }) {
   return (
     <div className="space-y-5">
-      <h4 className="font-mono text-[10px] font-bold uppercase tracking-widest text-white">
+      <h4 className="font-mono text-[10px] font-bold uppercase tracking-widest text-gold">
         {heading}
       </h4>
       <div className="flex flex-col gap-3 text-white/60">

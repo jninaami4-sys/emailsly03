@@ -28,7 +28,7 @@ export function MouseGlow() {
       style={{ opacity: visible ? 1 : 0 }}
     >
       <div
-        className="pointer-events-none absolute size-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle_at_center,var(--violet)_0%,transparent_70%)] opacity-[0.08] blur-3xl"
+        className="pointer-events-none absolute size-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle_at_center,var(--gold)_0%,transparent_70%)] opacity-[0.1] blur-3xl"
         style={{
           left: position.x,
           top: position.y,

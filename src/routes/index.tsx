@@ -50,9 +50,9 @@ const SOURCES: SourceMeta[] = [
 ];
 
 const ACCENT: Record<SourceMeta["accent"], { dot: string; text: string; ring: string; solid: string }> = {
-  indigo: { dot: "bg-indigo", text: "text-indigo", ring: "ring-indigo/40", solid: "bg-indigo text-white" },
-  coral: { dot: "bg-coral", text: "text-coral", ring: "ring-coral/40", solid: "bg-coral text-white" },
-  emerald: { dot: "bg-emerald", text: "text-emerald", ring: "ring-emerald/40", solid: "bg-emerald text-white" },
+  indigo: { dot: "bg-gold", text: "text-gold", ring: "ring-gold/40", solid: "bg-gold text-black" },
+  coral: { dot: "bg-amber-accent", text: "text-amber-accent", ring: "ring-amber-accent/40", solid: "bg-amber-accent text-black" },
+  emerald: { dot: "bg-gold-soft", text: "text-gold", ring: "ring-gold/40", solid: "bg-gold-soft text-black" },
 };
 
 const SOURCE_DATA: Record<SourceKey, RawData> = {
@@ -153,7 +153,7 @@ function Home() {
               <h1 className="font-display text-5xl font-extrabold leading-[0.98] tracking-tight text-foreground md:text-7xl lg:text-[88px]">
                 Prospect data that
                 <br />
-                <span className="bg-gradient-to-br from-white via-white to-indigo bg-clip-text text-transparent">
+                <span className="bg-gradient-to-br from-white via-gold/90 to-gold bg-clip-text text-transparent">
                   actually converts.
                 </span>
               </h1>
@@ -165,14 +165,14 @@ function Home() {
               <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
                 <button
                   onClick={openOrderDrawer}
-                  className="group inline-flex w-full items-center justify-center gap-2 rounded-full bg-indigo px-8 py-4 text-base font-semibold text-white shadow-[0_20px_50px_-15px_rgba(79,70,229,0.8)] transition-all hover:-translate-y-0.5 sm:w-auto"
+                  className="group inline-flex w-full items-center justify-center gap-2 rounded-full bg-gold px-8 py-4 text-base font-semibold text-black shadow-[0_20px_50px_-15px_rgba(212,168,83,0.45)] transition-all hover:-translate-y-0.5 sm:w-auto"
                 >
                   Build your order
                   <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </button>
                 <Link
                   to="/sample-data"
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-8 py-4 text-base font-semibold text-foreground backdrop-blur transition-colors hover:bg-white/[0.08] sm:w-auto"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-8 py-4 text-base font-semibold text-foreground backdrop-blur transition-colors hover:bg-white/[0.08] hover:border-gold/30 sm:w-auto"
                 >
                   Preview live samples
                 </Link>
@@ -292,14 +292,14 @@ function Home() {
             {/* Instant quote CTA */}
             <button
               onClick={openOrderDrawer}
-              className="group relative col-span-1 row-span-2 overflow-hidden rounded-3xl border border-indigo/40 bg-gradient-to-br from-indigo to-[oklch(0.42_0.22_275)] p-6 text-left text-white transition-transform hover:-translate-y-0.5 md:col-span-2"
+              className="group relative col-span-1 row-span-2 overflow-hidden rounded-3xl border border-gold/40 bg-gradient-to-br from-gold to-[oklch(0.52_0.12_80)] p-6 text-left text-black transition-transform hover:-translate-y-0.5 md:col-span-2"
             >
-              <div className="pointer-events-none absolute -right-8 -top-8 size-48 rounded-full bg-white/15 blur-2xl" />
+              <div className="pointer-events-none absolute -right-8 -top-8 size-48 rounded-full bg-white/25 blur-2xl" />
               <div className="relative flex h-full flex-col justify-between">
                 <div>
-                  <Sparkles className="size-6" />
+                  <Sparkles className="size-6 text-black/80" />
                   <h3 className="mt-6 font-display text-2xl font-bold leading-tight md:text-3xl">Get your price in 30 seconds.</h3>
-                  <p className="mt-3 text-sm text-white/80">Slide out the builder, pick a service, see the exact cost. No calls, no forms.</p>
+                  <p className="mt-3 text-sm text-black/70">Slide out the builder, pick a service, see the exact cost. No calls, no forms.</p>
                 </div>
                 <span className="inline-flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-widest">
                   Open builder <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -397,7 +397,7 @@ function Home() {
               "LyraData cut our prospecting time in half. We no longer spend hours cleaning Apollo exports — we just receive the verified file and start selling."
             </blockquote>
             <div className="mt-10 flex items-center justify-center gap-3">
-              <div className="grid size-12 place-items-center rounded-full bg-indigo font-bold text-white">MT</div>
+              <div className="grid size-12 place-items-center rounded-full bg-gold font-bold text-black">MT</div>
               <div className="text-left">
                 <p className="font-bold">Marcus Thorne</p>
                 <p className="text-sm text-foreground/60">VP Sales, VelocityGrowth</p>
@@ -417,7 +417,7 @@ function Home() {
               <p className="mt-4 text-foreground/60">Still curious? Open the order builder or ping our team — we reply in under an hour.</p>
               <button
                 onClick={openOrderDrawer}
-                className="mt-6 inline-flex items-center gap-2 rounded-full bg-indigo px-5 py-3 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5"
+                className="mt-6 inline-flex items-center gap-2 rounded-full bg-gold px-5 py-3 text-sm font-semibold text-black transition-transform hover:-translate-y-0.5"
               >
                 Build your order <ArrowUpRight className="size-4" />
               </button>
@@ -440,8 +440,8 @@ function Home() {
 
         {/* Final CTA */}
         <section className="px-6 py-24">
-          <div className="relative mx-auto max-w-6xl overflow-hidden rounded-[2.5rem] border border-white/10 bg-gradient-to-br from-indigo/25 via-midnight-surface to-midnight p-12 text-center md:p-24">
-            <div className="pointer-events-none absolute -right-20 top-1/2 size-96 -translate-y-1/2 rounded-full bg-indigo/40 blur-3xl" />
+          <div className="relative mx-auto max-w-6xl overflow-hidden rounded-[2.5rem] border border-white/10 bg-gradient-to-br from-gold/25 via-obsidian-surface to-obsidian p-12 text-center md:p-24">
+            <div className="pointer-events-none absolute -right-20 top-1/2 size-96 -translate-y-1/2 rounded-full bg-gold/25 blur-3xl" />
             <div className="relative">
               <div className="mx-auto mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-foreground/80">
                 <Zap className="size-3 text-indigo" /> Ready when you are
@@ -455,13 +455,13 @@ function Home() {
               <div className="mt-10 flex flex-wrap justify-center gap-3">
                 <button
                   onClick={openOrderDrawer}
-                  className="inline-flex items-center gap-2 rounded-full bg-white px-8 py-4 text-base font-bold text-indigo shadow-xl transition-transform hover:-translate-y-0.5"
+                  className="inline-flex items-center gap-2 rounded-full bg-gold px-8 py-4 text-base font-bold text-black shadow-[0_10px_40px_-10px_rgba(212,168,83,0.5)] transition-transform hover:-translate-y-0.5"
                 >
                   Build your order <ArrowUpRight className="size-4" />
                 </button>
                 <Link
                   to="/contact"
-                  className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-transparent px-8 py-4 text-base font-bold text-foreground transition-colors hover:bg-white/10"
+                  className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-transparent px-8 py-4 text-base font-bold text-foreground transition-colors hover:bg-white/10 hover:border-gold/30"
                 >
                   Talk to sales
                 </Link>

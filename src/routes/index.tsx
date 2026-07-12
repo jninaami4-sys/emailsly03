@@ -137,54 +137,47 @@ function Home() {
                   <span className="size-2.5 rounded-full bg-muted-foreground/25" />
                 </div>
                 <div className="font-mono text-[11px] text-muted-foreground">
-                  leads_export_q4_verified.csv
+                  apollo_sample_leads.csv
                 </div>
                 <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-soft px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-widest text-emerald">
                   <CheckCircle2 className="size-3" />
-                  Ready
+                  Apollo export
                 </div>
               </div>
 
               {/* table */}
               <div className="overflow-hidden rounded-lg border border-border bg-card">
-                <div className="grid grid-cols-[1.4fr_1.2fr_0.9fr_0.9fr_0.8fr] gap-4 border-b border-border bg-secondary/60 px-5 py-3 font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                <div className="grid grid-cols-[1.3fr_1.1fr_1fr_1.1fr_0.8fr] gap-4 border-b border-border bg-secondary/60 px-5 py-3 font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
                   <div>Lead</div>
+                  <div>Title</div>
                   <div>Company</div>
-                  <div>Source</div>
-                  <div>Status</div>
-                  <div className="text-right">Action</div>
+                  <div>Email</div>
+                  <div className="text-right">Status</div>
                 </div>
-                {[
-                  { name: "Aaron Marcus", role: "Tax Accountant", co: "Weiss & Company LLP", src: "Apollo", status: "verified" },
-                  { name: "Vincent Cleary", role: "CPA", co: "MahoneySabol", src: "Apollo", status: "verified" },
-                  { name: "Pat Pennecke", role: "Bookkeeper/accountant", co: "Janover LLC", src: "Apollo", status: "verified" },
-                  { name: "Mary McWherter", role: "Tax Accountant", co: "APS Solutions", src: "Apollo", status: "verified" },
-                ].map((r, i) => (
+                {previewRows.map((r, i) => (
                   <div
                     key={i}
-                    className={`grid grid-cols-[1.4fr_1.2fr_0.9fr_0.9fr_0.8fr] items-center gap-4 px-5 py-4 text-sm ${i !== 3 ? "border-b border-border" : ""}`}
+                    className={`grid grid-cols-[1.3fr_1.1fr_1fr_1.1fr_0.8fr] items-center gap-4 px-5 py-4 text-sm ${i !== previewRows.length - 1 ? "border-b border-border" : ""}`}
                   >
                     <div className="min-w-0">
-                      <div className="truncate font-semibold text-foreground">{r.name}</div>
-                      <div className="truncate text-xs text-muted-foreground">{r.role}</div>
+                      <div className="truncate font-semibold text-foreground">{r["First Name"]} {r["Last Name"]}</div>
+                      <div className="truncate text-xs text-muted-foreground">Apollo</div>
                     </div>
-                    <div className="truncate text-muted-foreground">{r.co}</div>
-                    <div className="font-mono text-xs text-muted-foreground">{r.src}</div>
-                    <div>
-                      {r.status === "verified" ? (
+                    <div className="truncate text-muted-foreground">{r.Title}</div>
+                    <div className="truncate text-muted-foreground">{r["Company Name"]}</div>
+                    <div className="truncate font-mono text-xs text-muted-foreground">{r.Email}</div>
+                    <div className="text-right">
+                      {r["Email Status"] === "Verified" ? (
                         <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-soft px-2 py-0.5 text-[11px] font-semibold text-emerald">
                           <span className="size-1.5 rounded-full bg-emerald" />
                           Verified
                         </span>
                       ) : (
                         <span className="inline-flex items-center gap-1.5 rounded-full bg-violet-soft px-2 py-0.5 text-[11px] font-semibold text-violet">
-                          <Circle className="size-2 animate-pulse fill-violet text-violet" />
-                          Enriching…
+                          <Circle className="size-2 fill-violet text-violet" />
+                          {String(r["Email Status"] || "Unverified")}
                         </span>
                       )}
-                    </div>
-                    <div className="text-right">
-                      <span className="font-semibold text-violet">Sync →</span>
                     </div>
                   </div>
                 ))}

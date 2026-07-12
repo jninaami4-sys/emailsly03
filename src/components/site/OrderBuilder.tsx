@@ -157,18 +157,18 @@ export function OrderBuilder() {
         </div>
 
         {/* Stepper */}
-        <div className="mx-auto mt-14 max-w-5xl">
-          <div className="relative flex items-center justify-between gap-2 rounded-2xl border border-border bg-card/60 p-3 backdrop-blur">
+        <div className="mx-auto mt-6 max-w-5xl sm:mt-10">
+          <div className="relative flex items-center justify-between gap-1.5 rounded-2xl border border-border bg-card/60 p-2 backdrop-blur sm:gap-2 sm:p-3">
             {STEPS.map((s, i) => {
               const Icon = s.icon;
               const done = step > s.id;
               const active = step === s.id;
               return (
-                <div key={s.id} className="flex flex-1 items-center gap-2">
+                <div key={s.id} className="flex flex-1 items-center gap-1.5 sm:gap-2">
                   <button
                     type="button"
                     onClick={() => (done ? setStep(s.id) : null)}
-                    className={`group flex flex-1 items-center gap-3 rounded-xl px-3 py-3 text-left transition-all ${
+                    className={`group flex flex-1 items-center gap-2 rounded-xl px-2 py-2 text-left transition-all sm:gap-3 sm:px-3 sm:py-3 ${
                       active
                         ? "bg-violet text-white shadow-lg shadow-violet/25"
                         : done
@@ -177,7 +177,7 @@ export function OrderBuilder() {
                     }`}
                   >
                     <span
-                      className={`grid size-8 shrink-0 place-items-center rounded-lg ${
+                      className={`grid size-7 shrink-0 place-items-center rounded-lg sm:size-8 ${
                         active
                           ? "bg-white/15"
                           : done
@@ -185,13 +185,13 @@ export function OrderBuilder() {
                             : "bg-secondary"
                       }`}
                     >
-                      {done ? <Check className="size-4" /> : <Icon className="size-4" />}
+                      {done ? <Check className="size-3.5 sm:size-4" /> : <Icon className="size-3.5 sm:size-4" />}
                     </span>
                     <span className="min-w-0">
-                      <span className={`block font-mono text-[10px] font-bold uppercase tracking-widest ${active ? "text-white/70" : done ? "text-emerald/80" : "text-muted-foreground/70"}`}>
+                      <span className={`hidden font-mono text-[10px] font-bold uppercase tracking-widest sm:block ${active ? "text-white/70" : done ? "text-emerald/80" : "text-muted-foreground/70"}`}>
                         Step {s.id}
                       </span>
-                      <span className="block truncate text-sm font-semibold">{s.label}</span>
+                      <span className="block truncate text-xs font-semibold sm:text-sm">{s.label}</span>
                     </span>
                   </button>
                   {i < STEPS.length - 1 && (

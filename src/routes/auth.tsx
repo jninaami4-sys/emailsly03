@@ -125,6 +125,22 @@ function AuthPage() {
     return () => clearInterval(id);
   }, [resetSentAt]);
 
+  function startResetCooldown(emailForCooldown: string) {
+    const ts = Date.now();
+    setResetSentAt(ts);
+    setNow(ts);
+    if (typeof window !== "undefined") {
+      try {
+        window.localStorage.setItem(
+          "lyra_reset_cooldown",
+          JSON.stringify({ email: emailForCooldown, sentAt: ts }),
+        );
+      } catch {
+        /* ignore quota */
+      }
+    }
+  }
+
   useEffect(() => {
     if (resendState.cooldown <= 0) return;
     const t = setInterval(

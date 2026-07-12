@@ -75,7 +75,7 @@ const SOURCES: SourceMeta[] = [
     accent: "coral",
     rows: linkedinData.rows.length,
     cols: linkedinData.headers.length,
-    highlight: "Sales Nav scrape + direct dials",
+    highlight: "",
     preview: linkedinData.rows.slice(0, 4).map((r) => ({
       name: nameOf(r, ["first_name", "last_name"]),
       title: String(r["job_title"] ?? ""),

@@ -4,7 +4,11 @@ import { LegalPage } from "@/components/site/LegalPage";
 export const Route = createFileRoute("/refund-policy")({
   head: () => ({ meta: [{ title: "Refund Policy | LyraData" }, { name: "description", content: "Our refund and replacement policy for lead data orders." }] }),
   component: () => (
-    <LegalPage title="Refund Policy" updated="July 11, 2026">
+    <LegalPage
+      title="Refund Policy"
+      updated="July 11, 2026"
+      intro="We stand behind every list we deliver. Here's exactly how cancellations, replacements, and the bounce guarantee work."
+    >
       <p>We stand behind the quality of every list we deliver.</p>
       <h2>Bounce guarantee</h2>
       <p>If more than 2% of the emails in a delivered list hard-bounce within 30 days, we will replace every failed lead for free and credit 10% of the order total toward your next order.</p>

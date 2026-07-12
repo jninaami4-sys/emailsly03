@@ -312,10 +312,12 @@ function Home() {
                 </span>
               </div>
               <div className="flex flex-wrap items-center gap-2">
-                <span className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-widest ${accent.soft} ${accent.text}`}>
-                  <CheckCircle2 className="size-3" />
-                  {active.highlight}
-                </span>
+                {active.highlight && (
+                  <span className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-widest ${accent.soft} ${accent.text}`}>
+                    <CheckCircle2 className="size-3" />
+                    {active.highlight}
+                  </span>
+                )}
                 <div className="relative">
                   <Search className="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
                   <input

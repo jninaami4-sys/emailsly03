@@ -139,6 +139,7 @@ function ResetPasswordPage() {
                           className="w-full rounded-xl border border-border bg-input/50 py-2.5 pl-10 pr-10 text-sm text-foreground placeholder:text-muted-foreground/60 outline-none transition-all focus:border-primary/40 focus:bg-background focus:ring-2 focus:ring-ring/20"
                           placeholder="At least 6 characters"
                           aria-invalid={!!error}
+                          aria-describedby={error ? "password-error" : undefined}
                         />
                         <button
                           type="button"

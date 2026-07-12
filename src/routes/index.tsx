@@ -147,10 +147,10 @@ function Home() {
                   <div className="text-right">Action</div>
                 </div>
                 {[
-                  { name: "Sarah Jenkins", role: "VP Growth", co: "GrowthFlow AI", src: "LinkedIn SN", status: "verified" },
-                  { name: "Marcus Thorne", role: "Head of Sales", co: "Nexus Capital", src: "Apollo", status: "verified" },
-                  { name: "Elena Rodriguez", role: "CMO", co: "CloudSphere", src: "ZoomInfo", status: "enriching" },
-                  { name: "David Park", role: "Director RevOps", co: "Northwind Labs", src: "Apollo", status: "verified" },
+                  { name: "Aaron Marcus", role: "Tax Accountant", co: "Weiss & Company LLP", src: "Apollo", status: "verified" },
+                  { name: "Vincent Cleary", role: "CPA", co: "MahoneySabol", src: "Apollo", status: "verified" },
+                  { name: "Pat Pennecke", role: "Bookkeeper/accountant", co: "Janover LLC", src: "Apollo", status: "verified" },
+                  { name: "Mary McWherter", role: "Tax Accountant", co: "APS Solutions", src: "Apollo", status: "verified" },
                 ].map((r, i) => (
                   <div
                     key={i}

@@ -342,7 +342,7 @@ function AuthPage() {
                         </div>
                       )}
                       {error && (
-                        <div className="animate-fade-in rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+                        <div aria-live="assertive" className="animate-fade-in rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
                           {error}
                         </div>
                       )}

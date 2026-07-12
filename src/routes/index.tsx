@@ -109,8 +109,11 @@ function Home() {
   return (
     <SiteShell>
       {/* Hero */}
-      <section className="px-6 py-20 lg:py-24">
-        <div className="mx-auto grid max-w-7xl items-center gap-16 lg:grid-cols-2">
+      <section className="relative overflow-hidden px-6 py-20 lg:py-24">
+        <div className="pointer-events-none absolute -left-32 -top-24 size-[28rem] rounded-full bg-violet-soft blur-3xl" />
+        <div className="pointer-events-none absolute -right-24 top-32 size-[22rem] rounded-full bg-coral-soft blur-3xl" />
+        <div className="pointer-events-none absolute bottom-0 left-1/3 size-64 rounded-full bg-emerald-soft blur-3xl" />
+        <div className="relative mx-auto grid max-w-7xl items-center gap-16 lg:grid-cols-2">
           <div className="animate-fade-up">
             <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-violet-soft px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-wider text-violet">
               <span className="size-1.5 animate-pulse rounded-full bg-violet" />

@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   ShieldCheck,
   Clock,
@@ -87,6 +87,16 @@ export function OrderBuilder() {
   const [agree, setAgree] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mq = window.matchMedia("(min-width: 1024px)");
+    const update = () => setIsDesktop(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
 
   const effectiveQty = service.fixed ? 1 : Math.max(quantity, service.minQty);
 
@@ -156,8 +166,8 @@ export function OrderBuilder() {
           </div>
         </div>
 
-        {/* Stepper */}
-        <div className="mx-auto mt-6 max-w-5xl sm:mt-10">
+        {/* Stepper — mobile/tablet only */}
+        <div className="mx-auto mt-6 max-w-5xl sm:mt-10 lg:hidden">
           <div className="relative flex items-center gap-1.5 overflow-x-auto rounded-2xl border border-border bg-card/60 p-2 backdrop-blur sm:justify-between sm:gap-2 sm:p-3">
             {STEPS.map((s, i) => {
               const Icon = s.icon;
@@ -204,10 +214,10 @@ export function OrderBuilder() {
         </div>
 
         {/* Body */}
-        <div className={`mt-6 grid gap-4 sm:mt-8 sm:gap-6 ${step === 4 ? "lg:grid-cols-[1.4fr_1fr]" : "lg:grid-cols-1"}`}>
+        <div className={`mt-6 grid gap-4 sm:mt-8 sm:gap-6 ${(step === 4 || isDesktop) ? "lg:grid-cols-[1.4fr_1fr]" : "lg:grid-cols-1"}`}>
           {/* MAIN PANEL */}
           <div className="rounded-3xl border border-border bg-card p-4 shadow-[0_20px_60px_-30px_rgba(24,24,60,0.25)] sm:p-6 md:p-8 lg:p-10">
-            {step === 1 && (
+            {(step === 1 || isDesktop) && (
               <div>
                 <StepHeader
                   eyebrow="Step 1 of 4"
@@ -238,7 +248,9 @@ export function OrderBuilder() {
               </div>
             )}
 
-            {step === 2 && (
+            {isDesktop && <div className="my-8 border-t border-dashed border-border" />}
+
+            {(step === 2 || isDesktop) && (
               <div>
                 <StepHeader
                   eyebrow="Step 2 of 4"
@@ -362,7 +374,9 @@ export function OrderBuilder() {
               </div>
             )}
 
-            {step === 3 && (
+            {isDesktop && <div className="my-8 border-t border-dashed border-border" />}
+
+            {(step === 3 || isDesktop) && (
               <div>
                 <StepHeader
                   eyebrow="Step 3 of 4"
@@ -405,7 +419,9 @@ export function OrderBuilder() {
               </div>
             )}
 
-            {step === 4 && (
+            {isDesktop && <div className="my-8 border-t border-dashed border-border" />}
+
+            {(step === 4 || isDesktop) && (
               <div>
                 <StepHeader
                   eyebrow="Step 4 of 4"
@@ -452,7 +468,7 @@ export function OrderBuilder() {
             )}
 
             {/* Nav */}
-            <div className="mt-6 flex items-center justify-between gap-3 border-t border-border pt-4 sm:mt-10 sm:pt-6">
+            <div className="mt-6 flex items-center justify-between gap-3 border-t border-border pt-4 sm:mt-10 sm:pt-6 lg:hidden">
               <button
                 type="button"
                 onClick={goPrev}
@@ -477,8 +493,8 @@ export function OrderBuilder() {
             </div>
           </div>
 
-          {/* SUMMARY — only on step 4 */}
-          {step === 4 && (
+          {/* SUMMARY — desktop always, mobile on step 4 */}
+          {(step === 4 || isDesktop) && (
             <div className="lg:sticky lg:top-24 lg:self-start">
               <div className="relative overflow-hidden rounded-3xl border border-ink/10 bg-ink p-6 text-white shadow-[0_30px_80px_-30px_rgba(24,24,60,0.5)] md:p-8">
                 <div className="pointer-events-none absolute -right-16 -top-16 size-64 rounded-full bg-violet/25 blur-3xl" />
@@ -575,8 +591,8 @@ export function OrderBuilder() {
           )}
         </div>
 
-        {/* Live mini-total on steps 1-3 */}
-        {step < 4 && (
+        {/* Live mini-total on steps 1-3 (mobile only) */}
+        {step < 4 && !isDesktop && (
           <div className="mx-auto mt-4 flex max-w-5xl items-center justify-between rounded-2xl border border-border bg-card/60 px-4 py-3 backdrop-blur sm:mt-6 sm:px-6 sm:py-4">
             <div className="flex items-center gap-2.5 sm:gap-3">
               <span className="grid size-8 place-items-center rounded-lg bg-violet/10 text-violet sm:size-9">

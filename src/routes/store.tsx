@@ -2,6 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { SiteShell } from "@/components/site/SiteShell";
 import { ProductCard } from "@/components/site/ProductCard";
+import { StoreSkeleton } from "@/components/site/StoreSkeleton";
+import { useHydrated } from "@/hooks/use-hydrated";
 import { PRODUCTS, CATEGORIES } from "@/lib/products";
 import { Search } from "lucide-react";
 
@@ -14,12 +16,15 @@ export const Route = createFileRoute("/store")({
       { property: "og:description", content: "Browse verified prebuilt B2B lead lists. Instant download after checkout." },
     ],
   }),
+  pendingComponent: StoreSkeleton,
   component: Store,
 });
+
 
 function Store() {
   const [category, setCategory] = useState<string>("All");
   const [query, setQuery] = useState("");
+  const hydrated = useHydrated();
 
   const filtered = PRODUCTS.filter((p) => {
     if (category !== "All" && p.category !== category) return false;
@@ -27,8 +32,17 @@ function Store() {
     return true;
   });
 
+  if (!hydrated) {
+    return (
+      <SiteShell>
+        <StoreSkeleton />
+      </SiteShell>
+    );
+  }
+
   return (
     <SiteShell>
+
       <section className="border-b border-border px-6 py-16">
         <div className="mx-auto max-w-7xl">
           <h1 className="font-display text-4xl font-bold lg:text-5xl">Lead store</h1>

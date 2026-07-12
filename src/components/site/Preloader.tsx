@@ -1,19 +1,35 @@
 import { useEffect, useState } from "react";
+import { useHydrated } from "@/hooks/use-hydrated";
 
 export function Preloader() {
+  const hydrated = useHydrated();
+  const [alreadySeen, setAlreadySeen] = useState(false);
   const [visible, setVisible] = useState(true);
   const [fade, setFade] = useState(false);
 
   useEffect(() => {
-    const t1 = setTimeout(() => setFade(true), 900);
-    const t2 = setTimeout(() => setVisible(false), 1400);
-    return () => {
-      clearTimeout(t1);
-      clearTimeout(t2);
-    };
+    if (typeof window === "undefined") return;
+    setAlreadySeen(window.sessionStorage.getItem("lyra_preloader_seen") === "true");
   }, []);
 
-  if (!visible) return null;
+  useEffect(() => {
+    if (!alreadySeen) {
+      const t1 = setTimeout(() => setFade(true), 900);
+      const t2 = setTimeout(() => {
+        setVisible(false);
+        if (typeof window !== "undefined") {
+          window.sessionStorage.setItem("lyra_preloader_seen", "true");
+        }
+      }, 1400);
+      return () => {
+        clearTimeout(t1);
+        clearTimeout(t2);
+      };
+    }
+  }, [alreadySeen]);
+
+  if (!hydrated || alreadySeen || !visible) return null;
+
 
   return (
     <div

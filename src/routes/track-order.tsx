@@ -2,6 +2,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteShell } from "@/components/site/SiteShell";
 import { OrderForm } from "@/components/site/OrderForm";
 import { PricingCalculator } from "@/components/site/PricingCalculator";
+import { TrackOrderSkeleton } from "@/components/site/TrackOrderSkeleton";
+import { useHydrated } from "@/hooks/use-hydrated";
 import { Calculator, Sparkles } from "lucide-react";
 
 export const Route = createFileRoute("/track-order")({
@@ -13,13 +15,26 @@ export const Route = createFileRoute("/track-order")({
       { property: "og:description", content: "Start a new LyraData order — verified B2B lead data delivered within 24 hours." },
     ],
   }),
+  pendingComponent: TrackOrderSkeleton,
   component: OrderPage,
 });
 
+
 function OrderPage() {
+  const hydrated = useHydrated();
+
+  if (!hydrated) {
+    return (
+      <SiteShell>
+        <TrackOrderSkeleton />
+      </SiteShell>
+    );
+  }
+
   return (
     <SiteShell>
       <OrderForm />
+
 
       {/* Pricing calculator section */}
       <section className="relative overflow-hidden border-t border-border bg-gradient-to-b from-background to-violet-soft/30 px-6 py-24">

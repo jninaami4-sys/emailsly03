@@ -413,6 +413,21 @@ function AuthPage() {
                   </>
                 ) : (
                   <>
+                    <AccountStatusBanner
+                      user={user}
+                      pendingEmail={unconfirmedEmail ?? (signUpSuccess ? email : null)}
+                      lastSentAt={resendState.sentAt}
+                      onCheck={async () => {
+                        const { data } = await supabase.auth.getUser();
+                        if (data.user?.email_confirmed_at) {
+                          setUnconfirmedEmail(null);
+                          setInfo("Email verified — you can sign in now.");
+                        } else {
+                          setInfo("Still waiting for confirmation. Check your inbox.");
+                        }
+                      }}
+                    />
+
                     <div className="mb-6 flex rounded-2xl border border-border bg-muted p-1 text-sm font-medium">
                       {(["signup", "signin"] as const).map((m) => (
                         <button
@@ -652,5 +667,93 @@ function AuthPage() {
         </div>
       </div>
     </main>
+  );
+}
+
+function formatRelative(ts: number | null): string {
+  if (!ts) return "";
+  const s = Math.max(0, Math.round((Date.now() - ts) / 1000));
+  if (s < 5) return "just now";
+  if (s < 60) return `${s}s ago`;
+  const m = Math.round(s / 60);
+  return `${m}m ago`;
+}
+
+function AccountStatusBanner({
+  user,
+  pendingEmail,
+  lastSentAt,
+  onCheck,
+}: {
+  user: import("@supabase/supabase-js").User | null;
+  pendingEmail: string | null;
+  lastSentAt: number | null;
+  onCheck: () => Promise<void>;
+}) {
+  const [tick, setTick] = useState(0);
+  const [checking, setChecking] = useState(false);
+
+  useEffect(() => {
+    if (!lastSentAt) return;
+    const id = setInterval(() => setTick((n) => n + 1), 15000);
+    return () => clearInterval(id);
+  }, [lastSentAt]);
+  // tick is only used to force a re-render for the relative timestamp
+  void tick;
+
+  const verified = !!user?.email_confirmed_at;
+
+  if (verified) {
+    return (
+      <div
+        role="status"
+        aria-live="polite"
+        className="mb-4 flex items-center gap-2.5 rounded-xl border border-emerald/30 bg-emerald/10 px-3 py-2 text-sm text-emerald-foreground"
+      >
+        <CheckCircle2 className="size-4 shrink-0" aria-hidden="true" />
+        <span>
+          Email verified <span className="text-muted-foreground">— {user?.email}</span>
+        </span>
+      </div>
+    );
+  }
+
+  if (!pendingEmail) return null;
+
+  return (
+    <div
+      role="status"
+      aria-live="polite"
+      className="mb-4 rounded-xl border border-amber-500/30 bg-amber-500/10 px-3 py-2.5 text-sm"
+    >
+      <div className="flex items-start gap-2.5">
+        <span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-amber-500/20 text-amber-600" aria-hidden="true">
+          <span className="size-1.5 animate-pulse rounded-full bg-amber-500" />
+        </span>
+        <div className="flex-1">
+          <p className="font-medium text-foreground">
+            Verification pending
+            <span className="ml-1.5 font-normal text-muted-foreground">— {pendingEmail}</span>
+          </p>
+          <p className="mt-0.5 text-xs text-muted-foreground">
+            {lastSentAt
+              ? `Last email sent ${formatRelative(lastSentAt)}. Confirm from your inbox to continue.`
+              : "We sent a confirmation link. Open it from your inbox to activate your account."}
+          </p>
+        </div>
+        <button
+          type="button"
+          disabled={checking}
+          onClick={async () => {
+            setChecking(true);
+            try { await onCheck(); } finally { setChecking(false); }
+          }}
+          className="inline-flex items-center gap-1 rounded-md border border-border bg-background px-2 py-1 text-xs font-medium text-foreground transition-colors hover:bg-muted disabled:opacity-60 focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:outline-none"
+        >
+          {checking ? <Loader2 className="size-3 animate-spin" aria-hidden="true" /> : null}
+          Check status
+        </button>
+      </div>
+    </div>
   );
 }

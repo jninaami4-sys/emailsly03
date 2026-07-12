@@ -103,13 +103,22 @@ export function Header() {
                 </button>
               </>
             ) : (
-              <Link
-                to="/auth"
-                className={`hidden rounded-full bg-ink px-5 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:bg-violet lg:inline-flex ${focusRing}`}
-              >
-                Get Started
-              </Link>
-            )}
+              <>
+                <Link
+                  to="/auth"
+                  aria-label="Sign in to your account"
+                  className={`hidden size-9 items-center justify-center rounded-full border border-black/10 bg-white text-foreground transition-colors hover:bg-secondary hover:text-violet lg:inline-flex ${focusRing}`}
+                >
+                  <PremiumUser className="size-4" aria-hidden="true" />
+                </Link>
+                <button
+                  type="button"
+                  onClick={openOrderDrawer}
+                  className={`hidden rounded-full bg-ink px-5 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:bg-violet lg:inline-flex ${focusRing}`}
+                >
+                  Order Now
+                </button>
+              </>
             <button
               type="button"
               className={`inline-flex size-11 items-center justify-center rounded-lg text-foreground lg:hidden ${focusRing}`}

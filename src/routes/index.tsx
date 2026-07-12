@@ -81,7 +81,7 @@ function Home() {
                   <span className="relative inline-flex size-2 rounded-full bg-indigo" />
                 </span>
                 <span className="font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-foreground/80">
-                  Verified live feeds · no static demos
+                  Premium B2B intelligence · verified leads, real growth
                 </span>
               </div>
 

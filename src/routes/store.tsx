@@ -2,6 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { SiteShell } from "@/components/site/SiteShell";
 import { ProductCard } from "@/components/site/ProductCard";
+import { StoreSkeleton } from "@/components/site/StoreSkeleton";
+import { useHydrated } from "@/hooks/use-hydrated";
 import { PRODUCTS, CATEGORIES } from "@/lib/products";
 import { Search } from "lucide-react";
 
@@ -14,8 +16,10 @@ export const Route = createFileRoute("/store")({
       { property: "og:description", content: "Browse verified prebuilt B2B lead lists. Instant download after checkout." },
     ],
   }),
+  pendingComponent: StoreSkeleton,
   component: Store,
 });
+
 
 function Store() {
   const [category, setCategory] = useState<string>("All");

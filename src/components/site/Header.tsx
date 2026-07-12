@@ -21,8 +21,8 @@ export function Header() {
   }
 
   return (
-    <nav className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
+    <div className="sticky top-4 z-40 px-4">
+      <nav className="mx-auto flex h-12 max-w-6xl items-center justify-between rounded-full border border-white/40 bg-white/50 px-5 shadow-[0_8px_30px_-12px_rgba(24,24,60,0.18)] backdrop-blur-xl backdrop-saturate-150">
         <div className="flex items-center gap-8">
           <Link to="/" className="flex items-center gap-2 font-display text-xl font-bold tracking-tight">
             <span className="grid size-6 place-items-center rounded-sm bg-violet">

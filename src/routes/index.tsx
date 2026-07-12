@@ -234,8 +234,6 @@ function Home() {
         </div>
       </section>
 
-      {/* Order form */}
-      <OrderForm />
 
       {/* FAQ */}
       <section className="border-t border-border bg-card px-6 py-24">

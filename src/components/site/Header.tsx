@@ -123,11 +123,8 @@ export function Header() {
           </button>
         </div>
         {/* Liquid-glass gloss reflection */}
-        <div className="pointer-events-none absolute inset-0 rounded-full overflow-hidden" aria-hidden="true">
-          <div className="absolute -top-1/2 -left-[10%] w-[120%] h-full rotate-12 bg-white/5 blur-2xl will-change-transform" />
-        </div>
       </nav>
-      <div className="absolute -inset-1 -z-10 rounded-full bg-white/10 blur-xl" aria-hidden="true" />
+      <div className="absolute -inset-1.5 -z-10 rounded-full bg-white/8 blur-2xl" aria-hidden="true" />
     </div>
     {mobileOpen && (
       <div id="mobile-nav" className="relative mt-2 overflow-hidden rounded-2xl border border-white/40 bg-white/40 shadow-[0_8px_32px_0_rgba(31,38,135,0.07),inset_0_0_0_1px_rgba(255,255,255,0.4)] backdrop-blur-3xl backdrop-saturate-150 before:pointer-events-none before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-b before:from-white/20 before:to-transparent lg:hidden">

@@ -59,7 +59,7 @@ const faqs = [
 ];
 
 function Home() {
-  const featured = PRODUCTS.filter((p) => p.featured).concat(PRODUCTS.filter((p) => !p.featured)).slice(0, 6);
+  const featured = PRODUCTS.filter((p) => p.featured).concat(PRODUCTS.filter((p) => !p.featured)).slice(0, 3);
 
   return (
     <SiteShell>
@@ -250,11 +250,26 @@ function Home() {
                 Browse full store <PremiumArrowRight className="size-4" />
               </Link>
             </div>
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {featured.map((p) => (
-                <ProductCard key={p.id} product={p} />
-              ))}
-            </div>
+            {featured.length > 0 ? (
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {featured.map((p) => (
+                  <ProductCard key={p.id} product={p} />
+                ))}
+              </div>
+            ) : (
+              <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-10 text-center">
+                <p className="font-display text-2xl font-bold">Fresh lists dropping soon.</p>
+                <p className="mx-auto mt-2 max-w-md text-foreground/60">
+                  Our prebuilt catalog is being restocked. Browse the full store or build a custom list tailored to your ICP.
+                </p>
+                <Link
+                  to="/store"
+                  className="mt-6 inline-flex items-center gap-2 rounded-full bg-indigo px-5 py-2.5 font-semibold text-white hover:bg-indigo/90"
+                >
+                  Go to prebuilt lists <PremiumArrowRight className="size-4" />
+                </Link>
+              </div>
+            )}
           </div>
         </section>
 

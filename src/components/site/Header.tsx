@@ -33,10 +33,11 @@ export function Header() {
         Skip to main content
       </a>
       <div className="sticky top-4 z-40 px-4">
-        <nav
-          aria-label="Primary"
-          className="relative mx-auto flex h-12 max-w-6xl items-center justify-between overflow-hidden rounded-full border border-white/40 bg-white/25 px-5 shadow-[0_8px_32px_0_rgba(31,38,135,0.07),inset_0_0_0_1px_rgba(255,255,255,0.4)] backdrop-blur-3xl backdrop-saturate-150 before:pointer-events-none before:absolute before:inset-0 before:rounded-full before:bg-gradient-to-b before:from-white/20 before:to-transparent"
-        >
+        <div className="relative">
+          <nav
+            aria-label="Primary"
+            className="relative mx-auto flex h-12 max-w-6xl items-center justify-between overflow-hidden rounded-full border border-white/40 bg-white/25 px-5 shadow-[0_8px_32px_0_rgba(31,38,135,0.07),inset_0_0_0_1px_rgba(255,255,255,0.4)] backdrop-blur-3xl backdrop-saturate-150 before:pointer-events-none before:absolute before:inset-0 before:rounded-full before:bg-gradient-to-b before:from-white/20 before:to-transparent"
+          >
           <div className="z-10 flex items-center gap-8">
             <Link
               to="/"

@@ -124,6 +124,10 @@ function AuthPage() {
   }
 
   function validateField(name: keyof FieldErrors, value: string) {
+    const partial = credentials.partial();
+    const parsed = partial.safeParse({ [name]: value });
+    if (!parsed.success) {
+      const issue = parsed.error.issues.find((i) => i.path[0] === name);
       setFieldErrors((prev) => ({ ...prev, [name]: issue?.message }));
       return false;
     }

@@ -604,8 +604,46 @@ function StepHeader({ eyebrow, title, subtitle }: { eyebrow: string; title: stri
   return (
     <div className="max-w-2xl">
       <div className="font-mono text-[10px] font-bold uppercase tracking-widest text-violet">{eyebrow}</div>
-      <h3 className="mt-2 font-display text-2xl font-bold tracking-tight md:text-3xl">{title}</h3>
+      <h3 className="mt-2 font-display text-xl font-bold tracking-tight sm:text-2xl md:text-3xl">{title}</h3>
       <p className="mt-2 text-sm text-muted-foreground md:text-base">{subtitle}</p>
+    </div>
+  );
+}
+
+function CategoryTabs({
+  active,
+  onChange,
+}: {
+  active: "data" | "growth" | "design";
+  onChange: (g: "data" | "growth" | "design") => void;
+}) {
+  const tabs = [
+    { id: "data" as const, label: "Lead generation", accent: "violet" as const },
+    { id: "growth" as const, label: "Growth", accent: "coral" as const },
+    { id: "design" as const, label: "Design", accent: "emerald" as const },
+  ];
+  return (
+    <div className="flex gap-2 overflow-x-auto pb-1">
+      {tabs.map((t) => {
+        const isActive = active === t.id;
+        const activeClasses = {
+          violet: "border-violet bg-violet text-white shadow-md shadow-violet/25",
+          coral: "border-coral bg-coral text-white shadow-md shadow-coral/25",
+          emerald: "border-emerald bg-emerald text-white shadow-md shadow-emerald/25",
+        }[t.accent];
+        return (
+          <button
+            key={t.id}
+            type="button"
+            onClick={() => onChange(t.id)}
+            className={`shrink-0 rounded-full border px-3 py-1.5 text-xs font-semibold transition-all ${
+              isActive ? activeClasses : "border-border bg-background text-muted-foreground hover:border-foreground/20"
+            }`}
+          >
+            {t.label}
+          </button>
+        );
+      })}
     </div>
   );
 }

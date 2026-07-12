@@ -188,6 +188,10 @@ const faqs = [
 
 function Home() {
   const featured = PRODUCTS.filter((p) => p.featured).concat(PRODUCTS.filter((p) => !p.featured)).slice(0, 6);
+  const [activeSource, setActiveSource] = useState<SourceKey>("apollo");
+  const active = SOURCES.find((s) => s.key === activeSource)!;
+  const accent = ACCENT_CLASSES[active.accent];
+  const totalRows = SOURCES.reduce((a, s) => a + s.rows, 0);
 
   return (
     <SiteShell>
@@ -201,7 +205,7 @@ function Home() {
               <span className="relative inline-flex size-2 rounded-full bg-violet" />
             </span>
             <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-violet">
-              Apollo sample included
+              3 live sample databases included
             </span>
           </div>
           <h1 className="font-display text-5xl font-bold leading-[1.05] tracking-tighter text-foreground md:text-7xl">
@@ -210,7 +214,7 @@ function Home() {
             delivered to your <span className="text-violet">CRM in 24h.</span>
           </h1>
           <p className="mx-auto mt-8 max-w-2xl text-lg leading-relaxed text-muted-foreground md:text-xl">
-            Real Apollo sample leads you can preview instantly. Export-ready CSVs with emails, titles, companies, and tech stack.
+            Real samples from Apollo, LinkedIn Sales Navigator, and ZoomInfo — preview every row before you buy.
           </p>
           <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
             <Link
@@ -228,82 +232,166 @@ function Home() {
           </div>
         </div>
 
-        {/* Product preview mock */}
-        <div className="relative mx-auto mt-20 max-w-5xl">
-          <div className="pointer-events-none absolute -inset-6 -z-10 rounded-[2.5rem] bg-violet-soft/60 blur-3xl" />
-          <div className="overflow-hidden rounded-2xl border border-border bg-card p-3 shadow-2xl">
-            <div className="rounded-xl border border-border bg-secondary/40 p-6">
-              {/* window chrome */}
-              <div className="mb-5 flex items-center justify-between border-b border-border pb-4">
+        {/* Multi-source data console */}
+        <div className="relative mx-auto mt-20 max-w-6xl">
+          {/* soft aurora */}
+          <div className="pointer-events-none absolute -inset-8 -z-10 rounded-[3rem] bg-[conic-gradient(from_120deg_at_50%_50%,var(--violet-soft),var(--coral-soft),var(--emerald-soft),var(--violet-soft))] opacity-60 blur-3xl" />
+
+          {/* Stacked file tabs (offset stack visual) */}
+          <div className="relative mx-auto mb-[-14px] flex max-w-xl items-end justify-center gap-2">
+            {SOURCES.map((s) => {
+              const isActive = s.key === activeSource;
+              const a = ACCENT_CLASSES[s.accent];
+              return (
+                <button
+                  key={s.key}
+                  onClick={() => setActiveSource(s.key)}
+                  className={`group relative flex items-center gap-2 rounded-t-xl border border-b-0 border-border px-4 pb-4 pt-2.5 font-mono text-[11px] transition-all ${
+                    isActive
+                      ? `z-20 bg-card ${a.text} translate-y-0`
+                      : "z-10 translate-y-1.5 bg-secondary/70 text-muted-foreground hover:translate-y-0.5"
+                  }`}
+                >
+                  <span className={`size-1.5 rounded-full ${a.dot}`} />
+                  {s.file}
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="relative overflow-hidden rounded-2xl border border-border bg-card p-3 shadow-2xl">
+            {/* console header row */}
+            <div className="flex flex-col gap-3 border-b border-border px-3 pb-3 pt-2 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-center gap-3">
                 <div className="flex items-center gap-1.5">
                   <span className="size-2.5 rounded-full bg-muted-foreground/25" />
                   <span className="size-2.5 rounded-full bg-muted-foreground/25" />
                   <span className="size-2.5 rounded-full bg-muted-foreground/25" />
                 </div>
-                <div className="font-mono text-[11px] text-muted-foreground">
-                  apollo_sample_leads.csv
-                </div>
-                <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-soft px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-widest text-emerald">
+                <span className="font-mono text-[11px] text-muted-foreground">
+                  ~/lyra/exports /{" "}
+                  <span className={`font-semibold ${accent.text}`}>{active.file}</span>
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-widest ${accent.soft} ${accent.text}`}>
                   <CheckCircle2 className="size-3" />
-                  Apollo export
+                  {active.highlight}
+                </span>
+              </div>
+            </div>
+
+            {/* Split: left source rail + right preview */}
+            <div className="grid gap-3 pt-3 lg:grid-cols-[220px_1fr]">
+              {/* Source rail */}
+              <div className="flex gap-2 overflow-x-auto lg:flex-col lg:overflow-visible">
+                {SOURCES.map((s) => {
+                  const isActive = s.key === activeSource;
+                  const a = ACCENT_CLASSES[s.accent];
+                  return (
+                    <button
+                      key={s.key}
+                      onClick={() => setActiveSource(s.key)}
+                      className={`group relative shrink-0 overflow-hidden rounded-xl border p-3 text-left transition-all lg:shrink lg:p-4 ${
+                        isActive
+                          ? `border-transparent bg-secondary/80 ring-2 ${a.ring}`
+                          : "border-border bg-background/40 hover:bg-secondary/50"
+                      }`}
+                    >
+                      <span className={`absolute inset-y-0 left-0 w-1 ${a.dot} ${isActive ? "opacity-100" : "opacity-30"}`} />
+                      <div className="flex items-center justify-between pl-2">
+                        <span className={`font-display text-sm font-bold ${isActive ? a.text : "text-foreground"}`}>
+                          {s.label}
+                        </span>
+                        <span className={`rounded-full px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-wider ${a.soft} ${a.text}`}>
+                          live
+                        </span>
+                      </div>
+                      <div className="mt-2 flex items-baseline gap-3 pl-2 font-mono text-[10px] text-muted-foreground">
+                        <span>
+                          <b className="text-foreground tabular-nums">{s.rows}</b> rows
+                        </span>
+                        <span>
+                          <b className="text-foreground tabular-nums">{s.cols}</b> cols
+                        </span>
+                      </div>
+                    </button>
+                  );
+                })}
+                <div className="hidden rounded-xl border border-dashed border-border p-4 lg:block">
+                  <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+                    Combined
+                  </div>
+                  <div className="mt-1 font-display text-2xl font-bold tabular-nums text-foreground">
+                    {totalRows.toLocaleString()}
+                  </div>
+                  <div className="font-mono text-[10px] text-muted-foreground">sample rows across 3 sources</div>
                 </div>
               </div>
 
-              {/* table */}
-              <div className="overflow-hidden rounded-lg border border-border bg-card">
-                <div className="grid grid-cols-[1.3fr_1.1fr_1fr_1.1fr_0.8fr] gap-4 border-b border-border bg-secondary/60 px-5 py-3 font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+              {/* Preview table */}
+              <div className="overflow-hidden rounded-xl border border-border bg-background/60">
+                <div className="grid grid-cols-[1.3fr_1.1fr_1fr_1.2fr_0.9fr] gap-4 border-b border-border bg-secondary/60 px-5 py-3 font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
                   <div>Lead</div>
                   <div>Title</div>
                   <div>Company</div>
                   <div>Email</div>
-                  <div className="text-right">Status</div>
+                  <div className="text-right">Signal</div>
                 </div>
-                {previewRows.map((r, i) => (
+                {active.preview.map((r, i) => (
                   <div
                     key={i}
-                    className={`grid grid-cols-[1.3fr_1.1fr_1fr_1.1fr_0.8fr] items-center gap-4 px-5 py-4 text-sm ${i !== previewRows.length - 1 ? "border-b border-border" : ""}`}
+                    className={`grid grid-cols-[1.3fr_1.1fr_1fr_1.2fr_0.9fr] items-center gap-4 px-5 py-4 text-sm ${
+                      i !== active.preview.length - 1 ? "border-b border-border" : ""
+                    }`}
                   >
                     <div className="min-w-0">
-                      <div className="truncate font-semibold text-foreground">{r["First Name"]} {r["Last Name"]}</div>
-                      <div className="truncate text-xs text-muted-foreground">Apollo</div>
+                      <div className="truncate font-semibold text-foreground">{r.name || "—"}</div>
+                      <div className={`truncate text-xs font-medium ${accent.text}`}>{active.label}</div>
                     </div>
-                    <div className="truncate text-muted-foreground">{r.Title}</div>
-                    <div className="truncate text-muted-foreground">{r["Company Name"]}</div>
-                    <div className="truncate font-mono text-xs text-muted-foreground">{r.Email}</div>
+                    <div className="truncate text-muted-foreground">{r.title || "—"}</div>
+                    <div className="truncate text-muted-foreground">{r.company || "—"}</div>
+                    <div className="truncate font-mono text-xs text-muted-foreground">{r.email || "—"}</div>
                     <div className="text-right">
-                      {r["Email Status"] === "Verified" ? (
-                        <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-soft px-2 py-0.5 text-[11px] font-semibold text-emerald">
-                          <span className="size-1.5 rounded-full bg-emerald" />
-                          Verified
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center gap-1.5 rounded-full bg-violet-soft px-2 py-0.5 text-[11px] font-semibold text-violet">
-                          <Circle className="size-2 fill-violet text-violet" />
-                          {String(r["Email Status"] || "Unverified")}
-                        </span>
-                      )}
+                      <span
+                        className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[11px] font-semibold ${accent.soft} ${accent.text}`}
+                      >
+                        <span className={`size-1.5 rounded-full ${accent.dot}`} />
+                        {r.tag}
+                      </span>
                     </div>
                   </div>
                 ))}
+                <div className="flex items-center justify-between border-t border-border bg-secondary/30 px-5 py-3 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+                  <span>Showing 4 of {active.rows.toLocaleString()} rows · {active.cols} columns</span>
+                  <Link
+                    to="/sample-data"
+                    className={`group inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-bold transition-colors hover:${accent.solid} ${accent.text}`}
+                  >
+                    Open full sample
+                    <ArrowRight className="size-3 transition-transform group-hover:translate-x-0.5" />
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Caption pointing to full sample */}
-          <div className="mt-5 flex flex-col items-center justify-center gap-2 text-center sm:flex-row sm:gap-3">
-            <span className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
-              Preview shows 4 of 365 rows
-            </span>
-            <Link
-              to="/sample-data"
-              className="group inline-flex items-center gap-1.5 rounded-full bg-violet-soft px-3 py-1 font-mono text-[11px] font-bold uppercase tracking-widest text-violet transition-colors hover:bg-violet hover:text-white"
-            >
-              See the full CSV (365 × 48)
-              <ArrowRight className="size-3 transition-transform group-hover:translate-x-0.5" />
-            </Link>
+          {/* legend */}
+          <div className="mt-5 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
+            {SOURCES.map((s) => {
+              const a = ACCENT_CLASSES[s.accent];
+              return (
+                <span key={s.key} className="inline-flex items-center gap-1.5">
+                  <span className={`size-1.5 rounded-full ${a.dot}`} />
+                  {s.label} · {s.rows} rows
+                </span>
+              );
+            })}
           </div>
         </div>
       </section>
+
+
 
 
       {/* Logo strip */}

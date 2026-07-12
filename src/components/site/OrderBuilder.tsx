@@ -217,8 +217,9 @@ export function OrderBuilder() {
         <div className={`mt-6 grid gap-4 sm:mt-8 sm:gap-6 ${(step === 4 || isDesktop) ? "lg:grid-cols-[1.4fr_1fr]" : "lg:grid-cols-1"}`}>
           {/* MAIN PANEL */}
           <div className="rounded-3xl border border-border bg-card p-4 shadow-[0_20px_60px_-30px_rgba(24,24,60,0.25)] sm:p-6 md:p-8 lg:p-10">
+            <div className="lg:grid lg:grid-cols-2 lg:gap-x-10 lg:gap-y-10">
             {(step === 1 || isDesktop) && (
-              <div>
+              <div className="lg:col-span-2">
                 <StepHeader
                   eyebrow="Step 1 of 4"
                   title="What are we building today?"

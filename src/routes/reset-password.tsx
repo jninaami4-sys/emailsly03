@@ -262,16 +262,34 @@ function ResetPasswordPage() {
                   <div role="status" className="rounded-lg border border-emerald/30 bg-emerald/10 px-4 py-3 text-sm text-emerald-foreground">
                     <p className="flex items-start gap-2">
                       <CheckCircle2 className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
-                      Your password has been updated successfully.
+                      <span>
+                        Your password has been updated successfully.
+                        {safeRedirect && (
+                          <span className="mt-1 block text-xs text-muted-foreground">
+                            Redirecting you to <code className="font-mono">{safeRedirect}</code>
+                            {redirectSeconds > 0 ? ` in ${redirectSeconds}s…` : "…"}
+                          </span>
+                        )}
+                      </span>
                     </p>
                   </div>
-                  <Link
-                    to="/auth"
-                    search={{ mode: "signin" }}
-                    className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/25 focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:outline-none"
-                  >
-                    Sign in with new password <ArrowRight className="size-4" aria-hidden="true" />
-                  </Link>
+                  {safeRedirect ? (
+                    <button
+                      type="button"
+                      onClick={() => navigate({ to: safeRedirect })}
+                      className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/25 focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:outline-none"
+                    >
+                      Continue <ArrowRight className="size-4" aria-hidden="true" />
+                    </button>
+                  ) : (
+                    <Link
+                      to="/auth"
+                      search={{ mode: "signin" }}
+                      className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/25 focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:outline-none"
+                    >
+                      Sign in with new password <ArrowRight className="size-4" aria-hidden="true" />
+                    </Link>
+                  )}
                 </div>
               ) : (
                 <>

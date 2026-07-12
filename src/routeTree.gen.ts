@@ -9,8 +9,87 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ZoominfoLeadsRouteImport } from './routes/zoominfo-leads'
+import { Route as WebsiteDesignRouteImport } from './routes/website-design'
+import { Route as TrackOrderRouteImport } from './routes/track-order'
+import { Route as TermsRouteImport } from './routes/terms'
+import { Route as StoreRouteImport } from './routes/store'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as RefundPolicyRouteImport } from './routes/refund-policy'
+import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
+import { Route as PricingRouteImport } from './routes/pricing'
+import { Route as ManualLeadResearchRouteImport } from './routes/manual-lead-research'
+import { Route as LinkedinSalesNavigatorLeadsRouteImport } from './routes/linkedin-sales-navigator-leads'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as ApolloLeadsExportRouteImport } from './routes/apollo-leads-export'
 import { Route as IndexRouteImport } from './routes/index'
 
+const ZoominfoLeadsRoute = ZoominfoLeadsRouteImport.update({
+  id: '/zoominfo-leads',
+  path: '/zoominfo-leads',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WebsiteDesignRoute = WebsiteDesignRouteImport.update({
+  id: '/website-design',
+  path: '/website-design',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TrackOrderRoute = TrackOrderRouteImport.update({
+  id: '/track-order',
+  path: '/track-order',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StoreRoute = StoreRouteImport.update({
+  id: '/store',
+  path: '/store',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RefundPolicyRoute = RefundPolicyRouteImport.update({
+  id: '/refund-policy',
+  path: '/refund-policy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
+  id: '/privacy-policy',
+  path: '/privacy-policy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PricingRoute = PricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ManualLeadResearchRoute = ManualLeadResearchRouteImport.update({
+  id: '/manual-lead-research',
+  path: '/manual-lead-research',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LinkedinSalesNavigatorLeadsRoute =
+  LinkedinSalesNavigatorLeadsRouteImport.update({
+    id: '/linkedin-sales-navigator-leads',
+    path: '/linkedin-sales-navigator-leads',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApolloLeadsExportRoute = ApolloLeadsExportRouteImport.update({
+  id: '/apollo-leads-export',
+  path: '/apollo-leads-export',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -19,28 +98,214 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/apollo-leads-export': typeof ApolloLeadsExportRoute
+  '/contact': typeof ContactRoute
+  '/linkedin-sales-navigator-leads': typeof LinkedinSalesNavigatorLeadsRoute
+  '/manual-lead-research': typeof ManualLeadResearchRoute
+  '/pricing': typeof PricingRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
+  '/refund-policy': typeof RefundPolicyRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/store': typeof StoreRoute
+  '/terms': typeof TermsRoute
+  '/track-order': typeof TrackOrderRoute
+  '/website-design': typeof WebsiteDesignRoute
+  '/zoominfo-leads': typeof ZoominfoLeadsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/apollo-leads-export': typeof ApolloLeadsExportRoute
+  '/contact': typeof ContactRoute
+  '/linkedin-sales-navigator-leads': typeof LinkedinSalesNavigatorLeadsRoute
+  '/manual-lead-research': typeof ManualLeadResearchRoute
+  '/pricing': typeof PricingRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
+  '/refund-policy': typeof RefundPolicyRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/store': typeof StoreRoute
+  '/terms': typeof TermsRoute
+  '/track-order': typeof TrackOrderRoute
+  '/website-design': typeof WebsiteDesignRoute
+  '/zoominfo-leads': typeof ZoominfoLeadsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/apollo-leads-export': typeof ApolloLeadsExportRoute
+  '/contact': typeof ContactRoute
+  '/linkedin-sales-navigator-leads': typeof LinkedinSalesNavigatorLeadsRoute
+  '/manual-lead-research': typeof ManualLeadResearchRoute
+  '/pricing': typeof PricingRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
+  '/refund-policy': typeof RefundPolicyRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/store': typeof StoreRoute
+  '/terms': typeof TermsRoute
+  '/track-order': typeof TrackOrderRoute
+  '/website-design': typeof WebsiteDesignRoute
+  '/zoominfo-leads': typeof ZoominfoLeadsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/apollo-leads-export'
+    | '/contact'
+    | '/linkedin-sales-navigator-leads'
+    | '/manual-lead-research'
+    | '/pricing'
+    | '/privacy-policy'
+    | '/refund-policy'
+    | '/sitemap.xml'
+    | '/store'
+    | '/terms'
+    | '/track-order'
+    | '/website-design'
+    | '/zoominfo-leads'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/apollo-leads-export'
+    | '/contact'
+    | '/linkedin-sales-navigator-leads'
+    | '/manual-lead-research'
+    | '/pricing'
+    | '/privacy-policy'
+    | '/refund-policy'
+    | '/sitemap.xml'
+    | '/store'
+    | '/terms'
+    | '/track-order'
+    | '/website-design'
+    | '/zoominfo-leads'
+  id:
+    | '__root__'
+    | '/'
+    | '/apollo-leads-export'
+    | '/contact'
+    | '/linkedin-sales-navigator-leads'
+    | '/manual-lead-research'
+    | '/pricing'
+    | '/privacy-policy'
+    | '/refund-policy'
+    | '/sitemap.xml'
+    | '/store'
+    | '/terms'
+    | '/track-order'
+    | '/website-design'
+    | '/zoominfo-leads'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ApolloLeadsExportRoute: typeof ApolloLeadsExportRoute
+  ContactRoute: typeof ContactRoute
+  LinkedinSalesNavigatorLeadsRoute: typeof LinkedinSalesNavigatorLeadsRoute
+  ManualLeadResearchRoute: typeof ManualLeadResearchRoute
+  PricingRoute: typeof PricingRoute
+  PrivacyPolicyRoute: typeof PrivacyPolicyRoute
+  RefundPolicyRoute: typeof RefundPolicyRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  StoreRoute: typeof StoreRoute
+  TermsRoute: typeof TermsRoute
+  TrackOrderRoute: typeof TrackOrderRoute
+  WebsiteDesignRoute: typeof WebsiteDesignRoute
+  ZoominfoLeadsRoute: typeof ZoominfoLeadsRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/zoominfo-leads': {
+      id: '/zoominfo-leads'
+      path: '/zoominfo-leads'
+      fullPath: '/zoominfo-leads'
+      preLoaderRoute: typeof ZoominfoLeadsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/website-design': {
+      id: '/website-design'
+      path: '/website-design'
+      fullPath: '/website-design'
+      preLoaderRoute: typeof WebsiteDesignRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/track-order': {
+      id: '/track-order'
+      path: '/track-order'
+      fullPath: '/track-order'
+      preLoaderRoute: typeof TrackOrderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/store': {
+      id: '/store'
+      path: '/store'
+      fullPath: '/store'
+      preLoaderRoute: typeof StoreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/refund-policy': {
+      id: '/refund-policy'
+      path: '/refund-policy'
+      fullPath: '/refund-policy'
+      preLoaderRoute: typeof RefundPolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy-policy': {
+      id: '/privacy-policy'
+      path: '/privacy-policy'
+      fullPath: '/privacy-policy'
+      preLoaderRoute: typeof PrivacyPolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pricing': {
+      id: '/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof PricingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/manual-lead-research': {
+      id: '/manual-lead-research'
+      path: '/manual-lead-research'
+      fullPath: '/manual-lead-research'
+      preLoaderRoute: typeof ManualLeadResearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/linkedin-sales-navigator-leads': {
+      id: '/linkedin-sales-navigator-leads'
+      path: '/linkedin-sales-navigator-leads'
+      fullPath: '/linkedin-sales-navigator-leads'
+      preLoaderRoute: typeof LinkedinSalesNavigatorLeadsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/apollo-leads-export': {
+      id: '/apollo-leads-export'
+      path: '/apollo-leads-export'
+      fullPath: '/apollo-leads-export'
+      preLoaderRoute: typeof ApolloLeadsExportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -53,17 +318,20 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ApolloLeadsExportRoute: ApolloLeadsExportRoute,
+  ContactRoute: ContactRoute,
+  LinkedinSalesNavigatorLeadsRoute: LinkedinSalesNavigatorLeadsRoute,
+  ManualLeadResearchRoute: ManualLeadResearchRoute,
+  PricingRoute: PricingRoute,
+  PrivacyPolicyRoute: PrivacyPolicyRoute,
+  RefundPolicyRoute: RefundPolicyRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
+  StoreRoute: StoreRoute,
+  TermsRoute: TermsRoute,
+  TrackOrderRoute: TrackOrderRoute,
+  WebsiteDesignRoute: WebsiteDesignRoute,
+  ZoominfoLeadsRoute: ZoominfoLeadsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

@@ -278,9 +278,9 @@ function AuthPage() {
                     <button
                       type="button"
                       onClick={() => setMode("signin")}
-                      className="mb-4 inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
+                      className="mb-4 inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-ring/30 focus-visible:outline-none"
                     >
-                      <ArrowLeft className="size-3.5" /> Back to sign in
+                      <ArrowLeft className="size-3.5" aria-hidden="true" /> Back to sign in
                     </button>
                     <h2 className="font-display text-2xl font-bold tracking-tight">Reset your password</h2>
                     <p className="mt-1 text-sm text-muted-foreground">

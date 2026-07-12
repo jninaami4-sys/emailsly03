@@ -33,6 +33,12 @@ export const Route = createFileRoute("/reset-password")({
   component: ResetPasswordPage,
 });
 
+const COMMON_PASSWORDS = new Set([
+  "password", "password1", "password123", "passw0rd", "12345678", "123456789",
+  "qwerty123", "qwertyuiop", "iloveyou", "letmein1", "welcome1", "admin123",
+  "abc12345", "monkey123", "sunshine1", "football1", "princess1", "dragon123",
+]);
+
 const passwordSchema = z
   .object({
     password: z
@@ -41,7 +47,15 @@ const passwordSchema = z
       .max(72, { message: "Password must be under 72 characters" })
       .regex(/[A-Z]/, { message: "Add at least one uppercase letter" })
       .regex(/[a-z]/, { message: "Add at least one lowercase letter" })
-      .regex(/[0-9]/, { message: "Add at least one number" }),
+      .regex(/[0-9]/, { message: "Add at least one number" })
+      .refine((v) => v === v.trim(), { message: "Password can't start or end with a space" })
+      .refine((v) => !/\s{2,}/.test(v), { message: "Password can't contain consecutive spaces" })
+      .refine((v) => !COMMON_PASSWORDS.has(v.toLowerCase()), {
+        message: "This password is too common — choose something more unique",
+      })
+      .refine((v) => !/(.)\1{3,}/.test(v), {
+        message: "Avoid repeating the same character 4+ times",
+      }),
     confirm: z.string(),
   })
   .refine((d) => d.password === d.confirm, {
@@ -88,9 +102,14 @@ function ResetPasswordPage() {
   const [linkState, setLinkState] = useState<LinkState>("checking");
   const [linkMessage, setLinkMessage] = useState<string | null>(null);
   const [redirectSeconds, setRedirectSeconds] = useState(3);
+  const [capsLock, setCapsLock] = useState(false);
   const { redirectTo } = Route.useSearch();
   const navigate = useNavigate();
   const safeRedirect = useMemo(() => sanitizeRedirect(redirectTo), [redirectTo]);
+  const isFormValid = useMemo(
+    () => passwordSchema.safeParse({ password, confirm }).success,
+    [password, confirm],
+  );
 
   useEffect(() => {
     const hash = window.location.hash.slice(1);
@@ -163,9 +182,15 @@ function ResetPasswordPage() {
       const { error } = await supabase.auth.updateUser({ password });
       if (error) {
         const msg = error.message || "";
-        if (/same_password|different from the old/i.test(msg)) {
+        if (/same_password|different from the old|should be different/i.test(msg)) {
           setErrors({ password: "New password must be different from your current password" });
-        } else if (/expired|invalid|session/i.test(msg)) {
+        } else if (/weak|pwned|breach|leaked/i.test(msg)) {
+          setErrors({ password: "This password has appeared in a data breach — choose a different one" });
+        } else if (/rate|too many|throttle/i.test(msg)) {
+          setErrors({ form: "Too many attempts. Please wait a moment and try again." });
+        } else if (/network|fetch|failed to fetch/i.test(msg)) {
+          setErrors({ form: "Network error — check your connection and try again." });
+        } else if (/expired|invalid|session|jwt|token/i.test(msg)) {
           setLinkState("expired");
           setLinkMessage("Your reset session has expired. Please request a new link.");
         } else {
@@ -259,7 +284,7 @@ function ResetPasswordPage() {
                 </div>
               ) : success ? (
                 <div className="mt-8 space-y-6">
-                  <div role="status" className="rounded-lg border border-emerald/30 bg-emerald/10 px-4 py-3 text-sm text-emerald-foreground">
+                  <div role="status" aria-live="polite" className="rounded-lg border border-emerald/30 bg-emerald/10 px-4 py-3 text-sm text-emerald-foreground">
                     <p className="flex items-start gap-2">
                       <CheckCircle2 className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
                       <span>
@@ -316,7 +341,10 @@ function ResetPasswordPage() {
                           onBlur={() => {
                             setTouched((t) => ({ ...t, password: true }));
                             validate("password");
+                            setCapsLock(false);
                           }}
+                          onKeyDown={(e) => setCapsLock(e.getModifierState && e.getModifierState("CapsLock"))}
+                          onKeyUp={(e) => setCapsLock(e.getModifierState && e.getModifierState("CapsLock"))}
                           className={`w-full rounded-xl border bg-input/50 py-2.5 pl-10 pr-10 text-sm text-foreground placeholder:text-muted-foreground/60 outline-none transition-all focus:bg-background focus:ring-2 ${
                             errors.password
                               ? "border-destructive/60 focus:border-destructive focus:ring-destructive/20"
@@ -335,6 +363,13 @@ function ResetPasswordPage() {
                           {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
                         </button>
                       </div>
+
+                      {capsLock && (
+                        <p role="alert" className="mt-2 flex items-center gap-1.5 text-xs text-amber-600 dark:text-amber-500">
+                          <AlertCircle className="size-3.5" aria-hidden="true" />
+                          Caps Lock is on
+                        </p>
+                      )}
 
                       {/* Strength meter */}
                       <div id="password-strength" className="mt-2" aria-live="polite">
@@ -424,15 +459,21 @@ function ResetPasswordPage() {
 
                     <button
                       type="submit"
-                      disabled={busy}
-                      className="group relative inline-flex w-full items-center justify-center gap-2 overflow-hidden rounded-xl bg-primary px-5 py-3 font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/25 active:scale-[0.99] disabled:opacity-70 focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:outline-none"
+                      disabled={busy || !isFormValid}
+                      aria-disabled={busy || !isFormValid}
+                      className="group relative inline-flex w-full items-center justify-center gap-2 overflow-hidden rounded-xl bg-primary px-5 py-3 font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/25 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60 disabled:shadow-none focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:outline-none"
                     >
                       <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
                       <span className="relative flex items-center gap-2">
                         {busy ? <Loader2 className="size-4 animate-spin" aria-hidden="true" /> : <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />}
-                        Update password
+                        {busy ? "Updating password…" : "Update password"}
                       </span>
                     </button>
+                    {!isFormValid && (password || confirm) && !errors.password && !errors.confirm && (
+                      <p className="text-center text-xs text-muted-foreground">
+                        Complete all password requirements to continue
+                      </p>
+                    )}
                   </form>
                 </>
               )}

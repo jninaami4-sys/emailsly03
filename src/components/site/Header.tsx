@@ -74,14 +74,14 @@ export function Header() {
             <button
               type="button"
               onClick={open}
-              className={`relative rounded-lg p-2 text-foreground transition-colors hover:bg-secondary hover:text-violet ${focusRing}`}
+              className={`relative rounded-lg p-2 text-foreground transition-colors hover:bg-secondary hover:text-gold ${focusRing}`}
               aria-label={cartLabel}
             >
               <ShoppingCart className="size-5" aria-hidden="true" />
               {count > 0 && (
                 <span
                   aria-hidden="true"
-                  className="absolute -right-0.5 -top-0.5 grid size-4 place-items-center rounded-full bg-coral text-[10px] font-bold text-white"
+                  className="absolute -right-0.5 -top-0.5 grid size-4 place-items-center rounded-full bg-gold text-[10px] font-bold text-black"
                 >
                   {count}
                 </span>

@@ -128,7 +128,7 @@ function Home() {
 
   return (
     <SiteShell>
-      <div className="theme-midnight bg-background text-foreground">
+      <div className="bg-background text-foreground">
         {/* HERO */}
         <section className="relative overflow-hidden px-6 pt-20 pb-16 lg:pt-28 lg:pb-24">
           {/* Ambient */}

@@ -119,6 +119,7 @@ export function Header() {
                   Order Now
                 </button>
               </>
+            )}
             <button
               type="button"
               className={`inline-flex size-11 items-center justify-center rounded-lg text-foreground lg:hidden ${focusRing}`}

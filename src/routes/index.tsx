@@ -585,50 +585,6 @@ function Home() {
       {/* Order builder — get instant price */}
       <OrderBuilder />
 
-
-
-      {/* Pricing peek */}
-      <section className="px-6 py-32">
-        <div className="mx-auto max-w-7xl">
-          <div className="mx-auto max-w-2xl text-center">
-            <h2 className="font-display text-4xl font-bold tracking-tight">
-              Transparent, volume-based pricing
-            </h2>
-            <p className="mt-4 text-muted-foreground">Only pay for successfully verified leads delivered.</p>
-          </div>
-
-          <div className="mx-auto mt-16 max-w-lg rounded-3xl border border-border bg-card p-10 shadow-xl">
-            <div className="mb-8">
-              <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-violet">Popular</span>
-              <div className="mt-2 flex items-baseline">
-                <span className="font-display text-5xl font-bold tracking-tight text-foreground">$499</span>
-                <span className="ml-2 text-muted-foreground">/month</span>
-              </div>
-              <p className="mt-3 text-sm text-muted-foreground">Perfect for growing SDR teams.</p>
-            </div>
-            <ul className="mb-10 space-y-4">
-              {[
-                "5,000 verified leads / month",
-                "Apollo, ZoomInfo & LinkedIn exports",
-                "24h delivery guarantee",
-                "CRM auto-mapping",
-              ].map((item) => (
-                <li key={item} className="flex items-center gap-3 text-sm text-foreground">
-                  <CheckCircle2 className="size-5 shrink-0 text-emerald" />
-                  {item}
-                </li>
-              ))}
-            </ul>
-            <Link
-              to="/pricing"
-              className="inline-flex w-full items-center justify-center rounded-xl bg-ink py-4 font-bold text-white transition-colors hover:bg-violet"
-            >
-              See all plans
-            </Link>
-          </div>
-        </div>
-      </section>
-
       {/* FAQ */}
       <section className="border-t border-border bg-card px-6 py-24">
         <div className="mx-auto max-w-3xl">

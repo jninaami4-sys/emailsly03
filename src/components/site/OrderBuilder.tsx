@@ -168,12 +168,12 @@ export function OrderBuilder() {
                   <button
                     type="button"
                     onClick={() => (done ? setStep(s.id) : null)}
-                    className={`group flex min-w-[72px] flex-1 items-center gap-2 rounded-xl px-2 py-2 text-left transition-all sm:min-w-0 sm:gap-3 sm:px-3 sm:py-3 ${
+                    className={`group flex min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-xl px-1.5 py-2 text-center transition-all sm:flex-row sm:gap-3 sm:px-3 sm:py-3 sm:text-left ${
                       active
                         ? "bg-violet text-white shadow-lg shadow-violet/25"
                         : done
                           ? "bg-emerald-soft text-emerald hover:bg-emerald-soft/80"
-                          : "text-muted-foreground"
+                          : "text-foreground/80"
                     }`}
                   >
                     <span
@@ -187,11 +187,11 @@ export function OrderBuilder() {
                     >
                       {done ? <Check className="size-3.5 sm:size-4" /> : <Icon className="size-3.5 sm:size-4" />}
                     </span>
-                    <span className="min-w-0 flex-1">
+                    <span className="min-w-0 sm:flex-1">
                       <span className={`hidden font-mono text-[10px] font-bold uppercase tracking-widest sm:block ${active ? "text-white/70" : done ? "text-emerald/80" : "text-muted-foreground/70"}`}>
                         Step {s.id}
                       </span>
-                      <span className="block truncate text-xs font-semibold sm:text-sm">{s.label}</span>
+                      <span className="block text-[11px] font-semibold leading-tight sm:truncate sm:text-sm">{s.label}</span>
                     </span>
                   </button>
                   {i < STEPS.length - 1 && (

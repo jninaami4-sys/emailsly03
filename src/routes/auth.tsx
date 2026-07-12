@@ -234,7 +234,7 @@ function AuthPage() {
           </Link>
 
           <div className="mt-10 inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground shadow-sm">
-            <BadgeCheck className="size-3.5 text-primary" /> Free account · No card required
+            <BadgeCheck className="size-3.5 text-primary" aria-hidden="true" /> Free account · No card required
           </div>
 
           <h1 className="mt-4 font-display text-4xl font-bold leading-[1.08] tracking-tight lg:text-5xl">

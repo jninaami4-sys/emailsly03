@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as ZoominfoLeadsRouteImport } from './routes/zoominfo-leads'
 import { Route as WebsiteDesignRouteImport } from './routes/website-design'
 import { Route as TrackOrderRouteImport } from './routes/track-order'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as StoreRouteImport } from './routes/store'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as PricingRouteImport } from './routes/pricing'
@@ -34,6 +35,11 @@ const WebsiteDesignRoute = WebsiteDesignRouteImport.update({
 const TrackOrderRoute = TrackOrderRouteImport.update({
   id: '/track-order',
   path: '/track-order',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
 const StoreRoute = StoreRouteImport.update({
@@ -87,6 +93,7 @@ export interface FileRoutesByFullPath {
   '/pricing': typeof PricingRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/store': typeof StoreRoute
+  '/terms': typeof TermsRoute
   '/track-order': typeof TrackOrderRoute
   '/website-design': typeof WebsiteDesignRoute
   '/zoominfo-leads': typeof ZoominfoLeadsRoute
@@ -100,6 +107,7 @@ export interface FileRoutesByTo {
   '/pricing': typeof PricingRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/store': typeof StoreRoute
+  '/terms': typeof TermsRoute
   '/track-order': typeof TrackOrderRoute
   '/website-design': typeof WebsiteDesignRoute
   '/zoominfo-leads': typeof ZoominfoLeadsRoute
@@ -114,6 +122,7 @@ export interface FileRoutesById {
   '/pricing': typeof PricingRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/store': typeof StoreRoute
+  '/terms': typeof TermsRoute
   '/track-order': typeof TrackOrderRoute
   '/website-design': typeof WebsiteDesignRoute
   '/zoominfo-leads': typeof ZoominfoLeadsRoute
@@ -129,6 +138,7 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/privacy-policy'
     | '/store'
+    | '/terms'
     | '/track-order'
     | '/website-design'
     | '/zoominfo-leads'
@@ -142,6 +152,7 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/privacy-policy'
     | '/store'
+    | '/terms'
     | '/track-order'
     | '/website-design'
     | '/zoominfo-leads'
@@ -155,6 +166,7 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/privacy-policy'
     | '/store'
+    | '/terms'
     | '/track-order'
     | '/website-design'
     | '/zoominfo-leads'
@@ -169,6 +181,7 @@ export interface RootRouteChildren {
   PricingRoute: typeof PricingRoute
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   StoreRoute: typeof StoreRoute
+  TermsRoute: typeof TermsRoute
   TrackOrderRoute: typeof TrackOrderRoute
   WebsiteDesignRoute: typeof WebsiteDesignRoute
   ZoominfoLeadsRoute: typeof ZoominfoLeadsRoute
@@ -195,6 +208,13 @@ declare module '@tanstack/react-router' {
       path: '/track-order'
       fullPath: '/track-order'
       preLoaderRoute: typeof TrackOrderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/store': {
@@ -265,6 +285,7 @@ const rootRouteChildren: RootRouteChildren = {
   PricingRoute: PricingRoute,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
   StoreRoute: StoreRoute,
+  TermsRoute: TermsRoute,
   TrackOrderRoute: TrackOrderRoute,
   WebsiteDesignRoute: WebsiteDesignRoute,
   ZoominfoLeadsRoute: ZoominfoLeadsRoute,

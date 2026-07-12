@@ -367,11 +367,12 @@ function AuthPage() {
                         <button
                           key={m}
                           type="button"
+                          aria-pressed={mode === m}
                           onClick={() => {
                             setMode(m);
                             if (m === "signup") setSignUpSuccess(false);
                           }}
-                          className={`flex-1 rounded-xl py-2 transition-all duration-200 ${
+                          className={`flex-1 rounded-xl py-2 transition-all duration-200 focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:outline-none ${
                             mode === m
                               ? "bg-card text-foreground shadow-sm"
                               : "text-muted-foreground hover:text-foreground"

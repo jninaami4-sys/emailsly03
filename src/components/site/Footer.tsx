@@ -1,7 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowRight } from "lucide-react";
 import { PaymentLogos } from "./PaymentLogos";
-import { PremiumZap, PremiumShieldCheck } from "./PremiumIcons";
+import { PremiumZap, PremiumShieldCheck, PremiumArrowRight } from "./PremiumIcons";
 
 const productLinks = [
   { to: "/store", label: "Lead Store" },

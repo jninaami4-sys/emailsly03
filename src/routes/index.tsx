@@ -183,8 +183,8 @@ function Home() {
                 <div className="grid size-10 place-items-center rounded-xl bg-emerald/15 text-emerald">
                   <PremiumShieldCheck className="size-5" />
                 </div>
-                <h3 className="mt-4 font-display text-lg font-bold">Real-time verification</h3>
-                <p className="mt-1 text-sm text-foreground/60">Every email pinged live. Bounces replaced free.</p>
+                <h3 className="mt-4 font-display text-lg font-bold">Pre-built verified database</h3>
+                <p className="mt-1 text-sm text-foreground/60">Sourced from verified databases and formatted for your exact ICP — no stale exports.</p>
               </article>
 
               <article className="rounded-3xl border border-white/10 bg-white/[0.03] p-6">
@@ -216,7 +216,7 @@ function Home() {
                   <PremiumGlobe className="size-5" />
                 </div>
                 <h3 className="mt-4 font-display text-lg font-bold">Global coverage</h3>
-                <p className="mt-1 text-sm text-foreground/60">100M+ contacts across 180+ countries, GDPR &amp; CCPA compliant.</p>
+                <p className="mt-1 text-sm text-foreground/60">250M+ contacts across 180+ countries, GDPR &amp; CCPA compliant.</p>
               </article>
 
               <button

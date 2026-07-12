@@ -465,6 +465,8 @@ export function OrderBuilder() {
               </div>
             )}
 
+            </div>
+
             {/* Nav */}
             <div className="mt-6 flex items-center justify-between gap-3 border-t border-border pt-4 sm:mt-10 sm:pt-6 lg:hidden">
               <button

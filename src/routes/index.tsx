@@ -13,6 +13,7 @@ import {
   Circle,
 } from "lucide-react";
 import { Testimonials } from "@/components/site/Testimonials";
+import { OrderBuilder } from "@/components/site/OrderBuilder";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -276,6 +277,11 @@ function Home() {
 
       {/* Testimonials wall (existing component with logos) */}
       <Testimonials />
+
+      {/* Order builder — get instant price */}
+      <OrderBuilder />
+
+
 
       {/* Pricing peek */}
       <section className="px-6 py-32">

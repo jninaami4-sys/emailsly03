@@ -546,9 +546,64 @@ function AuthPage() {
                       )}
 
 
-                      {error && (
+                      {error && !unconfirmedEmail && (
                         <div aria-live="assertive" className="animate-fade-in rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
                           {error}
+                        </div>
+                      )}
+
+                      {unconfirmedEmail && mode === "signin" && (
+                        <div
+                          role="alert"
+                          aria-live="polite"
+                          className="animate-fade-in rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 text-sm text-foreground"
+                        >
+                          <div className="flex items-start gap-3">
+                            <div className="grid size-8 shrink-0 place-items-center rounded-full bg-amber-500/20 text-amber-600" aria-hidden="true">
+                              <Mail className="size-4" />
+                            </div>
+                            <div className="flex-1 space-y-2">
+                              <p className="font-semibold">Please verify your email to continue</p>
+                              <p className="text-muted-foreground">
+                                We sent a confirmation link to{" "}
+                                <span className="font-medium text-foreground">{unconfirmedEmail}</span>. Click it to
+                                activate your account, then come back and sign in.
+                              </p>
+                              <ol className="ml-4 list-decimal space-y-0.5 text-xs text-muted-foreground">
+                                <li>Open the email from us (check spam/promotions if it isn't in your inbox).</li>
+                                <li>Tap the "Confirm your email" button in the message.</li>
+                                <li>Return here and sign in with your password.</li>
+                              </ol>
+                              <div className="flex flex-wrap items-center gap-3 pt-1">
+                                <button
+                                  type="button"
+                                  disabled={resendState.busy || resendState.cooldown > 0}
+                                  onClick={() => handleResendConfirmation(unconfirmedEmail)}
+                                  className="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-60 focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:outline-none"
+                                >
+                                  {resendState.busy ? (
+                                    <Loader2 className="size-3.5 animate-spin" aria-hidden="true" />
+                                  ) : (
+                                    <Mail className="size-3.5" aria-hidden="true" />
+                                  )}
+                                  {resendState.cooldown > 0
+                                    ? `Resend in ${resendState.cooldown}s`
+                                    : "Resend confirmation email"}
+                                </button>
+                                {resendState.sentAt && resendState.cooldown > 0 && !resendState.error && (
+                                  <span className="inline-flex items-center gap-1 text-xs text-emerald-600">
+                                    <CheckCircle2 className="size-3.5" aria-hidden="true" /> Email sent
+                                  </span>
+                                )}
+                              </div>
+                              {resendState.error && (
+                                <p className="flex items-center gap-1 text-xs text-destructive">
+                                  <AlertCircle className="size-3.5" aria-hidden="true" />
+                                  {resendState.error}
+                                </p>
+                              )}
+                            </div>
+                          </div>
                         </div>
                       )}
                       {signUpSuccess && mode === "signin" && (

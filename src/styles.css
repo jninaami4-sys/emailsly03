@@ -74,8 +74,8 @@
   --radius: 0.75rem;
 
   /* Base surfaces */
-  --paper: oklch(0.05 0 0);
-  --ink: oklch(0.97 0.01 85);
+  --paper: oklch(0.985 0.002 240);
+  --ink: oklch(0.10 0.01 85);
 
   --background: oklch(0.05 0 0);
   --foreground: oklch(0.97 0.01 85);

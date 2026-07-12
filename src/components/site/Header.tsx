@@ -156,11 +156,19 @@ export function Header() {
   return (
     <nav className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-6">
-        <Link to="/" className="flex items-center gap-2 font-display text-xl font-bold tracking-tight">
-          <span className="grid size-6 place-items-center rounded-sm bg-violet">
-            <span className="size-2 rounded-full bg-white" />
+        <Link to="/" className="flex items-center gap-2.5" aria-label="LyraData home">
+          <span className="relative grid size-9 place-items-center rounded-xl bg-ink shadow-sm">
+            <span className="absolute inset-1 rounded-lg bg-gradient-to-br from-violet to-coral opacity-90" />
+            <span className="relative font-display text-sm font-black text-white">L</span>
           </span>
-          LYRA<span className="text-violet">DATA</span>
+          <span className="flex flex-col leading-none">
+            <span className="font-display text-lg font-bold tracking-tight text-ink">
+              Lyra<span className="text-violet">Data</span>
+            </span>
+            <span className="mt-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+              B2B Lead Intelligence
+            </span>
+          </span>
         </Link>
 
         <DesktopNav />

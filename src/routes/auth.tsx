@@ -44,6 +44,8 @@ function AuthPage() {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [info, setInfo] = useState<string | null>(null);
+  const [lastEmail, setLastEmail] = useState<string | null>(null);
+  const [cooldown, setCooldown] = useState(0);
   const [rememberMe, setRememberMe] = useState(() => {
     if (typeof window === "undefined") return true;
     return window.localStorage.getItem("lyra_remember_me") !== "false";
@@ -79,6 +81,12 @@ function AuthPage() {
       setMode(search.mode);
     }
   }, [search.mode]);
+
+  useEffect(() => {
+    if (cooldown <= 0) return;
+    const timer = setInterval(() => setCooldown((c) => Math.max(0, c - 1)), 1000);
+    return () => clearInterval(timer);
+  }, [cooldown]);
 
   function validateField(name: keyof FieldErrors, value: string) {
     const partial = credentials.partial();
@@ -160,8 +168,31 @@ function AuthPage() {
         redirectTo: `${window.location.origin}/reset-password`,
       });
       if (error) throw error;
+      setLastEmail(parsed.data.email);
+      setCooldown(60);
       setInfo("If this email exists, you'll receive a reset link shortly.");
       setEmail("");
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Something went wrong";
+      setError(message);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function handleResend(e?: React.FormEvent) {
+    e?.preventDefault();
+    if (!lastEmail || cooldown > 0) return;
+    setError(null);
+    setInfo(null);
+    setBusy(true);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(lastEmail, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      if (error) throw error;
+      setCooldown(60);
+      setInfo("Reset link resent. Check your inbox.");
     } catch (err) {
       const message = err instanceof Error ? err.message : "Something went wrong";
       setError(message);
@@ -293,11 +324,21 @@ function AuthPage() {
                       </div>
 
                       {info && (
-                        <div className="animate-fade-in rounded-lg border border-emerald/30 bg-emerald/10 px-3 py-2 text-sm text-emerald-foreground">
+                        <div className="animate-fade-in rounded-lg border border-emerald/30 bg-emerald/10 px-3 py-3 text-sm text-emerald-foreground">
                           <p className="flex items-start gap-2">
                             <CheckCircle2 className="mt-0.5 size-4 shrink-0" />
                             {info}
                           </p>
+                          {lastEmail && (
+                            <button
+                              type="button"
+                              onClick={() => handleResend()}
+                              disabled={busy || cooldown > 0}
+                              className="mt-2 w-full text-center text-xs font-medium text-emerald-foreground/80 transition-colors hover:text-emerald-foreground disabled:cursor-not-allowed disabled:opacity-50"
+                            >
+                              {cooldown > 0 ? `Resend available in ${cooldown}s` : "Didn't receive it? Resend email"}
+                            </button>
+                          )}
                         </div>
                       )}
                       {error && (
@@ -308,7 +349,7 @@ function AuthPage() {
 
                       <button
                         type="submit"
-                        disabled={busy}
+                        disabled={busy || (email === lastEmail && cooldown > 0)}
                         className="group relative inline-flex w-full items-center justify-center gap-2 overflow-hidden rounded-xl bg-primary px-5 py-3 font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/25 active:scale-[0.99] disabled:opacity-70"
                       >
                         <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover:translate-x-full" />

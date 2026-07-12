@@ -68,7 +68,7 @@ function OrderPage() {
                   { k: "99% accuracy", v: "or we refill for free" },
                 ].map((r) => (
                   <li key={r.k} className="flex items-start gap-3">
-                    <div className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg bg-violet text-white shadow-md shadow-violet/25">
+                    <div className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg bg-gold text-black shadow-md shadow-gold/25">
                       <Sparkles className="size-4" />
                     </div>
                     <div>

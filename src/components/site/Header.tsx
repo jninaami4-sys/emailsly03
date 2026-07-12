@@ -127,7 +127,7 @@ export function Header() {
         </div>
       </nav>
       {mobileOpen && (
-          <div id="mobile-nav" className="relative mt-2 overflow-hidden rounded-2xl border border-white/20 bg-white/[0.03] shadow-[0_20px_50px_rgba(0,0,0,0.3),inset_0_1px_1px_0_rgba(255,255,255,0.3),inset_0_-1px_1px_0_rgba(255,255,255,0.05)] backdrop-blur-3xl before:pointer-events-none before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-b before:from-white/10 before:to-transparent lg:hidden">
+          <div id="mobile-nav" className="relative mt-2 overflow-hidden rounded-2xl border border-white/20 bg-ink/25 shadow-[0_20px_50px_rgba(0,0,0,0.3),inset_0_1px_1px_0_rgba(255,255,255,0.3),inset_0_-1px_1px_0_rgba(255,255,255,0.05)] backdrop-blur-3xl before:pointer-events-none before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-b before:from-white/10 before:to-transparent lg:hidden">
             <ul className="relative z-10 flex flex-col gap-1 px-3 py-3 text-sm font-medium text-white/70">
               {[
                 { to: "/store", label: "Lead Store" },

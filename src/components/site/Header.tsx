@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { ShoppingCart, Menu, X, LogOut, User as UserIcon } from "lucide-react";
+import { PremiumLogoMark, PremiumShoppingCart, PremiumMenu, PremiumX, PremiumLogOut, PremiumUser } from "./PremiumIcons";
 import { useCart } from "@/lib/cart";
 import { useAuth } from "@/hooks/use-auth";
 import { useState } from "react";

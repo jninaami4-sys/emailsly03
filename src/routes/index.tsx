@@ -91,7 +91,7 @@ const SOURCES: SourceMeta[] = [
     accent: "emerald",
     rows: zoominfoData.rows.length,
     cols: zoominfoData.headers.length,
-    highlight: "Mobile phones + revenue bands",
+    highlight: "",
     preview: zoominfoData.rows.slice(0, 4).map((r) => ({
       name: String(r["name"] ?? ""),
       title: String(r["lead_titles"] ?? ""),

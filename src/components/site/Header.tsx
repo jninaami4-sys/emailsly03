@@ -74,7 +74,7 @@ export function Header() {
             <button
               type="button"
               onClick={open}
-              className={`relative rounded-lg p-2 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground ${focusRing}`}
+              className={`relative rounded-lg p-2 text-foreground transition-colors hover:bg-secondary hover:text-violet ${focusRing}`}
               aria-label={cartLabel}
             >
               <ShoppingCart className="size-5" aria-hidden="true" />

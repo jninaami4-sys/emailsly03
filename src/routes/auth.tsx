@@ -45,7 +45,9 @@ function AuthPage() {
   const [busy, setBusy] = useState(false);
   const [info, setInfo] = useState<string | null>(null);
   const [lastEmail, setLastEmail] = useState<string | null>(null);
-  const [cooldown, setCooldown] = useState(0);
+  const [resetSentAt, setResetSentAt] = useState<number | null>(null);
+  const [now, setNow] = useState(() => Date.now());
+  const cooldown = resetSentAt ? Math.max(0, 60 - Math.floor((now - resetSentAt) / 1000)) : 0;
   const [rememberMe, setRememberMe] = useState(() => {
     if (typeof window === "undefined") return true;
     return window.localStorage.getItem("lyra_remember_me") !== "false";
@@ -89,11 +91,55 @@ function AuthPage() {
     }
   }, [search.mode]);
 
+  // Hydrate persisted reset-email cooldown on mount (survives reloads).
   useEffect(() => {
-    if (cooldown <= 0) return;
-    const timer = setInterval(() => setCooldown((c) => Math.max(0, c - 1)), 1000);
-    return () => clearInterval(timer);
-  }, [cooldown]);
+    if (typeof window === "undefined") return;
+    try {
+      const raw = window.localStorage.getItem("lyra_reset_cooldown");
+      if (!raw) return;
+      const parsed = JSON.parse(raw) as { email?: string; sentAt?: number };
+      if (!parsed?.sentAt || typeof parsed.sentAt !== "number") return;
+      if (Date.now() - parsed.sentAt >= 60_000) {
+        window.localStorage.removeItem("lyra_reset_cooldown");
+        return;
+      }
+      setResetSentAt(parsed.sentAt);
+      if (parsed.email) setLastEmail(parsed.email);
+    } catch {
+      window.localStorage.removeItem("lyra_reset_cooldown");
+    }
+  }, []);
+
+  // Tick every second while a reset cooldown is active.
+  useEffect(() => {
+    if (!resetSentAt) return;
+    const id = setInterval(() => {
+      setNow(Date.now());
+      if (Date.now() - resetSentAt >= 60_000) {
+        setResetSentAt(null);
+        if (typeof window !== "undefined") {
+          window.localStorage.removeItem("lyra_reset_cooldown");
+        }
+      }
+    }, 1000);
+    return () => clearInterval(id);
+  }, [resetSentAt]);
+
+  function startResetCooldown(emailForCooldown: string) {
+    const ts = Date.now();
+    setResetSentAt(ts);
+    setNow(ts);
+    if (typeof window !== "undefined") {
+      try {
+        window.localStorage.setItem(
+          "lyra_reset_cooldown",
+          JSON.stringify({ email: emailForCooldown, sentAt: ts }),
+        );
+      } catch {
+        /* ignore quota */
+      }
+    }
+  }
 
   useEffect(() => {
     if (resendState.cooldown <= 0) return;
@@ -220,7 +266,7 @@ function AuthPage() {
       });
       if (error) throw error;
       setLastEmail(parsed.data.email);
-      setCooldown(60);
+      startResetCooldown(parsed.data.email);
       setInfo("If this email exists, you'll receive a reset link shortly.");
       setEmail("");
     } catch (err) {
@@ -242,7 +288,7 @@ function AuthPage() {
         redirectTo: `${window.location.origin}/reset-password`,
       });
       if (error) throw error;
-      setCooldown(60);
+      startResetCooldown(lastEmail);
       setInfo("Reset link resent. Check your inbox.");
     } catch (err) {
       const message = err instanceof Error ? err.message : "Something went wrong";

@@ -59,7 +59,7 @@ const SOURCES: SourceMeta[] = [
     accent: "violet",
     rows: apolloData.rows.length,
     cols: apolloData.headers.length,
-    highlight: "Verified emails + firmographics",
+    highlight: "",
     preview: apolloData.rows.slice(0, 4).map((r) => ({
       name: nameOf(r, ["First Name", "Last Name"]),
       title: String(r["Title"] ?? ""),

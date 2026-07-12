@@ -36,7 +36,7 @@ export function Header() {
         <div className="relative">
           <nav
             aria-label="Primary"
-            className="relative mx-auto flex h-12 max-w-6xl items-center justify-between overflow-hidden rounded-full border border-white/40 bg-white/85 px-5 shadow-[0_4px_24px_rgba(0,0,0,0.06),inset_0_0.5px_0_0_rgba(255,255,255,0.72),inset_0_-0.5px_0_0_rgba(0,0,0,0.05)] backdrop-blur-2xl backdrop-saturate-[180%]"
+            className="relative mx-auto flex h-12 max-w-6xl items-center justify-between overflow-hidden rounded-full border border-white/10 bg-obsidian-surface/80 px-5 shadow-[0_4px_24px_rgba(0,0,0,0.4),inset_0_0.5px_0_0_rgba(255,255,255,0.08)] backdrop-blur-2xl backdrop-saturate-[180%]"
           >
           <div className="z-10 flex items-center gap-8">
             <Link

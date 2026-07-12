@@ -319,7 +319,7 @@ function Home() {
             {/* 24h feature */}
             <article className="col-span-1 overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] p-6 md:col-span-2">
               <div className="grid size-10 place-items-center rounded-xl bg-indigo/15 text-indigo">
-                <Timer className="size-5" />
+                <PremiumTimer className="size-5" />
               </div>
               <h3 className="mt-4 font-display text-lg font-bold">24h turnaround</h3>
               <p className="mt-1 text-sm text-foreground/60">Requirements in, cleaned dataset out — under a business day.</p>
@@ -328,7 +328,7 @@ function Home() {
             {/* CRM feature */}
             <article className="col-span-1 overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] p-6 md:col-span-2">
               <div className="grid size-10 place-items-center rounded-xl bg-coral/15 text-coral">
-                <Layers className="size-5" />
+                <PremiumLayers className="size-5" />
               </div>
               <h3 className="mt-4 font-display text-lg font-bold">CRM-native format</h3>
               <p className="mt-1 text-sm text-foreground/60">Mapped for HubSpot, Salesforce, Pipedrive. Single-click import.</p>
@@ -338,7 +338,7 @@ function Home() {
             <article className="col-span-1 overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] p-6 md:col-span-3">
               <div className="flex items-start gap-4">
                 <div className="grid size-10 shrink-0 place-items-center rounded-xl bg-indigo/15 text-indigo">
-                  <Target className="size-5" />
+                  <PremiumTarget className="size-5" />
                 </div>
                 <div>
                   <h3 className="font-display text-lg font-bold">Precise ICP targeting</h3>
@@ -351,7 +351,7 @@ function Home() {
             <article className="col-span-1 overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] p-6 md:col-span-3">
               <div className="flex items-start gap-4">
                 <div className="grid size-10 shrink-0 place-items-center rounded-xl bg-emerald/15 text-emerald">
-                  <Globe2 className="size-5" />
+                  <PremiumGlobe className="size-5" />
                 </div>
                 <div>
                   <h3 className="font-display text-lg font-bold">Global coverage</h3>

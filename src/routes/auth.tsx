@@ -272,7 +272,7 @@ function AuthPage() {
         redirectTo: `${window.location.origin}/reset-password`,
       });
       if (error) throw error;
-      setCooldown(60);
+      startResetCooldown(lastEmail);
       setInfo("Reset link resent. Check your inbox.");
     } catch (err) {
       const message = err instanceof Error ? err.message : "Something went wrong";

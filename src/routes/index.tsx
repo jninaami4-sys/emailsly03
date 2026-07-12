@@ -311,13 +311,32 @@ function Home() {
                   <span className={`font-semibold ${accent.text}`}>{active.file}</span>
                 </span>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <span className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-widest ${accent.soft} ${accent.text}`}>
                   <CheckCircle2 className="size-3" />
                   {active.highlight}
                 </span>
+                <div className="relative">
+                  <Search className="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
+                  <input
+                    type="text"
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    placeholder="Search rows…"
+                    className="w-40 rounded-full border border-border bg-background/60 py-1 pl-7 pr-3 font-mono text-[11px] text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-violet/40 sm:w-52"
+                  />
+                </div>
+                <button
+                  type="button"
+                  onClick={() => downloadCsv(active.file, rawActive)}
+                  className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-semibold text-white shadow-sm transition-transform hover:-translate-y-0.5 ${accent.solid}`}
+                >
+                  <Download className="size-3.5" />
+                  Download CSV
+                </button>
               </div>
             </div>
+
 
             {/* Split: left source rail + right preview */}
             <div className="grid gap-3 pt-3 lg:grid-cols-[220px_1fr]">

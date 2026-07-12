@@ -13,6 +13,7 @@ export type Product = {
   fields: string[];
   sampleNote?: string;
   featured?: boolean;
+  coverImage?: string;
 };
 
 export const CATEGORIES = [

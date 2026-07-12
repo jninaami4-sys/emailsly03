@@ -214,12 +214,19 @@ function VideoCard({ v }: { v: VideoTestimonial }) {
 
         {/* Bottom caption */}
         <figcaption className="absolute inset-x-0 bottom-0 p-6 text-white">
-          <p className="font-display text-lg font-semibold leading-snug">&ldquo;{v.quote}&rdquo;</p>
+          {v.quote && (
+            <p className="font-display text-lg font-semibold leading-snug">&ldquo;{v.quote}&rdquo;</p>
+          )}
           <div className="mt-3 flex items-center justify-between">
             <div>
-              <div className="text-sm font-semibold">{v.name}</div>
+              <div className="flex items-center gap-1.5">
+                <span className="text-sm font-semibold">{v.name}</span>
+                {v.verified && (
+                  <BadgeCheck className="size-4 text-emerald" aria-label="Verified client" />
+                )}
+              </div>
               <div className="font-mono text-[10px] uppercase tracking-widest text-white/70">
-                {v.role} · {v.company}
+                {v.role} · {v.flag} {v.country} · {v.company}
               </div>
             </div>
             <div className="flex gap-0.5 text-coral">

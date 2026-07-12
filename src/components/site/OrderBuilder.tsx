@@ -591,8 +591,8 @@ export function OrderBuilder() {
           )}
         </div>
 
-        {/* Live mini-total on steps 1-3 */}
-        {step < 4 && (
+        {/* Live mini-total on steps 1-3 (mobile only) */}
+        {step < 4 && !isDesktop && (
           <div className="mx-auto mt-4 flex max-w-5xl items-center justify-between rounded-2xl border border-border bg-card/60 px-4 py-3 backdrop-blur sm:mt-6 sm:px-6 sm:py-4">
             <div className="flex items-center gap-2.5 sm:gap-3">
               <span className="grid size-8 place-items-center rounded-lg bg-violet/10 text-violet sm:size-9">

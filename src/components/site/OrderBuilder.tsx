@@ -452,12 +452,12 @@ export function OrderBuilder() {
             )}
 
             {/* Nav */}
-            <div className="mt-10 flex items-center justify-between gap-3 border-t border-border pt-6">
+            <div className="mt-6 flex items-center justify-between gap-3 border-t border-border pt-4 sm:mt-10 sm:pt-6">
               <button
                 type="button"
                 onClick={goPrev}
                 disabled={step === 1}
-                className="inline-flex items-center gap-2 rounded-xl border border-border bg-background px-5 py-3 text-sm font-semibold text-foreground transition-all hover:border-foreground/20 disabled:cursor-not-allowed disabled:opacity-40"
+                className="inline-flex items-center gap-2 rounded-xl border border-border bg-background px-4 py-2.5 text-sm font-semibold text-foreground transition-all hover:border-foreground/20 disabled:cursor-not-allowed disabled:opacity-40 sm:px-5 sm:py-3"
               >
                 <ArrowLeft className="size-4" /> Back
               </button>
@@ -469,7 +469,7 @@ export function OrderBuilder() {
                   type="button"
                   onClick={goNext}
                   disabled={!canNext}
-                  className="inline-flex items-center gap-2 rounded-xl bg-violet px-6 py-3 text-sm font-bold text-white shadow-lg shadow-violet/30 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-violet/40 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
+                  className="inline-flex items-center gap-2 rounded-xl bg-violet px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-violet/30 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-violet/40 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 sm:px-6 sm:py-3"
                 >
                   Continue <ArrowRight className="size-4" />
                 </button>

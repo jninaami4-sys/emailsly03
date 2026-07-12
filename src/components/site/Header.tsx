@@ -118,12 +118,16 @@ export function Header() {
               aria-expanded={mobileOpen}
               aria-controls="mobile-nav"
             >
-              {mobileOpen ? <X className="size-5" aria-hidden="true" /> : <Menu className="size-5" aria-hidden="true" />}
-            </button>
-          </div>
-        </nav>
-        {mobileOpen && (
-          <div id="mobile-nav" className="mt-2 rounded-2xl border border-white/50 bg-ink/20 shadow-lg backdrop-blur-2xl backdrop-saturate-[180%] lg:hidden">
+            {mobileOpen ? <X className="size-5" aria-hidden="true" /> : <Menu className="size-5" aria-hidden="true" />}
+          </button>
+        </div>
+        {/* Liquid-glass gloss reflection */}
+        <div className="pointer-events-none absolute inset-0 rounded-full overflow-hidden" aria-hidden="true">
+          <div className="absolute -top-1/2 -left-[10%] w-[120%] h-full rotate-12 bg-white/5 blur-2xl will-change-transform" />
+        </div>
+      </nav>
+      {mobileOpen && (
+        <div id="mobile-nav" className="relative mt-2 overflow-hidden rounded-2xl border border-white/20 bg-white/[0.03] shadow-[0_20px_50px_rgba(0,0,0,0.3),inset_0_1px_1px_0_rgba(255,255,255,0.3),inset_0_-1px_1px_0_rgba(255,255,255,0.05)] backdrop-blur-3xl before:pointer-events-none before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-b before:from-white/10 before:to-transparent lg:hidden">
             <ul className="flex flex-col gap-1 px-3 py-3 text-sm font-medium">
               {[
                 { to: "/store", label: "Lead Store" },

@@ -57,11 +57,11 @@ export function Footer() {
               type="email"
               required
               placeholder="work@company.com"
-              className="flex-1 rounded-full border border-white/10 bg-white/5 px-5 py-3.5 text-white placeholder:text-white/40 outline-none transition-colors focus:border-violet focus:bg-white/[0.08]"
+              className="flex-1 rounded-full border border-white/10 bg-white/5 px-5 py-3.5 text-white placeholder:text-white/40 outline-none transition-colors focus:border-gold focus:bg-white/[0.08]"
             />
             <button
               type="submit"
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-violet px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-violet/25 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-violet/30"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-gold px-6 py-3.5 text-sm font-semibold text-black shadow-lg shadow-gold/25 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-gold/30"
             >
               Subscribe <ArrowRight className="size-4" />
             </button>

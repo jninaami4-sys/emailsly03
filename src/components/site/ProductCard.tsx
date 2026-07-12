@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import type { Product } from "@/lib/products";
 import { useCart } from "@/lib/cart";
-import { Globe, FileText, Upload, ImageIcon, X } from "lucide-react";
+import { Globe, X } from "lucide-react";
+import { PremiumImageIcon, PremiumUpload, PremiumFileText } from "./PremiumIcons";
 
 const chipClass: Record<Product["categoryColor"], string> = {
   violet: "bg-violet-soft text-violet",

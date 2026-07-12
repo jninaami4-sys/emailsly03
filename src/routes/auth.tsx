@@ -124,8 +124,11 @@ function AuthPage() {
         });
         if (error) throw error;
         setInfo("Check your email to confirm your account, then sign in.");
+        setSignUpSuccess(true);
+        setPassword("");
         setMode("signin");
       } else {
+
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
         const target = search.redirect && search.redirect.startsWith("/") ? search.redirect : "/";

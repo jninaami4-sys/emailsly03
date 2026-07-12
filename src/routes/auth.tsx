@@ -39,9 +39,10 @@ function AuthPage() {
 
   useEffect(() => {
     if (!loading && user) {
-      navigate({ to: (search.redirect as string) || "/", replace: true });
+      const target = search.redirect && search.redirect.startsWith("/") ? search.redirect : "/";
+      window.location.replace(target);
     }
-  }, [loading, user, navigate, search.redirect]);
+  }, [loading, user, search.redirect]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();

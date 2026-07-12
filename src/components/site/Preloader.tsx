@@ -9,6 +9,7 @@ export function Preloader() {
   const [visible, setVisible] = useState(true);
   const [fade, setFade] = useState(false);
   const [videoFailed, setVideoFailed] = useState(false);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -51,14 +52,18 @@ export function Preloader() {
           playsInline
           preload="auto"
           onError={() => setVideoFailed(true)}
-          onStalled={() => setVideoFailed(true)}
-          className="pointer-events-none h-full w-full object-cover"
+          onLoadedData={() => setReady(true)}
+          className={`pointer-events-none h-full w-full object-cover transition-opacity duration-300 ${
+            ready ? "opacity-100" : "opacity-0"
+          }`}
           aria-hidden="true"
         />
       )}
+      {!ready && !videoFailed && <FallbackMark />}
     </div>
   );
 }
+
 
 function FallbackMark() {
   return (

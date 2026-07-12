@@ -4,7 +4,11 @@ import { LegalPage } from "@/components/site/LegalPage";
 export const Route = createFileRoute("/terms")({
   head: () => ({ meta: [{ title: "Terms of Service | LyraData" }, { name: "description", content: "The terms governing use of LyraData services." }] }),
   component: () => (
-    <LegalPage title="Terms of Service" updated="July 11, 2026">
+    <LegalPage
+      title="Terms of Service"
+      updated="July 11, 2026"
+      intro="The ground rules for using LyraData's services. Purchasing or using our services means you agree to what's below."
+    >
       <p>These Terms of Service ("Terms") govern your use of LyraData's services. By purchasing or using our services, you agree to these Terms.</p>
       <h2>Services</h2>
       <p>We provide B2B lead data and related research services on a pay-per-order basis. No subscription is required.</p>

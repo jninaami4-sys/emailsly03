@@ -250,7 +250,7 @@ function AuthPage() {
       });
       if (error) throw error;
       setLastEmail(parsed.data.email);
-      setCooldown(60);
+      startResetCooldown(parsed.data.email);
       setInfo("If this email exists, you'll receive a reset link shortly.");
       setEmail("");
     } catch (err) {

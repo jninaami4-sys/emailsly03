@@ -21,9 +21,20 @@ export const Route = createFileRoute("/track-order")({
 
 
 function OrderPage() {
+  const hydrated = useHydrated();
+
+  if (!hydrated) {
+    return (
+      <SiteShell>
+        <TrackOrderSkeleton />
+      </SiteShell>
+    );
+  }
+
   return (
     <SiteShell>
       <OrderForm />
+
 
       {/* Pricing calculator section */}
       <section className="relative overflow-hidden border-t border-border bg-gradient-to-b from-background to-violet-soft/30 px-6 py-24">

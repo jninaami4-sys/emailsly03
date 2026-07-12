@@ -467,7 +467,7 @@ function AuthPage() {
                         </label>
                         {fieldErrors.password && (
                           <p id="password-error" className="mt-1.5 flex items-center gap-1.5 text-xs text-destructive animate-fade-in">
-                            <AlertCircle className="size-3.5" />
+                            <AlertCircle className="size-3.5" aria-hidden="true" />
                             {fieldErrors.password}
                           </p>
                         )}

@@ -90,7 +90,7 @@ export function Header() {
             {user ? (
               <>
                 <span className="hidden items-center gap-1.5 rounded-lg bg-secondary px-3 py-2 text-xs font-semibold lg:inline-flex">
-                  <UserIcon className="size-3.5 text-violet" aria-hidden="true" />
+                  <UserIcon className="size-3.5 text-gold" aria-hidden="true" />
                   <span className="max-w-[140px] truncate" aria-label={`Signed in as ${user.email}`}>
                     {user.email}
                   </span>
@@ -98,7 +98,7 @@ export function Header() {
                 <button
                   type="button"
                   onClick={handleSignOut}
-                  className={`hidden items-center gap-1.5 rounded-lg bg-ink px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-violet lg:inline-flex ${focusRing}`}
+                  className={`hidden items-center gap-1.5 rounded-lg bg-obsidian-elev px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-gold hover:text-black lg:inline-flex ${focusRing}`}
                 >
                   <LogOut className="size-3.5" aria-hidden="true" /> Sign out
                 </button>
@@ -106,7 +106,7 @@ export function Header() {
             ) : (
               <Link
                 to="/auth"
-                className={`hidden rounded-full bg-ink px-5 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:bg-violet lg:inline-flex ${focusRing}`}
+                className={`hidden rounded-full bg-gold px-5 py-2 text-sm font-semibold text-black shadow-sm transition-all hover:bg-amber-accent lg:inline-flex ${focusRing}`}
               >
                 Get Started
               </Link>

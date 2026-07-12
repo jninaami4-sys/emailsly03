@@ -48,9 +48,17 @@
   --color-ink: var(--ink);
   --color-paper: var(--paper);
 
-  --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Sora", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  /* Midnight Indigo scale */
+  --color-midnight: var(--midnight);
+  --color-midnight-surface: var(--midnight-surface);
+  --color-midnight-elev: var(--midnight-elev);
+  --color-midnight-line: var(--midnight-line);
+  --color-indigo: var(--indigo);
+  --color-indigo-soft: var(--indigo-soft);
 }
 
 :root {
@@ -93,6 +101,33 @@
   --coral-soft: oklch(0.7 0.19 34 / 0.12);
   --emerald: oklch(0.65 0.16 162);       /* #10B981 */
   --emerald-soft: oklch(0.65 0.16 162 / 0.12);
+
+  /* Midnight Indigo palette */
+  --midnight: oklch(0.14 0.03 275);
+  --midnight-surface: oklch(0.19 0.05 275);
+  --midnight-elev: oklch(0.26 0.09 275);
+  --midnight-line: oklch(1 0 0 / 0.08);
+  --indigo: oklch(0.62 0.22 275);
+  --indigo-soft: oklch(0.62 0.22 275 / 0.15);
+}
+
+.theme-midnight {
+  --background: var(--midnight);
+  --foreground: oklch(0.97 0.01 275);
+  --card: var(--midnight-surface);
+  --card-foreground: oklch(0.97 0.01 275);
+  --muted: oklch(0.24 0.05 275);
+  --muted-foreground: oklch(0.72 0.03 275);
+  --secondary: oklch(0.22 0.05 275);
+  --secondary-foreground: oklch(0.97 0.01 275);
+  --border: oklch(1 0 0 / 0.08);
+  --input: oklch(1 0 0 / 0.14);
+  --primary: var(--indigo);
+  --primary-foreground: oklch(1 0 0);
+  --ring: var(--indigo);
+  --violet: var(--indigo);
+  --violet-soft: var(--indigo-soft);
+  color-scheme: dark;
 }
 
 @layer base {

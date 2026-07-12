@@ -4,6 +4,8 @@ import { Footer } from "./Footer";
 import { AuthGate } from "./AuthGate";
 import { Preloader } from "./Preloader";
 import { MouseGlow } from "./MouseGlow";
+import { OrderDrawer } from "./OrderDrawer";
+import { FloatingOrderButton } from "./FloatingOrderButton";
 
 export function SiteShell({ children }: { children: ReactNode }) {
   return (
@@ -15,6 +17,8 @@ export function SiteShell({ children }: { children: ReactNode }) {
         <AuthGate>{children}</AuthGate>
       </main>
       <Footer />
+      <FloatingOrderButton />
+      <OrderDrawer />
     </div>
   );
 }

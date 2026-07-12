@@ -182,9 +182,15 @@ function ResetPasswordPage() {
       const { error } = await supabase.auth.updateUser({ password });
       if (error) {
         const msg = error.message || "";
-        if (/same_password|different from the old/i.test(msg)) {
+        if (/same_password|different from the old|should be different/i.test(msg)) {
           setErrors({ password: "New password must be different from your current password" });
-        } else if (/expired|invalid|session/i.test(msg)) {
+        } else if (/weak|pwned|breach|leaked/i.test(msg)) {
+          setErrors({ password: "This password has appeared in a data breach — choose a different one" });
+        } else if (/rate|too many|throttle/i.test(msg)) {
+          setErrors({ form: "Too many attempts. Please wait a moment and try again." });
+        } else if (/network|fetch|failed to fetch/i.test(msg)) {
+          setErrors({ form: "Network error — check your connection and try again." });
+        } else if (/expired|invalid|session|jwt|token/i.test(msg)) {
           setLinkState("expired");
           setLinkMessage("Your reset session has expired. Please request a new link.");
         } else {

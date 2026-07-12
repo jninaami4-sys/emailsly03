@@ -35,18 +35,18 @@ export function Footer() {
         <div className="grid gap-12 border-b border-white/10 pb-16 lg:grid-cols-[1.1fr_1fr] lg:items-end">
           <div>
             <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1">
-              <Sparkles className="size-3 text-violet" />
+              <Zap className="size-3 text-violet" />
               <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-white">
-                Weekly Intelligence
+                Premium Brief
               </span>
             </div>
             <h3 className="font-display text-4xl font-bold leading-tight tracking-tight text-white md:text-5xl">
-              50 verified leads.
+              Verified insights.
               <br />
-              <span className="text-violet">Every Tuesday, free.</span>
+              <span className="text-violet">No free samples.</span>
             </h3>
             <p className="mt-4 max-w-md text-white/60">
-              Join 4,000+ founders and SDRs getting a fresh batch delivered before the week even starts.
+              Join 4,000+ paid operators who get the market edge before the week starts.
             </p>
           </div>
           <form

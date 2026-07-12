@@ -414,81 +414,152 @@ function AuthPage() {
                     </button>
                     <h2 className="font-display text-2xl font-bold tracking-tight">Reset your password</h2>
                     <p className="mt-1 text-sm text-muted-foreground">
-                      Enter your work email and we'll send you a secure reset link.
+                      {lastEmail
+                        ? "We've sent you a secure link to reset your password."
+                        : "Enter your work email and we'll send you a secure reset link."}
                     </p>
 
-                    <form onSubmit={handleForgotSubmit} className="mt-6 space-y-4">
-                      <div>
-                        <label className="block">
-                          <span className="mb-1.5 block text-sm font-medium text-muted-foreground">Work email</span>
-                          <div className="group relative">
-                            <Mail className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-foreground" />
-                            <input
-                              type="email"
-                              autoComplete="email"
-                              value={email}
-                              onChange={(e) => {
-                                setEmail(e.target.value);
-                                if (fieldErrors.email) validateField("email", e.target.value);
-                              }}
-                              onBlur={() => {
-                                setTouched((t) => ({ ...t, email: true }));
-                                validateField("email", email);
-                              }}
-                              className={`${inputBase} ${fieldErrors.email ? inputError : inputNormal}`}
-                              placeholder="jane@acme.com"
-                              aria-invalid={!!fieldErrors.email}
-                              aria-describedby={fieldErrors.email ? "email-error" : undefined}
-                            />
-                            {fieldErrors.email && (
-                              <AlertCircle className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-destructive" />
-                            )}
+                    {lastEmail ? (
+                      <div className="mt-6 space-y-4">
+                        <div
+                          role="status"
+                          aria-live="polite"
+                          className="animate-fade-in rounded-2xl border border-emerald/30 bg-emerald/10 p-5"
+                        >
+                          <div className="flex items-start gap-3">
+                            <span className="grid size-9 shrink-0 place-items-center rounded-full bg-emerald/20">
+                              <CheckCircle2 className="size-5 text-emerald-foreground" aria-hidden="true" />
+                            </span>
+                            <div className="min-w-0 flex-1">
+                              <p className="font-display text-sm font-semibold text-emerald-foreground">
+                                Reset link sent
+                              </p>
+                              <p className="mt-0.5 text-xs text-muted-foreground">
+                                Check the inbox for
+                                {" "}
+                                <span className="break-all font-medium text-foreground">{lastEmail}</span>
+                              </p>
+                            </div>
                           </div>
-                        </label>
-                        {fieldErrors.email && (
-                          <p id="email-error" className="mt-1.5 flex items-center gap-1.5 text-xs text-destructive animate-fade-in">
-                            <AlertCircle className="size-3.5" />
-                            {fieldErrors.email}
-                          </p>
-                        )}
-                      </div>
 
-                      {info && (
-                        <div aria-live="polite" className="animate-fade-in rounded-lg border border-emerald/30 bg-emerald/10 px-3 py-3 text-sm text-emerald-foreground">
-                          <p className="flex items-start gap-2">
-                            <CheckCircle2 className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
-                            {info}
+                          <ol className="mt-4 space-y-2 border-t border-emerald/20 pt-4 text-xs text-muted-foreground">
+                            <li className="flex gap-2">
+                              <span className="grid size-4 shrink-0 place-items-center rounded-full bg-emerald/20 text-[10px] font-semibold text-emerald-foreground">1</span>
+                              Open the email from us — it usually arrives within a minute.
+                            </li>
+                            <li className="flex gap-2">
+                              <span className="grid size-4 shrink-0 place-items-center rounded-full bg-emerald/20 text-[10px] font-semibold text-emerald-foreground">2</span>
+                              Click <span className="font-medium text-foreground">Reset password</span>. The link expires in 60 minutes.
+                            </li>
+                            <li className="flex gap-2">
+                              <span className="grid size-4 shrink-0 place-items-center rounded-full bg-emerald/20 text-[10px] font-semibold text-emerald-foreground">3</span>
+                              Choose a new password and sign in.
+                            </li>
+                          </ol>
+
+                          <p className="mt-3 text-[11px] text-muted-foreground/80">
+                            Don't see it? Check your spam or promotions folder.
                           </p>
-                          {lastEmail && (
-                            <button
-                              type="button"
-                              onClick={() => handleResend()}
-                              disabled={busy || cooldown > 0}
-                              className="mt-2 w-full text-center text-xs font-medium text-emerald-foreground/80 transition-colors hover:text-emerald-foreground focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-ring/30 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
-                            >
-                              {cooldown > 0 ? `Resend available in ${cooldown}s` : "Didn't receive it? Resend email"}
-                            </button>
+                        </div>
+
+                        {error && (
+                          <div aria-live="assertive" className="animate-fade-in rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+                            {error}
+                          </div>
+                        )}
+
+                        <div className="grid gap-2 sm:grid-cols-2">
+                          <button
+                            type="button"
+                            onClick={() => handleResend()}
+                            disabled={busy || cooldown > 0}
+                            className="inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-background/60 px-4 py-2.5 text-sm font-medium text-foreground transition-all hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-60"
+                          >
+                            {busy ? (
+                              <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+                            ) : (
+                              <Mail className="size-4" aria-hidden="true" />
+                            )}
+                            {cooldown > 0 ? `Resend in ${cooldown}s` : "Resend email"}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setLastEmail(null);
+                              setInfo(null);
+                              setError(null);
+                              setEmail("");
+                            }}
+                            className="inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-background/60 px-4 py-2.5 text-sm font-medium text-foreground transition-all hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:outline-none"
+                          >
+                            Use a different email
+                          </button>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => setMode("signin")}
+                          className="inline-flex w-full items-center justify-center gap-1.5 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-ring/30 focus-visible:outline-none"
+                        >
+                          Return to sign in
+                        </button>
+                      </div>
+                    ) : (
+                      <form onSubmit={handleForgotSubmit} className="mt-6 space-y-4">
+                        <div>
+                          <label className="block">
+                            <span className="mb-1.5 block text-sm font-medium text-muted-foreground">Work email</span>
+                            <div className="group relative">
+                              <Mail className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-foreground" />
+                              <input
+                                type="email"
+                                autoComplete="email"
+                                value={email}
+                                onChange={(e) => {
+                                  setEmail(e.target.value);
+                                  if (fieldErrors.email) validateField("email", e.target.value);
+                                }}
+                                onBlur={() => {
+                                  setTouched((t) => ({ ...t, email: true }));
+                                  validateField("email", email);
+                                }}
+                                className={`${inputBase} ${fieldErrors.email ? inputError : inputNormal}`}
+                                placeholder="jane@acme.com"
+                                aria-invalid={!!fieldErrors.email}
+                                aria-describedby={fieldErrors.email ? "email-error" : undefined}
+                              />
+                              {fieldErrors.email && (
+                                <AlertCircle className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-destructive" />
+                              )}
+                            </div>
+                          </label>
+                          {fieldErrors.email && (
+                            <p id="email-error" className="mt-1.5 flex items-center gap-1.5 text-xs text-destructive animate-fade-in">
+                              <AlertCircle className="size-3.5" />
+                              {fieldErrors.email}
+                            </p>
                           )}
                         </div>
-                      )}
-                      {error && (
-                        <div aria-live="assertive" className="animate-fade-in rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
-                          {error}
-                        </div>
-                      )}
 
-                      <button
-                        type="submit"
-                        disabled={busy || (email === lastEmail && cooldown > 0)}
-                        className="group relative inline-flex w-full items-center justify-center gap-2 overflow-hidden rounded-xl bg-primary px-5 py-3 font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/25 active:scale-[0.99] disabled:opacity-70 focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:outline-none"
-                      >
-                        <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
-                        <span className="relative flex items-center gap-2">
-                          {busy ? <Loader2 className="size-4 animate-spin" aria-hidden="true" /> : <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />}
-                          Send reset link
-                        </span>
-                      </button>
-                    </form>
+                        {error && (
+                          <div aria-live="assertive" className="animate-fade-in rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+                            {error}
+                          </div>
+                        )}
+
+                        <button
+                          type="submit"
+                          disabled={busy}
+                          className="group relative inline-flex w-full items-center justify-center gap-2 overflow-hidden rounded-xl bg-primary px-5 py-3 font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/25 active:scale-[0.99] disabled:opacity-70 focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:outline-none"
+                        >
+                          <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+                          <span className="relative flex items-center gap-2">
+                            {busy ? <Loader2 className="size-4 animate-spin" aria-hidden="true" /> : <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />}
+                            Send reset link
+                          </span>
+                        </button>
+                      </form>
+                    )}
                   </>
                 ) : (
                   <>

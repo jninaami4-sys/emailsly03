@@ -14,7 +14,6 @@ import {
   Database,
   CheckCircle2,
   Star,
-  Sparkles,
   Download,
   Search,
 } from "lucide-react";
@@ -653,7 +652,7 @@ function Home() {
         <div className="mx-auto max-w-6xl overflow-hidden rounded-[3rem] bg-violet p-12 text-center md:p-24">
           <div className="pointer-events-none absolute inset-0 -z-10" />
           <div className="mx-auto mb-6 inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-white">
-            <Sparkles className="size-3" />
+            <Zap className="size-3" />
             Ready when you are
           </div>
           <h2 className="font-display text-4xl font-bold tracking-tight text-white md:text-6xl">

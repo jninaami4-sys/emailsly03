@@ -33,15 +33,29 @@ export const Route = createFileRoute("/reset-password")({
   component: ResetPasswordPage,
 });
 
+const COMMON_PASSWORDS = new Set([
+  "password", "password1", "password123", "passw0rd", "12345678", "123456789",
+  "qwerty123", "qwertyuiop", "iloveyou", "letmein1", "welcome1", "admin123",
+  "abc12345", "monkey123", "sunshine1", "football1", "princess1", "dragon123",
+]);
+
 const passwordSchema = z
   .object({
     password: z
       .string()
       .min(8, { message: "Password must be at least 8 characters" })
       .max(72, { message: "Password must be under 72 characters" })
+      .refine((v) => v === v.trim(), { message: "Password can't start or end with a space" })
+      .refine((v) => !/\s{2,}/.test(v), { message: "Password can't contain consecutive spaces" })
       .regex(/[A-Z]/, { message: "Add at least one uppercase letter" })
       .regex(/[a-z]/, { message: "Add at least one lowercase letter" })
-      .regex(/[0-9]/, { message: "Add at least one number" }),
+      .regex(/[0-9]/, { message: "Add at least one number" })
+      .refine((v) => !COMMON_PASSWORDS.has(v.toLowerCase()), {
+        message: "This password is too common — choose something more unique",
+      })
+      .refine((v) => !/(.)\1{3,}/.test(v), {
+        message: "Avoid repeating the same character 4+ times",
+      }),
     confirm: z.string(),
   })
   .refine((d) => d.password === d.confirm, {

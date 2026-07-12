@@ -102,9 +102,14 @@ function ResetPasswordPage() {
   const [linkState, setLinkState] = useState<LinkState>("checking");
   const [linkMessage, setLinkMessage] = useState<string | null>(null);
   const [redirectSeconds, setRedirectSeconds] = useState(3);
+  const [capsLock, setCapsLock] = useState(false);
   const { redirectTo } = Route.useSearch();
   const navigate = useNavigate();
   const safeRedirect = useMemo(() => sanitizeRedirect(redirectTo), [redirectTo]);
+  const isFormValid = useMemo(
+    () => passwordSchema.safeParse({ password, confirm }).success,
+    [password, confirm],
+  );
 
   useEffect(() => {
     const hash = window.location.hash.slice(1);

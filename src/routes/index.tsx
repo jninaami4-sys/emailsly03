@@ -440,8 +440,8 @@ function Home() {
 
         {/* Final CTA */}
         <section className="px-6 py-24">
-          <div className="relative mx-auto max-w-6xl overflow-hidden rounded-[2.5rem] border border-white/10 bg-gradient-to-br from-indigo/25 via-midnight-surface to-midnight p-12 text-center md:p-24">
-            <div className="pointer-events-none absolute -right-20 top-1/2 size-96 -translate-y-1/2 rounded-full bg-indigo/40 blur-3xl" />
+          <div className="relative mx-auto max-w-6xl overflow-hidden rounded-[2.5rem] border border-white/10 bg-gradient-to-br from-gold/25 via-obsidian-surface to-obsidian p-12 text-center md:p-24">
+            <div className="pointer-events-none absolute -right-20 top-1/2 size-96 -translate-y-1/2 rounded-full bg-gold/25 blur-3xl" />
             <div className="relative">
               <div className="mx-auto mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-foreground/80">
                 <Zap className="size-3 text-indigo" /> Ready when you are

@@ -9,20 +9,20 @@ import rawZoominfo from "@/lib/zoominfo-leads-raw.json";
 import { openOrderDrawer } from "@/components/site/OrderDrawer";
 
 import {
-  ArrowRight,
-  ArrowUpRight,
-  ShieldCheck,
-  Zap,
-  Database,
-  Star,
-  Download,
-  Search,
-  Sparkles,
-  Layers,
-  Timer,
-  Target,
-  Globe2,
-} from "lucide-react";
+  PremiumArrowRight,
+  PremiumArrowUpRight,
+  PremiumShieldCheck,
+  PremiumZap,
+  PremiumDatabase,
+  PremiumStar,
+  PremiumDownload,
+  PremiumSearch,
+  PremiumSparkles,
+  PremiumLayers,
+  PremiumTimer,
+  PremiumTarget,
+  PremiumGlobe,
+} from "@/components/site/PremiumIcons";
 import { Testimonials } from "@/components/site/Testimonials";
 
 type RawData = {

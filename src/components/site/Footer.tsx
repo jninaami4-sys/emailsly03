@@ -25,10 +25,10 @@ const legalLinks = [
 
 export function Footer() {
   return (
-    <footer className="relative overflow-hidden bg-ink text-white/70">
-      {/* soft violet glow, matches homepage editorial system */}
-      <div className="pointer-events-none absolute -left-32 top-0 size-96 rounded-full bg-violet/15 blur-[120px]" />
-      <div className="pointer-events-none absolute -right-32 bottom-0 size-96 rounded-full bg-coral/10 blur-[120px]" />
+    <footer className="relative overflow-hidden bg-obsidian text-white/70">
+      {/* soft gold glow, matches homepage editorial system */}
+      <div className="pointer-events-none absolute -left-32 top-0 size-96 rounded-full bg-gold/15 blur-[120px]" />
+      <div className="pointer-events-none absolute -right-32 bottom-0 size-96 rounded-full bg-amber-accent/10 blur-[120px]" />
 
       <div className="relative mx-auto max-w-7xl px-6 pt-24 pb-10">
         {/* Newsletter row */}

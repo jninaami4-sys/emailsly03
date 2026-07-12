@@ -43,10 +43,10 @@ export const Route = createFileRoute("/")({
 });
 
 const stats = [
+  { k: "500+", v: "clients served" },
+  { k: "100M+", v: "leads delivered" },
   { k: "24h", v: "avg. delivery" },
   { k: "99%", v: "deliverability" },
-  { k: "4.2K", v: "operators onboard" },
-  { k: "12M+", v: "leads shipped" },
 ];
 
 const faqs = [

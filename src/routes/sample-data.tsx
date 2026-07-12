@@ -2,18 +2,26 @@ import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteShell } from "@/components/site/SiteShell";
 import { Search, Download } from "lucide-react";
-import raw from "@/lib/apollo-leads-raw.json";
+import apolloRaw from "@/lib/apollo-leads-raw.json";
+import linkedinRaw from "@/lib/linkedin-leads-raw.json";
+import zoominfoRaw from "@/lib/zoominfo-leads-raw.json";
 
 type RawData = { headers: string[]; rows: Record<string, string | number | boolean>[] };
-const data = raw as RawData;
+
+const SOURCES = {
+  apollo: { label: "Apollo", data: apolloRaw as RawData, filename: "apollo_sample_leads.csv", accent: "violet" as const },
+  linkedin: { label: "LinkedIn", data: linkedinRaw as RawData, filename: "linkedin_sample_leads.csv", accent: "coral" as const },
+  zoominfo: { label: "ZoomInfo", data: zoominfoRaw as RawData, filename: "zoominfo_sample_leads.csv", accent: "emerald" as const },
+};
+type SourceKey = keyof typeof SOURCES;
 
 export const Route = createFileRoute("/sample-data")({
   head: () => ({
     meta: [
-      { title: "Sample Apollo Leads — LyraData" },
-      { name: "description", content: "Full raw sample export of verified Apollo B2B leads — all rows and columns." },
-      { property: "og:title", content: "Sample Apollo Leads — LyraData" },
-      { property: "og:description", content: "Full raw sample export of verified Apollo B2B leads." },
+      { title: "Sample Leads — Apollo, LinkedIn & ZoomInfo | LyraData" },
+      { name: "description", content: "Full raw sample exports from Apollo, LinkedIn Sales Navigator, and ZoomInfo — all rows and columns." },
+      { property: "og:title", content: "Sample Leads — Apollo, LinkedIn & ZoomInfo" },
+      { property: "og:description", content: "Full raw sample exports from Apollo, LinkedIn, and ZoomInfo." },
       { property: "og:type", content: "website" },
     ],
   }),
@@ -26,7 +34,9 @@ function csvEscape(v: unknown) {
 }
 
 function SampleDataPage() {
+  const [source, setSource] = useState<SourceKey>("apollo");
   const [q, setQ] = useState("");
+  const { data, filename, label } = SOURCES[source];
   const { headers, rows } = data;
 
   const filtered = useMemo(() => {
@@ -46,7 +56,7 @@ function SampleDataPage() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "apollo_sample_leads.csv";
+    a.download = filename;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -58,15 +68,39 @@ function SampleDataPage() {
       <section className="mx-auto max-w-[95rem] px-4 py-12 sm:py-16">
         <div className="mb-6 space-y-2">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-violet-soft px-3 py-1 text-xs font-bold uppercase tracking-widest text-violet">
-            Apollo sample export
+            Live sample exports
           </span>
           <h1 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">
-            Full raw Apollo leads sample
+            Raw sample leads from Apollo, LinkedIn & ZoomInfo
           </h1>
           <p className="max-w-3xl text-sm text-muted-foreground">
-            All {rows.length.toLocaleString()} rows and {headers.length} columns exactly as
-            exported from Apollo. Scroll horizontally and vertically to browse.
+            Real, unmodified exports straight from each source. Switch tabs to explore
+            every row and column just as we'd deliver it.
           </p>
+        </div>
+
+        <div className="mb-4 flex flex-wrap gap-2">
+          {(Object.keys(SOURCES) as SourceKey[]).map((key) => {
+            const s = SOURCES[key];
+            const active = key === source;
+            return (
+              <button
+                key={key}
+                onClick={() => { setSource(key); setQ(""); }}
+                className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition-colors ${
+                  active
+                    ? "border-transparent bg-foreground text-background"
+                    : "border-border bg-background text-foreground hover:bg-secondary"
+                }`}
+              >
+                <span className={`size-2 rounded-full bg-${s.accent}`} aria-hidden="true" />
+                {s.label}
+                <span className="rounded-full bg-secondary px-1.5 py-0.5 text-[10px] font-mono text-muted-foreground">
+                  {s.data.rows.length}
+                </span>
+              </button>
+            );
+          })}
         </div>
 
         <div className="mb-3 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 sm:flex sm:justify-between">
@@ -75,13 +109,13 @@ function SampleDataPage() {
             <input
               value={q}
               onChange={(e) => setQ(e.target.value)}
-              placeholder="Search any column..."
+              placeholder={`Search ${label} columns...`}
               className="h-9 w-full rounded-full border border-border bg-background pl-9 pr-4 text-sm sm:w-80"
             />
           </div>
           <div className="flex shrink-0 items-center gap-3">
             <span className="hidden text-xs text-muted-foreground sm:inline">
-              {filtered.length.toLocaleString()} / {rows.length.toLocaleString()} rows
+              {filtered.length.toLocaleString()} / {rows.length.toLocaleString()} rows · {headers.length} cols
             </span>
             <button
               onClick={download}
@@ -112,10 +146,7 @@ function SampleDataPage() {
               </thead>
               <tbody>
                 {filtered.map((row, i) => (
-                  <tr
-                    key={i}
-                    className={i % 2 === 0 ? "bg-background" : "bg-card"}
-                  >
+                  <tr key={i} className={i % 2 === 0 ? "bg-background" : "bg-card"}>
                     <td className="sticky left-0 z-10 whitespace-nowrap border-r border-border bg-inherit px-3 py-2 font-mono text-[10px] text-muted-foreground">
                       {i + 1}
                     </td>
@@ -130,12 +161,7 @@ function SampleDataPage() {
                           title={s}
                         >
                           {isUrl ? (
-                            <a
-                              href={s}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-violet hover:underline"
-                            >
+                            <a href={s} target="_blank" rel="noopener noreferrer" className="text-violet hover:underline">
                               {s}
                             </a>
                           ) : (
@@ -148,10 +174,7 @@ function SampleDataPage() {
                 ))}
                 {filtered.length === 0 && (
                   <tr>
-                    <td
-                      colSpan={headers.length + 1}
-                      className="px-4 py-10 text-center text-sm text-muted-foreground"
-                    >
+                    <td colSpan={headers.length + 1} className="px-4 py-10 text-center text-sm text-muted-foreground">
                       No rows match "{q}".
                     </td>
                   </tr>

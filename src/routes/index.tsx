@@ -444,7 +444,7 @@ function Home() {
             <div className="pointer-events-none absolute -right-20 top-1/2 size-96 -translate-y-1/2 rounded-full bg-indigo/40 blur-3xl" />
             <div className="relative">
               <div className="mx-auto mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-foreground/80">
-                <Zap className="size-3 text-indigo" /> Ready when you are
+                <PremiumZap className="size-3 text-indigo" /> Ready when you are
               </div>
               <h2 className="font-display text-4xl font-bold tracking-tight md:text-6xl">
                 Your next 10,000 leads <br className="hidden md:block" />are one slide away.
@@ -457,7 +457,7 @@ function Home() {
                   onClick={openOrderDrawer}
                   className="inline-flex items-center gap-2 rounded-full bg-white px-8 py-4 text-base font-bold text-indigo shadow-xl transition-transform hover:-translate-y-0.5"
                 >
-                  Build your order <ArrowUpRight className="size-4" />
+                  Build your order <PremiumArrowUpRight className="size-4" />
                 </button>
                 <Link
                   to="/contact"

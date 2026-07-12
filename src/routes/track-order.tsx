@@ -1,27 +1,102 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useMemo, useState } from "react";
 import { SiteShell } from "@/components/site/SiteShell";
-import { OrderForm } from "@/components/site/OrderForm";
-import { PricingCalculator } from "@/components/site/PricingCalculator";
 import { TrackOrderSkeleton } from "@/components/site/TrackOrderSkeleton";
 import { useHydrated } from "@/hooks/use-hydrated";
-import { Calculator, Sparkles } from "lucide-react";
+import {
+  Search,
+  Package,
+  Database,
+  ShieldCheck,
+  Truck,
+  Check,
+  Clock,
+  Mail,
+  Hash,
+  AlertCircle,
+  Sparkles,
+  ArrowRight,
+} from "lucide-react";
 
 export const Route = createFileRoute("/track-order")({
   head: () => ({
     meta: [
-      { title: "Place your order | LyraData" },
-      { name: "description", content: "Start a new LyraData order — verified B2B lead data delivered within 24 hours." },
-      { property: "og:title", content: "Place your order | LyraData" },
-      { property: "og:description", content: "Start a new LyraData order — verified B2B lead data delivered within 24 hours." },
+      { title: "Track your order | LyraData" },
+      { name: "description", content: "Look up your LyraData order status in real time using your order ID or email." },
+      { property: "og:title", content: "Track your order | LyraData" },
+      { property: "og:description", content: "Look up your LyraData order status in real time using your order ID or email." },
     ],
   }),
   pendingComponent: TrackOrderSkeleton,
-  component: OrderPage,
+  component: TrackOrderPage,
 });
 
+type Stage = {
+  key: string;
+  label: string;
+  desc: string;
+  icon: React.ComponentType<{ className?: string }>;
+};
 
-function OrderPage() {
+const STAGES: Stage[] = [
+  { key: "received", label: "Order received", desc: "We've got your brief and payment confirmation.", icon: Package },
+  { key: "sourcing", label: "Sourcing data", desc: "Our team is pulling your ICP from live databases.", icon: Database },
+  { key: "verifying", label: "Verifying leads", desc: "Emails validated through MillionVerifier at 99% accuracy.", icon: ShieldCheck },
+  { key: "delivered", label: "Delivered", desc: "Your export is ready — check your inbox for the download link.", icon: Truck },
+];
+
+type Lookup = {
+  id: string;
+  service: string;
+  quantity: string;
+  placed: string;
+  eta: string;
+  stageIndex: number;
+  email: string;
+};
+
+// Deterministic mock — same input always returns the same result
+function mockLookup(query: string): Lookup | null {
+  const q = query.trim().toLowerCase();
+  if (!q) return null;
+  const hash = Array.from(q).reduce((a, c) => a + c.charCodeAt(0), 0);
+  const stageIndex = hash % STAGES.length;
+  const services = ["Apollo B2B Data", "LinkedIn Lead Lists", "Hand-Picked Leads", "ZoomInfo Data"];
+  const quantities = ["5,000 leads", "10,000 leads", "25,000 leads", "50,000 leads"];
+  return {
+    id: q.startsWith("lyr-") ? query.trim().toUpperCase() : `LYR-${String(hash).padStart(6, "0")}`,
+    service: services[hash % services.length],
+    quantity: quantities[hash % quantities.length],
+    placed: new Date(Date.now() - (hash % 20) * 3600_000).toLocaleString(),
+    eta: new Date(Date.now() + ((STAGES.length - stageIndex) * 6) * 3600_000).toLocaleString(),
+    stageIndex,
+    email: q.includes("@") ? query.trim() : "you@company.com",
+  };
+}
+
+function TrackOrderPage() {
   const hydrated = useHydrated();
+  const [query, setQuery] = useState("");
+  const [submitted, setSubmitted] = useState<string | null>(null);
+  const [notFound, setNotFound] = useState(false);
+
+  const result = useMemo(() => (submitted ? mockLookup(submitted) : null), [submitted]);
+
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const q = query.trim();
+    if (!q) return;
+    // Simple guard: must look like an order ID (LYR-…) or an email
+    const isEmail = /\S+@\S+\.\S+/.test(q);
+    const isOrderId = /^lyr[-_]?\w{3,}$/i.test(q);
+    if (!isEmail && !isOrderId) {
+      setNotFound(true);
+      setSubmitted(null);
+      return;
+    }
+    setNotFound(false);
+    setSubmitted(q);
+  };
 
   if (!hydrated) {
     return (
@@ -33,80 +108,206 @@ function OrderPage() {
 
   return (
     <SiteShell>
-      <OrderForm />
+      <section className="relative overflow-hidden px-6 py-16 sm:py-24">
+        <div className="pointer-events-none absolute right-0 top-20 -z-10 size-96 rounded-full bg-violet/10 blur-3xl" />
+        <div className="pointer-events-none absolute -left-20 bottom-10 -z-10 size-96 rounded-full bg-coral/10 blur-3xl" />
 
-
-      {/* Pricing calculator section */}
-      <section className="relative overflow-hidden border-t border-border bg-gradient-to-b from-background to-violet-soft/30 px-6 py-24">
-        <div className="pointer-events-none absolute right-0 top-20 size-96 rounded-full bg-violet/10 blur-3xl" />
-        <div className="pointer-events-none absolute -left-20 bottom-10 size-96 rounded-full bg-coral/10 blur-3xl" />
-
-        <div className="relative mx-auto max-w-6xl">
-          <div className="grid items-center gap-12 lg:grid-cols-[1fr_1.1fr]">
-            {/* Left: pitch */}
-            <div>
-              <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-violet/20 bg-white/70 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-wider text-violet backdrop-blur">
-                <Calculator className="size-3" /> Instant pricing
-              </div>
-              <h2 className="font-display text-4xl font-bold leading-tight lg:text-5xl">
-                Not sure what to order?{" "}
-                <span className="relative inline-block">
-                  <span className="relative z-10 italic text-violet">Price it</span>
-                  <span className="absolute -bottom-1 left-0 h-3 w-full -rotate-1 bg-coral-soft" />
-                </span>{" "}
-                first.
-              </h2>
-              <p className="mt-4 text-lg text-muted-foreground">
-                Drag the slider, pick a service, and see the exact total in real time —
-                no hidden fees, no surprises at checkout.
-              </p>
-
-              <ul className="mt-8 space-y-4">
-                {[
-                  { k: "From $0.0035", v: "per verified Apollo lead" },
-                  { k: "24h delivery", v: "on every data order" },
-                  { k: "99% accuracy", v: "or we refill for free" },
-                ].map((r) => (
-                  <li key={r.k} className="flex items-start gap-3">
-                    <div className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg bg-violet text-white shadow-md shadow-violet/25">
-                      <Sparkles className="size-4" />
-                    </div>
-                    <div>
-                      <div className="font-display font-bold">{r.k}</div>
-                      <div className="text-sm text-muted-foreground">{r.v}</div>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-
-              <div className="mt-8 flex flex-wrap gap-3">
-                <Link
-                  to="/pricing"
-                  className="rounded-xl border border-border bg-white px-5 py-2.5 text-sm font-semibold shadow-sm transition-colors hover:border-violet hover:text-violet"
-                >
-                  See full pricing →
-                </Link>
-                <Link
-                  to="/contact"
-                  className="rounded-xl bg-ink px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-transform hover:scale-[1.02]"
-                >
-                  Talk to sales
-                </Link>
-              </div>
+        <div className="relative mx-auto max-w-4xl">
+          {/* Header */}
+          <div className="text-center">
+            <div className="inline-flex items-center gap-2 rounded-full border border-violet/20 bg-violet-soft px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-violet">
+              <Sparkles className="size-3" /> Order tracking
             </div>
+            <h1 className="mt-4 font-display text-3xl font-bold tracking-tight sm:text-5xl">
+              Where's my <span className="text-violet">order</span>?
+            </h1>
+            <p className="mx-auto mt-4 max-w-xl text-base text-muted-foreground sm:text-lg">
+              Enter your order ID (from your confirmation email) or the email you used to
+              place the order — we'll show live status in seconds.
+            </p>
+          </div>
 
-            {/* Right: calculator with layered glow */}
-            <div className="relative">
-              <div className="absolute -inset-4 rounded-[2rem] bg-gradient-to-br from-violet/30 via-coral/20 to-transparent blur-2xl" />
-              <div className="relative rounded-[1.75rem] bg-gradient-to-br from-violet to-coral p-[2px] shadow-2xl shadow-violet/20">
-                <div className="rounded-[1.65rem] bg-card">
-                  <PricingCalculator compact />
+          {/* Lookup form */}
+          <form
+            onSubmit={onSubmit}
+            className="mx-auto mt-8 max-w-2xl rounded-3xl border border-border bg-card p-3 shadow-[0_20px_60px_-30px_rgba(24,24,60,0.25)] sm:p-4"
+          >
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-stretch">
+              <div className="relative flex-1">
+                <Search className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                <input
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="LYR-000123  or  you@company.com"
+                  className="w-full rounded-2xl border border-input bg-background py-3.5 pl-11 pr-4 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-violet focus:ring-4 focus:ring-violet/10 sm:text-base"
+                />
+              </div>
+              <button
+                type="submit"
+                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-violet px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-violet/30 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-violet/40 sm:text-base"
+              >
+                Track order <ArrowRight className="size-4" />
+              </button>
+            </div>
+            <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 px-2 font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+              <span className="inline-flex items-center gap-1.5"><Hash className="size-3" /> Order ID</span>
+              <span className="inline-flex items-center gap-1.5"><Mail className="size-3" /> Email</span>
+              <span className="ml-auto inline-flex items-center gap-1.5 text-emerald"><ShieldCheck className="size-3" /> Private lookup</span>
+            </div>
+          </form>
+
+          {/* Not found state */}
+          {notFound && (
+            <div className="mx-auto mt-6 flex max-w-2xl items-start gap-3 rounded-2xl border border-coral/30 bg-coral-soft/60 p-4 text-left">
+              <AlertCircle className="mt-0.5 size-5 shrink-0 text-coral" />
+              <div className="text-sm">
+                <div className="font-semibold text-foreground">We couldn't find that order</div>
+                <div className="mt-1 text-muted-foreground">
+                  Double-check your order ID (starts with <span className="font-mono font-semibold">LYR-</span>) or use the email you paid with.
+                  Still stuck? <Link to="/contact" className="font-semibold text-violet hover:underline">Contact support</Link>.
                 </div>
               </div>
             </div>
-          </div>
+          )}
+
+          {/* Result */}
+          {result && (
+            <div className="mt-10 space-y-6">
+              {/* Summary card */}
+              <div className="overflow-hidden rounded-3xl border border-border bg-card shadow-[0_20px_60px_-30px_rgba(24,24,60,0.25)]">
+                <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border bg-secondary/40 px-5 py-4 sm:px-8">
+                  <div>
+                    <div className="font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Order</div>
+                    <div className="font-display text-lg font-bold tracking-tight sm:text-xl">{result.id}</div>
+                  </div>
+                  <StatusPill stage={STAGES[result.stageIndex]} isComplete={result.stageIndex === STAGES.length - 1} />
+                </div>
+                <div className="grid gap-4 px-5 py-5 text-sm sm:grid-cols-4 sm:px-8 sm:py-6">
+                  <InfoCell label="Service" value={result.service} />
+                  <InfoCell label="Quantity" value={result.quantity} />
+                  <InfoCell label="Placed" value={result.placed} />
+                  <InfoCell label="Est. delivery" value={result.eta} />
+                </div>
+              </div>
+
+              {/* Timeline */}
+              <div className="rounded-3xl border border-border bg-card p-5 shadow-[0_20px_60px_-30px_rgba(24,24,60,0.25)] sm:p-8">
+                <div className="mb-6 flex items-center justify-between">
+                  <h2 className="font-display text-lg font-bold sm:text-xl">Progress</h2>
+                  <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                    Step {result.stageIndex + 1} of {STAGES.length}
+                  </span>
+                </div>
+
+                {/* Progress bar */}
+                <div className="mb-8 h-2 w-full overflow-hidden rounded-full bg-secondary">
+                  <div
+                    className="h-full rounded-full bg-gradient-to-r from-violet to-coral transition-all"
+                    style={{ width: `${((result.stageIndex + 1) / STAGES.length) * 100}%` }}
+                  />
+                </div>
+
+                <ol className="space-y-5">
+                  {STAGES.map((s, i) => {
+                    const done = i < result.stageIndex;
+                    const active = i === result.stageIndex;
+                    const Icon = s.icon;
+                    return (
+                      <li key={s.key} className="flex items-start gap-4">
+                        <div
+                          className={`grid size-10 shrink-0 place-items-center rounded-xl border transition-all ${
+                            done
+                              ? "border-emerald/30 bg-emerald-soft text-emerald"
+                              : active
+                                ? "border-violet/30 bg-violet text-white shadow-lg shadow-violet/25"
+                                : "border-border bg-secondary text-muted-foreground"
+                          }`}
+                        >
+                          {done ? <Check className="size-4" /> : <Icon className="size-4" />}
+                        </div>
+                        <div className="min-w-0 flex-1 pt-0.5">
+                          <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                            <span className={`text-sm font-semibold sm:text-base ${active ? "text-foreground" : done ? "text-foreground" : "text-muted-foreground"}`}>
+                              {s.label}
+                            </span>
+                            {active && (
+                              <span className="inline-flex items-center gap-1 rounded-full bg-violet-soft px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-widest text-violet">
+                                <Clock className="size-3" /> In progress
+                              </span>
+                            )}
+                            {done && (
+                              <span className="inline-flex items-center gap-1 rounded-full bg-emerald-soft px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-widest text-emerald">
+                                <Check className="size-3" /> Done
+                              </span>
+                            )}
+                          </div>
+                          <p className="mt-1 text-sm text-muted-foreground">{s.desc}</p>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ol>
+
+                <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-border pt-5 text-sm">
+                  <div className="text-muted-foreground">
+                    Updates are sent to <span className="font-semibold text-foreground">{result.email}</span>.
+                  </div>
+                  <Link
+                    to="/contact"
+                    className="inline-flex items-center gap-2 rounded-xl border border-border bg-background px-4 py-2 font-semibold transition-colors hover:border-violet hover:text-violet"
+                  >
+                    Need help? <ArrowRight className="size-4" />
+                  </Link>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Empty state (before search) */}
+          {!result && !notFound && (
+            <div className="mx-auto mt-10 grid max-w-3xl gap-3 sm:grid-cols-3">
+              {[
+                { icon: Hash, title: "Find your ID", desc: "It's in the confirmation email subject line (LYR-…)." },
+                { icon: Clock, title: "Live status", desc: "See exactly which stage your order is in right now." },
+                { icon: ShieldCheck, title: "No account needed", desc: "Quick lookup — no login, no password reset dance." },
+              ].map(({ icon: Icon, title, desc }) => (
+                <div key={title} className="rounded-2xl border border-border bg-card/60 p-4 backdrop-blur">
+                  <div className="mb-2 grid size-9 place-items-center rounded-lg bg-violet-soft text-violet">
+                    <Icon className="size-4" />
+                  </div>
+                  <div className="text-sm font-semibold">{title}</div>
+                  <div className="mt-1 text-xs text-muted-foreground">{desc}</div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
     </SiteShell>
+  );
+}
+
+function StatusPill({ stage, isComplete }: { stage: Stage; isComplete: boolean }) {
+  const Icon = isComplete ? Check : stage.icon;
+  return (
+    <span
+      className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 font-mono text-[11px] font-bold uppercase tracking-widest ${
+        isComplete
+          ? "bg-emerald-soft text-emerald"
+          : "bg-violet-soft text-violet"
+      }`}
+    >
+      <Icon className="size-3.5" />
+      {isComplete ? "Delivered" : stage.label}
+    </span>
+  );
+}
+
+function InfoCell({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <div className="font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{label}</div>
+      <div className="mt-1 text-sm font-semibold text-foreground">{value}</div>
+    </div>
   );
 }

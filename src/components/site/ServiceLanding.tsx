@@ -118,7 +118,7 @@ export function ServiceLanding(p: ServicePageProps) {
           <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
             <Link
               to="/contact"
-              className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-gold px-8 py-4 text-base font-semibold text-black shadow-lg shadow-gold/25 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-gold/30 sm:w-auto"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-violet px-8 py-4 text-base font-semibold text-white shadow-lg shadow-violet/25 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-violet/30 sm:w-auto"
             >
               Get a Quote <ArrowRight className="size-4" />
             </Link>
@@ -288,7 +288,7 @@ export function ServiceLanding(p: ServicePageProps) {
               &ldquo;{testimonials[0].quote}&rdquo;
             </blockquote>
             <div className="mt-10 flex items-center justify-center gap-3">
-              <div className="grid size-12 place-items-center rounded-full bg-gold font-bold text-black">
+              <div className="grid size-12 place-items-center rounded-full bg-violet font-bold text-white">
                 {testimonials[0].initials}
               </div>
               <div className="text-left">

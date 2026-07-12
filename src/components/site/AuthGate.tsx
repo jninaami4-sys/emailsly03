@@ -35,7 +35,7 @@ export function AuthGate({ children }: { children: ReactNode }) {
           <Link
             to="/auth"
             search={{ mode: "signup", redirect: pathname }}
-            className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gold px-5 py-3 font-semibold text-black shadow-lg shadow-gold/25 transition-transform hover:scale-[1.01]"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-violet px-5 py-3 font-semibold text-white shadow-lg shadow-violet/25 transition-transform hover:scale-[1.01]"
           >
             Get started — it's free
           </Link>

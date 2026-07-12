@@ -240,7 +240,7 @@ export function OrderBuilder() {
                         onClick={() => setQuantity(q)}
                         className={`rounded-full px-3 py-1.5 font-mono text-[11px] font-bold uppercase transition-all ${
                           effectiveQty === q
-                            ? "bg-gold text-black shadow-sm shadow-gold/30"
+                            ? "bg-violet text-white shadow-sm shadow-violet/30"
                             : "bg-background text-muted-foreground hover:bg-secondary hover:text-foreground"
                         }`}
                       >
@@ -359,7 +359,7 @@ export function OrderBuilder() {
 
           {/* RIGHT: order summary */}
           <div className="lg:sticky lg:top-24 lg:self-start">
-            <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-obsidian-surface p-6 text-white shadow-[0_30px_80px_-30px_rgba(0,0,0,0.5)] md:p-8">
+            <div className="relative overflow-hidden rounded-3xl border border-ink/10 bg-ink p-6 text-white shadow-[0_30px_80px_-30px_rgba(24,24,60,0.5)] md:p-8">
               {/* corner glow */}
               <div className="pointer-events-none absolute -right-16 -top-16 size-64 rounded-full bg-violet/25 blur-3xl" />
               <div className="pointer-events-none absolute -bottom-16 -left-16 size-64 rounded-full bg-coral/15 blur-3xl" />
@@ -448,7 +448,7 @@ export function OrderBuilder() {
               <button
                 type="button"
                 disabled={!agree}
-                className="relative mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gold px-6 py-4 text-sm font-bold text-black shadow-lg shadow-gold/30 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-gold/40 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
+                className="relative mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-violet px-6 py-4 text-sm font-bold text-white shadow-lg shadow-violet/30 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-violet/40 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
               >
                 Checkout with Stripe <ArrowRight className="size-4" />
               </button>

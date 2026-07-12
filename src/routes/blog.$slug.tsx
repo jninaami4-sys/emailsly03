@@ -34,7 +34,7 @@ export const Route = createFileRoute("/blog/$slug")({
         </p>
         <Link
           to="/blog"
-          className="mt-8 inline-flex items-center gap-2 rounded-full bg-gold px-6 py-3 font-semibold text-black shadow-lg shadow-gold/25"
+          className="mt-8 inline-flex items-center gap-2 rounded-full bg-violet px-6 py-3 font-semibold text-white shadow-lg shadow-violet/25"
         >
           <ArrowLeft className="size-4" /> Back to blog
         </Link>
@@ -48,7 +48,7 @@ export const Route = createFileRoute("/blog/$slug")({
           <h1 className="font-display text-3xl font-bold">Something went wrong</h1>
           <button
             onClick={reset}
-            className="mt-6 rounded-full bg-gold px-6 py-3 font-semibold text-black"
+            className="mt-6 rounded-full bg-violet px-6 py-3 font-semibold text-white"
           >
             Retry
           </button>
@@ -86,7 +86,7 @@ function BlogPost() {
           </h1>
           <p className="mt-6 text-lg leading-relaxed text-muted-foreground md:text-xl">{post.excerpt}</p>
           <div className="mt-8 flex items-center gap-3 border-t border-border pt-6">
-            <div className="grid size-11 place-items-center rounded-full bg-gold font-bold text-black">
+            <div className="grid size-11 place-items-center rounded-full bg-violet font-bold text-white">
               {post.author.initials}
             </div>
             <div>
@@ -128,7 +128,7 @@ function BlogPost() {
         {/* Author card */}
         <div className="mx-auto mt-16 max-w-3xl rounded-3xl border border-border bg-card p-8">
           <div className="flex items-center gap-4">
-            <div className="grid size-14 place-items-center rounded-full bg-gold font-bold text-black">
+            <div className="grid size-14 place-items-center rounded-full bg-violet font-bold text-white">
               {post.author.initials}
             </div>
             <div>

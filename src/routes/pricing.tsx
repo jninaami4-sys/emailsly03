@@ -127,7 +127,7 @@ function Pricing() {
           <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
             <a
               href="#calculator"
-              className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-gold px-8 py-4 text-base font-semibold text-black shadow-lg shadow-gold/25 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-gold/30 sm:w-auto"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-violet px-8 py-4 text-base font-semibold text-white shadow-lg shadow-violet/25 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-violet/30 sm:w-auto"
             >
               Calculate Your Price <ArrowRight className="size-4" />
             </a>
@@ -162,12 +162,12 @@ function Pricing() {
                 key={t.id}
                 className={`relative flex flex-col rounded-2xl border p-7 transition-all hover:-translate-y-0.5 ${
                   t.popular
-                    ? "border-violet/30 bg-card shadow-xl shadow-gold/10 ring-1 ring-violet/20"
+                    ? "border-violet/30 bg-card shadow-xl shadow-violet/10 ring-1 ring-violet/20"
                     : "border-border bg-secondary/30 hover:border-violet/20 hover:bg-card"
                 }`}
               >
                 {t.popular && (
-                  <span className="absolute -top-3 left-6 rounded-full bg-gold px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-black shadow-md shadow-gold/25">
+                  <span className="absolute -top-3 left-6 rounded-full bg-violet px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-white shadow-md shadow-violet/25">
                     Most popular
                   </span>
                 )}
@@ -200,8 +200,8 @@ function Pricing() {
                   href="#calculator"
                   className={`mt-6 inline-flex w-full items-center justify-center rounded-xl py-3 text-sm font-semibold transition-colors ${
                     t.popular
-                      ? "bg-gold text-black shadow-md shadow-gold/20 hover:bg-amber-accent"
-                      : "bg-ink text-white hover:bg-gold hover:text-black"
+                      ? "bg-violet text-white shadow-md shadow-violet/20 hover:bg-violet/90"
+                      : "bg-ink text-white hover:bg-violet"
                   }`}
                 >
                   Get started

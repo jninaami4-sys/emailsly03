@@ -143,7 +143,7 @@ export function PricingCalculator({ compact = false, defaultId }: { compact?: bo
           </div>
           <Link
             to="/contact"
-            className="rounded-xl bg-gold px-6 py-3 font-semibold text-black shadow-lg shadow-gold/20 transition-transform hover:scale-[1.02]"
+            className="rounded-xl bg-violet px-6 py-3 font-semibold text-white shadow-lg shadow-violet/20 transition-transform hover:scale-[1.02]"
           >
             Start order
           </Link>

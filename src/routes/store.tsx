@@ -67,7 +67,7 @@ function Store() {
                 onClick={() => setCategory(c)}
                 className={`rounded-full border px-3.5 py-1.5 text-xs font-semibold transition-colors ${
                   category === c
-                    ? "border-gold bg-gold text-black"
+                    ? "border-violet bg-violet text-white"
                     : "border-border bg-card text-muted-foreground hover:border-foreground/20 hover:text-foreground"
                 }`}
               >

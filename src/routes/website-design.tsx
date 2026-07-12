@@ -36,7 +36,7 @@ function WebsiteDesign() {
           <div className="mt-8">
             <Link
               to="/contact"
-              className="inline-flex items-center gap-2 rounded-xl bg-gold px-6 py-3 font-semibold text-black shadow-lg shadow-gold/20"
+              className="inline-flex items-center gap-2 rounded-xl bg-violet px-6 py-3 font-semibold text-white shadow-lg shadow-violet/20"
             >
               Start a project <ArrowRight className="size-4" />
             </Link>
@@ -53,10 +53,10 @@ function WebsiteDesign() {
           ].map((t) => (
             <div
               key={t.title}
-              className={`relative rounded-2xl border p-6 ${t.popular ? "border-violet shadow-xl shadow-gold/10" : "border-border"} bg-background`}
+              className={`relative rounded-2xl border p-6 ${t.popular ? "border-violet shadow-xl shadow-violet/10" : "border-border"} bg-background`}
             >
               {t.popular && (
-                <span className="absolute -top-3 left-6 rounded-full bg-gold px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-wider text-black">
+                <span className="absolute -top-3 left-6 rounded-full bg-violet px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-wider text-white">
                   Most popular
                 </span>
               )}
@@ -72,7 +72,7 @@ function WebsiteDesign() {
               </ul>
               <Link
                 to="/contact"
-                className="mt-6 block w-full rounded-xl bg-ink py-2.5 text-center text-sm font-semibold text-black hover:bg-gold"
+                className="mt-6 block w-full rounded-xl bg-ink py-2.5 text-center text-sm font-semibold text-white hover:bg-violet"
               >
                 Get in touch
               </Link>

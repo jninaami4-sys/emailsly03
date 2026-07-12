@@ -49,7 +49,7 @@ export function CartDrawer() {
             </div>
             <button
               onClick={close}
-              className="rounded-xl bg-ink px-5 py-2.5 text-sm font-medium text-black hover:bg-gold"
+              className="rounded-xl bg-ink px-5 py-2.5 text-sm font-medium text-white hover:bg-violet"
             >
               Browse store
             </button>

@@ -29,55 +29,7 @@ type RawData = {
 const apolloData = rawApollo as RawData;
 const linkedinData = rawLinkedin as RawData;
 const zoominfoData = rawZoominfo as RawData;
-
-type SourceKey = "apollo" | "linkedin" | "zoominfo";
-type SourceMeta = {
-  key: SourceKey;
-  label: string;
-  file: string;
-  accent: "indigo" | "coral" | "emerald";
-  rows: number;
-  cols: number;
-};
-
-const SOURCES: SourceMeta[] = [
-  { key: "apollo", label: "Apollo", file: "apollo_sample_leads.csv", accent: "indigo", rows: apolloData.rows.length, cols: apolloData.headers.length },
-  { key: "linkedin", label: "LinkedIn", file: "linkedin_sales_nav.csv", accent: "coral", rows: linkedinData.rows.length, cols: linkedinData.headers.length },
-  { key: "zoominfo", label: "ZoomInfo", file: "zoominfo_export.csv", accent: "emerald", rows: zoominfoData.rows.length, cols: zoominfoData.headers.length },
-];
-
-const ACCENT: Record<SourceMeta["accent"], { dot: string; text: string; ring: string; solid: string }> = {
-  indigo: { dot: "bg-indigo", text: "text-indigo", ring: "ring-indigo/40", solid: "bg-indigo text-white" },
-  coral: { dot: "bg-coral", text: "text-coral", ring: "ring-coral/40", solid: "bg-coral text-white" },
-  emerald: { dot: "bg-emerald", text: "text-emerald", ring: "ring-emerald/40", solid: "bg-emerald text-white" },
-};
-
-const SOURCE_DATA: Record<SourceKey, RawData> = {
-  apollo: apolloData,
-  linkedin: linkedinData,
-  zoominfo: zoominfoData,
-};
-
-const csvEscape = (v: unknown) => {
-  const s = v === null || v === undefined ? "" : String(v);
-  return /[",\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
-};
-
-const downloadCsv = (filename: string, data: RawData) => {
-  const lines = [
-    data.headers.map(csvEscape).join(","),
-    ...data.rows.map((r) => data.headers.map((h) => csvEscape(r[h])).join(",")),
-  ];
-  const blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8;" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-};
+const totalRows = apolloData.rows.length + linkedinData.rows.length + zoominfoData.rows.length;
 
 export const Route = createFileRoute("/")({
   head: () => ({

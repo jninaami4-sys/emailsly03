@@ -120,11 +120,11 @@ export function OrderBuilder() {
   const goPrev = () => setStep((s) => Math.max(1, s - 1));
 
   return (
-    <section id="order" className="relative overflow-hidden px-6 py-24 lg:py-32">
+    <section id="order" className="relative overflow-hidden px-4 py-6 sm:px-6 sm:py-10 lg:py-12">
       {/* Ambient background */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 mx-auto h-[560px] max-w-7xl bg-[radial-gradient(ellipse_at_top,var(--violet-soft),transparent_70%)]" />
-      <div className="pointer-events-none absolute bottom-0 right-0 -z-10 h-96 w-96 rounded-full bg-coral-soft blur-3xl" />
-      <div className="pointer-events-none absolute -left-24 top-1/3 -z-10 h-96 w-96 rounded-full bg-violet-soft blur-3xl" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 mx-auto h-[360px] max-w-7xl bg-[radial-gradient(ellipse_at_top,var(--violet-soft),transparent_70%)] sm:h-[560px]" />
+      <div className="pointer-events-none absolute bottom-0 right-0 -z-10 h-64 w-64 rounded-full bg-coral-soft blur-3xl sm:h-96 sm:w-96" />
+      <div className="pointer-events-none absolute -left-16 top-1/3 -z-10 h-64 w-64 rounded-full bg-violet-soft blur-3xl sm:-left-24 sm:h-96 sm:w-96" />
 
       <div className="mx-auto max-w-7xl">
         {/* Header */}
@@ -135,23 +135,23 @@ export function OrderBuilder() {
               Guided order builder
             </span>
           </div>
-          <h2 className="mt-6 font-display text-4xl font-bold leading-[1.05] tracking-tighter md:text-6xl">
+          <h2 className="mt-3 font-display text-2xl font-bold leading-[1.05] tracking-tighter sm:text-4xl md:text-5xl">
             Build your order, <span className="text-violet">step by step</span>.
           </h2>
-          <p className="mt-5 text-lg leading-relaxed text-muted-foreground">
+          <p className="mt-3 text-sm leading-relaxed text-muted-foreground sm:text-base">
             Four quick steps. No hidden fees, no back-and-forth — see your exact price the moment you finish.
           </p>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 font-mono text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
-            <span className="inline-flex items-center gap-2">
-              <BadgeCheck className="size-4 text-emerald" /> 99% verified data
+          <div className="mt-4 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 font-mono text-[10px] font-semibold uppercase tracking-widest text-muted-foreground sm:gap-x-8 sm:gap-y-3 sm:text-[11px]">
+            <span className="inline-flex items-center gap-1.5 sm:gap-2">
+              <BadgeCheck className="size-3.5 text-emerald sm:size-4" /> 99% verified data
             </span>
             <span className="hidden size-1 rounded-full bg-border sm:inline-block" />
-            <span className="inline-flex items-center gap-2">
-              <Clock className="size-4 text-violet" /> Delivered in ≤24h
+            <span className="inline-flex items-center gap-1.5 sm:gap-2">
+              <Clock className="size-3.5 text-violet sm:size-4" /> Delivered in ≤24h
             </span>
             <span className="hidden size-1 rounded-full bg-border sm:inline-block" />
-            <span className="inline-flex items-center gap-2">
-              <ShieldCheck className="size-4 text-coral" /> Pay after preview
+            <span className="inline-flex items-center gap-1.5 sm:gap-2">
+              <ShieldCheck className="size-3.5 text-coral sm:size-4" /> Pay after preview
             </span>
           </div>
         </div>

@@ -1,8 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowRight, Loader2, Lock, CheckCircle2, AlertCircle, Eye, EyeOff } from "lucide-react";
+import { ArrowRight, Loader2, Lock, CheckCircle2, AlertCircle, Eye, EyeOff, Check, X } from "lucide-react";
 
 export const Route = createFileRoute("/reset-password")({
   head: () => ({
@@ -14,47 +14,151 @@ export const Route = createFileRoute("/reset-password")({
   component: ResetPasswordPage,
 });
 
-const passwordSchema = z.object({
-  password: z.string().min(6, { message: "At least 6 characters" }).max(72),
-});
+const passwordSchema = z
+  .object({
+    password: z
+      .string()
+      .min(8, { message: "Password must be at least 8 characters" })
+      .max(72, { message: "Password must be under 72 characters" })
+      .regex(/[A-Z]/, { message: "Add at least one uppercase letter" })
+      .regex(/[a-z]/, { message: "Add at least one lowercase letter" })
+      .regex(/[0-9]/, { message: "Add at least one number" }),
+    confirm: z.string(),
+  })
+  .refine((d) => d.password === d.confirm, {
+    path: ["confirm"],
+    message: "Passwords do not match",
+  });
+
+type LinkState = "checking" | "valid" | "invalid" | "expired" | "used";
+
+function getPasswordChecks(pw: string) {
+  return [
+    { key: "len", label: "At least 8 characters", passed: pw.length >= 8 },
+    { key: "upper", label: "One uppercase letter", passed: /[A-Z]/.test(pw) },
+    { key: "lower", label: "One lowercase letter", passed: /[a-z]/.test(pw) },
+    { key: "num", label: "One number", passed: /[0-9]/.test(pw) },
+    { key: "sym", label: "One symbol (recommended)", passed: /[^A-Za-z0-9]/.test(pw), optional: true },
+  ] as const;
+}
+
+function scorePassword(pw: string) {
+  const checks = getPasswordChecks(pw);
+  const required = checks.filter((c) => !("optional" in c) || !c.optional);
+  const passedReq = required.filter((c) => c.passed).length;
+  const bonus = pw.length >= 12 ? 1 : 0;
+  const sym = /[^A-Za-z0-9]/.test(pw) ? 1 : 0;
+  const raw = passedReq + bonus + sym; // 0..6
+  const pct = Math.min(100, Math.round((raw / 6) * 100));
+  let label = "Too weak";
+  let tone = "bg-destructive";
+  if (raw >= 6) { label = "Strong"; tone = "bg-emerald-500"; }
+  else if (raw >= 4) { label = "Good"; tone = "bg-primary"; }
+  else if (raw >= 2) { label = "Weak"; tone = "bg-amber-500"; }
+  return { pct, label, tone };
+}
 
 function ResetPasswordPage() {
   const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [errors, setErrors] = useState<{ password?: string; confirm?: string; form?: string }>({});
+  const [touched, setTouched] = useState<{ password?: boolean; confirm?: boolean }>({});
   const [success, setSuccess] = useState(false);
-  const [recovery, setRecovery] = useState(false);
+  const [linkState, setLinkState] = useState<LinkState>("checking");
+  const [linkMessage, setLinkMessage] = useState<string | null>(null);
 
   useEffect(() => {
     const hash = window.location.hash.slice(1);
     const params = new URLSearchParams(hash);
+    const errCode = params.get("error_code") || params.get("error");
+    const errDesc = params.get("error_description");
     const type = params.get("type");
     const accessToken = params.get("access_token");
-    setRecovery(type === "recovery" && !!accessToken);
-  }, []);
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setError(null);
-    const parsed = passwordSchema.safeParse({ password });
-    if (!parsed.success) {
-      setError(parsed.error.issues[0].message);
+    if (errCode) {
+      const desc = errDesc ? decodeURIComponent(errDesc.replace(/\+/g, " ")) : "";
+      if (/expired/i.test(errCode) || /expired/i.test(desc)) {
+        setLinkState("expired");
+        setLinkMessage("This password reset link has expired.");
+      } else if (/used|already/i.test(desc)) {
+        setLinkState("used");
+        setLinkMessage("This reset link has already been used.");
+      } else {
+        setLinkState("invalid");
+        setLinkMessage(desc || "This password reset link is invalid.");
+      }
       return;
     }
 
+    if (type === "recovery" && accessToken) {
+      setLinkState("valid");
+      return;
+    }
+
+    // Fallback: PASSWORD_RECOVERY event fires if Supabase already parsed the hash.
+    const { data: sub } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "PASSWORD_RECOVERY") setLinkState("valid");
+    });
+    const timer = window.setTimeout(() => {
+      setLinkState((s) => (s === "checking" ? "invalid" : s));
+    }, 1200);
+
+    return () => {
+      sub.subscription.unsubscribe();
+      window.clearTimeout(timer);
+    };
+  }, []);
+
+  const checks = useMemo(() => getPasswordChecks(password), [password]);
+  const strength = useMemo(() => scorePassword(password), [password]);
+
+  function validate(field?: "password" | "confirm") {
+    const parsed = passwordSchema.safeParse({ password, confirm });
+    const next: typeof errors = {};
+    if (!parsed.success) {
+      for (const issue of parsed.error.issues) {
+        const key = issue.path[0] as "password" | "confirm";
+        if (!next[key]) next[key] = issue.message;
+      }
+    }
+    setErrors((prev) => {
+      if (field) return { ...prev, [field]: next[field], form: undefined };
+      return next;
+    });
+    return parsed.success;
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setTouched({ password: true, confirm: true });
+    if (!validate()) return;
+
     setBusy(true);
     try {
-      const { error } = await supabase.auth.updateUser({ password: parsed.data.password });
-      if (error) throw error;
+      const { error } = await supabase.auth.updateUser({ password });
+      if (error) {
+        const msg = error.message || "";
+        if (/same_password|different from the old/i.test(msg)) {
+          setErrors({ password: "New password must be different from your current password" });
+        } else if (/expired|invalid|session/i.test(msg)) {
+          setLinkState("expired");
+          setLinkMessage("Your reset session has expired. Please request a new link.");
+        } else {
+          setErrors({ form: msg || "Something went wrong. Please try again." });
+        }
+        return;
+      }
       setSuccess(true);
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Something went wrong";
-      setError(message);
+      setErrors({ form: err instanceof Error ? err.message : "Something went wrong" });
     } finally {
       setBusy(false);
     }
   }
+
+  const invalidLink = linkState === "invalid" || linkState === "expired" || linkState === "used";
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-gradient-to-br from-background to-muted text-foreground">
@@ -89,12 +193,22 @@ function ResetPasswordPage() {
                 LYRA<span className="text-muted-foreground">DATA</span>
               </Link>
 
-              {!recovery ? (
+              {linkState === "checking" ? (
+                <div className="mt-8 flex items-center gap-2 text-sm text-muted-foreground">
+                  <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+                  Verifying your reset link…
+                </div>
+              ) : invalidLink ? (
                 <div className="mt-8 space-y-4">
-                  <div aria-live="polite" className="rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+                  <div role="alert" className="rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
                     <p className="flex items-start gap-2">
                       <AlertCircle className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
-                      This password reset link is invalid or expired. Please request a new one.
+                      <span>
+                        <strong className="block font-semibold">
+                          {linkState === "expired" ? "Link expired" : linkState === "used" ? "Link already used" : "Invalid link"}
+                        </strong>
+                        {linkMessage ?? "This password reset link is invalid or expired."}
+                      </span>
                     </p>
                   </div>
                   <Link
@@ -107,7 +221,7 @@ function ResetPasswordPage() {
                 </div>
               ) : success ? (
                 <div className="mt-8 space-y-6">
-                  <div aria-live="polite" className="rounded-lg border border-emerald/30 bg-emerald/10 px-4 py-3 text-sm text-emerald-foreground">
+                  <div role="status" className="rounded-lg border border-emerald/30 bg-emerald/10 px-4 py-3 text-sm text-emerald-foreground">
                     <p className="flex items-start gap-2">
                       <CheckCircle2 className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
                       Your password has been updated successfully.
@@ -126,20 +240,35 @@ function ResetPasswordPage() {
                   <h2 className="mt-6 font-display text-2xl font-bold tracking-tight">Reset your password</h2>
                   <p className="mt-1 text-sm text-muted-foreground">Choose a new password for your account.</p>
 
-                  <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-                    <label className="block">
-                      <span className="mb-1.5 block text-sm font-medium text-muted-foreground">New password</span>
+                  <form onSubmit={handleSubmit} noValidate className="mt-6 space-y-4">
+                    <div>
+                      <label htmlFor="new-password" className="mb-1.5 block text-sm font-medium text-muted-foreground">
+                        New password
+                      </label>
                       <div className="group relative">
                         <Lock className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-foreground" aria-hidden="true" />
                         <input
+                          id="new-password"
                           type={showPassword ? "text" : "password"}
                           autoComplete="new-password"
                           value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                          className="w-full rounded-xl border border-border bg-input/50 py-2.5 pl-10 pr-10 text-sm text-foreground placeholder:text-muted-foreground/60 outline-none transition-all focus:border-primary/40 focus:bg-background focus:ring-2 focus:ring-ring/20"
-                          placeholder="At least 6 characters"
-                          aria-invalid={!!error}
-                          aria-describedby={error ? "password-error" : undefined}
+                          onChange={(e) => {
+                            setPassword(e.target.value);
+                            if (touched.password) validate("password");
+                            if (touched.confirm && confirm) validate("confirm");
+                          }}
+                          onBlur={() => {
+                            setTouched((t) => ({ ...t, password: true }));
+                            validate("password");
+                          }}
+                          className={`w-full rounded-xl border bg-input/50 py-2.5 pl-10 pr-10 text-sm text-foreground placeholder:text-muted-foreground/60 outline-none transition-all focus:bg-background focus:ring-2 ${
+                            errors.password
+                              ? "border-destructive/60 focus:border-destructive focus:ring-destructive/20"
+                              : "border-border focus:border-primary/40 focus:ring-ring/20"
+                          }`}
+                          placeholder="Enter a strong password"
+                          aria-invalid={!!errors.password}
+                          aria-describedby="password-hints password-strength password-error"
                         />
                         <button
                           type="button"
@@ -150,11 +279,90 @@ function ResetPasswordPage() {
                           {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
                         </button>
                       </div>
-                    </label>
 
-                    {error && (
-                      <div id="password-error" aria-live="assertive" className="animate-fade-in rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
-                        {error}
+                      {/* Strength meter */}
+                      <div id="password-strength" className="mt-2" aria-live="polite">
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="text-muted-foreground">Password strength</span>
+                          <span className={`font-medium ${password ? "text-foreground" : "text-muted-foreground"}`}>
+                            {password ? strength.label : "—"}
+                          </span>
+                        </div>
+                        <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-muted">
+                          <div
+                            className={`h-full transition-all duration-300 ${strength.tone}`}
+                            style={{ width: `${password ? strength.pct : 0}%` }}
+                          />
+                        </div>
+                      </div>
+
+                      {/* Checklist */}
+                      <ul id="password-hints" className="mt-3 grid grid-cols-1 gap-1 text-xs sm:grid-cols-2">
+                        {checks.map((c) => (
+                          <li key={c.key} className="flex items-center gap-1.5">
+                            {c.passed ? (
+                              <Check className="size-3.5 text-emerald-500" aria-hidden="true" />
+                            ) : (
+                              <X className="size-3.5 text-muted-foreground/60" aria-hidden="true" />
+                            )}
+                            <span className={c.passed ? "text-foreground" : "text-muted-foreground"}>
+                              {c.label}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+
+                      {errors.password && touched.password && (
+                        <p id="password-error" role="alert" className="mt-2 flex items-center gap-1.5 text-xs text-destructive">
+                          <AlertCircle className="size-3.5" aria-hidden="true" />
+                          {errors.password}
+                        </p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label htmlFor="confirm-password" className="mb-1.5 block text-sm font-medium text-muted-foreground">
+                        Confirm new password
+                      </label>
+                      <div className="group relative">
+                        <Lock className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-foreground" aria-hidden="true" />
+                        <input
+                          id="confirm-password"
+                          type={showPassword ? "text" : "password"}
+                          autoComplete="new-password"
+                          value={confirm}
+                          onChange={(e) => {
+                            setConfirm(e.target.value);
+                            if (touched.confirm) validate("confirm");
+                          }}
+                          onBlur={() => {
+                            setTouched((t) => ({ ...t, confirm: true }));
+                            validate("confirm");
+                          }}
+                          className={`w-full rounded-xl border bg-input/50 py-2.5 pl-10 pr-10 text-sm text-foreground placeholder:text-muted-foreground/60 outline-none transition-all focus:bg-background focus:ring-2 ${
+                            errors.confirm
+                              ? "border-destructive/60 focus:border-destructive focus:ring-destructive/20"
+                              : "border-border focus:border-primary/40 focus:ring-ring/20"
+                          }`}
+                          placeholder="Re-enter password"
+                          aria-invalid={!!errors.confirm}
+                          aria-describedby={errors.confirm ? "confirm-error" : undefined}
+                        />
+                        {confirm && !errors.confirm && password === confirm && (
+                          <Check className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-emerald-500" aria-hidden="true" />
+                        )}
+                      </div>
+                      {errors.confirm && touched.confirm && (
+                        <p id="confirm-error" role="alert" className="mt-2 flex items-center gap-1.5 text-xs text-destructive">
+                          <AlertCircle className="size-3.5" aria-hidden="true" />
+                          {errors.confirm}
+                        </p>
+                      )}
+                    </div>
+
+                    {errors.form && (
+                      <div role="alert" className="animate-fade-in rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+                        {errors.form}
                       </div>
                     )}
 
@@ -165,8 +373,8 @@ function ResetPasswordPage() {
                     >
                       <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
                       <span className="relative flex items-center gap-2">
-                          {busy ? <Loader2 className="size-4 animate-spin" aria-hidden="true" /> : <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />}
-                          Update password
+                        {busy ? <Loader2 className="size-4 animate-spin" aria-hidden="true" /> : <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />}
+                        Update password
                       </span>
                     </button>
                   </form>

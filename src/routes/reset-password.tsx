@@ -183,6 +183,21 @@ function ResetPasswordPage() {
 
   const invalidLink = linkState === "invalid" || linkState === "expired" || linkState === "used";
 
+  useEffect(() => {
+    if (!success || !safeRedirect) return;
+    setRedirectSeconds(3);
+    const interval = window.setInterval(() => {
+      setRedirectSeconds((s) => (s > 0 ? s - 1 : 0));
+    }, 1000);
+    const timer = window.setTimeout(() => {
+      navigate({ to: safeRedirect });
+    }, 3000);
+    return () => {
+      window.clearInterval(interval);
+      window.clearTimeout(timer);
+    };
+  }, [success, safeRedirect, navigate]);
+
   return (
     <main className="relative min-h-screen overflow-hidden bg-gradient-to-br from-background to-muted text-foreground">
       <div className="pointer-events-none absolute inset-0">

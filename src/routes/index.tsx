@@ -167,7 +167,6 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
-const logos = ["Apollo", "Salesforce", "HubSpot", "LinkedIn", "ZoomInfo", "Pipedrive"];
 
 const features = [
   {

@@ -195,100 +195,10 @@ function Home() {
         {/* BENTO GRID */}
         <section className="px-6 pb-24">
           <div className="mx-auto grid max-w-7xl auto-rows-[220px] grid-cols-1 gap-4 md:grid-cols-6">
-            {/* Live data console — hero card */}
-            <article className="group relative col-span-1 row-span-3 overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-white/[0.06] to-white/[0.02] p-6 md:col-span-4 md:row-span-2">
-              <div className="pointer-events-none absolute -right-16 -top-16 size-64 rounded-full bg-indigo/25 blur-3xl" />
-              <div className="relative flex h-full flex-col">
-                <div className="mb-4 flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="grid size-9 place-items-center rounded-xl bg-indigo/20 text-indigo">
-                      <PremiumDatabase className="size-4" />
-                    </div>
-                    <div>
-                      <p className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-foreground/50">Live data console</p>
-                      <p className="font-display text-sm font-bold">{totalRows.toLocaleString()} rows across 3 sources</p>
-                    </div>
-                  </div>
-                  <div className="hidden items-center gap-1.5 sm:flex">
-                    {SOURCES.map((s) => {
-                      const a = ACCENT[s.accent];
-                      const isA = s.key === activeSource;
-                      return (
-                        <button
-                          key={s.key}
-                          onClick={() => setActiveSource(s.key)}
-                          className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-widest transition-colors ${
-                            isA ? `border-transparent ${a.solid}` : "border-white/10 bg-white/5 text-foreground/60 hover:bg-white/10"
-                          }`}
-                        >
-                          <span className={`size-1.5 rounded-full ${isA ? "bg-white/70" : a.dot}`} />
-                          {s.label}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                <div className="mb-3 flex flex-wrap items-center gap-2">
-                  <div className="relative flex-1 min-w-[140px]">
-                    <PremiumSearch className="pointer-events-none absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-foreground/40" />
-                    <input
-                      value={query}
-                      onChange={(e) => setQuery(e.target.value)}
-                      placeholder={`Search ${active.label} rows…`}
-                      className="w-full rounded-lg border border-white/10 bg-black/30 py-1.5 pl-8 pr-3 font-mono text-[11px] text-foreground placeholder:text-foreground/40 focus:outline-none focus:ring-2 focus:ring-indigo/40"
-                    />
-                  </div>
-                  <button
-                    onClick={() => downloadCsv(active.file, rawActive)}
-                    className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[11px] font-semibold text-white transition-transform hover:-translate-y-0.5 ${accent.solid}`}
-                  >
-                    <PremiumDownload className="size-3.5" /> CSV
-                  </button>
-                </div>
-
-                <div className="min-h-0 flex-1 overflow-hidden rounded-xl border border-white/10 bg-black/30">
-                  <div className="h-full overflow-auto">
-                    <table className="w-full min-w-[640px] border-collapse text-sm">
-                      <thead className="sticky top-0 z-10 bg-black/60 backdrop-blur">
-                        <tr>
-                          <th className="w-10 border-b border-white/10 px-3 py-2 text-left font-mono text-[10px] font-bold uppercase tracking-widest text-foreground/50">#</th>
-                          {rawActive.headers.map((h) => (
-                            <th key={h} className="whitespace-nowrap border-b border-white/10 px-3 py-2 text-left font-mono text-[10px] font-bold uppercase tracking-widest text-foreground/50">{h}</th>
-                          ))}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {filteredRows.length === 0 ? (
-                          <tr><td colSpan={rawActive.headers.length + 1} className="px-5 py-10 text-center font-mono text-xs text-foreground/50">No rows match “{query}”.</td></tr>
-                        ) : (
-                          filteredRows.slice(0, 60).map((r, i) => (
-                            <tr key={i} className="border-b border-white/[0.06] transition-colors last:border-0 hover:bg-white/[0.03]">
-                              <td className="w-10 px-3 py-2 font-mono text-[10px] text-foreground/40">{i + 1}</td>
-                              {rawActive.headers.map((h) => {
-                                const v = String(r[h] ?? "");
-                                return (
-                                  <td key={h} className="max-w-[220px] truncate whitespace-nowrap px-3 py-2 text-foreground/85" title={v}>
-                                    {v || <span className="text-foreground/30">—</span>}
-                                  </td>
-                                );
-                              })}
-                            </tr>
-                          ))
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-
-                <div className="mt-3 flex flex-wrap items-center justify-between gap-2 font-mono text-[10px] uppercase tracking-widest text-foreground/50">
-                  <span>{filteredRows.length.toLocaleString()} / {active.rows.toLocaleString()} rows · {active.cols} cols</span>
-                  <Link to="/sample-data" className={`inline-flex items-center gap-1 ${accent.text} hover:opacity-80`}>
-                    Open full sample <PremiumArrowRight className="size-3" />
-                  </Link>
-                </div>
-              </div>
-            </article>
+            <LiveDataConsole
+              data={{ apollo: apolloData, linkedin: linkedinData, zoominfo: zoominfoData }}
+              totalRows={totalRows}
+            />
 
             {/* Instant quote CTA */}
             <button

@@ -5,9 +5,9 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * LeadLogic design system — light minimal base with vibrant accent pops.
- * Violet primary, coral highlight, emerald success. Space Grotesk display,
- * Inter body, JetBrains Mono for numbers/labels.
+ * LeadLogic design system — Obsidian Gold edition.
+ * Deep black surfaces with warm gold/amber accents. Sora display,
+ * Manrope body, JetBrains Mono for numbers/labels.
  */
 
 @theme inline {
@@ -38,7 +38,7 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
 
-  /* Brand accents */
+  /* Brand accents — now mapped to a warm gold family */
   --color-violet: var(--violet);
   --color-violet-soft: var(--violet-soft);
   --color-coral: var(--coral);
@@ -52,13 +52,22 @@
   --font-display: "Sora", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
 
-  /* Midnight Indigo scale */
-  --color-midnight: var(--midnight);
-  --color-midnight-surface: var(--midnight-surface);
-  --color-midnight-elev: var(--midnight-elev);
-  --color-midnight-line: var(--midnight-line);
-  --color-indigo: var(--indigo);
-  --color-indigo-soft: var(--indigo-soft);
+  /* Obsidian Gold scale */
+  --color-obsidian: var(--obsidian);
+  --color-obsidian-surface: var(--obsidian-surface);
+  --color-obsidian-elev: var(--obsidian-elev);
+  --color-obsidian-line: var(--obsidian-line);
+  --color-gold: var(--gold);
+  --color-gold-soft: var(--gold-soft);
+  --color-amber-accent: var(--amber-accent);
+
+  /* Legacy aliases retained for existing component classes */
+  --color-midnight: var(--obsidian);
+  --color-midnight-surface: var(--obsidian-surface);
+  --color-midnight-elev: var(--obsidian-elev);
+  --color-midnight-line: var(--obsidian-line);
+  --color-indigo: var(--gold);
+  --color-indigo-soft: var(--gold-soft);
 }
 
 :root {

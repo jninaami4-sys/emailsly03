@@ -154,26 +154,42 @@ function AuthPage() {
     e.preventDefault();
     setError(null);
     setInfo(null);
+    setUnconfirmedEmail(null);
     setTouched({ email: true, password: true });
     if (!validateAll()) return;
 
     setBusy(true);
     try {
       if (mode === "signup") {
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: { emailRedirectTo: `${window.location.origin}/` },
         });
         if (error) throw error;
-        setInfo("Check your email to confirm your account, then sign in.");
+        // If confirmation is required, Supabase returns a user with no session.
+        const needsConfirmation = !data.session;
+        setInfo(
+          needsConfirmation
+            ? "Check your email to confirm your account, then sign in."
+            : "Account created. You can sign in now.",
+        );
         setSignUpSuccess(true);
+        setUnconfirmedEmail(needsConfirmation ? email : null);
         setPassword("");
         setMode("signin");
       } else {
-
         const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) throw error;
+        if (error) {
+          const code = (error as { code?: string }).code;
+          const msg = error.message || "";
+          if (code === "email_not_confirmed" || /email\s*not\s*confirmed|confirm.*email/i.test(msg)) {
+            setUnconfirmedEmail(email);
+            setResendState((s) => ({ ...s, error: null }));
+            return;
+          }
+          throw error;
+        }
         const target = search.redirect && search.redirect.startsWith("/") ? search.redirect : "/";
         window.location.replace(target);
       }

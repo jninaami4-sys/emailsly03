@@ -15,6 +15,7 @@ import { Route as TrackOrderRouteImport } from './routes/track-order'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as StoreRouteImport } from './routes/store'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as ShaderLabRouteImport } from './routes/shader-lab'
 import { Route as SampleDataRouteImport } from './routes/sample-data'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RefundPolicyRouteImport } from './routes/refund-policy'
@@ -58,6 +59,11 @@ const StoreRoute = StoreRouteImport.update({
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShaderLabRoute = ShaderLabRouteImport.update({
+  id: '/shader-lab',
+  path: '/shader-lab',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SampleDataRoute = SampleDataRouteImport.update({
@@ -146,6 +152,7 @@ export interface FileRoutesByFullPath {
   '/refund-policy': typeof RefundPolicyRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sample-data': typeof SampleDataRoute
+  '/shader-lab': typeof ShaderLabRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/store': typeof StoreRoute
   '/terms': typeof TermsRoute
@@ -168,6 +175,7 @@ export interface FileRoutesByTo {
   '/refund-policy': typeof RefundPolicyRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sample-data': typeof SampleDataRoute
+  '/shader-lab': typeof ShaderLabRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/store': typeof StoreRoute
   '/terms': typeof TermsRoute
@@ -191,6 +199,7 @@ export interface FileRoutesById {
   '/refund-policy': typeof RefundPolicyRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sample-data': typeof SampleDataRoute
+  '/shader-lab': typeof ShaderLabRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/store': typeof StoreRoute
   '/terms': typeof TermsRoute
@@ -215,6 +224,7 @@ export interface FileRouteTypes {
     | '/refund-policy'
     | '/reset-password'
     | '/sample-data'
+    | '/shader-lab'
     | '/sitemap.xml'
     | '/store'
     | '/terms'
@@ -237,6 +247,7 @@ export interface FileRouteTypes {
     | '/refund-policy'
     | '/reset-password'
     | '/sample-data'
+    | '/shader-lab'
     | '/sitemap.xml'
     | '/store'
     | '/terms'
@@ -259,6 +270,7 @@ export interface FileRouteTypes {
     | '/refund-policy'
     | '/reset-password'
     | '/sample-data'
+    | '/shader-lab'
     | '/sitemap.xml'
     | '/store'
     | '/terms'
@@ -282,6 +294,7 @@ export interface RootRouteChildren {
   RefundPolicyRoute: typeof RefundPolicyRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SampleDataRoute: typeof SampleDataRoute
+  ShaderLabRoute: typeof ShaderLabRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   StoreRoute: typeof StoreRoute
   TermsRoute: typeof TermsRoute
@@ -332,6 +345,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/shader-lab': {
+      id: '/shader-lab'
+      path: '/shader-lab'
+      fullPath: '/shader-lab'
+      preLoaderRoute: typeof ShaderLabRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sample-data': {
@@ -459,6 +479,7 @@ const rootRouteChildren: RootRouteChildren = {
   RefundPolicyRoute: RefundPolicyRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SampleDataRoute: SampleDataRoute,
+  ShaderLabRoute: ShaderLabRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   StoreRoute: StoreRoute,
   TermsRoute: TermsRoute,

@@ -34,14 +34,14 @@ export function AuthGate({ children }: { children: ReactNode }) {
         <div className="mt-6 flex flex-col gap-2">
           <Link
             to="/auth"
-            search={{ mode: "signup", redirect: pathname } as never}
+            search={{ mode: "signup", redirect: pathname }}
             className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-violet px-5 py-3 font-semibold text-white shadow-lg shadow-violet/25 transition-transform hover:scale-[1.01]"
           >
             Get started — it's free
           </Link>
           <Link
             to="/auth"
-            search={{ mode: "signin", redirect: pathname } as never}
+            search={{ mode: "signin", redirect: pathname }}
             className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-background px-5 py-3 font-semibold hover:bg-secondary"
           >
             I already have an account

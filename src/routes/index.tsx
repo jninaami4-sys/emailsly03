@@ -292,9 +292,9 @@ function Home() {
             {/* Instant quote CTA */}
             <button
               onClick={openOrderDrawer}
-              className="group relative col-span-1 row-span-2 overflow-hidden rounded-3xl border border-indigo/40 bg-gradient-to-br from-indigo to-[oklch(0.42_0.22_275)] p-6 text-left text-white transition-transform hover:-translate-y-0.5 md:col-span-2"
+              className="group relative col-span-1 row-span-2 overflow-hidden rounded-3xl border border-gold/40 bg-gradient-to-br from-gold to-[oklch(0.52_0.12_80)] p-6 text-left text-black transition-transform hover:-translate-y-0.5 md:col-span-2"
             >
-              <div className="pointer-events-none absolute -right-8 -top-8 size-48 rounded-full bg-white/15 blur-2xl" />
+              <div className="pointer-events-none absolute -right-8 -top-8 size-48 rounded-full bg-white/25 blur-2xl" />
               <div className="relative flex h-full flex-col justify-between">
                 <div>
                   <Sparkles className="size-6" />

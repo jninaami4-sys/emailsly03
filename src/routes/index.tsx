@@ -366,7 +366,7 @@ function Home() {
                   <span>Showing 4 of {active.rows.toLocaleString()} rows · {active.cols} columns</span>
                   <Link
                     to="/sample-data"
-                    className={`group inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-bold transition-colors hover:${accent.solid} ${accent.text}`}
+                    className={`group inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-bold transition-opacity hover:opacity-70 ${accent.text}`}
                   >
                     Open full sample
                     <ArrowRight className="size-3 transition-transform group-hover:translate-x-0.5" />

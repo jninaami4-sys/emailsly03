@@ -1,6 +1,8 @@
 import React, { useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { Star, Quote, Play, Pause } from "lucide-react";
+import { Star, Quote, Play, Pause, BadgeCheck } from "lucide-react";
+import amineVideo from "@/assets/amine-italy.mp4.asset.json";
+import aminePoster from "@/assets/amine-poster.jpg.asset.json";
 
 // --- Types ---
 type Testimonial = {

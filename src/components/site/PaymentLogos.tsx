@@ -11,7 +11,7 @@ export function PaymentLogos({ className }: PaymentLogosProps) {
     { label: "Mastercard", src: "https://cdn.simpleicons.org/mastercard/EB001B" },
     { label: "Apple Pay", src: "https://cdn.simpleicons.org/applepay/000000" },
     { label: "Binance", src: "https://cdn.simpleicons.org/binance/F0B90B" },
-    { label: "Payoneer", src: "https://cdn.simpleicons.org/payoneer/FF4800" },
+    { label: "Payoneer", src: "https://upload.wikimedia.org/wikipedia/commons/e/e7/Payoneer_logo.svg" },
   ];
 
   return (

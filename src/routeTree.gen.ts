@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ZoominfoLeadsRouteImport } from './routes/zoominfo-leads'
 import { Route as WebsiteDesignRouteImport } from './routes/website-design'
+import { Route as TrackOrderRouteImport } from './routes/track-order'
 import { Route as StoreRouteImport } from './routes/store'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as ManualLeadResearchRouteImport } from './routes/manual-lead-research'
@@ -26,6 +27,11 @@ const ZoominfoLeadsRoute = ZoominfoLeadsRouteImport.update({
 const WebsiteDesignRoute = WebsiteDesignRouteImport.update({
   id: '/website-design',
   path: '/website-design',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TrackOrderRoute = TrackOrderRouteImport.update({
+  id: '/track-order',
+  path: '/track-order',
   getParentRoute: () => rootRouteImport,
 } as any)
 const StoreRoute = StoreRouteImport.update({
@@ -67,6 +73,7 @@ export interface FileRoutesByFullPath {
   '/manual-lead-research': typeof ManualLeadResearchRoute
   '/pricing': typeof PricingRoute
   '/store': typeof StoreRoute
+  '/track-order': typeof TrackOrderRoute
   '/website-design': typeof WebsiteDesignRoute
   '/zoominfo-leads': typeof ZoominfoLeadsRoute
 }
@@ -77,6 +84,7 @@ export interface FileRoutesByTo {
   '/manual-lead-research': typeof ManualLeadResearchRoute
   '/pricing': typeof PricingRoute
   '/store': typeof StoreRoute
+  '/track-order': typeof TrackOrderRoute
   '/website-design': typeof WebsiteDesignRoute
   '/zoominfo-leads': typeof ZoominfoLeadsRoute
 }
@@ -88,6 +96,7 @@ export interface FileRoutesById {
   '/manual-lead-research': typeof ManualLeadResearchRoute
   '/pricing': typeof PricingRoute
   '/store': typeof StoreRoute
+  '/track-order': typeof TrackOrderRoute
   '/website-design': typeof WebsiteDesignRoute
   '/zoominfo-leads': typeof ZoominfoLeadsRoute
 }
@@ -100,6 +109,7 @@ export interface FileRouteTypes {
     | '/manual-lead-research'
     | '/pricing'
     | '/store'
+    | '/track-order'
     | '/website-design'
     | '/zoominfo-leads'
   fileRoutesByTo: FileRoutesByTo
@@ -110,6 +120,7 @@ export interface FileRouteTypes {
     | '/manual-lead-research'
     | '/pricing'
     | '/store'
+    | '/track-order'
     | '/website-design'
     | '/zoominfo-leads'
   id:
@@ -120,6 +131,7 @@ export interface FileRouteTypes {
     | '/manual-lead-research'
     | '/pricing'
     | '/store'
+    | '/track-order'
     | '/website-design'
     | '/zoominfo-leads'
   fileRoutesById: FileRoutesById
@@ -131,6 +143,7 @@ export interface RootRouteChildren {
   ManualLeadResearchRoute: typeof ManualLeadResearchRoute
   PricingRoute: typeof PricingRoute
   StoreRoute: typeof StoreRoute
+  TrackOrderRoute: typeof TrackOrderRoute
   WebsiteDesignRoute: typeof WebsiteDesignRoute
   ZoominfoLeadsRoute: typeof ZoominfoLeadsRoute
 }
@@ -149,6 +162,13 @@ declare module '@tanstack/react-router' {
       path: '/website-design'
       fullPath: '/website-design'
       preLoaderRoute: typeof WebsiteDesignRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/track-order': {
+      id: '/track-order'
+      path: '/track-order'
+      fullPath: '/track-order'
+      preLoaderRoute: typeof TrackOrderRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/store': {
@@ -203,6 +223,7 @@ const rootRouteChildren: RootRouteChildren = {
   ManualLeadResearchRoute: ManualLeadResearchRoute,
   PricingRoute: PricingRoute,
   StoreRoute: StoreRoute,
+  TrackOrderRoute: TrackOrderRoute,
   WebsiteDesignRoute: WebsiteDesignRoute,
   ZoominfoLeadsRoute: ZoominfoLeadsRoute,
 }

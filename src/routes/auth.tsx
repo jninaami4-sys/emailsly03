@@ -413,6 +413,21 @@ function AuthPage() {
                   </>
                 ) : (
                   <>
+                    <AccountStatusBanner
+                      user={user}
+                      pendingEmail={unconfirmedEmail ?? (signUpSuccess ? email : null)}
+                      lastSentAt={resendState.sentAt}
+                      onCheck={async () => {
+                        const { data } = await supabase.auth.getUser();
+                        if (data.user?.email_confirmed_at) {
+                          setUnconfirmedEmail(null);
+                          setInfo("Email verified — you can sign in now.");
+                        } else {
+                          setInfo("Still waiting for confirmation. Check your inbox.");
+                        }
+                      }}
+                    />
+
                     <div className="mb-6 flex rounded-2xl border border-border bg-muted p-1 text-sm font-medium">
                       {(["signup", "signin"] as const).map((m) => (
                         <button

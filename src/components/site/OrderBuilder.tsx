@@ -166,8 +166,8 @@ export function OrderBuilder() {
           </div>
         </div>
 
-        {/* Stepper */}
-        <div className="mx-auto mt-6 max-w-5xl sm:mt-10">
+        {/* Stepper — mobile/tablet only */}
+        <div className="mx-auto mt-6 max-w-5xl sm:mt-10 lg:hidden">
           <div className="relative flex items-center gap-1.5 overflow-x-auto rounded-2xl border border-border bg-card/60 p-2 backdrop-blur sm:justify-between sm:gap-2 sm:p-3">
             {STEPS.map((s, i) => {
               const Icon = s.icon;
@@ -214,10 +214,10 @@ export function OrderBuilder() {
         </div>
 
         {/* Body */}
-        <div className={`mt-6 grid gap-4 sm:mt-8 sm:gap-6 ${step === 4 ? "lg:grid-cols-[1.4fr_1fr]" : "lg:grid-cols-1"}`}>
+        <div className={`mt-6 grid gap-4 sm:mt-8 sm:gap-6 ${(step === 4 || isDesktop) ? "lg:grid-cols-[1.4fr_1fr]" : "lg:grid-cols-1"}`}>
           {/* MAIN PANEL */}
           <div className="rounded-3xl border border-border bg-card p-4 shadow-[0_20px_60px_-30px_rgba(24,24,60,0.25)] sm:p-6 md:p-8 lg:p-10">
-            {step === 1 && (
+            {(step === 1 || isDesktop) && (
               <div>
                 <StepHeader
                   eyebrow="Step 1 of 4"

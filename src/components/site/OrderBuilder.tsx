@@ -369,7 +369,7 @@ export function OrderBuilder() {
                   title="Boost your order"
                   subtitle="Optional upgrades that make the delivery faster and cleaner."
                 />
-                <div className="mt-8 grid gap-3 md:grid-cols-2">
+                <div className="mt-6 grid gap-3 sm:mt-8 md:grid-cols-2">
                   <AddonToggle
                     active={verifier}
                     onToggle={() => setVerifier((v) => !v)}
@@ -388,7 +388,7 @@ export function OrderBuilder() {
                   />
                 </div>
 
-                <div className="mt-10 rounded-2xl border border-border bg-secondary/40 p-6">
+                <div className="mt-6 rounded-2xl border border-border bg-secondary/40 p-4 sm:mt-10 sm:p-6">
                   <div className="flex items-center gap-3">
                     <span className="grid size-10 place-items-center rounded-xl bg-violet/10 text-violet">
                       <Sparkles className="size-5" />

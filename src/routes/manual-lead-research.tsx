@@ -22,7 +22,7 @@ export const Route = createFileRoute("/manual-lead-research")({
         "Human-verified against LinkedIn, company sites, and public records",
         "Any custom data field (podcast guest, conference speaker, patent holder)",
         "Ideal for niches with under 10,000 total prospects",
-        "48-hour delivery, 99% accuracy or free replacements",
+        "48-hour delivery with 99%+ human-verified accuracy",
       ]}
       useCases={[
         { title: "Hyper-niche industries", desc: "Vertical databases don't exist for your target — we build it manually." },

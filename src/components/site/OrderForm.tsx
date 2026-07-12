@@ -169,7 +169,7 @@ export function OrderForm() {
                 {[
                   "99% data accuracy guarantee",
                   "Delivered within 24 hours",
-                  "Free replacements on bounces",
+                  "Pre-formatted for your CRM",
                   "Secure card / bank / crypto pay",
                 ].map((t) => (
                   <li key={t} className="flex items-center gap-2">

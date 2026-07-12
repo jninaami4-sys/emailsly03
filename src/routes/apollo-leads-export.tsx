@@ -21,7 +21,7 @@ export const Route = createFileRoute("/apollo-leads-export")({
       bullets={[
         "Verified work emails + LinkedIn URLs",
         "Full firmographic enrichment (revenue, headcount, tech stack)",
-        "Multi-pass validation to keep bounce rate under 2%",
+        "Multi-source enrichment and formatting for your ICP",
         "CSV, JSON, or direct HubSpot / Salesforce import",
       ]}
       useCases={[

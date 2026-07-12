@@ -79,7 +79,7 @@ const DEFAULT_FAQS: NonNullable<ServicePageProps["faqs"]> = [
   },
   {
     q: "How accurate is the data?",
-    a: "Emails are validated in real-time before delivery. If any leads bounce, we replace them free of charge.",
+    a: "Data is sourced from pre-built, verified databases and cleaned/formatted for your ICP before delivery.",
   },
   {
     q: "Do you offer custom or niche research?",

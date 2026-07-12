@@ -57,7 +57,7 @@ function ResetPasswordPage() {
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-background to-muted text-foreground">
+    <main className="relative min-h-screen overflow-hidden bg-gradient-to-br from-background to-muted text-foreground">
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute left-1/2 top-1/2 size-[60rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary opacity-[0.04] blur-[120px]" />
       </div>

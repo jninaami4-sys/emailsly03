@@ -493,8 +493,8 @@ export function OrderBuilder() {
             </div>
           </div>
 
-          {/* SUMMARY — only on step 4 */}
-          {step === 4 && (
+          {/* SUMMARY — desktop always, mobile on step 4 */}
+          {(step === 4 || isDesktop) && (
             <div className="lg:sticky lg:top-24 lg:self-start">
               <div className="relative overflow-hidden rounded-3xl border border-ink/10 bg-ink p-6 text-white shadow-[0_30px_80px_-30px_rgba(24,24,60,0.5)] md:p-8">
                 <div className="pointer-events-none absolute -right-16 -top-16 size-64 rounded-full bg-violet/25 blur-3xl" />

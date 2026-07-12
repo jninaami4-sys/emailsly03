@@ -627,11 +627,39 @@ function AuthPage() {
                             <div className="grid size-8 shrink-0 place-items-center rounded-full bg-emerald/20" aria-hidden="true">
                               <Mail className="size-4" aria-hidden="true" />
                             </div>
-                            <div>
+                            <div className="flex-1">
                               <p className="font-semibold">Confirm your email</p>
                               <p className="mt-0.5 text-emerald-foreground/80">
                                 We sent a confirmation link to <span className="font-medium">{email}</span>. Click it to activate your account, then sign in below.
                               </p>
+                              <div className="mt-3 flex flex-wrap items-center gap-3">
+                                <button
+                                  type="button"
+                                  disabled={resendState.busy || resendState.cooldown > 0 || !email}
+                                  onClick={() => handleResendConfirmation(email)}
+                                  className="inline-flex items-center gap-1.5 rounded-md border border-emerald/40 bg-background/60 px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-background disabled:cursor-not-allowed disabled:opacity-60 focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:outline-none"
+                                >
+                                  {resendState.busy ? (
+                                    <Loader2 className="size-3.5 animate-spin" aria-hidden="true" />
+                                  ) : (
+                                    <Mail className="size-3.5" aria-hidden="true" />
+                                  )}
+                                  {resendState.cooldown > 0
+                                    ? `Resend in ${resendState.cooldown}s`
+                                    : "Resend confirmation email"}
+                                </button>
+                                {resendState.sentAt && resendState.cooldown > 0 && !resendState.error && (
+                                  <span className="inline-flex items-center gap-1 text-xs text-emerald-600">
+                                    <CheckCircle2 className="size-3.5" aria-hidden="true" /> Email sent
+                                  </span>
+                                )}
+                              </div>
+                              {resendState.error && (
+                                <p className="mt-2 flex items-center gap-1 text-xs text-destructive">
+                                  <AlertCircle className="size-3.5" aria-hidden="true" />
+                                  {resendState.error}
+                                </p>
+                              )}
                             </div>
                           </div>
                         </div>

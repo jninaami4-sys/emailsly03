@@ -92,7 +92,7 @@ const videoTestimonials: VideoTestimonial[] = [
   {
     name: "Amine",
     role: "Verified client",
-    company: "Italy · Apollo Leads Client",
+    company: "Apollo Leads Client",
     poster: aminePoster.url,
     src: amineVideo.url,
     quote: "",

@@ -284,7 +284,7 @@ function ResetPasswordPage() {
                 </div>
               ) : success ? (
                 <div className="mt-8 space-y-6">
-                  <div role="status" className="rounded-lg border border-emerald/30 bg-emerald/10 px-4 py-3 text-sm text-emerald-foreground">
+                  <div role="status" aria-live="polite" className="rounded-lg border border-emerald/30 bg-emerald/10 px-4 py-3 text-sm text-emerald-foreground">
                     <p className="flex items-start gap-2">
                       <CheckCircle2 className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
                       <span>

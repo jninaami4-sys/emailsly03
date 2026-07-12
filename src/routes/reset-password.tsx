@@ -91,9 +91,9 @@ function ResetPasswordPage() {
 
               {!recovery ? (
                 <div className="mt-8 space-y-4">
-                  <div className="rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+                  <div aria-live="polite" className="rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
                     <p className="flex items-start gap-2">
-                      <AlertCircle className="mt-0.5 size-4 shrink-0" />
+                      <AlertCircle className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
                       This password reset link is invalid or expired. Please request a new one.
                     </p>
                   </div>

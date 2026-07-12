@@ -151,3 +151,83 @@ export function PremiumZap({ className }: IconProps) {
     </Icon>
   );
 }
+
+export function PremiumImageIcon({ className }: IconProps) {
+  return (
+    <Icon className={className}>
+      <rect x="3" y="3" width="18" height="18" rx="4" />
+      <circle cx="9" cy="9" r="2" />
+      <path d="m21 15-5-5-6 6-3-3-4 4" />
+    </Icon>
+  );
+}
+
+export function PremiumUpload({ className }: IconProps) {
+  return (
+    <Icon className={className}>
+      <path d="M12 16V3" />
+      <path d="M5 10 12 3l7 7" />
+      <path d="M21 21v-6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6" />
+    </Icon>
+  );
+}
+
+export function PremiumShoppingCart({ className }: IconProps) {
+  return (
+    <Icon className={className}>
+      <path d="M6 6h15l-1.5 9h-12Z" />
+      <circle cx="9" cy="20" r="1.5" fill="currentColor" stroke="none" />
+      <circle cx="18" cy="20" r="1.5" fill="currentColor" stroke="none" />
+      <path d="M3 3h2l2.5 12" />
+    </Icon>
+  );
+}
+
+export function PremiumMenu({ className }: IconProps) {
+  return (
+    <Icon className={className}>
+      <path d="M4 7h16" />
+      <path d="M4 12h16" />
+      <path d="M4 17h16" />
+    </Icon>
+  );
+}
+
+export function PremiumUser({ className }: IconProps) {
+  return (
+    <Icon className={className}>
+      <circle cx="12" cy="8" r="4" />
+      <path d="M4 20c0-3 4-5 8-5s8 2 8 5" />
+    </Icon>
+  );
+}
+
+export function PremiumLogOut({ className }: IconProps) {
+  return (
+    <Icon className={className}>
+      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+      <path d="M16 17l5-5-5-5" />
+      <path d="M21 12H9" />
+    </Icon>
+  );
+}
+
+export function PremiumLogoMark({ className }: IconProps) {
+  return (
+    <svg
+      viewBox="0 0 32 32"
+      fill="none"
+      className={className}
+      aria-hidden="true"
+    >
+      <rect width="32" height="32" rx="8" fill="url(#logoGradient)" />
+      <circle cx="16" cy="16" r="4" fill="white" />
+      <defs>
+        <linearGradient id="logoGradient" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+          <stop stopColor="var(--violet)" />
+          <stop offset="1" stopColor="var(--indigo)" />
+        </linearGradient>
+      </defs>
+    </svg>
+  );
+}

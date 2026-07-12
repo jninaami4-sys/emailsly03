@@ -5,125 +5,32 @@ interface PaymentLogosProps {
 }
 
 export function PaymentLogos({ className }: PaymentLogosProps) {
+  const logos = [
+    { label: "Stripe", src: "https://cdn.simpleicons.org/stripe/635BFF" },
+    { label: "Visa", src: "https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" },
+    { label: "Mastercard", src: "https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" },
+    { label: "Apple Pay", src: "https://upload.wikimedia.org/wikipedia/commons/b/b0/Apple_Pay_logo.svg" },
+    { label: "Binance", src: "https://cdn.simpleicons.org/binance/F0B90B" },
+    { label: "Payoneer", src: "https://upload.wikimedia.org/wikipedia/commons/e/ea/Payoneer-Logo.png" },
+  ];
+
   return (
     <div className={cn("flex flex-wrap items-center gap-3", className)}>
-      <StripeLogo />
-      <VisaLogo />
-      <MastercardLogo />
-      <ApplePayLogo />
-      <BinanceLogo />
-      <PayoneerLogo />
+      {logos.map((logo) => (
+        <div
+          key={logo.label}
+          className="inline-flex h-10 items-center justify-center rounded-lg border border-white/10 bg-white px-3 transition-colors hover:bg-white/90"
+          title={logo.label}
+          aria-label={logo.label}
+        >
+          <img
+            src={logo.src}
+            alt={`${logo.label} logo`}
+            className="h-5 w-auto max-w-[64px] object-contain"
+            loading="lazy"
+          />
+        </div>
+      ))}
     </div>
-  );
-}
-
-function LogoPill({ children, label }: { children: React.ReactNode; label: string }) {
-  return (
-    <div
-      className="inline-flex h-10 items-center justify-center rounded-lg border border-white/10 bg-white/5 px-3 transition-colors hover:bg-white/[0.08]"
-      title={label}
-      aria-label={label}
-    >
-      {children}
-    </div>
-  );
-}
-
-function StripeLogo() {
-  return (
-    <LogoPill label="Stripe">
-      <svg viewBox="0 0 60 25" className="h-4 w-auto" fill="none" aria-hidden="true">
-        <path
-          d="M59.64 14.28h-8.06c.19 1.93 1.6 2.55 3.2 2.55 1.64 0 2.96-.37 4.05-.95v3.32a7.94 7.94 0 0 1-4.56 1.1c-4.01 0-6.83-2.5-6.83-7.48 0-4.19 2.39-7.52 6.3-7.52 3.92 0 5.96 3.28 5.96 7.5 0 .4-.04 1.26-.06 1.48Zm-4.92-5.8c-.94 0-1.79.5-2.12 1.91h4.13c-.07-1.05-.72-1.91-2.01-1.91Z"
-          fill="white"
-        />
-        <path
-          d="M41.47 19.3c-1.26 0-2.1-.54-2.64-1.08l-.03 4.63-4.12.88V5.57h3.6l.22 1.05a4.7 4.7 0 0 1 3.2-1.33c2.74 0 5.26 2.5 5.26 7.14 0 5.1-2.7 6.87-4.49 6.87Zm-1.1-9.85c-.86 0-1.5.43-1.88 1.03l.04 3.56c.35.56 1 .94 1.84.94 1.43 0 2.44-1.46 2.44-3.27 0-1.79-1.01-3.26-2.44-3.26Z"
-          fill="white"
-        />
-        <path
-          d="M24.17 5.8c1.2 0 2.04.24 2.53.47l-.5 3.63a6.8 6.8 0 0 0-1.94-.31c-1.36 0-1.97.6-1.97 1.66v.88h3.97l-.32 3.69h-3.65v9.67h-4.12V12.9H16.2V9.3h2.17V8.66c0-2.48 1.05-5.21 5.8-5.21v.35Z"
-          fill="white"
-        />
-        <path
-          d="M7.74 5.56c1.8 0 3.05.36 3.85.72l-.66 3.32a5.4 5.4 0 0 0-2.57-.56c-1.16 0-1.8.48-1.8 1.18 0 2.2 6.3.95 6.3 6.2 0 2.93-2.12 4.88-5.47 4.88-1.84 0-3.32-.44-4.2-.88l.72-3.43c.88.49 2.04.88 3.24.88 1.2 0 1.92-.42 1.92-1.18 0-2.2-6.3-.95-6.3-6.2C2.83 7.55 4.9 5.56 7.74 5.56Z"
-          fill="white"
-        />
-      </svg>
-    </LogoPill>
-  );
-}
-
-function VisaLogo() {
-  return (
-    <LogoPill label="Visa">
-      <svg viewBox="0 0 48 16" className="h-4 w-auto" fill="none" aria-hidden="true">
-        <path
-          d="M17.78 1.13h-4.9L9.32 14.87h3.24l.56-1.56h3.56l.32 1.56h3.04L17.78 1.13Zm-2.45 8.74L16.5 4.5l.9 5.37h-2.07ZM26.06 1.13l-2.76 13.74h3.04l2.76-13.74h-3.04Zm-4.3 0L18 9.24 17.25 1.13h-3.16l2.7 13.74h3.12l5.9-13.74h-3.05ZM39.06 1.13h-3.72l-3.48 13.74h3.04l.44-1.74h2.04c2.3 0 3.8-1.74 4.24-4.22.44-2.48-.5-4.34-2.56-4.78Zm-.96 5.98c-.2.98-1.04 1.74-1.9 1.74h-1.1l.7-2.8h1.1c.86 0 1.4.52 1.2 1.06Zm-16.04 5.6L23.52 1.13h-3.04L18.02 14.87h3.04Z"
-          fill="white"
-        />
-      </svg>
-    </LogoPill>
-  );
-}
-
-function MastercardLogo() {
-  return (
-    <LogoPill label="Mastercard">
-      <svg viewBox="0 0 36 22" className="h-5 w-auto" fill="none" aria-hidden="true">
-        <circle cx="12" cy="11" r="10" fill="#EB001B" />
-        <circle cx="24" cy="11" r="10" fill="#F79E1B" />
-        <path
-          d="M18 3.6c2.3 2.8 2.3 7 0 9.8-2.3-2.8-2.3-7 0-9.8Z"
-          fill="#FF5F00"
-        />
-      </svg>
-    </LogoPill>
-  );
-}
-
-function ApplePayLogo() {
-  return (
-    <LogoPill label="Apple Pay">
-      <svg viewBox="0 0 64 24" className="h-4 w-auto" fill="none" aria-hidden="true">
-        <path
-          d="M13.55 4.22c-.64 0-1.62.47-2.13.47-.54 0-1.4-.47-2.17-.47-1.77 0-3.4 1.45-3.4 4.04 0 2.93 2.28 6.48 4.14 6.48.6 0 1.3-.44 1.9-.44.54 0 1.36.44 1.98.44.82 0 2.1-1.16 2.9-2.76-.54-.28-1.02-1.3-1.02-2.16 0-1.6 1.1-2.42 1.64-2.66-.56-.86-1.36-1.22-2.06-1.22-.56.02-1.5.51-1.78.51Zm-1.04-2.06c.72-.86 1.22-2.04 1.08-3.16-.96.06-2.16.68-2.84 1.48-.62.72-1.12 1.9-1 3.04 1.06.1 2.18-.54 2.76-1.36Z"
-          fill="white"
-        />
-        <path
-          d="M21.9 17.12V5.6h2.3v.96c.64-.72 1.6-1.2 2.6-1.2.1 0 .2 0 .3.02v2.4c-.18-.04-.36-.06-.56-.06-.98 0-1.9.58-2.34 1.48v7.92H21.9Zm7.6-5.6c0-3.3 2.2-5.64 5.24-5.64 3.04 0 5.2 2.34 5.2 5.64 0 3.28-2.16 5.62-5.2 5.62-3.04 0-5.24-2.34-5.24-5.62Zm7.72 0c0-1.84-1.02-3.22-2.48-3.22s-2.52 1.38-2.52 3.22 1.06 3.2 2.52 3.2 2.48-1.36 2.48-3.2Zm6.06-5.2h2.28v1.04c.66-.72 1.62-1.24 2.74-1.24 2.02 0 3.54 1.44 3.54 4.02v6.9h-2.3v-6.5c0-1.58-.76-2.42-2.02-2.42-1.18 0-1.96.82-1.96 2.34v6.58h-2.28V6.32Zm10.3 0h2.3v11.8h-2.3V6.32Zm0-3.02h2.3v2.3h-2.3v-2.3Zm6.54 3.02v9.08h-1.4v-9.08h-1.2V5.6h1.2V3.34h2.3V5.6h2.04v1.72h-2.04v9.08h-2.3V6.32Zm6.78-1.72h2.28v.86c.56-.58 1.42-1.08 2.48-1.08.18 0 .36.02.52.04v2.28c-.24-.06-.5-.1-.78-.1-1.04 0-1.88.56-2.22 1.46v8.36h-2.28V6.32h.02v-.02h-.02Zm8.4 0h2.3v11.8h-2.3V6.32Zm0-3.02h2.3v2.3h-2.3v-2.3Zm-3.9 6.62c0-3.3 2.2-5.64 5.24-5.64 3.04 0 5.2 2.34 5.2 5.64 0 3.28-2.16 5.62-5.2 5.62-3.04 0-5.24-2.34-5.24-5.62Zm7.72 0c0-1.84-1.02-3.22-2.48-3.22s-2.52 1.38-2.52 3.22 1.06 3.2 2.52 3.2 2.48-1.36 2.48-3.2Z"
-          fill="white"
-        />
-      </svg>
-    </LogoPill>
-  );
-}
-
-function BinanceLogo() {
-  return (
-    <LogoPill label="Binance">
-      <svg viewBox="0 0 24 24" className="h-5 w-auto" fill="none" aria-hidden="true">
-        <path d="M12 2L14.6 4.6L12 7.2L9.4 4.6L12 2Z" fill="#F0B90B" />
-        <path d="M17.8 4.6L20.4 7.2L17.8 9.8L15.2 7.2L17.8 4.6Z" fill="#F0B90B" />
-        <path d="M6.2 4.6L8.8 7.2L6.2 9.8L3.6 7.2L6.2 4.6Z" fill="#F0B90B" />
-        <path d="M12 8.4L16.4 12.8L12 17.2L7.6 12.8L12 8.4Z" fill="#F0B90B" />
-        <path d="M19.6 10.6L22.2 13.2L19.6 15.8L17 13.2L19.6 10.6Z" fill="#F0B90B" />
-        <path d="M4.4 10.6L7 13.2L4.4 15.8L1.8 13.2L4.4 10.6Z" fill="#F0B90B" />
-        <path d="M12 16.8L14.6 19.4L12 22L9.4 19.4L12 16.8Z" fill="#F0B90B" />
-      </svg>
-    </LogoPill>
-  );
-}
-
-function PayoneerLogo() {
-  return (
-    <LogoPill label="Payoneer">
-      <svg viewBox="0 0 80 18" className="h-4 w-auto" fill="none" aria-hidden="true">
-        <path
-          d="M6.2 1.4h4.4c2.6 0 4.4 1.6 4.4 4.2 0 2.8-2 4.4-4.6 4.4H8.4v4.8H6.2V1.4Zm2.2 2v4.6h2c1.4 0 2.4-.8 2.4-2.3 0-1.4-1-2.3-2.4-2.3h-2ZM17.8 1.4h2.2v2.2h-2.2V1.4Zm0 3.7h2.2v9.7h-2.2V5.1Zm4.3 0h2.2v1.3c.6-.9 1.6-1.5 2.8-1.5 2 0 3.4 1.4 3.4 4v6h-2.2V9.2c0-1.5-.7-2.3-2-2.3-1.2 0-2 1-2 2.6v6h-2.2V5.1Zm12.2-1.7c2.6 0 4.4 1.9 4.4 4.9v.5h-6.8c.2 1.5 1.3 2.4 2.8 2.4 1 0 1.8-.4 2.4-1l1.2 1.4c-.9 1-2.2 1.6-3.8 1.6-2.8 0-4.8-1.9-4.8-5 0-2.8 1.9-4.8 4.6-4.8Zm-2.2 3.8h4.6c-.1-1.4-1-2.2-2.2-2.2-1.3 0-2.2.8-2.4 2.2Zm10.6-2.1h2.2v1.3c.5-1 1.5-1.5 2.6-1.5.4 0 .7 0 1 .1v2.1c-.3-.1-.7-.2-1.1-.2-1.1 0-2 .7-2.4 1.8v5.6h-2.2V5.1Zm7.4 6.4c0-2.5 1.7-4 4.4-4 .8 0 1.5.2 2 .4V7.2c0-1.2-.7-1.8-1.9-1.8-.9 0-1.7.3-2.5.9l-.9-1.6c1.1-.8 2.4-1.2 3.8-1.2 2.4 0 3.8 1.3 3.8 3.8v6.7h-2.2v-1c-.6.8-1.6 1.2-2.8 1.2-2 0-3.7-1.2-3.7-3.7Zm4.4 2c1.2 0 2.1-.5 2.1-1.6v-1.2c-.5-.3-1.2-.4-1.8-.4-1.4 0-2.4.7-2.4 1.8 0 1 .8 1.4 2.1 1.4Zm9.6-8.4c2.5 0 4.2 1.8 4.2 4.8 0 2.9-1.7 4.8-4.2 4.8-1.2 0-2.2-.5-2.8-1.3v5.1h-2.2V5.1h2.2v1.1c.6-.8 1.6-1.3 2.8-1.3Zm-.5 7.2c1.4 0 2.3-1 2.3-2.4 0-1.4-.9-2.4-2.3-2.4-1.3 0-2.3 1-2.3 2.4 0 1.4 1 2.4 2.3 2.4Z"
-          fill="white"
-        />
-      </svg>
-    </LogoPill>
   );
 }

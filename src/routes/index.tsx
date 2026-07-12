@@ -59,7 +59,7 @@ const faqs = [
 ];
 
 function Home() {
-  const featured = PRODUCTS.filter((p) => p.featured).concat(PRODUCTS.filter((p) => !p.featured)).slice(0, 6);
+  const featured = PRODUCTS.filter((p) => p.featured).concat(PRODUCTS.filter((p) => !p.featured)).slice(0, 3);
 
   return (
     <SiteShell>

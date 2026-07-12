@@ -4,6 +4,7 @@ import { useCart } from "@/lib/cart";
 import { useAuth } from "@/hooks/use-auth";
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { openOrderDrawer } from "./OrderDrawer";
 
 const focusRing =
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet focus-visible:ring-offset-2 focus-visible:ring-offset-background";

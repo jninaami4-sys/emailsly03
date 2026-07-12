@@ -216,7 +216,7 @@ function Home() {
                   <PremiumGlobe className="size-5" />
                 </div>
                 <h3 className="mt-4 font-display text-lg font-bold">Global coverage</h3>
-                <p className="mt-1 text-sm text-foreground/60">100M+ contacts across 180+ countries, GDPR &amp; CCPA compliant.</p>
+                <p className="mt-1 text-sm text-foreground/60">250M+ contacts across 180+ countries, GDPR &amp; CCPA compliant.</p>
               </article>
 
               <button

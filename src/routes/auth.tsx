@@ -245,6 +245,7 @@ function AuthPage() {
       setError(message.replace("Invalid login credentials", "Wrong email or password"));
     } finally {
       setBusy(false);
+    }
   }
 
   async function handleDemoLogin() {
@@ -267,7 +268,6 @@ function AuthPage() {
     } finally {
       setBusy(false);
     }
-  }
   }
 
   async function handleForgotSubmit(e: React.FormEvent) {

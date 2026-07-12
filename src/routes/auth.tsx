@@ -245,7 +245,29 @@ function AuthPage() {
       setError(message.replace("Invalid login credentials", "Wrong email or password"));
     } finally {
       setBusy(false);
+  }
+
+  async function handleDemoLogin() {
+    setError(null);
+    setInfo(null);
+    setUnconfirmedEmail(null);
+    setBusy(true);
+    try {
+      const { email: demoEmail, password: demoPassword } = await ensureDemoAccount();
+      const { error } = await supabase.auth.signInWithPassword({
+        email: demoEmail,
+        password: demoPassword,
+      });
+      if (error) throw error;
+      const target = search.redirect && search.redirect.startsWith("/") ? search.redirect : "/";
+      window.location.replace(target);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Could not start demo session";
+      setError(message);
+    } finally {
+      setBusy(false);
     }
+  }
   }
 
   async function handleForgotSubmit(e: React.FormEvent) {

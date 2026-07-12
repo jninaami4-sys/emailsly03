@@ -1,77 +1,49 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteShell } from "@/components/site/SiteShell";
-import { PricingCalculator } from "@/components/site/PricingCalculator";
 import { ProductCard } from "@/components/site/ProductCard";
 import { PRODUCTS } from "@/lib/products";
-import { ArrowRight, Zap, Phone, Linkedin, ShieldCheck, Lock, Clock, BadgeCheck, ServerCog, Check } from "lucide-react";
+import {
+  ArrowRight,
+  ShieldCheck,
+  Zap,
+  Database,
+  CheckCircle2,
+  Star,
+  Sparkles,
+  Circle,
+} from "lucide-react";
 import { Testimonials } from "@/components/site/Testimonials";
-import { ActivityTicker } from "@/components/site/ActivityTicker";
-
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "LyraData — Verified B2B leads from Apollo, ZoomInfo & LinkedIn" },
-      { name: "description", content: "Precision-targeted, 99% accurate B2B leads delivered in 24 hours. Pay per lead, no subscription." },
+      { name: "description", content: "Clean, verified B2B lead exports from Apollo, ZoomInfo, and LinkedIn Sales Navigator — delivered to your CRM in 24 hours." },
       { property: "og:title", content: "LyraData — Verified B2B Data Platform" },
-      { property: "og:description", content: "99% accurate leads from Apollo, ZoomInfo, and LinkedIn — delivered to your CRM." },
+      { property: "og:description", content: "Verified leads delivered to your CRM in 24h. No manual cleaning." },
     ],
   }),
   component: Home,
 });
 
-const flagship = [
+const logos = ["Apollo", "Salesforce", "HubSpot", "LinkedIn", "ZoomInfo", "Pipedrive"];
+
+const features = [
   {
-    key: "apollo",
+    icon: ShieldCheck,
+    title: "Real-time verification",
+    desc: "Every email is pinged in real-time before delivery to ensure near-zero bounce rates for your outreach.",
+  },
+  {
     icon: Zap,
-    name: "Apollo Export",
-    price: "$20 / 5k leads",
-    desc: "Standard bulk export directly from your Apollo search filters. $35 for 10K+.",
-    color: "violet" as const,
-    to: "/apollo-leads-export" as const,
-    badges: ["Work & Personal Emails", "Fast CSV Delivery", "Real-Time Data", "Current Job Titles"],
+    title: "24h turnaround",
+    desc: "Upload your requirements and receive a cleaned, formatted dataset in less than one business day.",
   },
   {
-    key: "zoominfo",
-    icon: Phone,
-    name: "ZoomInfo Data",
-    price: "$20 / 1k leads",
-    desc: "Premium direct dials and HQ numbers for cold calling.",
-    color: "emerald" as const,
-    to: "/zoominfo-leads" as const,
-    badges: ["Real-Time Data", "Current Job Titles"],
+    icon: Database,
+    title: "CRM-native format",
+    desc: "Custom mapping for HubSpot, Salesforce, and Pipedrive so you can import with a single click.",
   },
-  {
-    key: "linkedin",
-    icon: Linkedin,
-    name: "LinkedIn B2B",
-    price: "$50 / 5k leads",
-    desc: "Real-time fresh scraping from Sales Navigator searches.",
-    color: "coral" as const,
-    to: "/linkedin-sales-navigator-leads" as const,
-    badges: ["Real-Time Data", "Current Job Titles"],
-    disclaimer: "On average, ~70% of LinkedIn scraping data contains emails. It may be slightly lower or higher.",
-  },
-];
-
-const cardTint: Record<"violet" | "coral" | "emerald", string> = {
-  violet: "from-violet-soft/60 to-transparent border-violet/20",
-  coral: "from-coral-soft/60 to-transparent border-coral/20",
-  emerald: "from-emerald-soft/60 to-transparent border-emerald/20",
-};
-const chipTint: Record<"violet" | "coral" | "emerald", string> = {
-  violet: "bg-violet-soft text-violet",
-  coral: "bg-coral-soft text-coral",
-  emerald: "bg-emerald-soft text-emerald",
-};
-
-const trust = [
-  { icon: BadgeCheck, label: "99% Data Accuracy" },
-  { icon: ShieldCheck, label: "GDPR Compliant" },
-  { icon: Lock, label: "256-bit Encrypted" },
-  { icon: Clock, label: "24h Delivery" },
-  { icon: Check, label: "Verified Contacts" },
-  { icon: ServerCog, label: "Secure Infrastructure" },
 ];
 
 const faqs = [
@@ -85,23 +57,19 @@ const faqs = [
   },
   {
     q: "How accurate is the data?",
-    a: "We guarantee 99% data accuracy. Emails are validated in real-time before delivery. If any leads bounce, we replace them free of charge.",
+    a: "Emails are validated in real-time before delivery. If any leads bounce, we replace them free of charge.",
   },
   {
     q: "Do you offer custom ICP / niche research?",
-    a: "Yes — our Manual Lead Research service ($0.15/lead) is 100% human-verified and perfect for complex ICPs that automated tools miss.",
+    a: "Yes — our Manual Lead Research service is 100% human-verified and perfect for complex ICPs that automated tools miss.",
   },
   {
     q: "What payment methods do you accept?",
-    a: "We accept secure payments via card, bank transfer, and crypto. Payment links are sent after order confirmation. We do NOT use Wise.",
+    a: "We accept secure payments via card, bank transfer, and crypto. Payment links are sent after order confirmation.",
   },
   {
     q: "Can I track my order status?",
     a: "Absolutely. Use our Track Order page with your order ID or email, or create a free account to see all your orders in one dashboard.",
-  },
-  {
-    q: "Can I install LyraData as an app on my phone?",
-    a: "Yes! LyraData works as an installable app on both iPhone and Android — no App Store needed. On iPhone (Safari): tap the Share button → 'Add to Home Screen'. On Android (Chrome): tap the menu (⋮) → 'Install app' or 'Add to Home Screen'. Once installed, it opens like a native app with 1-tap access to live chat, instant order notifications, and works smoothly even on slow connections.",
   },
 ];
 
@@ -111,113 +79,158 @@ function Home() {
   return (
     <SiteShell>
       {/* Hero */}
-      <section className="relative overflow-hidden px-6 py-20 lg:py-24">
-        <div className="pointer-events-none absolute -left-32 -top-24 size-[28rem] rounded-full bg-violet-soft blur-3xl" />
-        <div className="pointer-events-none absolute -right-24 top-32 size-[22rem] rounded-full bg-coral-soft blur-3xl" />
-        <div className="pointer-events-none absolute bottom-0 left-1/3 size-64 rounded-full bg-emerald-soft blur-3xl" />
-        <div className="relative mx-auto grid max-w-7xl items-center gap-16 lg:grid-cols-2">
-          <div className="animate-fade-up">
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-violet-soft px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-wider text-violet">
-              <span className="size-1.5 animate-pulse rounded-full bg-violet" />
-              Premium B2B Data Platform
-            </div>
-            <h1 className="text-balance font-display text-5xl font-bold leading-[1.05] tracking-tight lg:text-6xl">
-              Drive Revenue
-              <br />
-              With <span className="relative inline-block">
-                <span className="relative z-10 italic">Verified</span>
-                <span className="absolute -bottom-1 left-0 h-4 w-full -rotate-1 bg-coral-soft" />
-              </span>
-              <br />
-              B2B Data
-            </h1>
-            <p className="mt-6 max-w-[48ch] text-pretty text-lg text-muted-foreground">
-              Precision-targeted, 99% accurate leads from Apollo, ZoomInfo, and LinkedIn — delivered to your CRM.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link
-                to="/track-order"
-                className="inline-flex items-center gap-2 rounded-xl bg-violet px-5 py-3 font-semibold text-white shadow-lg shadow-violet/25 transition-transform hover:scale-[1.02]"
-              >
-                Start Your Order <ArrowRight className="size-4" />
-              </Link>
-              <Link
-                to="/pricing"
-                className="inline-flex items-center gap-2 rounded-xl border border-border bg-card px-5 py-3 font-semibold text-foreground transition-colors hover:bg-secondary"
-              >
-                Explore Solutions
-              </Link>
-            </div>
-            <div className="mt-10 flex flex-wrap gap-x-6 gap-y-3 border-t border-border pt-8">
-              {trust.map((t) => (
-                <span key={t.label} className="inline-flex items-center gap-1.5 font-mono text-[11px] font-semibold text-muted-foreground">
-                  <t.icon className="size-3.5 text-emerald" />
-                  {t.label}
-                </span>
-              ))}
-            </div>
+      <section className="relative overflow-hidden px-6 pt-20 pb-24 lg:pt-24">
+        <div className="pointer-events-none absolute left-1/2 top-0 -z-10 h-[600px] w-[1000px] -translate-x-1/2 bg-[radial-gradient(circle_at_center,var(--violet-soft),transparent_70%)] opacity-70" />
+        <div className="mx-auto max-w-5xl text-center">
+          <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-violet/20 bg-violet-soft px-3 py-1">
+            <span className="relative flex size-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-violet/60 opacity-75" />
+              <span className="relative inline-flex size-2 rounded-full bg-violet" />
+            </span>
+            <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-violet">
+              Verified data delivery
+            </span>
           </div>
-          <div className="animate-fade-up [animation-delay:150ms]">
-            <PricingCalculator />
+          <h1 className="font-display text-5xl font-bold leading-[1.05] tracking-tighter text-foreground md:text-7xl">
+            High-intent B2B leads,
+            <br />
+            delivered to your <span className="text-violet">CRM in 24h.</span>
+          </h1>
+          <p className="mx-auto mt-8 max-w-2xl text-lg leading-relaxed text-muted-foreground md:text-xl">
+            Clean, verified exports from Apollo, ZoomInfo, and LinkedIn Sales Navigator. No manual cleaning — just ready-to-close pipeline.
+          </p>
+          <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
+            <Link
+              to="/store"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-violet px-8 py-4 text-base font-semibold text-white shadow-lg shadow-violet/25 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-violet/30 sm:w-auto"
+            >
+              Start Exporting <ArrowRight className="size-4" />
+            </Link>
+            <Link
+              to="/pricing"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-border bg-card px-8 py-4 text-base font-semibold text-foreground transition-colors hover:bg-secondary sm:w-auto"
+            >
+              View Sample Data
+            </Link>
+          </div>
+        </div>
+
+        {/* Product preview mock */}
+        <div className="relative mx-auto mt-20 max-w-5xl">
+          <div className="pointer-events-none absolute -inset-6 -z-10 rounded-[2.5rem] bg-violet-soft/60 blur-3xl" />
+          <div className="overflow-hidden rounded-2xl border border-border bg-card p-3 shadow-2xl">
+            <div className="rounded-xl border border-border bg-secondary/40 p-6">
+              {/* window chrome */}
+              <div className="mb-5 flex items-center justify-between border-b border-border pb-4">
+                <div className="flex items-center gap-1.5">
+                  <span className="size-2.5 rounded-full bg-muted-foreground/25" />
+                  <span className="size-2.5 rounded-full bg-muted-foreground/25" />
+                  <span className="size-2.5 rounded-full bg-muted-foreground/25" />
+                </div>
+                <div className="font-mono text-[11px] text-muted-foreground">
+                  leads_export_q4_verified.csv
+                </div>
+                <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-soft px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-widest text-emerald">
+                  <CheckCircle2 className="size-3" />
+                  Ready
+                </div>
+              </div>
+
+              {/* table */}
+              <div className="overflow-hidden rounded-lg border border-border bg-card">
+                <div className="grid grid-cols-[1.4fr_1.2fr_0.9fr_0.9fr_0.8fr] gap-4 border-b border-border bg-secondary/60 px-5 py-3 font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                  <div>Lead</div>
+                  <div>Company</div>
+                  <div>Source</div>
+                  <div>Status</div>
+                  <div className="text-right">Action</div>
+                </div>
+                {[
+                  { name: "Sarah Jenkins", role: "VP Growth", co: "GrowthFlow AI", src: "LinkedIn SN", status: "verified" },
+                  { name: "Marcus Thorne", role: "Head of Sales", co: "Nexus Capital", src: "Apollo", status: "verified" },
+                  { name: "Elena Rodriguez", role: "CMO", co: "CloudSphere", src: "ZoomInfo", status: "enriching" },
+                  { name: "David Park", role: "Director RevOps", co: "Northwind Labs", src: "Apollo", status: "verified" },
+                ].map((r, i) => (
+                  <div
+                    key={i}
+                    className={`grid grid-cols-[1.4fr_1.2fr_0.9fr_0.9fr_0.8fr] items-center gap-4 px-5 py-4 text-sm ${i !== 3 ? "border-b border-border" : ""}`}
+                  >
+                    <div className="min-w-0">
+                      <div className="truncate font-semibold text-foreground">{r.name}</div>
+                      <div className="truncate text-xs text-muted-foreground">{r.role}</div>
+                    </div>
+                    <div className="truncate text-muted-foreground">{r.co}</div>
+                    <div className="font-mono text-xs text-muted-foreground">{r.src}</div>
+                    <div>
+                      {r.status === "verified" ? (
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-soft px-2 py-0.5 text-[11px] font-semibold text-emerald">
+                          <span className="size-1.5 rounded-full bg-emerald" />
+                          Verified
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-violet-soft px-2 py-0.5 text-[11px] font-semibold text-violet">
+                          <Circle className="size-2 animate-pulse fill-violet text-violet" />
+                          Enriching…
+                        </span>
+                      )}
+                    </div>
+                    <div className="text-right">
+                      <span className="font-semibold text-violet">Sync →</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Flagship Services */}
-      <section className="border-y border-border bg-card py-20">
+      {/* Logo strip */}
+      <section className="border-y border-border py-12">
         <div className="mx-auto max-w-7xl px-6">
-          <div className="mb-12 flex flex-wrap items-end justify-between gap-4">
-            <div>
-              <h2 className="font-display text-3xl font-bold lg:text-4xl">Our flagship data services</h2>
-              <p className="mt-2 max-w-lg text-muted-foreground">
-                Three purpose-built sourcing engines. Add-ons and website services live on the pricing page.
-              </p>
-            </div>
-            <Link to="/pricing" className="inline-flex items-center gap-1 font-semibold text-violet hover:underline">
-              See all services <ArrowRight className="size-4" />
-            </Link>
-          </div>
-          <div className="grid gap-6 lg:grid-cols-3">
-            {flagship.map((s) => (
-              <Link
-                key={s.key}
-                to={s.to}
-                className={`group flex flex-col rounded-2xl border bg-gradient-to-br ${cardTint[s.color]} p-6 transition-all hover:-translate-y-1 hover:shadow-lg`}
-              >
-                <div className={`mb-5 grid size-11 place-items-center rounded-xl ${chipTint[s.color]}`}>
-                  <s.icon className="size-5" />
-                </div>
-                <h3 className="font-display text-lg font-bold">{s.name}</h3>
-                <div className="mt-1 font-mono text-sm font-bold text-foreground">{s.price}</div>
-                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{s.desc}</p>
-                <ul className="mt-4 flex flex-wrap gap-1.5">
-                  {s.badges.map((b) => (
-                    <li key={b} className="rounded-full bg-background px-2 py-0.5 font-mono text-[10px] font-semibold text-muted-foreground">
-                      {b}
-                    </li>
-                  ))}
-                </ul>
-                {s.disclaimer && (
-                  <p className="mt-3 font-mono text-[10px] italic text-muted-foreground">{s.disclaimer}</p>
-                )}
-                <div className="mt-5 inline-flex items-center gap-1 text-xs font-semibold text-foreground">
-                  Learn more <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1" />
-                </div>
-              </Link>
+          <p className="text-center font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70">
+            Trusted by growth teams at
+          </p>
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-x-12 gap-y-4 opacity-40">
+            {logos.map((l) => (
+              <span key={l} className="font-display text-xl font-bold tracking-tight text-foreground">
+                {l}
+              </span>
             ))}
           </div>
+        </div>
+      </section>
 
-          {/* Apollo notice */}
-          <div className="mt-8 rounded-xl border border-violet/20 bg-violet-soft/40 p-4 text-sm text-foreground">
-            <span className="font-bold">Apollo Pricing & Delivery Notice — </span>
-            Apollo bulk export pricing: $20 for up to 5K leads, $35 for 10K+ leads. Delivery typically within 24 hours.
-            For orders above 50K leads, <Link to="/contact" className="font-semibold text-violet underline">contact us</Link> for custom pricing.
+      {/* Features grid */}
+      <section className="px-6 py-32">
+        <div className="mx-auto max-w-7xl">
+          <div className="mx-auto max-w-2xl text-center">
+            <h2 className="font-display text-4xl font-bold tracking-tight md:text-5xl">
+              Engineered for data accuracy
+            </h2>
+            <p className="mt-4 text-muted-foreground">
+              We don't just scrape — we enrich, verify, and format data to fit your CRM schema perfectly.
+            </p>
+          </div>
+          <div className="mt-16 grid gap-6 md:grid-cols-3">
+            {features.map((f) => (
+              <div
+                key={f.title}
+                className="rounded-2xl border border-border bg-secondary/30 p-8 transition-all hover:-translate-y-0.5 hover:border-violet/30 hover:bg-card"
+              >
+                <div className="mb-6 inline-grid size-12 place-items-center rounded-xl bg-violet-soft text-violet">
+                  <f.icon className="size-6" />
+                </div>
+                <h3 className="font-display text-xl font-bold">{f.title}</h3>
+                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{f.desc}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Featured products */}
-      <section className="px-6 py-24">
+      <section className="border-t border-border bg-card px-6 py-24">
         <div className="mx-auto max-w-7xl">
           <div className="mb-12 flex flex-wrap items-end justify-between gap-4">
             <div>
@@ -236,13 +249,75 @@ function Home() {
         </div>
       </section>
 
-      {/* Live activity ticker */}
-      <ActivityTicker />
+      {/* Testimonial band */}
+      <section className="relative overflow-hidden bg-ink px-6 py-24">
+        <div className="pointer-events-none absolute -right-24 -top-24 size-96 rounded-full bg-violet/15 blur-[100px]" />
+        <div className="pointer-events-none absolute -bottom-24 -left-24 size-96 rounded-full bg-coral/10 blur-[100px]" />
+        <div className="relative mx-auto max-w-4xl text-center">
+          <div className="mb-8 flex justify-center gap-1 text-violet">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <Star key={i} className="size-5 fill-current" />
+            ))}
+          </div>
+          <blockquote className="font-display text-3xl font-medium leading-snug text-white md:text-4xl">
+            "LyraData cut our prospecting time in half. We no longer spend hours cleaning Apollo exports — we just receive the verified file and start selling."
+          </blockquote>
+          <div className="mt-10 flex items-center justify-center gap-3">
+            <div className="grid size-12 place-items-center rounded-full bg-violet font-bold text-white">
+              MT
+            </div>
+            <div className="text-left">
+              <p className="font-bold text-white">Marcus Thorne</p>
+              <p className="text-sm text-white/60">VP Sales, VelocityGrowth</p>
+            </div>
+          </div>
+        </div>
+      </section>
 
-      {/* Testimonials + logo wall */}
+      {/* Testimonials wall (existing component with logos) */}
       <Testimonials />
 
+      {/* Pricing peek */}
+      <section className="px-6 py-32">
+        <div className="mx-auto max-w-7xl">
+          <div className="mx-auto max-w-2xl text-center">
+            <h2 className="font-display text-4xl font-bold tracking-tight">
+              Transparent, volume-based pricing
+            </h2>
+            <p className="mt-4 text-muted-foreground">Only pay for successfully verified leads delivered.</p>
+          </div>
 
+          <div className="mx-auto mt-16 max-w-lg rounded-3xl border border-border bg-card p-10 shadow-xl">
+            <div className="mb-8">
+              <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-violet">Popular</span>
+              <div className="mt-2 flex items-baseline">
+                <span className="font-display text-5xl font-bold tracking-tight text-foreground">$499</span>
+                <span className="ml-2 text-muted-foreground">/month</span>
+              </div>
+              <p className="mt-3 text-sm text-muted-foreground">Perfect for growing SDR teams.</p>
+            </div>
+            <ul className="mb-10 space-y-4">
+              {[
+                "5,000 verified leads / month",
+                "Apollo, ZoomInfo & LinkedIn exports",
+                "24h delivery guarantee",
+                "CRM auto-mapping",
+              ].map((item) => (
+                <li key={item} className="flex items-center gap-3 text-sm text-foreground">
+                  <CheckCircle2 className="size-5 shrink-0 text-emerald" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+            <Link
+              to="/pricing"
+              className="inline-flex w-full items-center justify-center rounded-xl bg-ink py-4 font-bold text-white transition-colors hover:bg-violet"
+            >
+              See all plans
+            </Link>
+          </div>
+        </div>
+      </section>
 
       {/* FAQ */}
       <section className="border-t border-border bg-card px-6 py-24">
@@ -259,34 +334,33 @@ function Home() {
               </details>
             ))}
           </div>
-          <p className="mt-8 rounded-xl border border-border bg-background p-4 text-xs text-muted-foreground">
-            <span className="font-bold text-foreground">Data Retention Policy — </span>
-            We retain your order data and delivered files for 30 days after completion, then permanently delete them from our servers.
-            This protects your privacy and ensures GDPR compliance.{" "}
-            <Link to="/contact" className="font-semibold text-violet underline">
-              Want longer access to your order history?
-            </Link>
-          </p>
         </div>
       </section>
 
-      {/* Trust CTA */}
+      {/* Final CTA */}
       <section className="px-6 py-24">
-        <div className="mx-auto max-w-5xl rounded-3xl border border-border bg-gradient-to-br from-violet-soft via-background to-coral-soft p-12 text-center">
-          <h2 className="font-display text-3xl font-bold lg:text-4xl">Ready to fill your pipeline?</h2>
-          <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
-            Get your first batch delivered in under 24 hours. No subscription, no minimum.
+        <div className="mx-auto max-w-6xl overflow-hidden rounded-[3rem] bg-violet p-12 text-center md:p-24">
+          <div className="pointer-events-none absolute inset-0 -z-10" />
+          <div className="mx-auto mb-6 inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-white">
+            <Sparkles className="size-3" />
+            Ready when you are
+          </div>
+          <h2 className="font-display text-4xl font-bold tracking-tight text-white md:text-6xl">
+            Ready to scale your pipeline?
+          </h2>
+          <p className="mx-auto mt-6 max-w-xl text-lg text-white/80">
+            Join high-growth teams getting verified B2B leads delivered daily.
           </p>
-          <div className="mt-8 flex flex-wrap justify-center gap-3">
+          <div className="mt-10 flex flex-wrap justify-center gap-3">
             <Link
               to="/store"
-              className="inline-flex items-center gap-2 rounded-xl bg-violet px-6 py-3 font-semibold text-white shadow-lg shadow-violet/25"
+              className="inline-flex items-center gap-2 rounded-full bg-white px-8 py-4 text-base font-bold text-violet shadow-xl transition-transform hover:-translate-y-0.5"
             >
-              Start Your Order <ArrowRight className="size-4" />
+              Get Started Now <ArrowRight className="size-4" />
             </Link>
             <Link
               to="/contact"
-              className="inline-flex items-center gap-2 rounded-xl border border-border bg-card px-6 py-3 font-semibold hover:bg-secondary"
+              className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-transparent px-8 py-4 text-base font-bold text-white transition-colors hover:bg-white/10"
             >
               Talk to sales
             </Link>

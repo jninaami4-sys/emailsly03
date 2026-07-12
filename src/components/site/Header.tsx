@@ -77,9 +77,9 @@ export function Header() {
           ) : (
             <Link
               to="/auth"
-              className="hidden rounded-lg bg-ink px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-violet md:inline-flex"
+              className="hidden rounded-full bg-ink px-5 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:bg-violet md:inline-flex"
             >
-              Sign in
+              Get Started
             </Link>
           )}
           <button

@@ -70,7 +70,8 @@ function AuthPage() {
           password: parsed.data.password,
         });
         if (error) throw error;
-        navigate({ to: (search.redirect as string) || "/", replace: true });
+        const target = search.redirect && search.redirect.startsWith("/") ? search.redirect : "/";
+        window.location.replace(target);
       }
     } catch (err) {
       const message = err instanceof Error ? err.message : "Something went wrong";

@@ -48,9 +48,17 @@
   --color-ink: var(--ink);
   --color-paper: var(--paper);
 
-  --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Sora", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  /* Midnight Indigo scale */
+  --color-midnight: var(--midnight);
+  --color-midnight-surface: var(--midnight-surface);
+  --color-midnight-elev: var(--midnight-elev);
+  --color-midnight-line: var(--midnight-line);
+  --color-indigo: var(--indigo);
+  --color-indigo-soft: var(--indigo-soft);
 }
 
 :root {

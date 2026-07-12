@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
-import { ArrowRight, Loader2, Mail, Lock, ShieldCheck, Zap, Sparkles, Eye, EyeOff } from "lucide-react";
+import { ArrowRight, Loader2, Mail, Lock, ShieldCheck, Zap, Sparkles, Eye, EyeOff, AlertCircle } from "lucide-react";
 
 const searchSchema = z.object({
   mode: z.enum(["signin", "signup"]).optional(),
@@ -26,6 +26,8 @@ const credentials = z.object({
   password: z.string().min(6, { message: "At least 6 characters" }).max(72),
 });
 
+type FieldErrors = { email?: string; password?: string };
+
 function AuthPage() {
   const search = useSearch({ from: "/auth" });
   const { user, loading } = useAuth();
@@ -33,6 +35,8 @@ function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
+  const [touched, setTouched] = useState<{ email?: boolean; password?: boolean }>({});
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [info, setInfo] = useState<string | null>(null);
@@ -44,31 +48,53 @@ function AuthPage() {
     }
   }, [loading, user, search.redirect]);
 
+  function validateField(name: keyof FieldErrors, value: string) {
+    const partial = credentials.partial();
+    const parsed = partial.safeParse({ [name]: value });
+    if (!parsed.success) {
+      const issue = parsed.error.issues.find((i) => i.path[0] === name);
+      setFieldErrors((prev) => ({ ...prev, [name]: issue?.message }));
+      return false;
+    }
+    setFieldErrors((prev) => ({ ...prev, [name]: undefined }));
+    return true;
+  }
+
+  function validateAll(): boolean {
+    const parsed = credentials.safeParse({ email, password });
+    if (!parsed.success) {
+      const next: FieldErrors = {};
+      for (const issue of parsed.error.issues) {
+        const key = issue.path[0] as keyof FieldErrors;
+        if (!next[key]) next[key] = issue.message;
+      }
+      setFieldErrors(next);
+      return false;
+    }
+    setFieldErrors({});
+    return true;
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
     setInfo(null);
-    const parsed = credentials.safeParse({ email, password });
-    if (!parsed.success) {
-      setError(parsed.error.issues[0].message);
-      return;
-    }
+    setTouched({ email: true, password: true });
+    if (!validateAll()) return;
+
     setBusy(true);
     try {
       if (mode === "signup") {
         const { error } = await supabase.auth.signUp({
-          email: parsed.data.email,
-          password: parsed.data.password,
+          email,
+          password,
           options: { emailRedirectTo: `${window.location.origin}/` },
         });
         if (error) throw error;
         setInfo("Check your email to confirm your account, then sign in.");
         setMode("signin");
       } else {
-        const { error } = await supabase.auth.signInWithPassword({
-          email: parsed.data.email,
-          password: parsed.data.password,
-        });
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
         const target = search.redirect && search.redirect.startsWith("/") ? search.redirect : "/";
         window.location.replace(target);
@@ -81,14 +107,19 @@ function AuthPage() {
     }
   }
 
+  const inputBase =
+    "w-full rounded-xl border bg-input/50 py-2.5 pl-10 pr-3 text-sm text-foreground placeholder:text-muted-foreground/60 outline-none transition-all focus:bg-background focus:ring-2";
+  const inputNormal = "border-border focus:border-primary/40 focus:ring-ring/20";
+  const inputError = "border-destructive focus:border-destructive/70 focus:ring-destructive/20 pr-10";
+
+  const passwordInputBase =
+    "w-full rounded-xl border bg-input/50 py-2.5 pl-10 pr-10 text-sm text-foreground placeholder:text-muted-foreground/60 outline-none transition-all focus:bg-background focus:ring-2";
+
   return (
     <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-background to-muted text-foreground">
-      {/* Single soft ambient glow */}
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute left-1/2 top-1/2 size-[60rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary opacity-[0.04] blur-[120px]" />
       </div>
-
-      {/* Subtle grid */}
       <div
         className="pointer-events-none absolute inset-0 opacity-[0.04]"
         style={{
@@ -100,7 +131,6 @@ function AuthPage() {
       />
 
       <div className="relative mx-auto grid min-h-screen max-w-6xl grid-cols-1 items-center gap-12 px-6 py-16 lg:grid-cols-2">
-        {/* Left — brand pitch */}
         <div className="hidden lg:block">
           <Link to="/" className="inline-flex items-center gap-2 font-display text-xl font-bold tracking-tight text-foreground">
             <span className="grid size-6 place-items-center rounded-md bg-primary">
@@ -138,14 +168,12 @@ function AuthPage() {
           </ul>
         </div>
 
-        {/* Right — glass form card */}
         <div className="w-full">
           <div className="relative mx-auto max-w-md">
             <div
               className="relative animate-fade-in rounded-[1.75rem] border border-border bg-card/80 p-8 shadow-xl backdrop-blur-xl"
               style={{ backdropFilter: "blur(24px) saturate(140%)" }}
             >
-              {/* Soft sheen */}
               <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-[1.75rem]">
                 <div className="absolute -top-1/2 left-0 h-full w-full rotate-12 bg-gradient-to-b from-white/60 via-transparent to-transparent opacity-50" />
               </div>
@@ -178,50 +206,84 @@ function AuthPage() {
                 </p>
 
                 <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-                  <label className="block">
-                    <span className="mb-1.5 block text-sm font-medium text-muted-foreground">
-                      Work email
-                    </span>
-                    <div className="group relative">
-                      <Mail className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-foreground" />
-                      <input
-                        type="email"
-                        autoComplete="email"
-                        required
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="w-full rounded-xl border border-border bg-input/50 py-2.5 pl-10 pr-3 text-sm text-foreground placeholder:text-muted-foreground/60 outline-none transition-all focus:border-primary/40 focus:bg-background focus:ring-2 focus:ring-ring/20"
-                        placeholder="jane@acme.com"
-                      />
-                    </div>
-                  </label>
+                  <div>
+                    <label className="block">
+                      <span className="mb-1.5 block text-sm font-medium text-muted-foreground">
+                        Work email
+                      </span>
+                      <div className="group relative">
+                        <Mail className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-foreground" />
+                        <input
+                          type="email"
+                          autoComplete="email"
+                          value={email}
+                          onChange={(e) => {
+                            setEmail(e.target.value);
+                            if (fieldErrors.email) validateField("email", e.target.value);
+                          }}
+                          onBlur={() => {
+                            setTouched((t) => ({ ...t, email: true }));
+                            validateField("email", email);
+                          }}
+                          className={`${inputBase} ${fieldErrors.email ? inputError : inputNormal}`}
+                          placeholder="jane@acme.com"
+                          aria-invalid={!!fieldErrors.email}
+                          aria-describedby={fieldErrors.email ? "email-error" : undefined}
+                        />
+                        {fieldErrors.email && (
+                          <AlertCircle className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-destructive" />
+                        )}
+                      </div>
+                    </label>
+                    {fieldErrors.email && (
+                      <p id="email-error" className="mt-1.5 flex items-center gap-1.5 text-xs text-destructive animate-fade-in">
+                        <AlertCircle className="size-3.5" />
+                        {fieldErrors.email}
+                      </p>
+                    )}
+                  </div>
 
-                  <label className="block">
-                    <span className="mb-1.5 block text-sm font-medium text-muted-foreground">
-                      Password
-                    </span>
-                    <div className="group relative">
-                      <Lock className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-foreground" />
-                      <input
-                        type={showPassword ? "text" : "password"}
-                        autoComplete={mode === "signup" ? "new-password" : "current-password"}
-                        required
-                        minLength={6}
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="w-full rounded-xl border border-border bg-input/50 py-2.5 pl-10 pr-10 text-sm text-foreground placeholder:text-muted-foreground/60 outline-none transition-all focus:border-primary/40 focus:bg-background focus:ring-2 focus:ring-ring/20"
-                        placeholder="At least 6 characters"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword((v) => !v)}
-                        className="absolute right-2 top-1/2 grid size-7 -translate-y-1/2 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                        aria-label={showPassword ? "Hide password" : "Show password"}
-                      >
-                        {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-                      </button>
-                    </div>
-                  </label>
+                  <div>
+                    <label className="block">
+                      <span className="mb-1.5 block text-sm font-medium text-muted-foreground">
+                        Password
+                      </span>
+                      <div className="group relative">
+                        <Lock className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-foreground" />
+                        <input
+                          type={showPassword ? "text" : "password"}
+                          autoComplete={mode === "signup" ? "new-password" : "current-password"}
+                          value={password}
+                          onChange={(e) => {
+                            setPassword(e.target.value);
+                            if (fieldErrors.password) validateField("password", e.target.value);
+                          }}
+                          onBlur={() => {
+                            setTouched((t) => ({ ...t, password: true }));
+                            validateField("password", password);
+                          }}
+                          className={`${passwordInputBase} ${fieldErrors.password ? inputError : inputNormal}`}
+                          placeholder="At least 6 characters"
+                          aria-invalid={!!fieldErrors.password}
+                          aria-describedby={fieldErrors.password ? "password-error" : undefined}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword((v) => !v)}
+                          className="absolute right-2 top-1/2 grid size-7 -translate-y-1/2 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                          aria-label={showPassword ? "Hide password" : "Show password"}
+                        >
+                          {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                        </button>
+                      </div>
+                    </label>
+                    {fieldErrors.password && (
+                      <p id="password-error" className="mt-1.5 flex items-center gap-1.5 text-xs text-destructive animate-fade-in">
+                        <AlertCircle className="size-3.5" />
+                        {fieldErrors.password}
+                      </p>
+                    )}
+                  </div>
 
                   {error && (
                     <div className="animate-fade-in rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">

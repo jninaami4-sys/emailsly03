@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowRight, Zap } from "lucide-react";
+import { ArrowRight, ShieldCheck, Zap } from "lucide-react";
+import { PaymentLogos } from "./PaymentLogos";
 
 const productLinks = [
   { to: "/store", label: "Lead Store" },
@@ -102,8 +103,22 @@ export function Footer() {
           </div>
         </div>
 
+        {/* Payment methods */}
+        <div className="flex flex-col items-start justify-between gap-6 border-y border-white/10 py-10 lg:flex-row lg:items-center">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-widest text-white/60">
+              <ShieldCheck className="size-3.5 text-emerald" />
+              Secure checkout
+            </div>
+            <p className="text-sm text-white/50">
+              We accept all major payment methods for your convenience.
+            </p>
+          </div>
+          <PaymentLogos />
+        </div>
+
         {/* Bottom bar */}
-        <div className="flex flex-col gap-4 border-t border-white/10 pt-8 text-xs text-white/40 md:flex-row md:items-center md:justify-between">
+        <div className="flex flex-col gap-4 pt-8 text-xs text-white/40 md:flex-row md:items-center md:justify-between">
           <span className="font-mono uppercase tracking-widest">
             © {new Date().getFullYear()} LyraData Inc. All rights reserved.
           </span>

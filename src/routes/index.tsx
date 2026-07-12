@@ -24,6 +24,7 @@ import {
   PremiumGlobe,
 } from "@/components/site/PremiumIcons";
 import { Testimonials } from "@/components/site/Testimonials";
+import { LiveDataConsole } from "@/components/site/LiveDataConsole";
 
 type RawData = {
   headers: string[];

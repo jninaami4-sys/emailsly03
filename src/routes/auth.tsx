@@ -3,7 +3,8 @@ import { useEffect, useState } from "react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
-import { ArrowRight, Loader2, Mail, Lock, ShieldCheck, Zap, BadgeCheck, Eye, EyeOff, AlertCircle, CheckCircle2, ArrowLeft } from "lucide-react";
+import { ensureDemoAccount } from "@/lib/demo-account.functions";
+import { ArrowRight, Loader2, Mail, Lock, ShieldCheck, Zap, BadgeCheck, Eye, EyeOff, AlertCircle, CheckCircle2, ArrowLeft, Sparkles } from "lucide-react";
 
 const searchSchema = z.object({
   mode: z.enum(["signin", "signup", "forgot"]).optional(),

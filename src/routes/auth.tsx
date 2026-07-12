@@ -210,7 +210,7 @@ function AuthPage() {
     "w-full rounded-xl border bg-input/50 py-2.5 pl-10 pr-10 text-sm text-foreground placeholder:text-muted-foreground/60 outline-none transition-all focus:bg-background focus:ring-2";
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-background to-muted text-foreground">
+    <main className="relative min-h-screen overflow-hidden bg-gradient-to-br from-background to-muted text-foreground">
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute left-1/2 top-1/2 size-[60rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary opacity-[0.04] blur-[120px]" />
       </div>
@@ -234,7 +234,7 @@ function AuthPage() {
           </Link>
 
           <div className="mt-10 inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground shadow-sm">
-            <BadgeCheck className="size-3.5 text-primary" /> Free account · No card required
+            <BadgeCheck className="size-3.5 text-primary" aria-hidden="true" /> Free account · No card required
           </div>
 
           <h1 className="mt-4 font-display text-4xl font-bold leading-[1.08] tracking-tight lg:text-5xl">
@@ -253,8 +253,8 @@ function AuthPage() {
               { icon: Mail, t: "Verified emails · 100% deliverable" },
             ].map((f) => (
               <li key={f.t} className="flex items-center gap-3 text-sm text-muted-foreground">
-                <span className="grid size-8 place-items-center rounded-lg border border-border bg-card text-foreground shadow-sm">
-                  <f.icon className="size-4" />
+                <span className="grid size-8 place-items-center rounded-lg border border-border bg-card text-foreground shadow-sm" aria-hidden="true">
+                  <f.icon className="size-4" aria-hidden="true" />
                 </span>
                 {f.t}
               </li>
@@ -278,9 +278,9 @@ function AuthPage() {
                     <button
                       type="button"
                       onClick={() => setMode("signin")}
-                      className="mb-4 inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
+                      className="mb-4 inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-ring/30 focus-visible:outline-none"
                     >
-                      <ArrowLeft className="size-3.5" /> Back to sign in
+                      <ArrowLeft className="size-3.5" aria-hidden="true" /> Back to sign in
                     </button>
                     <h2 className="font-display text-2xl font-bold tracking-tight">Reset your password</h2>
                     <p className="mt-1 text-sm text-muted-foreground">
@@ -324,9 +324,9 @@ function AuthPage() {
                       </div>
 
                       {info && (
-                        <div className="animate-fade-in rounded-lg border border-emerald/30 bg-emerald/10 px-3 py-3 text-sm text-emerald-foreground">
+                        <div aria-live="polite" className="animate-fade-in rounded-lg border border-emerald/30 bg-emerald/10 px-3 py-3 text-sm text-emerald-foreground">
                           <p className="flex items-start gap-2">
-                            <CheckCircle2 className="mt-0.5 size-4 shrink-0" />
+                            <CheckCircle2 className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
                             {info}
                           </p>
                           {lastEmail && (
@@ -334,7 +334,7 @@ function AuthPage() {
                               type="button"
                               onClick={() => handleResend()}
                               disabled={busy || cooldown > 0}
-                              className="mt-2 w-full text-center text-xs font-medium text-emerald-foreground/80 transition-colors hover:text-emerald-foreground disabled:cursor-not-allowed disabled:opacity-50"
+                              className="mt-2 w-full text-center text-xs font-medium text-emerald-foreground/80 transition-colors hover:text-emerald-foreground focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-ring/30 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
                             >
                               {cooldown > 0 ? `Resend available in ${cooldown}s` : "Didn't receive it? Resend email"}
                             </button>
@@ -342,7 +342,7 @@ function AuthPage() {
                         </div>
                       )}
                       {error && (
-                        <div className="animate-fade-in rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+                        <div aria-live="assertive" className="animate-fade-in rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
                           {error}
                         </div>
                       )}
@@ -350,11 +350,11 @@ function AuthPage() {
                       <button
                         type="submit"
                         disabled={busy || (email === lastEmail && cooldown > 0)}
-                        className="group relative inline-flex w-full items-center justify-center gap-2 overflow-hidden rounded-xl bg-primary px-5 py-3 font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/25 active:scale-[0.99] disabled:opacity-70"
+                        className="group relative inline-flex w-full items-center justify-center gap-2 overflow-hidden rounded-xl bg-primary px-5 py-3 font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/25 active:scale-[0.99] disabled:opacity-70 focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:outline-none"
                       >
                         <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
                         <span className="relative flex items-center gap-2">
-                          {busy ? <Loader2 className="size-4 animate-spin" /> : <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />}
+                          {busy ? <Loader2 className="size-4 animate-spin" aria-hidden="true" /> : <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />}
                           Send reset link
                         </span>
                       </button>
@@ -367,11 +367,12 @@ function AuthPage() {
                         <button
                           key={m}
                           type="button"
+                          aria-pressed={mode === m}
                           onClick={() => {
                             setMode(m);
                             if (m === "signup") setSignUpSuccess(false);
                           }}
-                          className={`flex-1 rounded-xl py-2 transition-all duration-200 ${
+                          className={`flex-1 rounded-xl py-2 transition-all duration-200 focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:outline-none ${
                             mode === m
                               ? "bg-card text-foreground shadow-sm"
                               : "text-muted-foreground hover:text-foreground"
@@ -399,7 +400,7 @@ function AuthPage() {
                             Work email
                           </span>
                           <div className="group relative">
-                            <Mail className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-foreground" />
+                            <Mail className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-foreground" aria-hidden="true" />
                             <input
                               type="email"
                               autoComplete="email"
@@ -418,13 +419,13 @@ function AuthPage() {
                               aria-describedby={fieldErrors.email ? "email-error" : undefined}
                             />
                             {fieldErrors.email && (
-                              <AlertCircle className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-destructive" />
+                              <AlertCircle className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-destructive" aria-hidden="true" />
                             )}
                           </div>
                         </label>
                         {fieldErrors.email && (
                           <p id="email-error" className="mt-1.5 flex items-center gap-1.5 text-xs text-destructive animate-fade-in">
-                            <AlertCircle className="size-3.5" />
+                            <AlertCircle className="size-3.5" aria-hidden="true" />
                             {fieldErrors.email}
                           </p>
                         )}
@@ -436,7 +437,7 @@ function AuthPage() {
                             Password
                           </span>
                           <div className="group relative">
-                            <Lock className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-foreground" />
+                            <Lock className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-foreground" aria-hidden="true" />
                             <input
                               type={showPassword ? "text" : "password"}
                               autoComplete={mode === "signup" ? "new-password" : "current-password"}
@@ -457,16 +458,16 @@ function AuthPage() {
                             <button
                               type="button"
                               onClick={() => setShowPassword((v) => !v)}
-                              className="absolute right-2 top-1/2 grid size-7 -translate-y-1/2 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                              className="absolute right-2 top-1/2 grid size-7 -translate-y-1/2 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:outline-none"
                               aria-label={showPassword ? "Hide password" : "Show password"}
                             >
-                              {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                              {showPassword ? <EyeOff className="size-4" aria-hidden="true" /> : <Eye className="size-4" aria-hidden="true" />}
                             </button>
                           </div>
                         </label>
                         {fieldErrors.password && (
                           <p id="password-error" className="mt-1.5 flex items-center gap-1.5 text-xs text-destructive animate-fade-in">
-                            <AlertCircle className="size-3.5" />
+                            <AlertCircle className="size-3.5" aria-hidden="true" />
                             {fieldErrors.password}
                           </p>
                         )}
@@ -486,7 +487,7 @@ function AuthPage() {
                           <button
                             type="button"
                             onClick={() => setMode("forgot")}
-                            className="text-xs font-medium text-muted-foreground transition-colors hover:text-primary"
+                            className="text-xs font-medium text-muted-foreground transition-colors hover:text-primary focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-ring/30 focus-visible:outline-none"
                           >
                             Forgot password?
                           </button>
@@ -495,15 +496,15 @@ function AuthPage() {
 
 
                       {error && (
-                        <div className="animate-fade-in rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+                        <div aria-live="assertive" className="animate-fade-in rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
                           {error}
                         </div>
                       )}
                       {signUpSuccess && mode === "signin" && (
-                        <div className="animate-fade-in rounded-xl border border-emerald/30 bg-emerald/10 p-4 text-sm text-emerald-foreground">
+                        <div aria-live="polite" className="animate-fade-in rounded-xl border border-emerald/30 bg-emerald/10 p-4 text-sm text-emerald-foreground">
                           <div className="flex items-start gap-3">
-                            <div className="grid size-8 shrink-0 place-items-center rounded-full bg-emerald/20">
-                              <Mail className="size-4" />
+                            <div className="grid size-8 shrink-0 place-items-center rounded-full bg-emerald/20" aria-hidden="true">
+                              <Mail className="size-4" aria-hidden="true" />
                             </div>
                             <div>
                               <p className="font-semibold">Confirm your email</p>
@@ -515,7 +516,7 @@ function AuthPage() {
                         </div>
                       )}
                       {info && !signUpSuccess && (
-                        <div className="animate-fade-in rounded-lg border border-emerald/30 bg-emerald/10 px-3 py-2 text-sm text-emerald-foreground">
+                        <div aria-live="polite" className="animate-fade-in rounded-lg border border-emerald/30 bg-emerald/10 px-3 py-2 text-sm text-emerald-foreground">
                           {info}
                         </div>
                       )}
@@ -524,11 +525,11 @@ function AuthPage() {
                       <button
                         type="submit"
                         disabled={busy}
-                        className="group relative inline-flex w-full items-center justify-center gap-2 overflow-hidden rounded-xl bg-primary px-5 py-3 font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/25 active:scale-[0.99] disabled:opacity-70"
+                        className="group relative inline-flex w-full items-center justify-center gap-2 overflow-hidden rounded-xl bg-primary px-5 py-3 font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/25 active:scale-[0.99] disabled:opacity-70 focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:outline-none"
                       >
                         <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
                         <span className="relative flex items-center gap-2">
-                          {busy ? <Loader2 className="size-4 animate-spin" /> : <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />}
+                          {busy ? <Loader2 className="size-4 animate-spin" aria-hidden="true" /> : <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />}
                           {mode === "signup" ? "Create account" : "Sign in"}
                         </span>
                       </button>
@@ -544,6 +545,6 @@ function AuthPage() {
           </div>
         </div>
       </div>
-    </div>
+    </main>
   );
 }

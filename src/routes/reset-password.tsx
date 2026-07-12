@@ -57,7 +57,7 @@ function ResetPasswordPage() {
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-background to-muted text-foreground">
+    <main className="relative min-h-screen overflow-hidden bg-gradient-to-br from-background to-muted text-foreground">
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute left-1/2 top-1/2 size-[60rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary opacity-[0.04] blur-[120px]" />
       </div>
@@ -91,34 +91,34 @@ function ResetPasswordPage() {
 
               {!recovery ? (
                 <div className="mt-8 space-y-4">
-                  <div className="rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+                  <div aria-live="polite" className="rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
                     <p className="flex items-start gap-2">
-                      <AlertCircle className="mt-0.5 size-4 shrink-0" />
+                      <AlertCircle className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
                       This password reset link is invalid or expired. Please request a new one.
                     </p>
                   </div>
                   <Link
                     to="/auth"
                     search={{ mode: "forgot" }}
-                    className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
+                    className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:outline-none"
                   >
-                    Request a new reset link <ArrowRight className="size-4" />
+                    Request a new reset link <ArrowRight className="size-4" aria-hidden="true" />
                   </Link>
                 </div>
               ) : success ? (
                 <div className="mt-8 space-y-6">
-                  <div className="rounded-lg border border-emerald/30 bg-emerald/10 px-4 py-3 text-sm text-emerald-foreground">
+                  <div aria-live="polite" className="rounded-lg border border-emerald/30 bg-emerald/10 px-4 py-3 text-sm text-emerald-foreground">
                     <p className="flex items-start gap-2">
-                      <CheckCircle2 className="mt-0.5 size-4 shrink-0" />
+                      <CheckCircle2 className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
                       Your password has been updated successfully.
                     </p>
                   </div>
                   <Link
                     to="/auth"
                     search={{ mode: "signin" }}
-                    className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/25"
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/25 focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:outline-none"
                   >
-                    Sign in with new password <ArrowRight className="size-4" />
+                    Sign in with new password <ArrowRight className="size-4" aria-hidden="true" />
                   </Link>
                 </div>
               ) : (
@@ -130,7 +130,7 @@ function ResetPasswordPage() {
                     <label className="block">
                       <span className="mb-1.5 block text-sm font-medium text-muted-foreground">New password</span>
                       <div className="group relative">
-                        <Lock className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-foreground" />
+                        <Lock className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-foreground" aria-hidden="true" />
                         <input
                           type={showPassword ? "text" : "password"}
                           autoComplete="new-password"
@@ -139,11 +139,12 @@ function ResetPasswordPage() {
                           className="w-full rounded-xl border border-border bg-input/50 py-2.5 pl-10 pr-10 text-sm text-foreground placeholder:text-muted-foreground/60 outline-none transition-all focus:border-primary/40 focus:bg-background focus:ring-2 focus:ring-ring/20"
                           placeholder="At least 6 characters"
                           aria-invalid={!!error}
+                          aria-describedby={error ? "password-error" : undefined}
                         />
                         <button
                           type="button"
                           onClick={() => setShowPassword((v) => !v)}
-                          className="absolute right-2 top-1/2 grid size-7 -translate-y-1/2 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                          className="absolute right-2 top-1/2 grid size-7 -translate-y-1/2 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:outline-none"
                           aria-label={showPassword ? "Hide password" : "Show password"}
                         >
                           {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
@@ -152,7 +153,7 @@ function ResetPasswordPage() {
                     </label>
 
                     {error && (
-                      <div className="animate-fade-in rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+                      <div id="password-error" aria-live="assertive" className="animate-fade-in rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
                         {error}
                       </div>
                     )}
@@ -160,12 +161,12 @@ function ResetPasswordPage() {
                     <button
                       type="submit"
                       disabled={busy}
-                      className="group relative inline-flex w-full items-center justify-center gap-2 overflow-hidden rounded-xl bg-primary px-5 py-3 font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/25 active:scale-[0.99] disabled:opacity-70"
+                      className="group relative inline-flex w-full items-center justify-center gap-2 overflow-hidden rounded-xl bg-primary px-5 py-3 font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/25 active:scale-[0.99] disabled:opacity-70 focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:outline-none"
                     >
                       <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
                       <span className="relative flex items-center gap-2">
-                        {busy ? <Loader2 className="size-4 animate-spin" /> : <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />}
-                        Update password
+                          {busy ? <Loader2 className="size-4 animate-spin" aria-hidden="true" /> : <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />}
+                          Update password
                       </span>
                     </button>
                   </form>
@@ -175,6 +176,6 @@ function ResetPasswordPage() {
           </div>
         </div>
       </div>
-    </div>
+    </main>
   );
 }

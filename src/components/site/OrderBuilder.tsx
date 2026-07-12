@@ -87,6 +87,16 @@ export function OrderBuilder() {
   const [agree, setAgree] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mq = window.matchMedia("(min-width: 1024px)");
+    const update = () => setIsDesktop(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
 
   const effectiveQty = service.fixed ? 1 : Math.max(quantity, service.minQty);
 

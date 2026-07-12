@@ -1,11 +1,19 @@
-import { Link } from "@tanstack/react-router";
-import { ShoppingCart, Menu } from "lucide-react";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { ShoppingCart, Menu, LogOut, User as UserIcon } from "lucide-react";
 import { useCart } from "@/lib/cart";
+import { useAuth } from "@/hooks/use-auth";
 import { useState } from "react";
 
 export function Header() {
   const { count, open } = useCart();
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  async function handleSignOut() {
+    await signOut();
+    navigate({ to: "/auth", replace: true });
+  }
 
   return (
     <nav className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-md">
@@ -48,12 +56,27 @@ export function Header() {
               </span>
             )}
           </button>
-          <Link
-            to="/store"
-            className="hidden rounded-lg bg-ink px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-violet md:inline-flex"
-          >
-            Start Prospecting
-          </Link>
+          {user ? (
+            <>
+              <span className="hidden items-center gap-1.5 rounded-lg bg-secondary px-3 py-2 text-xs font-semibold md:inline-flex">
+                <UserIcon className="size-3.5 text-violet" />
+                <span className="max-w-[140px] truncate">{user.email}</span>
+              </span>
+              <button
+                onClick={handleSignOut}
+                className="hidden items-center gap-1.5 rounded-lg bg-ink px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-violet md:inline-flex"
+              >
+                <LogOut className="size-3.5" /> Sign out
+              </button>
+            </>
+          ) : (
+            <Link
+              to="/auth"
+              className="hidden rounded-lg bg-ink px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-violet md:inline-flex"
+            >
+              Sign in
+            </Link>
+          )}
           <button
             className="rounded-lg p-2 md:hidden"
             onClick={() => setMobileOpen((o) => !o)}

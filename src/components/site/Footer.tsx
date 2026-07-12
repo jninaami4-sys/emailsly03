@@ -1,68 +1,152 @@
 import { Link } from "@tanstack/react-router";
+import { ArrowRight, Sparkles } from "lucide-react";
+
+const productLinks = [
+  { to: "/store", label: "Lead Store" },
+  { to: "/apollo-leads-export", label: "Apollo Export" },
+  { to: "/linkedin-sales-navigator-leads", label: "LinkedIn" },
+  { to: "/zoominfo-leads", label: "ZoomInfo" },
+  { to: "/manual-lead-research", label: "Manual Research" },
+] as const;
+
+const companyLinks = [
+  { to: "/pricing", label: "Pricing" },
+  { to: "/website-design", label: "Website Design" },
+  { to: "/blog", label: "Blog" },
+  { to: "/contact", label: "Contact" },
+  { to: "/track-order", label: "Track Order" },
+] as const;
+
+const legalLinks = [
+  { to: "/privacy-policy", label: "Privacy" },
+  { to: "/terms", label: "Terms" },
+  { to: "/refund-policy", label: "Refunds" },
+] as const;
 
 export function Footer() {
   return (
-    <footer className="bg-ink py-20 text-white/70">
-      <div className="mx-auto max-w-7xl px-6">
-        <div className="grid gap-16 lg:grid-cols-2">
+    <footer className="relative overflow-hidden bg-ink text-white/70">
+      {/* soft violet glow, matches homepage editorial system */}
+      <div className="pointer-events-none absolute -left-32 top-0 size-96 rounded-full bg-violet/15 blur-[120px]" />
+      <div className="pointer-events-none absolute -right-32 bottom-0 size-96 rounded-full bg-coral/10 blur-[120px]" />
+
+      <div className="relative mx-auto max-w-7xl px-6 pt-24 pb-10">
+        {/* Newsletter row */}
+        <div className="grid gap-12 border-b border-white/10 pb-16 lg:grid-cols-[1.1fr_1fr] lg:items-end">
           <div>
-            <h3 className="mb-4 font-display text-3xl font-bold text-white">Weekly Intelligence</h3>
-            <p className="mb-8 max-w-md text-white/60">
-              Get a free batch of 50 verified leads in your industry every Tuesday morning.
+            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1">
+              <Sparkles className="size-3 text-violet" />
+              <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-white">
+                Weekly Intelligence
+              </span>
+            </div>
+            <h3 className="font-display text-4xl font-bold leading-tight tracking-tight text-white md:text-5xl">
+              50 verified leads.
+              <br />
+              <span className="text-violet">Every Tuesday, free.</span>
+            </h3>
+            <p className="mt-4 max-w-md text-white/60">
+              Join 4,000+ founders and SDRs getting a fresh batch delivered before the week even starts.
             </p>
-            <form className="flex max-w-md gap-2" onSubmit={(e) => e.preventDefault()}>
-              <input
-                type="email"
-                placeholder="work@company.com"
-                className="flex-1 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-white/40 outline-none focus:border-violet"
-              />
-              <button
-                type="submit"
-                className="rounded-xl bg-violet px-6 py-3 font-bold text-white transition-transform hover:scale-[1.02]"
-              >
-                Join
-              </button>
-            </form>
           </div>
+          <form
+            className="flex w-full max-w-md flex-col gap-3 sm:flex-row"
+            onSubmit={(e) => e.preventDefault()}
+          >
+            <input
+              type="email"
+              required
+              placeholder="work@company.com"
+              className="flex-1 rounded-full border border-white/10 bg-white/5 px-5 py-3.5 text-white placeholder:text-white/40 outline-none transition-colors focus:border-violet focus:bg-white/[0.08]"
+            />
+            <button
+              type="submit"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-violet px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-violet/25 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-violet/30"
+            >
+              Subscribe <ArrowRight className="size-4" />
+            </button>
+          </form>
+        </div>
+
+        {/* Link columns */}
+        <div className="grid gap-12 py-16 lg:grid-cols-[1.2fr_2fr]">
+          <div>
+            <Link
+              to="/"
+              className="inline-flex items-center gap-2 font-display text-2xl font-bold tracking-tight text-white"
+            >
+              <span className="grid size-7 place-items-center rounded-md bg-violet">
+                <span className="size-2 rounded-full bg-white" />
+              </span>
+              LYRA<span className="text-violet">DATA</span>
+            </Link>
+            <p className="mt-5 max-w-sm text-sm leading-relaxed text-white/50">
+              Verified B2B leads delivered to your CRM in 24 hours. Priced by the lead, never by the seat.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-2">
+              {["24h delivery", "Verified", "GDPR aware"].map((t) => (
+                <span
+                  key={t}
+                  className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-white/70"
+                >
+                  {t}
+                </span>
+              ))}
+            </div>
+          </div>
+
           <div className="grid grid-cols-2 gap-8 text-sm md:grid-cols-3">
-            <div className="space-y-4">
-              <h4 className="text-[10px] font-bold uppercase tracking-widest text-white">Product</h4>
-              <div className="flex flex-col gap-2 text-white/60">
-                <Link to="/store" className="hover:text-white">Lead Store</Link>
-                <Link to="/apollo-leads-export" className="hover:text-white">Apollo Export</Link>
-                <Link to="/linkedin-sales-navigator-leads" className="hover:text-white">LinkedIn</Link>
-                <Link to="/zoominfo-leads" className="hover:text-white">ZoomInfo</Link>
-                <Link to="/manual-lead-research" className="hover:text-white">Manual Research</Link>
-              </div>
-            </div>
-            <div className="space-y-4">
-              <h4 className="text-[10px] font-bold uppercase tracking-widest text-white">Company</h4>
-              <div className="flex flex-col gap-2 text-white/60">
-                <Link to="/pricing" className="hover:text-white">Pricing</Link>
-                <Link to="/website-design" className="hover:text-white">Website Design</Link>
-                <Link to="/blog" className="hover:text-white">Blog</Link>
-                <Link to="/contact" className="hover:text-white">Contact</Link>
-                <Link to="/track-order" className="hover:text-white">Track Order</Link>
-              </div>
-            </div>
-            <div className="space-y-4">
-              <h4 className="text-[10px] font-bold uppercase tracking-widest text-white">Legal</h4>
-              <div className="flex flex-col gap-2 text-white/60">
-                <Link to="/privacy-policy" className="hover:text-white">Privacy</Link>
-                <Link to="/terms" className="hover:text-white">Terms</Link>
-                <Link to="/refund-policy" className="hover:text-white">Refunds</Link>
-              </div>
-            </div>
+            <FooterColumn heading="Product" links={productLinks} />
+            <FooterColumn heading="Company" links={companyLinks} />
+            <FooterColumn heading="Legal" links={legalLinks} />
           </div>
         </div>
-        <div className="mt-20 flex flex-col gap-4 border-t border-white/5 pt-8 text-xs text-white/30 md:flex-row md:justify-between">
-          <span>© {new Date().getFullYear()} LYRADATA INC. ALL RIGHTS RESERVED.</span>
-          <div className="flex gap-6 italic underline underline-offset-4">
-            <Link to="/privacy-policy">Privacy Protocol</Link>
-            <Link to="/terms">Terms of Service</Link>
+
+        {/* Bottom bar */}
+        <div className="flex flex-col gap-4 border-t border-white/10 pt-8 text-xs text-white/40 md:flex-row md:items-center md:justify-between">
+          <span className="font-mono uppercase tracking-widest">
+            © {new Date().getFullYear()} LyraData Inc. All rights reserved.
+          </span>
+          <div className="flex flex-wrap gap-6">
+            <Link to="/privacy-policy" className="transition-colors hover:text-white">
+              Privacy
+            </Link>
+            <Link to="/terms" className="transition-colors hover:text-white">
+              Terms
+            </Link>
+            <Link to="/refund-policy" className="transition-colors hover:text-white">
+              Refunds
+            </Link>
+            <Link to="/contact" className="transition-colors hover:text-white">
+              Contact
+            </Link>
           </div>
         </div>
       </div>
     </footer>
+  );
+}
+
+function FooterColumn({
+  heading,
+  links,
+}: {
+  heading: string;
+  links: ReadonlyArray<{ to: string; label: string }>;
+}) {
+  return (
+    <div className="space-y-5">
+      <h4 className="font-mono text-[10px] font-bold uppercase tracking-widest text-white">
+        {heading}
+      </h4>
+      <div className="flex flex-col gap-3 text-white/60">
+        {links.map((l) => (
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          <Link key={l.to} to={l.to as any} className="w-fit transition-colors hover:text-white">
+            {l.label}
+          </Link>
+        ))}
+      </div>
+    </div>
   );
 }

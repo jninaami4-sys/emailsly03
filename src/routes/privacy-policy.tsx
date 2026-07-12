@@ -4,7 +4,11 @@ import { LegalPage } from "@/components/site/LegalPage";
 export const Route = createFileRoute("/privacy-policy")({
   head: () => ({ meta: [{ title: "Privacy Policy | LyraData" }, { name: "description", content: "How LyraData collects, uses, and protects your data." }] }),
   component: () => (
-    <LegalPage title="Privacy Policy" updated="July 11, 2026">
+    <LegalPage
+      title="Privacy Policy"
+      updated="July 11, 2026"
+      intro="How LyraData Inc. collects, uses, and protects the information you share with us — written plainly, without the legalese padding."
+    >
       <p>
         This Privacy Policy explains how LyraData Inc. ("LyraData", "we", "us") collects, uses, and shares
         information when you use our services. We take data protection seriously and comply with GDPR and CCPA.

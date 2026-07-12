@@ -4,7 +4,7 @@ import { PricingCalculator } from "@/components/site/PricingCalculator";
 import { ProductCard } from "@/components/site/ProductCard";
 import { PRODUCTS } from "@/lib/products";
 import { ArrowRight, Zap, Phone, Linkedin, ShieldCheck, Lock, Clock, BadgeCheck, ServerCog, Check } from "lucide-react";
-import { OrderForm } from "@/components/site/OrderForm";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({

@@ -200,8 +200,8 @@ function Pricing() {
                   href="#calculator"
                   className={`mt-6 inline-flex w-full items-center justify-center rounded-xl py-3 text-sm font-semibold transition-colors ${
                     t.popular
-                      ? "bg-violet text-white shadow-md shadow-violet/20 hover:bg-violet/90"
-                      : "bg-ink text-white hover:bg-violet"
+                      ? "bg-gold text-black shadow-md shadow-gold/20 hover:bg-amber-accent"
+                      : "bg-ink text-white hover:bg-gold hover:text-black"
                   }`}
                 >
                   Get started

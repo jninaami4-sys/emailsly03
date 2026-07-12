@@ -283,12 +283,12 @@ export function Testimonials() {
             Loved by growth teams that ship
           </h2>
           <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
-            Watch how thousands of revenue teams turn verified data into pipeline with LyraData.
+            Watch a verified client explain how LyraData powers their outbound.
           </p>
         </div>
 
         {/* Video testimonials */}
-        <div className="mb-20 grid gap-6 md:grid-cols-3">
+        <div className="mx-auto mb-20 grid max-w-md gap-6">
           {videoTestimonials.map((v) => (
             <VideoCard key={v.name} v={v} />
           ))}

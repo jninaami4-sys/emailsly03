@@ -419,7 +419,7 @@ function AuthPage() {
                               aria-describedby={fieldErrors.email ? "email-error" : undefined}
                             />
                             {fieldErrors.email && (
-                              <AlertCircle className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-destructive" />
+                              <AlertCircle className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-destructive" aria-hidden="true" />
                             )}
                           </div>
                         </label>

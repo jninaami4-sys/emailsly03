@@ -333,13 +333,13 @@ function Home() {
             <div className="pointer-events-none absolute -right-20 top-1/2 size-96 -translate-y-1/2 rounded-full bg-indigo/40 blur-3xl" />
             <div className="relative">
               <div className="mx-auto mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-foreground/80">
-                <PremiumZap className="size-3 text-indigo" /> Ready when you are
+                <PremiumZap className="size-3 text-indigo" /> Delivered in under 24 hours
               </div>
               <h2 className="font-display text-4xl font-bold tracking-tight md:text-6xl">
-                Your next 10,000 leads <br className="hidden md:block" />are one slide away.
+                Stop scraping. <br className="hidden md:block" />Start closing.
               </h2>
               <p className="mx-auto mt-6 max-w-xl text-lg text-foreground/70">
-                Skip the sales call. Open the builder, pick your service, and get a verified export by tomorrow.
+                Tell us your ICP, pick your volume, and wake up to a verified, ready-to-send lead list — no calls, no contracts, no cleanup.
               </p>
               <div className="mt-10 flex flex-wrap justify-center gap-3">
                 <button

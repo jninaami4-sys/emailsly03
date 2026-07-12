@@ -253,8 +253,8 @@ function AuthPage() {
               { icon: Mail, t: "Verified emails · 100% deliverable" },
             ].map((f) => (
               <li key={f.t} className="flex items-center gap-3 text-sm text-muted-foreground">
-                <span className="grid size-8 place-items-center rounded-lg border border-border bg-card text-foreground shadow-sm">
-                  <f.icon className="size-4" />
+                <span className="grid size-8 place-items-center rounded-lg border border-border bg-card text-foreground shadow-sm" aria-hidden="true">
+                  <f.icon className="size-4" aria-hidden="true" />
                 </span>
                 {f.t}
               </li>

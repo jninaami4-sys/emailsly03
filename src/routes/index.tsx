@@ -397,7 +397,7 @@ function Home() {
               "LyraData cut our prospecting time in half. We no longer spend hours cleaning Apollo exports — we just receive the verified file and start selling."
             </blockquote>
             <div className="mt-10 flex items-center justify-center gap-3">
-              <div className="grid size-12 place-items-center rounded-full bg-indigo font-bold text-white">MT</div>
+              <div className="grid size-12 place-items-center rounded-full bg-gold font-bold text-black">MT</div>
               <div className="text-left">
                 <p className="font-bold">Marcus Thorne</p>
                 <p className="text-sm text-foreground/60">VP Sales, VelocityGrowth</p>
@@ -417,7 +417,7 @@ function Home() {
               <p className="mt-4 text-foreground/60">Still curious? Open the order builder or ping our team — we reply in under an hour.</p>
               <button
                 onClick={openOrderDrawer}
-                className="mt-6 inline-flex items-center gap-2 rounded-full bg-indigo px-5 py-3 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5"
+                className="mt-6 inline-flex items-center gap-2 rounded-full bg-gold px-5 py-3 text-sm font-semibold text-black transition-transform hover:-translate-y-0.5"
               >
                 Build your order <ArrowUpRight className="size-4" />
               </button>

@@ -44,6 +44,28 @@ function AuthPage() {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [info, setInfo] = useState<string | null>(null);
+  const [rememberMe, setRememberMe] = useState(() => {
+    if (typeof window === "undefined") return true;
+    return window.localStorage.getItem("lyra_remember_me") !== "false";
+  });
+  const [signUpSuccess, setSignUpSuccess] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    window.localStorage.setItem("lyra_remember_me", rememberMe ? "true" : "false");
+  }, [rememberMe]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (!rememberMe && window.localStorage.getItem("lyra_remember_me") === "false") {
+      const handleUnload = () => {
+        supabase.auth.signOut({ scope: "local" });
+      };
+      window.addEventListener("beforeunload", handleUnload);
+      return () => window.removeEventListener("beforeunload", handleUnload);
+    }
+  }, [rememberMe]);
+
 
   useEffect(() => {
     if (!loading && user) {

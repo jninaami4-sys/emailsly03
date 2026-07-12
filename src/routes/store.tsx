@@ -24,6 +24,7 @@ export const Route = createFileRoute("/store")({
 function Store() {
   const [category, setCategory] = useState<string>("All");
   const [query, setQuery] = useState("");
+  const hydrated = useHydrated();
 
   const filtered = PRODUCTS.filter((p) => {
     if (category !== "All" && p.category !== category) return false;
@@ -31,8 +32,17 @@ function Store() {
     return true;
   });
 
+  if (!hydrated) {
+    return (
+      <SiteShell>
+        <StoreSkeleton />
+      </SiteShell>
+    );
+  }
+
   return (
     <SiteShell>
+
       <section className="border-b border-border px-6 py-16">
         <div className="mx-auto max-w-7xl">
           <h1 className="font-display text-4xl font-bold lg:text-5xl">Lead store</h1>

@@ -249,7 +249,7 @@ export function OrderBuilder() {
               </div>
             )}
 
-            {isDesktop && <div className="my-8 border-t border-dashed border-border" />}
+            {isDesktop ? null : null}
 
             {(step === 2 || isDesktop) && (
               <div>

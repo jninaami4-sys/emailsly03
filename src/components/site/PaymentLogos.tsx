@@ -8,7 +8,7 @@ export function PaymentLogos({ className }: PaymentLogosProps) {
   const logos = [
     { label: "Stripe", src: "https://cdn.simpleicons.org/stripe/635BFF" },
     { label: "Visa", src: "https://cdn.simpleicons.org/visa/1A1F71" },
-    { label: "Mastercard", src: "https://cdn.simpleicons.org/mastercard/EB001B" },
+    { label: "Mastercard", src: "https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" },
     { label: "Apple Pay", src: "https://cdn.simpleicons.org/applepay/000000" },
     { label: "Binance", src: "https://cdn.simpleicons.org/binance/F0B90B" },
     { label: "Payoneer", src: "https://upload.wikimedia.org/wikipedia/commons/e/e7/Payoneer_logo.svg" },

@@ -120,7 +120,7 @@ function BlogPost() {
       {/* Body */}
       <section className="px-6 py-16">
         <article className="prose-blog mx-auto max-w-3xl">
-          {post.content.map((block, i) => (
+          {post.content.map((block: PostBlock, i: number) => (
             <Block key={i} block={block} />
           ))}
         </article>

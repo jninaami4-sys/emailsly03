@@ -373,7 +373,7 @@ function AuthPage() {
             <span className="text-muted-foreground">shortcut</span> to pipeline.
           </h1>
           <p className="mt-4 max-w-md text-base text-muted-foreground">
-            99% accurate B2B leads from Apollo, ZoomInfo, and LinkedIn — delivered to your CRM within 24 hours.
+            Verified B2B leads from Apollo, ZoomInfo, and LinkedIn — delivered to your CRM within 24 hours.
           </p>
 
           <ul className="mt-10 space-y-3">

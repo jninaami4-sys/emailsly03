@@ -97,7 +97,7 @@ function Home() {
               <span className="relative inline-flex size-2 rounded-full bg-violet" />
             </span>
             <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-violet">
-              Verified data delivery
+              Apollo sample included
             </span>
           </div>
           <h1 className="font-display text-5xl font-bold leading-[1.05] tracking-tighter text-foreground md:text-7xl">
@@ -106,7 +106,7 @@ function Home() {
             delivered to your <span className="text-violet">CRM in 24h.</span>
           </h1>
           <p className="mx-auto mt-8 max-w-2xl text-lg leading-relaxed text-muted-foreground md:text-xl">
-            Clean, verified exports from Apollo, ZoomInfo, and LinkedIn Sales Navigator. No manual cleaning — just ready-to-close pipeline.
+            Real Apollo sample leads you can preview instantly. Export-ready CSVs with emails, titles, companies, and tech stack.
           </p>
           <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
             <Link

@@ -529,7 +529,7 @@ function AuthPage() {
                       >
                         <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
                         <span className="relative flex items-center gap-2">
-                          {busy ? <Loader2 className="size-4 animate-spin" /> : <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />}
+                          {busy ? <Loader2 className="size-4 animate-spin" aria-hidden="true" /> : <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />}
                           {mode === "signup" ? "Create account" : "Sign in"}
                         </span>
                       </button>

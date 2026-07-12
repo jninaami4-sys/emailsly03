@@ -129,6 +129,33 @@ const ACCENT_CLASSES: Record<
   },
 };
 
+const SOURCE_DATA: Record<SourceKey, RawData> = {
+  apollo: apolloData,
+  linkedin: linkedinData,
+  zoominfo: zoominfoData,
+};
+
+const csvEscape = (v: unknown) => {
+  const s = v === null || v === undefined ? "" : String(v);
+  return /[",\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+};
+
+const downloadCsv = (filename: string, data: RawData) => {
+  const lines = [
+    data.headers.map(csvEscape).join(","),
+    ...data.rows.map((r) => data.headers.map((h) => csvEscape(r[h])).join(",")),
+  ];
+  const blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+};
+
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [

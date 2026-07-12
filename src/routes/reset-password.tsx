@@ -1,10 +1,29 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { z } from "zod";
+import { fallback, zodValidator } from "@tanstack/zod-adapter";
 import { supabase } from "@/integrations/supabase/client";
 import { ArrowRight, Loader2, Lock, CheckCircle2, AlertCircle, Eye, EyeOff, Check, X } from "lucide-react";
 
+const searchSchema = z.object({
+  redirectTo: fallback(z.string(), "").default(""),
+});
+
+// Only allow same-origin relative paths to prevent open-redirect attacks.
+function sanitizeRedirect(raw: string): string | null {
+  if (!raw) return null;
+  try {
+    const decoded = decodeURIComponent(raw);
+    if (!decoded.startsWith("/") || decoded.startsWith("//")) return null;
+    if (decoded.startsWith("/auth") || decoded.startsWith("/reset-password")) return null;
+    return decoded;
+  } catch {
+    return null;
+  }
+}
+
 export const Route = createFileRoute("/reset-password")({
+  validateSearch: zodValidator(searchSchema),
   head: () => ({
     meta: [
       { title: "Reset your password | LyraData" },
@@ -68,6 +87,10 @@ function ResetPasswordPage() {
   const [success, setSuccess] = useState(false);
   const [linkState, setLinkState] = useState<LinkState>("checking");
   const [linkMessage, setLinkMessage] = useState<string | null>(null);
+  const [redirectSeconds, setRedirectSeconds] = useState(3);
+  const { redirectTo } = Route.useSearch();
+  const navigate = useNavigate();
+  const safeRedirect = useMemo(() => sanitizeRedirect(redirectTo), [redirectTo]);
 
   useEffect(() => {
     const hash = window.location.hash.slice(1);
@@ -160,6 +183,21 @@ function ResetPasswordPage() {
 
   const invalidLink = linkState === "invalid" || linkState === "expired" || linkState === "used";
 
+  useEffect(() => {
+    if (!success || !safeRedirect) return;
+    setRedirectSeconds(3);
+    const interval = window.setInterval(() => {
+      setRedirectSeconds((s) => (s > 0 ? s - 1 : 0));
+    }, 1000);
+    const timer = window.setTimeout(() => {
+      navigate({ to: safeRedirect });
+    }, 3000);
+    return () => {
+      window.clearInterval(interval);
+      window.clearTimeout(timer);
+    };
+  }, [success, safeRedirect, navigate]);
+
   return (
     <main className="relative min-h-screen overflow-hidden bg-gradient-to-br from-background to-muted text-foreground">
       <div className="pointer-events-none absolute inset-0">
@@ -224,16 +262,34 @@ function ResetPasswordPage() {
                   <div role="status" className="rounded-lg border border-emerald/30 bg-emerald/10 px-4 py-3 text-sm text-emerald-foreground">
                     <p className="flex items-start gap-2">
                       <CheckCircle2 className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
-                      Your password has been updated successfully.
+                      <span>
+                        Your password has been updated successfully.
+                        {safeRedirect && (
+                          <span className="mt-1 block text-xs text-muted-foreground">
+                            Redirecting you to <code className="font-mono">{safeRedirect}</code>
+                            {redirectSeconds > 0 ? ` in ${redirectSeconds}s…` : "…"}
+                          </span>
+                        )}
+                      </span>
                     </p>
                   </div>
-                  <Link
-                    to="/auth"
-                    search={{ mode: "signin" }}
-                    className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/25 focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:outline-none"
-                  >
-                    Sign in with new password <ArrowRight className="size-4" aria-hidden="true" />
-                  </Link>
+                  {safeRedirect ? (
+                    <button
+                      type="button"
+                      onClick={() => navigate({ to: safeRedirect })}
+                      className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/25 focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:outline-none"
+                    >
+                      Continue <ArrowRight className="size-4" aria-hidden="true" />
+                    </button>
+                  ) : (
+                    <Link
+                      to="/auth"
+                      search={{ mode: "signin" }}
+                      className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/25 focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:outline-none"
+                    >
+                      Sign in with new password <ArrowRight className="size-4" aria-hidden="true" />
+                    </Link>
+                  )}
                 </div>
               ) : (
                 <>

@@ -149,3 +149,20 @@
   animation: preloader-bar 1s ease-in-out infinite;
 }
 
+@keyframes aurora-slow {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(6%, 4%, 0) scale(1.15); }
+}
+@keyframes aurora-med {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1.05); }
+  50% { transform: translate3d(-8%, -6%, 0) scale(0.95); }
+}
+@keyframes aurora-fast {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(4%, -8%, 0) scale(1.1); }
+}
+.animate-aurora-slow { animation: aurora-slow 18s ease-in-out infinite; }
+.animate-aurora-med  { animation: aurora-med 14s ease-in-out infinite; }
+.animate-aurora-fast { animation: aurora-fast 11s ease-in-out infinite; }
+
+

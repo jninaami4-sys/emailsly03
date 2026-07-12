@@ -168,7 +168,7 @@ function Home() {
                   className="group inline-flex w-full items-center justify-center gap-2 rounded-full bg-indigo px-8 py-4 text-base font-semibold text-white shadow-[0_20px_50px_-15px_rgba(79,70,229,0.8)] transition-all hover:-translate-y-0.5 sm:w-auto"
                 >
                   Build your order
-                  <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  <PremiumArrowUpRight className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </button>
                 <Link
                   to="/sample-data"
@@ -201,7 +201,7 @@ function Home() {
                 <div className="mb-4 flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div className="grid size-9 place-items-center rounded-xl bg-indigo/20 text-indigo">
-                      <Database className="size-4" />
+                      <PremiumDatabase className="size-4" />
                     </div>
                     <div>
                       <p className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-foreground/50">Live data console</p>
@@ -230,7 +230,7 @@ function Home() {
 
                 <div className="mb-3 flex flex-wrap items-center gap-2">
                   <div className="relative flex-1 min-w-[140px]">
-                    <Search className="pointer-events-none absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-foreground/40" />
+                    <PremiumSearch className="pointer-events-none absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-foreground/40" />
                     <input
                       value={query}
                       onChange={(e) => setQuery(e.target.value)}
@@ -242,7 +242,7 @@ function Home() {
                     onClick={() => downloadCsv(active.file, rawActive)}
                     className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[11px] font-semibold text-white transition-transform hover:-translate-y-0.5 ${accent.solid}`}
                   >
-                    <Download className="size-3.5" /> CSV
+                    <PremiumDownload className="size-3.5" /> CSV
                   </button>
                 </div>
 

@@ -130,7 +130,7 @@ function ResetPasswordPage() {
                     <label className="block">
                       <span className="mb-1.5 block text-sm font-medium text-muted-foreground">New password</span>
                       <div className="group relative">
-                        <Lock className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-foreground" />
+                        <Lock className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-foreground" aria-hidden="true" />
                         <input
                           type={showPassword ? "text" : "password"}
                           autoComplete="new-password"

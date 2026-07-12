@@ -75,10 +75,10 @@ export function Footer() {
               to="/"
               className="inline-flex items-center gap-2 font-display text-2xl font-bold tracking-tight text-white"
             >
-              <span className="grid size-7 place-items-center rounded-md bg-violet">
-                <span className="size-2 rounded-full bg-white" />
+              <span className="grid size-7 place-items-center rounded-md bg-gold">
+                <span className="size-2 rounded-full bg-black" />
               </span>
-              LYRA<span className="text-violet">DATA</span>
+              LYRA<span className="text-gold">DATA</span>
             </Link>
             <p className="mt-5 max-w-sm text-sm leading-relaxed text-white/50">
               Verified B2B leads delivered to your CRM in 24 hours. Priced by the lead, never by the seat.
@@ -87,7 +87,7 @@ export function Footer() {
               {["24h delivery", "Verified", "GDPR aware"].map((t) => (
                 <span
                   key={t}
-                  className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-white/70"
+                  className="rounded-full border border-gold/20 bg-gold/5 px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-gold/80"
                 >
                   {t}
                 </span>

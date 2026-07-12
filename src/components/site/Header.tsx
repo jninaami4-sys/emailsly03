@@ -35,9 +35,9 @@ export function Header() {
       <div className="sticky top-4 z-40 px-4">
         <nav
           aria-label="Primary"
-          className="relative mx-auto flex h-12 max-w-6xl items-center justify-between overflow-hidden rounded-full border border-white/20 bg-ink/25 px-5 shadow-[0_20px_50px_rgba(0,0,0,0.3),inset_0_1px_1px_0_rgba(255,255,255,0.3),inset_0_-1px_1px_0_rgba(255,255,255,0.05)] backdrop-blur-3xl before:pointer-events-none before:absolute before:inset-0 before:rounded-full before:bg-gradient-to-b before:from-white/10 before:to-transparent"
+          className="relative mx-auto flex h-12 max-w-6xl items-center justify-between overflow-hidden rounded-full border border-white/60 bg-white/60 px-5 shadow-[0_12px_40px_-12px_rgba(0,0,0,0.06),inset_0_1px_1px_0_rgba(255,255,255,0.7),inset_0_-1px_1px_0_rgba(255,255,255,0.15)] backdrop-blur-2xl before:pointer-events-none before:absolute before:inset-0 before:rounded-full before:bg-gradient-to-b before:from-white/25 before:to-transparent"
         >
-          <div className="z-10 flex items-center gap-8 text-white">
+          <div className="z-10 flex items-center gap-8">
             <Link
               to="/"
               aria-label="LyraData home"
@@ -48,7 +48,7 @@ export function Header() {
               </span>
               LYRA<span className="text-violet">DATA</span>
             </Link>
-            <ul className="hidden items-center gap-6 text-sm font-medium text-white/70 lg:flex">
+            <ul className="hidden items-center gap-6 text-sm font-medium text-muted-foreground lg:flex">
               {[
                 { to: "/store", label: "Lead Store" },
                 { to: "/pricing", label: "Pricing" },
@@ -60,8 +60,8 @@ export function Header() {
                 <li key={item.to}>
                   <Link
                     to={item.to}
-                    activeProps={{ "aria-current": "page", className: "text-white" }}
-                    className={`rounded-md px-1 py-1 transition-colors hover:text-white ${focusRing}`}
+                    activeProps={{ "aria-current": "page", className: "text-foreground" }}
+                    className={`rounded-md px-1 py-1 transition-colors hover:text-foreground ${focusRing}`}
                   >
                     {item.label}
                   </Link>
@@ -73,7 +73,7 @@ export function Header() {
             <button
               type="button"
               onClick={open}
-              className={`relative rounded-lg p-2 text-white/70 transition-colors hover:bg-white/10 hover:text-white ${focusRing}`}
+              className={`relative rounded-lg p-2 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground ${focusRing}`}
               aria-label={cartLabel}
             >
               <ShoppingCart className="size-5" aria-hidden="true" />
@@ -88,7 +88,7 @@ export function Header() {
             </button>
             {user ? (
               <>
-                <span className="hidden items-center gap-1.5 rounded-lg bg-white/10 px-3 py-2 text-xs font-semibold text-white/90 lg:inline-flex">
+                <span className="hidden items-center gap-1.5 rounded-lg bg-secondary px-3 py-2 text-xs font-semibold lg:inline-flex">
                   <UserIcon className="size-3.5 text-violet" aria-hidden="true" />
                   <span className="max-w-[140px] truncate" aria-label={`Signed in as ${user.email}`}>
                     {user.email}
@@ -127,30 +127,30 @@ export function Header() {
         </div>
       </nav>
       {mobileOpen && (
-          <div id="mobile-nav" className="relative mt-2 overflow-hidden rounded-2xl border border-white/20 bg-ink/40 shadow-[0_20px_50px_rgba(0,0,0,0.3),inset_0_1px_1px_0_rgba(255,255,255,0.3),inset_0_-1px_1px_0_rgba(255,255,255,0.05)] backdrop-blur-3xl before:pointer-events-none before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-b before:from-white/10 before:to-transparent lg:hidden">
-            <ul className="relative z-10 flex flex-col gap-1 px-3 py-3 text-sm font-medium text-white/70">
-              {[
-                { to: "/store", label: "Lead Store" },
-                { to: "/pricing", label: "Pricing" },
-                { to: "/apollo-leads-export", label: "Services" },
-                { to: "/track-order", label: "Track Order" },
-                { to: "/blog", label: "Blog" },
-                { to: "/contact", label: "Contact" },
-              ].map((item) => (
-                <li key={item.to}>
-                  <Link
-                    to={item.to}
-                    activeProps={{ "aria-current": "page", className: "bg-white/10 text-white" }}
-                    onClick={() => setMobileOpen(false)}
-                    className={`block rounded-md px-3 py-2 transition-colors hover:bg-white/10 hover:text-white ${focusRing}`}
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+        <div id="mobile-nav" className="relative mt-2 overflow-hidden rounded-2xl border border-white/60 bg-white/90 shadow-[0_12px_40px_-12px_rgba(0,0,0,0.06),inset_0_1px_1px_0_rgba(255,255,255,0.7),inset_0_-1px_1px_0_rgba(255,255,255,0.15)] backdrop-blur-2xl before:pointer-events-none before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-b before:from-white/25 before:to-transparent lg:hidden">
+          <ul className="relative z-10 flex flex-col gap-1 px-3 py-3 text-sm font-medium text-muted-foreground">
+            {[
+              { to: "/store", label: "Lead Store" },
+              { to: "/pricing", label: "Pricing" },
+              { to: "/apollo-leads-export", label: "Services" },
+              { to: "/track-order", label: "Track Order" },
+              { to: "/blog", label: "Blog" },
+              { to: "/contact", label: "Contact" },
+            ].map((item) => (
+              <li key={item.to}>
+                <Link
+                  to={item.to}
+                  activeProps={{ "aria-current": "page", className: "bg-secondary text-foreground" }}
+                  onClick={() => setMobileOpen(false)}
+                  className={`block rounded-md px-3 py-2 transition-colors hover:bg-secondary hover:text-foreground ${focusRing}`}
+                >
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
       </div>
     </>
   );

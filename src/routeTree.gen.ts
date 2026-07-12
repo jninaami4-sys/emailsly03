@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as ZoominfoLeadsRouteImport } from './routes/zoominfo-leads'
 import { Route as StoreRouteImport } from './routes/store'
 import { Route as PricingRouteImport } from './routes/pricing'
+import { Route as ManualLeadResearchRouteImport } from './routes/manual-lead-research'
 import { Route as LinkedinSalesNavigatorLeadsRouteImport } from './routes/linkedin-sales-navigator-leads'
 import { Route as ApolloLeadsExportRouteImport } from './routes/apollo-leads-export'
 import { Route as IndexRouteImport } from './routes/index'
@@ -29,6 +30,11 @@ const StoreRoute = StoreRouteImport.update({
 const PricingRoute = PricingRouteImport.update({
   id: '/pricing',
   path: '/pricing',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ManualLeadResearchRoute = ManualLeadResearchRouteImport.update({
+  id: '/manual-lead-research',
+  path: '/manual-lead-research',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LinkedinSalesNavigatorLeadsRoute =
@@ -52,6 +58,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/apollo-leads-export': typeof ApolloLeadsExportRoute
   '/linkedin-sales-navigator-leads': typeof LinkedinSalesNavigatorLeadsRoute
+  '/manual-lead-research': typeof ManualLeadResearchRoute
   '/pricing': typeof PricingRoute
   '/store': typeof StoreRoute
   '/zoominfo-leads': typeof ZoominfoLeadsRoute
@@ -60,6 +67,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/apollo-leads-export': typeof ApolloLeadsExportRoute
   '/linkedin-sales-navigator-leads': typeof LinkedinSalesNavigatorLeadsRoute
+  '/manual-lead-research': typeof ManualLeadResearchRoute
   '/pricing': typeof PricingRoute
   '/store': typeof StoreRoute
   '/zoominfo-leads': typeof ZoominfoLeadsRoute
@@ -69,6 +77,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/apollo-leads-export': typeof ApolloLeadsExportRoute
   '/linkedin-sales-navigator-leads': typeof LinkedinSalesNavigatorLeadsRoute
+  '/manual-lead-research': typeof ManualLeadResearchRoute
   '/pricing': typeof PricingRoute
   '/store': typeof StoreRoute
   '/zoominfo-leads': typeof ZoominfoLeadsRoute
@@ -79,6 +88,7 @@ export interface FileRouteTypes {
     | '/'
     | '/apollo-leads-export'
     | '/linkedin-sales-navigator-leads'
+    | '/manual-lead-research'
     | '/pricing'
     | '/store'
     | '/zoominfo-leads'
@@ -87,6 +97,7 @@ export interface FileRouteTypes {
     | '/'
     | '/apollo-leads-export'
     | '/linkedin-sales-navigator-leads'
+    | '/manual-lead-research'
     | '/pricing'
     | '/store'
     | '/zoominfo-leads'
@@ -95,6 +106,7 @@ export interface FileRouteTypes {
     | '/'
     | '/apollo-leads-export'
     | '/linkedin-sales-navigator-leads'
+    | '/manual-lead-research'
     | '/pricing'
     | '/store'
     | '/zoominfo-leads'
@@ -104,6 +116,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ApolloLeadsExportRoute: typeof ApolloLeadsExportRoute
   LinkedinSalesNavigatorLeadsRoute: typeof LinkedinSalesNavigatorLeadsRoute
+  ManualLeadResearchRoute: typeof ManualLeadResearchRoute
   PricingRoute: typeof PricingRoute
   StoreRoute: typeof StoreRoute
   ZoominfoLeadsRoute: typeof ZoominfoLeadsRoute
@@ -130,6 +143,13 @@ declare module '@tanstack/react-router' {
       path: '/pricing'
       fullPath: '/pricing'
       preLoaderRoute: typeof PricingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/manual-lead-research': {
+      id: '/manual-lead-research'
+      path: '/manual-lead-research'
+      fullPath: '/manual-lead-research'
+      preLoaderRoute: typeof ManualLeadResearchRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/linkedin-sales-navigator-leads': {
@@ -160,6 +180,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ApolloLeadsExportRoute: ApolloLeadsExportRoute,
   LinkedinSalesNavigatorLeadsRoute: LinkedinSalesNavigatorLeadsRoute,
+  ManualLeadResearchRoute: ManualLeadResearchRoute,
   PricingRoute: PricingRoute,
   StoreRoute: StoreRoute,
   ZoominfoLeadsRoute: ZoominfoLeadsRoute,

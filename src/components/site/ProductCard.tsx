@@ -102,7 +102,7 @@ export function ProductCard({ product }: { product: Product }) {
           <button
             type="button"
             onClick={() => fileRef.current?.click()}
-            className="flex items-center gap-1 rounded-full bg-white/90 px-2.5 py-1 font-mono text-[10px] font-semibold text-ink backdrop-blur transition-colors hover:bg-white"
+            className="flex items-center gap-1 rounded-full bg-white/90 px-2.5 py-1 font-mono text-[10px] font-semibold text-black backdrop-blur transition-colors hover:bg-white"
             aria-label="Upload cover image"
           >
             <Upload className="size-3" />
@@ -112,7 +112,7 @@ export function ProductCard({ product }: { product: Product }) {
             <button
               type="button"
               onClick={clearCover}
-              className="rounded-full bg-white/90 p-1.5 text-ink backdrop-blur transition-colors hover:bg-white"
+              className="rounded-full bg-white/90 p-1.5 text-black backdrop-blur transition-colors hover:bg-white"
               aria-label="Remove uploaded cover"
             >
               <X className="size-3" />

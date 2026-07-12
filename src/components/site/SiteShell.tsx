@@ -9,7 +9,7 @@ import { FloatingOrderButton } from "./FloatingOrderButton";
 
 export function SiteShell({ children }: { children: ReactNode }) {
   return (
-    <div className="flex min-h-screen flex-col bg-background">
+    <div className="theme-midnight flex min-h-screen flex-col bg-background text-foreground">
       <Preloader />
       <MouseGlow />
       <Header />

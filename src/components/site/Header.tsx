@@ -33,11 +33,11 @@ export function Header() {
       >
         Skip to main content
       </a>
-      <div className="sticky top-0 z-40 sm:top-4 sm:px-4">
+      <div className="sticky top-4 z-40 px-4">
         <div className="relative">
           <nav
             aria-label="Primary"
-            className="relative mx-auto flex h-12 w-full max-w-none items-center justify-between overflow-hidden border-b border-white/40 bg-white/85 px-4 shadow-[0_4px_24px_rgba(0,0,0,0.06)] backdrop-blur-2xl backdrop-saturate-[180%] sm:max-w-6xl sm:rounded-full sm:border sm:px-5 sm:shadow-[0_4px_24px_rgba(0,0,0,0.06),inset_0_0.5px_0_0_rgba(255,255,255,0.72),inset_0_-0.5px_0_0_rgba(0,0,0,0.05)]"
+            className="relative mx-auto flex h-12 w-full max-w-6xl items-center justify-between overflow-hidden rounded-full border border-white/40 bg-white/85 px-5 text-ink shadow-[0_4px_24px_rgba(0,0,0,0.06),inset_0_0.5px_0_0_rgba(255,255,255,0.72),inset_0_-0.5px_0_0_rgba(0,0,0,0.05)] backdrop-blur-2xl backdrop-saturate-[180%]"
           >
           <div className="z-10 flex items-center gap-8">
             <Link
@@ -48,7 +48,7 @@ export function Header() {
               <PremiumLogoMark className="size-6" aria-hidden="true" />
               LYRA<span className="text-violet">DATA</span>
             </Link>
-            <ul className="hidden items-center gap-6 text-sm font-medium text-foreground lg:flex">
+            <ul className="hidden items-center gap-6 text-sm font-medium lg:flex">
               {[
                 { to: "/store", label: "Lead Store" },
                 { to: "/pricing", label: "Pricing" },
@@ -60,8 +60,8 @@ export function Header() {
                 <li key={item.to}>
                   <Link
                     to={item.to}
-                    activeProps={{ "aria-current": "page", className: "text-foreground" }}
-                    className={`rounded-md px-1 py-1 transition-colors hover:text-foreground ${focusRing}`}
+                    activeProps={{ "aria-current": "page", className: "text-ink" }}
+                    className={`rounded-md px-1 py-1 transition-colors hover:text-ink ${focusRing}`}
                   >
                     {item.label}
                   </Link>
@@ -73,7 +73,7 @@ export function Header() {
             <button
               type="button"
               onClick={open}
-              className={`relative rounded-lg p-2 text-foreground transition-colors hover:bg-secondary hover:text-violet ${focusRing}`}
+              className={`relative rounded-lg p-2 transition-colors hover:bg-secondary hover:text-violet ${focusRing}`}
               aria-label={cartLabel}
             >
               <PremiumShoppingCart className="size-5" aria-hidden="true" />
@@ -107,7 +107,7 @@ export function Header() {
                 <Link
                   to="/auth"
                   aria-label="Sign in to your account"
-                  className={`hidden size-9 items-center justify-center rounded-full border border-black/10 bg-white text-foreground transition-colors hover:bg-secondary hover:text-violet lg:inline-flex ${focusRing}`}
+                  className={`hidden size-9 items-center justify-center rounded-full border border-black/10 bg-white text-ink transition-colors hover:bg-secondary hover:text-violet lg:inline-flex ${focusRing}`}
                 >
                   <PremiumUser className="size-4" aria-hidden="true" />
                 </Link>
@@ -122,7 +122,7 @@ export function Header() {
             )}
             <button
               type="button"
-              className={`inline-flex size-11 items-center justify-center rounded-lg text-foreground lg:hidden ${focusRing}`}
+              className={`inline-flex size-11 items-center justify-center rounded-lg lg:hidden ${focusRing}`}
               onClick={() => setMobileOpen((o) => !o)}
               aria-label={mobileOpen ? "Close menu" : "Open menu"}
               aria-expanded={mobileOpen}
@@ -133,11 +133,11 @@ export function Header() {
         </div>
         {/* Liquid-glass gloss reflection */}
       </nav>
-      <div className="absolute -inset-1.5 -z-10 hidden rounded-full bg-white/10 blur-2xl sm:block" aria-hidden="true" />
+      <div className="absolute -inset-1.5 -z-10 rounded-full bg-white/10 blur-2xl" aria-hidden="true" />
     </div>
     {mobileOpen && (
-      <div id="mobile-nav" className="relative mt-1 overflow-hidden rounded-b-2xl border border-white/40 bg-white/85 shadow-[0_4px_24px_rgba(0,0,0,0.06),inset_0_0.5px_0_0_rgba(255,255,255,0.72),inset_0_-0.5px_0_0_rgba(0,0,0,0.05)] backdrop-blur-2xl backdrop-saturate-[180%] sm:mt-2 sm:rounded-2xl lg:hidden">
-        <ul className="relative z-10 flex flex-col gap-1 px-3 py-3 text-sm font-medium text-foreground">
+      <div id="mobile-nav" className="relative mt-2 overflow-hidden rounded-2xl border border-white/40 bg-white/85 text-ink shadow-[0_4px_24px_rgba(0,0,0,0.06),inset_0_0.5px_0_0_rgba(255,255,255,0.72),inset_0_-0.5px_0_0_rgba(0,0,0,0.05)] backdrop-blur-2xl backdrop-saturate-[180%] lg:hidden">
+        <ul className="relative z-10 flex flex-col gap-1 px-3 py-3 text-sm font-medium">
           {[
             { to: "/store", label: "Lead Store" },
             { to: "/pricing", label: "Pricing" },
@@ -149,9 +149,9 @@ export function Header() {
             <li key={item.to}>
               <Link
                 to={item.to}
-                activeProps={{ "aria-current": "page", className: "bg-secondary text-foreground" }}
+                activeProps={{ "aria-current": "page", className: "bg-secondary text-ink" }}
                 onClick={() => setMobileOpen(false)}
-                className={`block rounded-md px-3 py-2 transition-colors hover:bg-secondary hover:text-foreground ${focusRing}`}
+                className={`block rounded-md px-3 py-2 transition-colors hover:bg-secondary hover:text-ink ${focusRing}`}
               >
                 {item.label}
               </Link>

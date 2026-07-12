@@ -44,6 +44,28 @@ function AuthPage() {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [info, setInfo] = useState<string | null>(null);
+  const [rememberMe, setRememberMe] = useState(() => {
+    if (typeof window === "undefined") return true;
+    return window.localStorage.getItem("lyra_remember_me") !== "false";
+  });
+  const [signUpSuccess, setSignUpSuccess] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    window.localStorage.setItem("lyra_remember_me", rememberMe ? "true" : "false");
+  }, [rememberMe]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (!rememberMe && window.localStorage.getItem("lyra_remember_me") === "false") {
+      const handleUnload = () => {
+        supabase.auth.signOut({ scope: "local" });
+      };
+      window.addEventListener("beforeunload", handleUnload);
+      return () => window.removeEventListener("beforeunload", handleUnload);
+    }
+  }, [rememberMe]);
+
 
   useEffect(() => {
     if (!loading && user) {
@@ -102,8 +124,11 @@ function AuthPage() {
         });
         if (error) throw error;
         setInfo("Check your email to confirm your account, then sign in.");
+        setSignUpSuccess(true);
+        setPassword("");
         setMode("signin");
       } else {
+
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
         const target = search.redirect && search.redirect.startsWith("/") ? search.redirect : "/";
@@ -301,7 +326,10 @@ function AuthPage() {
                         <button
                           key={m}
                           type="button"
-                          onClick={() => setMode(m)}
+                          onClick={() => {
+                            setMode(m);
+                            if (m === "signup") setSignUpSuccess(false);
+                          }}
                           className={`flex-1 rounded-xl py-2 transition-all duration-200 ${
                             mode === m
                               ? "bg-card text-foreground shadow-sm"
@@ -312,6 +340,7 @@ function AuthPage() {
                         </button>
                       ))}
                     </div>
+
 
                     <h2 className="font-display text-2xl font-bold tracking-tight">
                       {mode === "signup" ? "Create your account" : "Welcome back"}
@@ -403,7 +432,16 @@ function AuthPage() {
                       </div>
 
                       {mode === "signin" && (
-                        <div className="flex justify-end">
+                        <div className="flex items-center justify-between">
+                          <label className="inline-flex cursor-pointer items-center gap-2">
+                            <input
+                              type="checkbox"
+                              checked={rememberMe}
+                              onChange={(e) => setRememberMe(e.target.checked)}
+                              className="size-4 rounded border-border bg-input/50 text-primary accent-primary outline-none focus:ring-2 focus:ring-ring/20"
+                            />
+                            <span className="text-sm text-muted-foreground">Remember me</span>
+                          </label>
                           <button
                             type="button"
                             onClick={() => setMode("forgot")}
@@ -414,16 +452,33 @@ function AuthPage() {
                         </div>
                       )}
 
+
                       {error && (
                         <div className="animate-fade-in rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
                           {error}
                         </div>
                       )}
-                      {info && (
+                      {signUpSuccess && mode === "signin" && (
+                        <div className="animate-fade-in rounded-xl border border-emerald/30 bg-emerald/10 p-4 text-sm text-emerald-foreground">
+                          <div className="flex items-start gap-3">
+                            <div className="grid size-8 shrink-0 place-items-center rounded-full bg-emerald/20">
+                              <Mail className="size-4" />
+                            </div>
+                            <div>
+                              <p className="font-semibold">Confirm your email</p>
+                              <p className="mt-0.5 text-emerald-foreground/80">
+                                We sent a confirmation link to <span className="font-medium">{email}</span>. Click it to activate your account, then sign in below.
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                      {info && !signUpSuccess && (
                         <div className="animate-fade-in rounded-lg border border-emerald/30 bg-emerald/10 px-3 py-2 text-sm text-emerald-foreground">
                           {info}
                         </div>
                       )}
+
 
                       <button
                         type="submit"

@@ -127,8 +127,8 @@ export function Header() {
         </div>
       </nav>
       {mobileOpen && (
-        <div id="mobile-nav" className="relative mt-2 overflow-hidden rounded-2xl border border-white/20 bg-white/[0.03] shadow-[0_20px_50px_rgba(0,0,0,0.3),inset_0_1px_1px_0_rgba(255,255,255,0.3),inset_0_-1px_1px_0_rgba(255,255,255,0.05)] backdrop-blur-3xl before:pointer-events-none before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-b before:from-white/10 before:to-transparent lg:hidden">
-            <ul className="flex flex-col gap-1 px-3 py-3 text-sm font-medium">
+          <div id="mobile-nav" className="relative mt-2 overflow-hidden rounded-2xl border border-white/20 bg-white/[0.03] shadow-[0_20px_50px_rgba(0,0,0,0.3),inset_0_1px_1px_0_rgba(255,255,255,0.3),inset_0_-1px_1px_0_rgba(255,255,255,0.05)] backdrop-blur-3xl before:pointer-events-none before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-b before:from-white/10 before:to-transparent lg:hidden">
+            <ul className="relative z-10 flex flex-col gap-1 px-3 py-3 text-sm font-medium text-white/70">
               {[
                 { to: "/store", label: "Lead Store" },
                 { to: "/pricing", label: "Pricing" },
@@ -140,9 +140,9 @@ export function Header() {
                 <li key={item.to}>
                   <Link
                     to={item.to}
-                    activeProps={{ "aria-current": "page", className: "bg-secondary text-foreground" }}
+                    activeProps={{ "aria-current": "page", className: "bg-white/10 text-white" }}
                     onClick={() => setMobileOpen(false)}
-                    className={`block rounded-md px-3 py-2 hover:bg-secondary ${focusRing}`}
+                    className={`block rounded-md px-3 py-2 transition-colors hover:bg-white/10 hover:text-white ${focusRing}`}
                   >
                     {item.label}
                   </Link>

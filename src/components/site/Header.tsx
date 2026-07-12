@@ -123,7 +123,7 @@ export function Header() {
           </div>
         </nav>
         {mobileOpen && (
-          <div id="mobile-nav" className="mt-2 rounded-2xl border border-white/40 bg-ink/15 shadow-lg backdrop-blur-2xl backdrop-saturate-[180%] lg:hidden">
+          <div id="mobile-nav" className="mt-2 rounded-2xl border border-white/50 bg-ink/25 shadow-lg backdrop-blur-2xl backdrop-saturate-[180%] lg:hidden">
             <ul className="flex flex-col gap-1 px-3 py-3 text-sm font-medium">
               {[
                 { to: "/store", label: "Lead Store" },

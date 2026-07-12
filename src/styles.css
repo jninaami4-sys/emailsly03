@@ -59,6 +59,9 @@
   --color-midnight-line: var(--midnight-line);
   --color-indigo: var(--indigo);
   --color-indigo-soft: var(--indigo-soft);
+
+  --color-neon-orange: var(--neon-orange);
+  --color-neon-orange-soft: var(--neon-orange-soft);
 }
 
 :root {

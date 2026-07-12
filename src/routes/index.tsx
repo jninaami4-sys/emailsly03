@@ -14,7 +14,6 @@ import {
   Database,
   CheckCircle2,
   Star,
-  Sparkles,
   Download,
   Search,
 } from "lucide-react";

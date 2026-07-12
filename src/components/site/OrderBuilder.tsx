@@ -419,7 +419,9 @@ export function OrderBuilder() {
               </div>
             )}
 
-            {step === 4 && (
+            {isDesktop && <div className="my-8 border-t border-dashed border-border" />}
+
+            {(step === 4 || isDesktop) && (
               <div>
                 <StepHeader
                   eyebrow="Step 4 of 4"

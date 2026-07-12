@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteShell } from "@/components/site/SiteShell";
 import { ProductCard } from "@/components/site/ProductCard";
 import { PRODUCTS } from "@/lib/products";
+import rawApollo from "@/lib/apollo-leads-raw.json";
 import {
   ArrowRight,
   ShieldCheck,
@@ -14,6 +15,13 @@ import {
 } from "lucide-react";
 import { Testimonials } from "@/components/site/Testimonials";
 import { OrderBuilder } from "@/components/site/OrderBuilder";
+
+type RawApollo = {
+  headers: string[];
+  rows: Record<string, string | number | boolean>[];
+};
+const apolloData = rawApollo as RawApollo;
+const previewRows = apolloData.rows.slice(0, 4);
 
 export const Route = createFileRoute("/")({
   head: () => ({

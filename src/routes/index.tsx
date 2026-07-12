@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteShell } from "@/components/site/SiteShell";
 import { ProductCard } from "@/components/site/ProductCard";
@@ -15,6 +15,8 @@ import {
   CheckCircle2,
   Star,
   Sparkles,
+  Download,
+  Search,
 } from "lucide-react";
 import { Testimonials } from "@/components/site/Testimonials";
 import { OrderBuilder } from "@/components/site/OrderBuilder";

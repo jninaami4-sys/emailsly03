@@ -116,9 +116,9 @@ function ResetPasswordPage() {
                   <Link
                     to="/auth"
                     search={{ mode: "signin" }}
-                    className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/25"
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/25 focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:outline-none"
                   >
-                    Sign in with new password <ArrowRight className="size-4" />
+                    Sign in with new password <ArrowRight className="size-4" aria-hidden="true" />
                   </Link>
                 </div>
               ) : (

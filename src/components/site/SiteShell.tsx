@@ -6,6 +6,7 @@ import { Preloader } from "./Preloader";
 import { MouseGlow } from "./MouseGlow";
 import { OrderDrawer } from "./OrderDrawer";
 import { FloatingOrderButton } from "./FloatingOrderButton";
+import { MobileBottomNav } from "./MobileBottomNav";
 
 export function SiteShell({ children }: { children: ReactNode }) {
   return (

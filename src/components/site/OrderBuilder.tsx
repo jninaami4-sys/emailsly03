@@ -240,7 +240,7 @@ export function OrderBuilder() {
                         onClick={() => setQuantity(q)}
                         className={`rounded-full px-3 py-1.5 font-mono text-[11px] font-bold uppercase transition-all ${
                           effectiveQty === q
-                            ? "bg-violet text-white shadow-sm shadow-violet/30"
+                            ? "bg-gold text-black shadow-sm shadow-gold/30"
                             : "bg-background text-muted-foreground hover:bg-secondary hover:text-foreground"
                         }`}
                       >

@@ -127,7 +127,7 @@ export function OrderForm() {
             <button
               type="submit"
               disabled={status !== "idle"}
-              className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-violet px-5 py-3.5 font-semibold text-white shadow-lg shadow-violet/25 transition-transform hover:scale-[1.01] disabled:opacity-70"
+              className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gold px-5 py-3.5 font-semibold text-black shadow-lg shadow-gold/25 transition-transform hover:scale-[1.01] disabled:opacity-70"
             >
               {status === "sending" && <Loader2 className="size-4 animate-spin" />}
               {status === "done" && <CheckCircle2 className="size-4" />}

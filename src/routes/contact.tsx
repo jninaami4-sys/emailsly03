@@ -57,7 +57,7 @@ function Contact() {
                 </div>
                 <button
                   type="submit"
-                  className="w-full rounded-xl bg-violet py-3 font-semibold text-white shadow-lg shadow-violet/20"
+                  className="w-full rounded-xl bg-gold py-3 font-semibold text-black shadow-lg shadow-gold/20"
                 >
                   Send message
                 </button>

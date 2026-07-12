@@ -1,6 +1,8 @@
 import React, { useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { Star, Quote, Play, Pause } from "lucide-react";
+import { Star, Quote, Play, Pause, BadgeCheck } from "lucide-react";
+import amineVideo from "@/assets/amine-italy.mp4.asset.json";
+import aminePoster from "@/assets/amine-poster.jpg.asset.json";
 
 // --- Types ---
 type Testimonial = {
@@ -17,6 +19,9 @@ type VideoTestimonial = {
   poster: string;
   src: string;
   quote: string;
+  verified?: boolean;
+  country?: string;
+  flag?: string;
 };
 
 // --- Data ---
@@ -85,31 +90,15 @@ const thirdColumn = testimonials.slice(6, 9);
 
 const videoTestimonials: VideoTestimonial[] = [
   {
-    name: "Elena Marchetti",
-    role: "Head of Revenue",
-    company: "Northwind",
-    poster:
-      "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&q=80&w=900&h=600",
-    src: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-    quote: "From cold list to $1.2M pipeline in 60 days.",
-  },
-  {
-    name: "David Okafor",
-    role: "Co-founder",
-    company: "Helios Labs",
-    poster:
-      "https://images.unsplash.com/photo-1552058544-f2b08422138a?auto=format&fit=crop&q=80&w=900&h=600",
-    src: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
-    quote: "We replaced two tools and cut our data spend by 40%.",
-  },
-  {
-    name: "Mika Tanaka",
-    role: "VP of Sales",
-    company: "Loomly",
-    poster:
-      "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=900&h=600",
-    src: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
-    quote: "SDR connect rate went from 4% to 19% in a single month.",
+    name: "Amine",
+    role: "Verified client",
+    company: "Apollo Leads Client",
+    poster: aminePoster.url,
+    src: amineVideo.url,
+    quote: "",
+    verified: true,
+    country: "Italy",
+    flag: "🇮🇹",
   },
 ];
 
@@ -225,12 +214,19 @@ function VideoCard({ v }: { v: VideoTestimonial }) {
 
         {/* Bottom caption */}
         <figcaption className="absolute inset-x-0 bottom-0 p-6 text-white">
-          <p className="font-display text-lg font-semibold leading-snug">&ldquo;{v.quote}&rdquo;</p>
+          {v.quote && (
+            <p className="font-display text-lg font-semibold leading-snug">&ldquo;{v.quote}&rdquo;</p>
+          )}
           <div className="mt-3 flex items-center justify-between">
             <div>
-              <div className="text-sm font-semibold">{v.name}</div>
+              <div className="flex items-center gap-1.5">
+                <span className="text-sm font-semibold">{v.name}</span>
+                {v.verified && (
+                  <BadgeCheck className="size-4 text-emerald" aria-label="Verified client" />
+                )}
+              </div>
               <div className="font-mono text-[10px] uppercase tracking-widest text-white/70">
-                {v.role} · {v.company}
+                {v.role} · {v.flag} {v.country} · {v.company}
               </div>
             </div>
             <div className="flex gap-0.5 text-coral">
@@ -287,12 +283,12 @@ export function Testimonials() {
             Loved by growth teams that ship
           </h2>
           <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
-            Watch how thousands of revenue teams turn verified data into pipeline with LyraData.
+            Watch a verified client explain how LyraData powers their outbound.
           </p>
         </div>
 
         {/* Video testimonials */}
-        <div className="mb-20 grid gap-6 md:grid-cols-3">
+        <div className="mx-auto mb-20 grid max-w-md gap-6">
           {videoTestimonials.map((v) => (
             <VideoCard key={v.name} v={v} />
           ))}

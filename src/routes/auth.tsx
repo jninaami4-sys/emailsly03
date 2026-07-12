@@ -326,7 +326,10 @@ function AuthPage() {
                         <button
                           key={m}
                           type="button"
-                          onClick={() => setMode(m)}
+                          onClick={() => {
+                            setMode(m);
+                            if (m === "signup") setSignUpSuccess(false);
+                          }}
                           className={`flex-1 rounded-xl py-2 transition-all duration-200 ${
                             mode === m
                               ? "bg-card text-foreground shadow-sm"
@@ -337,6 +340,7 @@ function AuthPage() {
                         </button>
                       ))}
                     </div>
+
 
                     <h2 className="font-display text-2xl font-bold tracking-tight">
                       {mode === "signup" ? "Create your account" : "Welcome back"}

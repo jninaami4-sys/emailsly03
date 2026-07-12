@@ -3,6 +3,7 @@ import { SiteShell } from "@/components/site/SiteShell";
 import { ProductCard } from "@/components/site/ProductCard";
 import { PRODUCTS } from "@/lib/products";
 import rawApollo from "@/lib/apollo-leads-raw.json";
+import { ShaderBackground } from "@/components/site/ShaderBackground";
 import {
   ArrowRight,
   ShieldCheck,

@@ -375,7 +375,6 @@ export function OrderBuilder() {
               </div>
             )}
 
-            {isDesktop && <div className="my-8 border-t border-dashed border-border" />}
 
             {(step === 3 || isDesktop) && (
               <div>

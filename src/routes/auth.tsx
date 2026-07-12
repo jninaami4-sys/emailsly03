@@ -495,15 +495,15 @@ function AuthPage() {
 
 
                       {error && (
-                        <div className="animate-fade-in rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+                        <div aria-live="assertive" className="animate-fade-in rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
                           {error}
                         </div>
                       )}
                       {signUpSuccess && mode === "signin" && (
-                        <div className="animate-fade-in rounded-xl border border-emerald/30 bg-emerald/10 p-4 text-sm text-emerald-foreground">
+                        <div aria-live="polite" className="animate-fade-in rounded-xl border border-emerald/30 bg-emerald/10 p-4 text-sm text-emerald-foreground">
                           <div className="flex items-start gap-3">
-                            <div className="grid size-8 shrink-0 place-items-center rounded-full bg-emerald/20">
-                              <Mail className="size-4" />
+                            <div className="grid size-8 shrink-0 place-items-center rounded-full bg-emerald/20" aria-hidden="true">
+                              <Mail className="size-4" aria-hidden="true" />
                             </div>
                             <div>
                               <p className="font-semibold">Confirm your email</p>
@@ -515,7 +515,7 @@ function AuthPage() {
                         </div>
                       )}
                       {info && !signUpSuccess && (
-                        <div className="animate-fade-in rounded-lg border border-emerald/30 bg-emerald/10 px-3 py-2 text-sm text-emerald-foreground">
+                        <div aria-live="polite" className="animate-fade-in rounded-lg border border-emerald/30 bg-emerald/10 px-3 py-2 text-sm text-emerald-foreground">
                           {info}
                         </div>
                       )}

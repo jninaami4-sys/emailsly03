@@ -459,15 +459,21 @@ function ResetPasswordPage() {
 
                     <button
                       type="submit"
-                      disabled={busy}
-                      className="group relative inline-flex w-full items-center justify-center gap-2 overflow-hidden rounded-xl bg-primary px-5 py-3 font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/25 active:scale-[0.99] disabled:opacity-70 focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:outline-none"
+                      disabled={busy || !isFormValid}
+                      aria-disabled={busy || !isFormValid}
+                      className="group relative inline-flex w-full items-center justify-center gap-2 overflow-hidden rounded-xl bg-primary px-5 py-3 font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/25 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60 disabled:shadow-none focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:outline-none"
                     >
                       <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
                       <span className="relative flex items-center gap-2">
                         {busy ? <Loader2 className="size-4 animate-spin" aria-hidden="true" /> : <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />}
-                        Update password
+                        {busy ? "Updating password…" : "Update password"}
                       </span>
                     </button>
+                    {!isFormValid && (password || confirm) && !errors.password && !errors.confirm && (
+                      <p className="text-center text-xs text-muted-foreground">
+                        Complete all password requirements to continue
+                      </p>
+                    )}
                   </form>
                 </>
               )}

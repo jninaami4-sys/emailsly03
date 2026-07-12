@@ -22,6 +22,7 @@ import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as ManualLeadResearchRouteImport } from './routes/manual-lead-research'
 import { Route as LinkedinSalesNavigatorLeadsRouteImport } from './routes/linkedin-sales-navigator-leads'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as BlogRouteImport } from './routes/blog'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ApolloLeadsExportRouteImport } from './routes/apollo-leads-export'
 import { Route as IndexRouteImport } from './routes/index'
@@ -92,6 +93,11 @@ const ContactRoute = ContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BlogRoute = BlogRouteImport.update({
+  id: '/blog',
+  path: '/blog',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
@@ -112,6 +118,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/apollo-leads-export': typeof ApolloLeadsExportRoute
   '/auth': typeof AuthRoute
+  '/blog': typeof BlogRoute
   '/contact': typeof ContactRoute
   '/linkedin-sales-navigator-leads': typeof LinkedinSalesNavigatorLeadsRoute
   '/manual-lead-research': typeof ManualLeadResearchRoute
@@ -130,6 +137,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/apollo-leads-export': typeof ApolloLeadsExportRoute
   '/auth': typeof AuthRoute
+  '/blog': typeof BlogRoute
   '/contact': typeof ContactRoute
   '/linkedin-sales-navigator-leads': typeof LinkedinSalesNavigatorLeadsRoute
   '/manual-lead-research': typeof ManualLeadResearchRoute
@@ -149,6 +157,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/apollo-leads-export': typeof ApolloLeadsExportRoute
   '/auth': typeof AuthRoute
+  '/blog': typeof BlogRoute
   '/contact': typeof ContactRoute
   '/linkedin-sales-navigator-leads': typeof LinkedinSalesNavigatorLeadsRoute
   '/manual-lead-research': typeof ManualLeadResearchRoute
@@ -169,6 +178,7 @@ export interface FileRouteTypes {
     | '/'
     | '/apollo-leads-export'
     | '/auth'
+    | '/blog'
     | '/contact'
     | '/linkedin-sales-navigator-leads'
     | '/manual-lead-research'
@@ -187,6 +197,7 @@ export interface FileRouteTypes {
     | '/'
     | '/apollo-leads-export'
     | '/auth'
+    | '/blog'
     | '/contact'
     | '/linkedin-sales-navigator-leads'
     | '/manual-lead-research'
@@ -205,6 +216,7 @@ export interface FileRouteTypes {
     | '/'
     | '/apollo-leads-export'
     | '/auth'
+    | '/blog'
     | '/contact'
     | '/linkedin-sales-navigator-leads'
     | '/manual-lead-research'
@@ -224,6 +236,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ApolloLeadsExportRoute: typeof ApolloLeadsExportRoute
   AuthRoute: typeof AuthRoute
+  BlogRoute: typeof BlogRoute
   ContactRoute: typeof ContactRoute
   LinkedinSalesNavigatorLeadsRoute: typeof LinkedinSalesNavigatorLeadsRoute
   ManualLeadResearchRoute: typeof ManualLeadResearchRoute
@@ -332,6 +345,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/blog': {
+      id: '/blog'
+      path: '/blog'
+      fullPath: '/blog'
+      preLoaderRoute: typeof BlogRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth': {
       id: '/auth'
       path: '/auth'
@@ -360,6 +380,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ApolloLeadsExportRoute: ApolloLeadsExportRoute,
   AuthRoute: AuthRoute,
+  BlogRoute: BlogRoute,
   ContactRoute: ContactRoute,
   LinkedinSalesNavigatorLeadsRoute: LinkedinSalesNavigatorLeadsRoute,
   ManualLeadResearchRoute: ManualLeadResearchRoute,

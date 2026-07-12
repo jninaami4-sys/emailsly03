@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteShell } from "@/components/site/SiteShell";
 import { ProductCard } from "@/components/site/ProductCard";
@@ -15,6 +15,8 @@ import {
   CheckCircle2,
   Star,
   Sparkles,
+  Download,
+  Search,
 } from "lucide-react";
 import { Testimonials } from "@/components/site/Testimonials";
 import { OrderBuilder } from "@/components/site/OrderBuilder";
@@ -127,6 +129,33 @@ const ACCENT_CLASSES: Record<
   },
 };
 
+const SOURCE_DATA: Record<SourceKey, RawData> = {
+  apollo: apolloData,
+  linkedin: linkedinData,
+  zoominfo: zoominfoData,
+};
+
+const csvEscape = (v: unknown) => {
+  const s = v === null || v === undefined ? "" : String(v);
+  return /[",\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+};
+
+const downloadCsv = (filename: string, data: RawData) => {
+  const lines = [
+    data.headers.map(csvEscape).join(","),
+    ...data.rows.map((r) => data.headers.map((h) => csvEscape(r[h])).join(",")),
+  ];
+  const blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+};
+
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
@@ -189,9 +218,18 @@ const faqs = [
 function Home() {
   const featured = PRODUCTS.filter((p) => p.featured).concat(PRODUCTS.filter((p) => !p.featured)).slice(0, 6);
   const [activeSource, setActiveSource] = useState<SourceKey>("apollo");
+  const [query, setQuery] = useState("");
   const active = SOURCES.find((s) => s.key === activeSource)!;
   const accent = ACCENT_CLASSES[active.accent];
   const totalRows = SOURCES.reduce((a, s) => a + s.rows, 0);
+  const rawActive = SOURCE_DATA[activeSource];
+  const filteredRows = useMemo(() => {
+    if (!query.trim()) return rawActive.rows;
+    const q = query.toLowerCase();
+    return rawActive.rows.filter((r) =>
+      rawActive.headers.some((h) => String(r[h] ?? "").toLowerCase().includes(q)),
+    );
+  }, [query, rawActive]);
 
   return (
     <SiteShell>
@@ -273,13 +311,32 @@ function Home() {
                   <span className={`font-semibold ${accent.text}`}>{active.file}</span>
                 </span>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <span className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-widest ${accent.soft} ${accent.text}`}>
                   <CheckCircle2 className="size-3" />
                   {active.highlight}
                 </span>
+                <div className="relative">
+                  <Search className="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
+                  <input
+                    type="text"
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    placeholder="Search rows…"
+                    className="w-40 rounded-full border border-border bg-background/60 py-1 pl-7 pr-3 font-mono text-[11px] text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-violet/40 sm:w-52"
+                  />
+                </div>
+                <button
+                  type="button"
+                  onClick={() => downloadCsv(active.file, rawActive)}
+                  className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-semibold text-white shadow-sm transition-transform hover:-translate-y-0.5 ${accent.solid}`}
+                >
+                  <Download className="size-3.5" />
+                  Download CSV
+                </button>
               </div>
             </div>
+
 
             {/* Split: left source rail + right preview */}
             <div className="grid gap-3 pt-3 lg:grid-cols-[220px_1fr]">
@@ -329,50 +386,88 @@ function Home() {
                 </div>
               </div>
 
-              {/* Preview table */}
-              <div className="overflow-hidden rounded-xl border border-border bg-background/60">
-                <div className="grid grid-cols-[1.3fr_1.1fr_1fr_1.2fr_0.9fr] gap-4 border-b border-border bg-secondary/60 px-5 py-3 font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-                  <div>Lead</div>
-                  <div>Title</div>
-                  <div>Company</div>
-                  <div>Email</div>
-                  <div className="text-right">Signal</div>
+              {/* Full data table */}
+              <div className="flex min-w-0 flex-col overflow-hidden rounded-xl border border-border bg-background/60">
+                <div className="max-h-[440px] overflow-auto">
+                  <table className="w-full min-w-[640px] border-collapse text-sm">
+                    <thead className="sticky top-0 z-10 bg-secondary/80 backdrop-blur">
+                      <tr>
+                        <th className="sticky left-0 z-20 w-10 border-b border-border bg-secondary/80 px-3 py-2.5 text-left font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                          #
+                        </th>
+                        {rawActive.headers.map((h) => (
+                          <th
+                            key={h}
+                            className="whitespace-nowrap border-b border-border px-3 py-2.5 text-left font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground"
+                          >
+                            {h}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredRows.length === 0 ? (
+                        <tr>
+                          <td
+                            colSpan={rawActive.headers.length + 1}
+                            className="px-5 py-10 text-center font-mono text-xs text-muted-foreground"
+                          >
+                            No rows match “{query}”.
+                          </td>
+                        </tr>
+                      ) : (
+                        filteredRows.map((r, i) => (
+                          <tr
+                            key={i}
+                            className="group border-b border-border/60 transition-colors last:border-0 hover:bg-secondary/40"
+                          >
+                            <td className="sticky left-0 z-10 w-10 bg-background/80 px-3 py-2 font-mono text-[10px] text-muted-foreground group-hover:bg-secondary/60">
+                              {i + 1}
+                            </td>
+                            {rawActive.headers.map((h) => {
+                              const v = String(r[h] ?? "");
+                              return (
+                                <td
+                                  key={h}
+                                  className="max-w-[220px] truncate whitespace-nowrap px-3 py-2 text-foreground/90"
+                                  title={v}
+                                >
+                                  {v || <span className="text-muted-foreground/50">—</span>}
+                                </td>
+                              );
+                            })}
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
                 </div>
-                {active.preview.map((r, i) => (
-                  <div
-                    key={i}
-                    className={`grid grid-cols-[1.3fr_1.1fr_1fr_1.2fr_0.9fr] items-center gap-4 px-5 py-4 text-sm ${
-                      i !== active.preview.length - 1 ? "border-b border-border" : ""
-                    }`}
-                  >
-                    <div className="min-w-0">
-                      <div className="truncate font-semibold text-foreground">{r.name || "—"}</div>
-                      <div className={`truncate text-xs font-medium ${accent.text}`}>{active.label}</div>
-                    </div>
-                    <div className="truncate text-muted-foreground">{r.title || "—"}</div>
-                    <div className="truncate text-muted-foreground">{r.company || "—"}</div>
-                    <div className="truncate font-mono text-xs text-muted-foreground">{r.email || "—"}</div>
-                    <div className="text-right">
-                      <span
-                        className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[11px] font-semibold ${accent.soft} ${accent.text}`}
-                      >
-                        <span className={`size-1.5 rounded-full ${accent.dot}`} />
-                        {r.tag}
-                      </span>
-                    </div>
+                <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border bg-secondary/30 px-5 py-3 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+                  <span>
+                    Showing <b className="text-foreground tabular-nums">{filteredRows.length.toLocaleString()}</b> of{" "}
+                    <b className="text-foreground tabular-nums">{active.rows.toLocaleString()}</b> rows ·{" "}
+                    {active.cols} columns
+                  </span>
+                  <div className="flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => downloadCsv(active.file, rawActive)}
+                      className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-bold transition-opacity hover:opacity-70 ${accent.text}`}
+                    >
+                      <Download className="size-3" />
+                      Download {active.file}
+                    </button>
+                    <Link
+                      to="/sample-data"
+                      className={`group inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-bold transition-opacity hover:opacity-70 ${accent.text}`}
+                    >
+                      Open full sample
+                      <ArrowRight className="size-3 transition-transform group-hover:translate-x-0.5" />
+                    </Link>
                   </div>
-                ))}
-                <div className="flex items-center justify-between border-t border-border bg-secondary/30 px-5 py-3 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-                  <span>Showing 4 of {active.rows.toLocaleString()} rows · {active.cols} columns</span>
-                  <Link
-                    to="/sample-data"
-                    className={`group inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-bold transition-opacity hover:opacity-70 ${accent.text}`}
-                  >
-                    Open full sample
-                    <ArrowRight className="size-3 transition-transform group-hover:translate-x-0.5" />
-                  </Link>
                 </div>
               </div>
+
             </div>
           </div>
 

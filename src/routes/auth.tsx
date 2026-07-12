@@ -28,7 +28,7 @@ const credentials = z.object({
 
 function AuthPage() {
   const search = useSearch({ from: "/auth" });
-  const navigate = useNavigate();
+  
   const { user, loading } = useAuth();
   const [mode, setMode] = useState<"signin" | "signup">(search.mode ?? "signup");
   const [email, setEmail] = useState("");

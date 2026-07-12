@@ -46,7 +46,6 @@ const stats = [
   { k: "500+", v: "clients served" },
   { k: "100M+", v: "leads delivered" },
   { k: "24h", v: "avg. delivery" },
-  { k: "250M+", v: "contacts sourced" },
 ];
 
 const faqs = [
@@ -114,7 +113,7 @@ function Home() {
               </div>
 
               {/* Stat strip */}
-              <div className="mx-auto mt-16 grid max-w-3xl grid-cols-2 gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur sm:grid-cols-4">
+              <div className="mx-auto mt-16 grid max-w-3xl grid-cols-2 gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur sm:grid-cols-3">
                 {stats.map((s) => (
                   <div key={s.v} className="bg-midnight/70 px-4 py-5 text-center">
                     <div className="font-display text-2xl font-bold tabular-nums text-foreground md:text-3xl">{s.k}</div>

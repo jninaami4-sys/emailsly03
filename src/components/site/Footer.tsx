@@ -37,7 +37,7 @@ export function Footer() {
         <div className="grid gap-12 border-b border-white/10 pb-16 lg:grid-cols-[1.1fr_1fr] lg:items-end">
           <div>
             <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1">
-              <Zap className="size-3 text-violet" />
+              <PremiumZap className="size-3 text-violet" />
               <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-white">
                 Premium Brief
               </span>
@@ -108,7 +108,7 @@ export function Footer() {
         <div className="flex flex-col items-start justify-between gap-6 border-y border-white/10 py-10 lg:flex-row lg:items-center">
           <div className="space-y-1">
             <div className="flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-widest text-white/60">
-              <ShieldCheck className="size-3.5 text-emerald" />
+              <PremiumShieldCheck className="size-3.5 text-emerald" />
               Secure checkout
             </div>
             <p className="text-sm text-white/50">

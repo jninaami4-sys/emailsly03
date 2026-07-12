@@ -283,7 +283,7 @@ function Home() {
                 <div className="mt-3 flex flex-wrap items-center justify-between gap-2 font-mono text-[10px] uppercase tracking-widest text-foreground/50">
                   <span>{filteredRows.length.toLocaleString()} / {active.rows.toLocaleString()} rows · {active.cols} cols</span>
                   <Link to="/sample-data" className={`inline-flex items-center gap-1 ${accent.text} hover:opacity-80`}>
-                    Open full sample <ArrowRight className="size-3" />
+                    Open full sample <PremiumArrowRight className="size-3" />
                   </Link>
                 </div>
               </div>
@@ -297,12 +297,12 @@ function Home() {
               <div className="pointer-events-none absolute -right-8 -top-8 size-48 rounded-full bg-white/15 blur-2xl" />
               <div className="relative flex h-full flex-col justify-between">
                 <div>
-                  <Sparkles className="size-6" />
+                  <PremiumSparkles className="size-6" />
                   <h3 className="mt-6 font-display text-2xl font-bold leading-tight md:text-3xl">Get your price in 30 seconds.</h3>
                   <p className="mt-3 text-sm text-white/80">Slide out the builder, pick a service, see the exact cost. No calls, no forms.</p>
                 </div>
                 <span className="inline-flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-widest">
-                  Open builder <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  Open builder <PremiumArrowUpRight className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </span>
               </div>
             </button>
@@ -310,7 +310,7 @@ function Home() {
             {/* Verified feature */}
             <article className="col-span-1 overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] p-6 md:col-span-2">
               <div className="grid size-10 place-items-center rounded-xl bg-emerald/15 text-emerald">
-                <ShieldCheck className="size-5" />
+                <PremiumShieldCheck className="size-5" />
               </div>
               <h3 className="mt-4 font-display text-lg font-bold">Real-time verification</h3>
               <p className="mt-1 text-sm text-foreground/60">Every email pinged live. Bounces replaced free.</p>

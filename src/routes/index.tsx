@@ -236,6 +236,13 @@ function Home() {
         </div>
       </section>
 
+      {/* Live activity ticker */}
+      <ActivityTicker />
+
+      {/* Testimonials + logo wall */}
+      <Testimonials />
+
+
 
       {/* FAQ */}
       <section className="border-t border-border bg-card px-6 py-24">

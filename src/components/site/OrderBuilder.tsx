@@ -158,17 +158,17 @@ export function OrderBuilder() {
 
         {/* Stepper */}
         <div className="mx-auto mt-6 max-w-5xl sm:mt-10">
-          <div className="relative flex items-center justify-between gap-1.5 rounded-2xl border border-border bg-card/60 p-2 backdrop-blur sm:gap-2 sm:p-3">
+          <div className="relative flex items-center gap-1.5 overflow-x-auto rounded-2xl border border-border bg-card/60 p-2 backdrop-blur sm:justify-between sm:gap-2 sm:p-3">
             {STEPS.map((s, i) => {
               const Icon = s.icon;
               const done = step > s.id;
               const active = step === s.id;
               return (
-                <div key={s.id} className="flex flex-1 items-center gap-1.5 sm:gap-2">
+                <div key={s.id} className="flex min-w-0 flex-1 items-center gap-1.5 sm:gap-2">
                   <button
                     type="button"
                     onClick={() => (done ? setStep(s.id) : null)}
-                    className={`group flex flex-1 items-center gap-2 rounded-xl px-2 py-2 text-left transition-all sm:gap-3 sm:px-3 sm:py-3 ${
+                    className={`group flex min-w-[72px] flex-1 items-center gap-2 rounded-xl px-2 py-2 text-left transition-all sm:min-w-0 sm:gap-3 sm:px-3 sm:py-3 ${
                       active
                         ? "bg-violet text-white shadow-lg shadow-violet/25"
                         : done
@@ -187,7 +187,7 @@ export function OrderBuilder() {
                     >
                       {done ? <Check className="size-3.5 sm:size-4" /> : <Icon className="size-3.5 sm:size-4" />}
                     </span>
-                    <span className="min-w-0">
+                    <span className="min-w-0 flex-1">
                       <span className={`hidden font-mono text-[10px] font-bold uppercase tracking-widest sm:block ${active ? "text-white/70" : done ? "text-emerald/80" : "text-muted-foreground/70"}`}>
                         Step {s.id}
                       </span>

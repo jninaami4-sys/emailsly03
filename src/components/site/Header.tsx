@@ -43,6 +43,9 @@ export function Header() {
             <Link to="/track-order" className="transition-colors hover:text-foreground">
               Track Order
             </Link>
+            <Link to="/blog" className="transition-colors hover:text-foreground">
+              Blog
+            </Link>
             <Link to="/contact" className="transition-colors hover:text-foreground">
               Contact
             </Link>

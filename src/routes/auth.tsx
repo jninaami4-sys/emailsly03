@@ -3,10 +3,10 @@ import { useEffect, useState } from "react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
-import { ArrowRight, Loader2, Mail, Lock, ShieldCheck, Zap, Sparkles, Eye, EyeOff, AlertCircle } from "lucide-react";
+import { ArrowRight, Loader2, Mail, Lock, ShieldCheck, Zap, Sparkles, Eye, EyeOff, AlertCircle, CheckCircle2, ArrowLeft } from "lucide-react";
 
 const searchSchema = z.object({
-  mode: z.enum(["signin", "signup"]).optional(),
+  mode: z.enum(["signin", "signup", "forgot"]).optional(),
   redirect: z.string().optional(),
 });
 
@@ -26,12 +26,16 @@ const credentials = z.object({
   password: z.string().min(6, { message: "At least 6 characters" }).max(72),
 });
 
+const forgotSchema = z.object({
+  email: z.string().trim().email({ message: "Enter a valid email" }).max(255),
+});
+
 type FieldErrors = { email?: string; password?: string };
 
 function AuthPage() {
   const search = useSearch({ from: "/auth" });
   const { user, loading } = useAuth();
-  const [mode, setMode] = useState<"signin" | "signup">(search.mode ?? "signup");
+  const [mode, setMode] = useState<"signin" | "signup" | "forgot">(search.mode ?? "signup");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -47,6 +51,12 @@ function AuthPage() {
       window.location.replace(target);
     }
   }, [loading, user, search.redirect]);
+
+  useEffect(() => {
+    if (search.mode && ["signin", "signup", "forgot"].includes(search.mode)) {
+      setMode(search.mode);
+    }
+  }, [search.mode]);
 
   function validateField(name: keyof FieldErrors, value: string) {
     const partial = credentials.partial();
@@ -75,7 +85,7 @@ function AuthPage() {
     return true;
   }
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleAuthSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
     setInfo(null);
@@ -102,6 +112,34 @@ function AuthPage() {
     } catch (err) {
       const message = err instanceof Error ? err.message : "Something went wrong";
       setError(message.replace("Invalid login credentials", "Wrong email or password"));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function handleForgotSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+    setInfo(null);
+    setTouched({ email: true });
+    const parsed = forgotSchema.safeParse({ email });
+    if (!parsed.success) {
+      setFieldErrors((prev) => ({ ...prev, email: parsed.error.issues[0].message }));
+      return;
+    }
+    setFieldErrors((prev) => ({ ...prev, email: undefined }));
+
+    setBusy(true);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(parsed.data.email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      if (error) throw error;
+      setInfo("If this email exists, you'll receive a reset link shortly.");
+      setEmail("");
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Something went wrong";
+      setError(message);
     } finally {
       setBusy(false);
     }
@@ -179,135 +217,228 @@ function AuthPage() {
               </div>
 
               <div className="relative">
-                <div className="mb-6 flex rounded-2xl border border-border bg-muted p-1 text-sm font-medium">
-                  {(["signup", "signin"] as const).map((m) => (
+                {mode === "forgot" ? (
+                  <>
                     <button
-                      key={m}
                       type="button"
-                      onClick={() => setMode(m)}
-                      className={`flex-1 rounded-xl py-2 transition-all duration-200 ${
-                        mode === m
-                          ? "bg-card text-foreground shadow-sm"
-                          : "text-muted-foreground hover:text-foreground"
-                      }`}
+                      onClick={() => setMode("signin")}
+                      className="mb-4 inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
                     >
-                      {m === "signup" ? "Get started" : "Sign in"}
+                      <ArrowLeft className="size-3.5" /> Back to sign in
                     </button>
-                  ))}
-                </div>
+                    <h2 className="font-display text-2xl font-bold tracking-tight">Reset your password</h2>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      Enter your work email and we'll send you a secure reset link.
+                    </p>
 
-                <h2 className="font-display text-2xl font-bold tracking-tight">
-                  {mode === "signup" ? "Create your account" : "Welcome back"}
-                </h2>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  {mode === "signup"
-                    ? "Free forever. No credit card required."
-                    : "Sign in to access your orders and pricing."}
-                </p>
-
-                <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-                  <div>
-                    <label className="block">
-                      <span className="mb-1.5 block text-sm font-medium text-muted-foreground">
-                        Work email
-                      </span>
-                      <div className="group relative">
-                        <Mail className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-foreground" />
-                        <input
-                          type="email"
-                          autoComplete="email"
-                          value={email}
-                          onChange={(e) => {
-                            setEmail(e.target.value);
-                            if (fieldErrors.email) validateField("email", e.target.value);
-                          }}
-                          onBlur={() => {
-                            setTouched((t) => ({ ...t, email: true }));
-                            validateField("email", email);
-                          }}
-                          className={`${inputBase} ${fieldErrors.email ? inputError : inputNormal}`}
-                          placeholder="jane@acme.com"
-                          aria-invalid={!!fieldErrors.email}
-                          aria-describedby={fieldErrors.email ? "email-error" : undefined}
-                        />
+                    <form onSubmit={handleForgotSubmit} className="mt-6 space-y-4">
+                      <div>
+                        <label className="block">
+                          <span className="mb-1.5 block text-sm font-medium text-muted-foreground">Work email</span>
+                          <div className="group relative">
+                            <Mail className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-foreground" />
+                            <input
+                              type="email"
+                              autoComplete="email"
+                              value={email}
+                              onChange={(e) => {
+                                setEmail(e.target.value);
+                                if (fieldErrors.email) validateField("email", e.target.value);
+                              }}
+                              onBlur={() => {
+                                setTouched((t) => ({ ...t, email: true }));
+                                validateField("email", email);
+                              }}
+                              className={`${inputBase} ${fieldErrors.email ? inputError : inputNormal}`}
+                              placeholder="jane@acme.com"
+                              aria-invalid={!!fieldErrors.email}
+                              aria-describedby={fieldErrors.email ? "email-error" : undefined}
+                            />
+                            {fieldErrors.email && (
+                              <AlertCircle className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-destructive" />
+                            )}
+                          </div>
+                        </label>
                         {fieldErrors.email && (
-                          <AlertCircle className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-destructive" />
+                          <p id="email-error" className="mt-1.5 flex items-center gap-1.5 text-xs text-destructive animate-fade-in">
+                            <AlertCircle className="size-3.5" />
+                            {fieldErrors.email}
+                          </p>
                         )}
                       </div>
-                    </label>
-                    {fieldErrors.email && (
-                      <p id="email-error" className="mt-1.5 flex items-center gap-1.5 text-xs text-destructive animate-fade-in">
-                        <AlertCircle className="size-3.5" />
-                        {fieldErrors.email}
-                      </p>
-                    )}
-                  </div>
 
-                  <div>
-                    <label className="block">
-                      <span className="mb-1.5 block text-sm font-medium text-muted-foreground">
-                        Password
-                      </span>
-                      <div className="group relative">
-                        <Lock className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-foreground" />
-                        <input
-                          type={showPassword ? "text" : "password"}
-                          autoComplete={mode === "signup" ? "new-password" : "current-password"}
-                          value={password}
-                          onChange={(e) => {
-                            setPassword(e.target.value);
-                            if (fieldErrors.password) validateField("password", e.target.value);
-                          }}
-                          onBlur={() => {
-                            setTouched((t) => ({ ...t, password: true }));
-                            validateField("password", password);
-                          }}
-                          className={`${passwordInputBase} ${fieldErrors.password ? inputError : inputNormal}`}
-                          placeholder="At least 6 characters"
-                          aria-invalid={!!fieldErrors.password}
-                          aria-describedby={fieldErrors.password ? "password-error" : undefined}
-                        />
+                      {info && (
+                        <div className="animate-fade-in rounded-lg border border-emerald/30 bg-emerald/10 px-3 py-2 text-sm text-emerald-foreground">
+                          <p className="flex items-start gap-2">
+                            <CheckCircle2 className="mt-0.5 size-4 shrink-0" />
+                            {info}
+                          </p>
+                        </div>
+                      )}
+                      {error && (
+                        <div className="animate-fade-in rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+                          {error}
+                        </div>
+                      )}
+
+                      <button
+                        type="submit"
+                        disabled={busy}
+                        className="group relative inline-flex w-full items-center justify-center gap-2 overflow-hidden rounded-xl bg-primary px-5 py-3 font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/25 active:scale-[0.99] disabled:opacity-70"
+                      >
+                        <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+                        <span className="relative flex items-center gap-2">
+                          {busy ? <Loader2 className="size-4 animate-spin" /> : <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />}
+                          Send reset link
+                        </span>
+                      </button>
+                    </form>
+                  </>
+                ) : (
+                  <>
+                    <div className="mb-6 flex rounded-2xl border border-border bg-muted p-1 text-sm font-medium">
+                      {(["signup", "signin"] as const).map((m) => (
                         <button
+                          key={m}
                           type="button"
-                          onClick={() => setShowPassword((v) => !v)}
-                          className="absolute right-2 top-1/2 grid size-7 -translate-y-1/2 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                          aria-label={showPassword ? "Hide password" : "Show password"}
+                          onClick={() => setMode(m)}
+                          className={`flex-1 rounded-xl py-2 transition-all duration-200 ${
+                            mode === m
+                              ? "bg-card text-foreground shadow-sm"
+                              : "text-muted-foreground hover:text-foreground"
+                          }`}
                         >
-                          {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                          {m === "signup" ? "Get started" : "Sign in"}
                         </button>
+                      ))}
+                    </div>
+
+                    <h2 className="font-display text-2xl font-bold tracking-tight">
+                      {mode === "signup" ? "Create your account" : "Welcome back"}
+                    </h2>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      {mode === "signup"
+                        ? "Free forever. No credit card required."
+                        : "Sign in to access your orders and pricing."}
+                    </p>
+
+                    <form onSubmit={handleAuthSubmit} className="mt-6 space-y-4">
+                      <div>
+                        <label className="block">
+                          <span className="mb-1.5 block text-sm font-medium text-muted-foreground">
+                            Work email
+                          </span>
+                          <div className="group relative">
+                            <Mail className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-foreground" />
+                            <input
+                              type="email"
+                              autoComplete="email"
+                              value={email}
+                              onChange={(e) => {
+                                setEmail(e.target.value);
+                                if (fieldErrors.email) validateField("email", e.target.value);
+                              }}
+                              onBlur={() => {
+                                setTouched((t) => ({ ...t, email: true }));
+                                validateField("email", email);
+                              }}
+                              className={`${inputBase} ${fieldErrors.email ? inputError : inputNormal}`}
+                              placeholder="jane@acme.com"
+                              aria-invalid={!!fieldErrors.email}
+                              aria-describedby={fieldErrors.email ? "email-error" : undefined}
+                            />
+                            {fieldErrors.email && (
+                              <AlertCircle className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-destructive" />
+                            )}
+                          </div>
+                        </label>
+                        {fieldErrors.email && (
+                          <p id="email-error" className="mt-1.5 flex items-center gap-1.5 text-xs text-destructive animate-fade-in">
+                            <AlertCircle className="size-3.5" />
+                            {fieldErrors.email}
+                          </p>
+                        )}
                       </div>
-                    </label>
-                    {fieldErrors.password && (
-                      <p id="password-error" className="mt-1.5 flex items-center gap-1.5 text-xs text-destructive animate-fade-in">
-                        <AlertCircle className="size-3.5" />
-                        {fieldErrors.password}
-                      </p>
-                    )}
-                  </div>
 
-                  {error && (
-                    <div className="animate-fade-in rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
-                      {error}
-                    </div>
-                  )}
-                  {info && (
-                    <div className="animate-fade-in rounded-lg border border-emerald/30 bg-emerald/10 px-3 py-2 text-sm text-emerald-foreground">
-                      {info}
-                    </div>
-                  )}
+                      <div>
+                        <label className="block">
+                          <span className="mb-1.5 block text-sm font-medium text-muted-foreground">
+                            Password
+                          </span>
+                          <div className="group relative">
+                            <Lock className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-foreground" />
+                            <input
+                              type={showPassword ? "text" : "password"}
+                              autoComplete={mode === "signup" ? "new-password" : "current-password"}
+                              value={password}
+                              onChange={(e) => {
+                                setPassword(e.target.value);
+                                if (fieldErrors.password) validateField("password", e.target.value);
+                              }}
+                              onBlur={() => {
+                                setTouched((t) => ({ ...t, password: true }));
+                                validateField("password", password);
+                              }}
+                              className={`${passwordInputBase} ${fieldErrors.password ? inputError : inputNormal}`}
+                              placeholder="At least 6 characters"
+                              aria-invalid={!!fieldErrors.password}
+                              aria-describedby={fieldErrors.password ? "password-error" : undefined}
+                            />
+                            <button
+                              type="button"
+                              onClick={() => setShowPassword((v) => !v)}
+                              className="absolute right-2 top-1/2 grid size-7 -translate-y-1/2 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                              aria-label={showPassword ? "Hide password" : "Show password"}
+                            >
+                              {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                            </button>
+                          </div>
+                        </label>
+                        {fieldErrors.password && (
+                          <p id="password-error" className="mt-1.5 flex items-center gap-1.5 text-xs text-destructive animate-fade-in">
+                            <AlertCircle className="size-3.5" />
+                            {fieldErrors.password}
+                          </p>
+                        )}
+                      </div>
 
-                  <button
-                    type="submit"
-                    disabled={busy}
-                    className="group relative inline-flex w-full items-center justify-center gap-2 overflow-hidden rounded-xl bg-primary px-5 py-3 font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/25 active:scale-[0.99] disabled:opacity-70"
-                  >
-                    <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
-                    <span className="relative flex items-center gap-2">
-                      {busy ? <Loader2 className="size-4 animate-spin" /> : <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />}
-                      {mode === "signup" ? "Create account" : "Sign in"}
-                    </span>
-                  </button>
-                </form>
+                      {mode === "signin" && (
+                        <div className="flex justify-end">
+                          <button
+                            type="button"
+                            onClick={() => setMode("forgot")}
+                            className="text-xs font-medium text-muted-foreground transition-colors hover:text-primary"
+                          >
+                            Forgot password?
+                          </button>
+                        </div>
+                      )}
+
+                      {error && (
+                        <div className="animate-fade-in rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+                          {error}
+                        </div>
+                      )}
+                      {info && (
+                        <div className="animate-fade-in rounded-lg border border-emerald/30 bg-emerald/10 px-3 py-2 text-sm text-emerald-foreground">
+                          {info}
+                        </div>
+                      )}
+
+                      <button
+                        type="submit"
+                        disabled={busy}
+                        className="group relative inline-flex w-full items-center justify-center gap-2 overflow-hidden rounded-xl bg-primary px-5 py-3 font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/25 active:scale-[0.99] disabled:opacity-70"
+                      >
+                        <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+                        <span className="relative flex items-center gap-2">
+                          {busy ? <Loader2 className="size-4 animate-spin" /> : <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />}
+                          {mode === "signup" ? "Create account" : "Sign in"}
+                        </span>
+                      </button>
+                    </form>
+                  </>
+                )}
 
                 <p className="mt-6 text-center text-xs text-muted-foreground/70">
                   256-bit encrypted · GDPR · No spam

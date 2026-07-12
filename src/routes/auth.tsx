@@ -338,12 +338,12 @@ function AuthPage() {
               The revenue team's <span className="text-muted-foreground">shortcut</span> to pipeline.
             </h1>
             <p className="mt-2 max-w-sm text-sm text-muted-foreground">
-              99% accurate B2B leads — delivered to your CRM within 24 hours.
+              Verified B2B leads — delivered to your CRM within 24 hours.
             </p>
             <ul className="mt-5 flex flex-wrap items-center justify-center gap-1.5 text-[11px]">
               {[
                 { icon: ShieldCheck, t: "GDPR · 256-bit" },
-                { icon: Zap, t: "99% accuracy" },
+                { icon: Zap, t: "Verified data" },
                 { icon: Mail, t: "Verified emails" },
               ].map((f) => (
                 <li key={f.t} className="inline-flex items-center gap-1 rounded-full border border-border bg-card/70 px-2.5 py-1 text-muted-foreground shadow-sm backdrop-blur">
@@ -373,7 +373,7 @@ function AuthPage() {
             <span className="text-muted-foreground">shortcut</span> to pipeline.
           </h1>
           <p className="mt-4 max-w-md text-base text-muted-foreground">
-            99% accurate B2B leads from Apollo, ZoomInfo, and LinkedIn — delivered to your CRM within 24 hours.
+            Verified B2B leads from Apollo, ZoomInfo, and LinkedIn — delivered to your CRM within 24 hours.
           </p>
 
           <ul className="mt-10 space-y-3">

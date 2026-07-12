@@ -372,7 +372,7 @@ function Home() {
                 <p className="mt-2 max-w-xl text-foreground/60">Instant CSV download, verified contacts, ready to import.</p>
               </div>
               <Link to="/store" className="inline-flex items-center gap-1 font-semibold text-indigo hover:underline">
-                Browse full store <ArrowRight className="size-4" />
+                Browse full store <PremiumArrowRight className="size-4" />
               </Link>
             </div>
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -390,7 +390,7 @@ function Home() {
           <div className="relative mx-auto max-w-4xl text-center">
             <div className="mb-8 flex justify-center gap-1 text-indigo">
               {Array.from({ length: 5 }).map((_, i) => (
-                <Star key={i} className="size-5 fill-current" />
+                <PremiumStar key={i} className="size-5" />
               ))}
             </div>
             <blockquote className="font-display text-3xl font-medium leading-snug text-foreground md:text-4xl">
@@ -419,7 +419,7 @@ function Home() {
                 onClick={openOrderDrawer}
                 className="mt-6 inline-flex items-center gap-2 rounded-full bg-indigo px-5 py-3 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5"
               >
-                Build your order <ArrowUpRight className="size-4" />
+                Build your order <PremiumArrowUpRight className="size-4" />
               </button>
             </div>
             <div className="space-y-3">
@@ -428,7 +428,7 @@ function Home() {
                   <summary className="flex cursor-pointer items-center justify-between gap-4 font-semibold text-foreground">
                     {f.q}
                     <span className="grid size-7 shrink-0 place-items-center rounded-full bg-indigo/20 text-indigo transition-transform group-open:rotate-45">
-                      <Zap className="size-3.5" />
+                      <PremiumZap className="size-3.5" />
                     </span>
                   </summary>
                   <p className="mt-4 whitespace-pre-line text-sm leading-relaxed text-foreground/70">{f.a}</p>

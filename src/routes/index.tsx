@@ -386,50 +386,88 @@ function Home() {
                 </div>
               </div>
 
-              {/* Preview table */}
-              <div className="overflow-hidden rounded-xl border border-border bg-background/60">
-                <div className="grid grid-cols-[1.3fr_1.1fr_1fr_1.2fr_0.9fr] gap-4 border-b border-border bg-secondary/60 px-5 py-3 font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-                  <div>Lead</div>
-                  <div>Title</div>
-                  <div>Company</div>
-                  <div>Email</div>
-                  <div className="text-right">Signal</div>
+              {/* Full data table */}
+              <div className="flex min-w-0 flex-col overflow-hidden rounded-xl border border-border bg-background/60">
+                <div className="max-h-[440px] overflow-auto">
+                  <table className="w-full min-w-[640px] border-collapse text-sm">
+                    <thead className="sticky top-0 z-10 bg-secondary/80 backdrop-blur">
+                      <tr>
+                        <th className="sticky left-0 z-20 w-10 border-b border-border bg-secondary/80 px-3 py-2.5 text-left font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                          #
+                        </th>
+                        {rawActive.headers.map((h) => (
+                          <th
+                            key={h}
+                            className="whitespace-nowrap border-b border-border px-3 py-2.5 text-left font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground"
+                          >
+                            {h}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredRows.length === 0 ? (
+                        <tr>
+                          <td
+                            colSpan={rawActive.headers.length + 1}
+                            className="px-5 py-10 text-center font-mono text-xs text-muted-foreground"
+                          >
+                            No rows match “{query}”.
+                          </td>
+                        </tr>
+                      ) : (
+                        filteredRows.map((r, i) => (
+                          <tr
+                            key={i}
+                            className="group border-b border-border/60 transition-colors last:border-0 hover:bg-secondary/40"
+                          >
+                            <td className="sticky left-0 z-10 w-10 bg-background/80 px-3 py-2 font-mono text-[10px] text-muted-foreground group-hover:bg-secondary/60">
+                              {i + 1}
+                            </td>
+                            {rawActive.headers.map((h) => {
+                              const v = String(r[h] ?? "");
+                              return (
+                                <td
+                                  key={h}
+                                  className="max-w-[220px] truncate whitespace-nowrap px-3 py-2 text-foreground/90"
+                                  title={v}
+                                >
+                                  {v || <span className="text-muted-foreground/50">—</span>}
+                                </td>
+                              );
+                            })}
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
                 </div>
-                {active.preview.map((r, i) => (
-                  <div
-                    key={i}
-                    className={`grid grid-cols-[1.3fr_1.1fr_1fr_1.2fr_0.9fr] items-center gap-4 px-5 py-4 text-sm ${
-                      i !== active.preview.length - 1 ? "border-b border-border" : ""
-                    }`}
-                  >
-                    <div className="min-w-0">
-                      <div className="truncate font-semibold text-foreground">{r.name || "—"}</div>
-                      <div className={`truncate text-xs font-medium ${accent.text}`}>{active.label}</div>
-                    </div>
-                    <div className="truncate text-muted-foreground">{r.title || "—"}</div>
-                    <div className="truncate text-muted-foreground">{r.company || "—"}</div>
-                    <div className="truncate font-mono text-xs text-muted-foreground">{r.email || "—"}</div>
-                    <div className="text-right">
-                      <span
-                        className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[11px] font-semibold ${accent.soft} ${accent.text}`}
-                      >
-                        <span className={`size-1.5 rounded-full ${accent.dot}`} />
-                        {r.tag}
-                      </span>
-                    </div>
+                <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border bg-secondary/30 px-5 py-3 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+                  <span>
+                    Showing <b className="text-foreground tabular-nums">{filteredRows.length.toLocaleString()}</b> of{" "}
+                    <b className="text-foreground tabular-nums">{active.rows.toLocaleString()}</b> rows ·{" "}
+                    {active.cols} columns
+                  </span>
+                  <div className="flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => downloadCsv(active.file, rawActive)}
+                      className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-bold transition-opacity hover:opacity-70 ${accent.text}`}
+                    >
+                      <Download className="size-3" />
+                      Download {active.file}
+                    </button>
+                    <Link
+                      to="/sample-data"
+                      className={`group inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-bold transition-opacity hover:opacity-70 ${accent.text}`}
+                    >
+                      Open full sample
+                      <ArrowRight className="size-3 transition-transform group-hover:translate-x-0.5" />
+                    </Link>
                   </div>
-                ))}
-                <div className="flex items-center justify-between border-t border-border bg-secondary/30 px-5 py-3 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-                  <span>Showing 4 of {active.rows.toLocaleString()} rows · {active.cols} columns</span>
-                  <Link
-                    to="/sample-data"
-                    className={`group inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-bold transition-opacity hover:opacity-70 ${accent.text}`}
-                  >
-                    Open full sample
-                    <ArrowRight className="size-3 transition-transform group-hover:translate-x-0.5" />
-                  </Link>
                 </div>
               </div>
+
             </div>
           </div>
 

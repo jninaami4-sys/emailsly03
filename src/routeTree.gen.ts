@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as StoreRouteImport } from './routes/store'
 import { Route as PricingRouteImport } from './routes/pricing'
+import { Route as ApolloLeadsExportRouteImport } from './routes/apollo-leads-export'
 import { Route as IndexRouteImport } from './routes/index'
 
 const StoreRoute = StoreRouteImport.update({
@@ -23,6 +24,11 @@ const PricingRoute = PricingRouteImport.update({
   path: '/pricing',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApolloLeadsExportRoute = ApolloLeadsExportRouteImport.update({
+  id: '/apollo-leads-export',
+  path: '/apollo-leads-export',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -31,30 +37,34 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/apollo-leads-export': typeof ApolloLeadsExportRoute
   '/pricing': typeof PricingRoute
   '/store': typeof StoreRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/apollo-leads-export': typeof ApolloLeadsExportRoute
   '/pricing': typeof PricingRoute
   '/store': typeof StoreRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/apollo-leads-export': typeof ApolloLeadsExportRoute
   '/pricing': typeof PricingRoute
   '/store': typeof StoreRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/pricing' | '/store'
+  fullPaths: '/' | '/apollo-leads-export' | '/pricing' | '/store'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/pricing' | '/store'
-  id: '__root__' | '/' | '/pricing' | '/store'
+  to: '/' | '/apollo-leads-export' | '/pricing' | '/store'
+  id: '__root__' | '/' | '/apollo-leads-export' | '/pricing' | '/store'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ApolloLeadsExportRoute: typeof ApolloLeadsExportRoute
   PricingRoute: typeof PricingRoute
   StoreRoute: typeof StoreRoute
 }
@@ -75,6 +85,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PricingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/apollo-leads-export': {
+      id: '/apollo-leads-export'
+      path: '/apollo-leads-export'
+      fullPath: '/apollo-leads-export'
+      preLoaderRoute: typeof ApolloLeadsExportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -87,6 +104,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ApolloLeadsExportRoute: ApolloLeadsExportRoute,
   PricingRoute: PricingRoute,
   StoreRoute: StoreRoute,
 }

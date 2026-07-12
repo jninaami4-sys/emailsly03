@@ -3,13 +3,13 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { Lock, ShieldCheck, Zap, Clock } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 
-const PUBLIC_ROUTES = ["/", "/auth", "/privacy-policy", "/terms", "/refund-policy", "/pricing", "/contact"];
+const PUBLIC_ROUTES = ["/", "/auth", "/privacy-policy", "/terms", "/refund-policy", "/pricing", "/contact", "/blog"];
 
 export function AuthGate({ children }: { children: ReactNode }) {
   const { user, loading } = useAuth();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
-  if (PUBLIC_ROUTES.includes(pathname)) return <>{children}</>;
+  if (PUBLIC_ROUTES.includes(pathname) || pathname.startsWith("/blog/")) return <>{children}</>;
   if (loading) return null;
   if (user) return <>{children}</>;
 

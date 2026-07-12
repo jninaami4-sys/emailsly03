@@ -90,31 +90,15 @@ const thirdColumn = testimonials.slice(6, 9);
 
 const videoTestimonials: VideoTestimonial[] = [
   {
-    name: "Elena Marchetti",
-    role: "Head of Revenue",
-    company: "Northwind",
-    poster:
-      "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&q=80&w=900&h=600",
-    src: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-    quote: "From cold list to $1.2M pipeline in 60 days.",
-  },
-  {
-    name: "David Okafor",
-    role: "Co-founder",
-    company: "Helios Labs",
-    poster:
-      "https://images.unsplash.com/photo-1552058544-f2b08422138a?auto=format&fit=crop&q=80&w=900&h=600",
-    src: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
-    quote: "We replaced two tools and cut our data spend by 40%.",
-  },
-  {
-    name: "Mika Tanaka",
-    role: "VP of Sales",
-    company: "Loomly",
-    poster:
-      "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=900&h=600",
-    src: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
-    quote: "SDR connect rate went from 4% to 19% in a single month.",
+    name: "Amine",
+    role: "Verified client",
+    company: "Italy · Apollo Leads Client",
+    poster: aminePoster.url,
+    src: amineVideo.url,
+    quote: "",
+    verified: true,
+    country: "Italy",
+    flag: "🇮🇹",
   },
 ];
 

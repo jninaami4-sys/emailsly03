@@ -3,14 +3,19 @@ import { ShoppingCart, Menu, LogOut, User as UserIcon } from "lucide-react";
 import { useCart } from "@/lib/cart";
 import { useAuth } from "@/hooks/use-auth";
 import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 
 export function Header() {
   const { count, open } = useCart();
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   async function handleSignOut() {
+    // Stop in-flight requests before the 401s land and drop cached protected data.
+    await queryClient.cancelQueries();
+    queryClient.clear();
     await signOut();
     navigate({ to: "/auth", replace: true });
   }

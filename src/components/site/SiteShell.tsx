@@ -20,6 +20,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
       <Footer />
       <FloatingOrderButton />
       <OrderDrawer />
+      <MobileBottomNav />
     </div>
   );
 }

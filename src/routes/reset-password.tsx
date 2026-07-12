@@ -87,6 +87,10 @@ function ResetPasswordPage() {
   const [success, setSuccess] = useState(false);
   const [linkState, setLinkState] = useState<LinkState>("checking");
   const [linkMessage, setLinkMessage] = useState<string | null>(null);
+  const [redirectSeconds, setRedirectSeconds] = useState(3);
+  const { redirectTo } = Route.useSearch();
+  const navigate = useNavigate();
+  const safeRedirect = useMemo(() => sanitizeRedirect(redirectTo), [redirectTo]);
 
   useEffect(() => {
     const hash = window.location.hash.slice(1);

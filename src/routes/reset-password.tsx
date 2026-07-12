@@ -364,6 +364,13 @@ function ResetPasswordPage() {
                         </button>
                       </div>
 
+                      {capsLock && (
+                        <p role="alert" className="mt-2 flex items-center gap-1.5 text-xs text-amber-600 dark:text-amber-500">
+                          <AlertCircle className="size-3.5" aria-hidden="true" />
+                          Caps Lock is on
+                        </p>
+                      )}
+
                       {/* Strength meter */}
                       <div id="password-strength" className="mt-2" aria-live="polite">
                         <div className="flex items-center justify-between text-xs">

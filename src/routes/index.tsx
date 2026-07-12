@@ -127,84 +127,114 @@ function Home() {
           </div>
         </section>
 
-        {/* BENTO GRID */}
+        {/* WHY LYRADATA */}
         <section className="px-6 pb-24">
-          <div className="mx-auto grid max-w-7xl auto-rows-[220px] grid-cols-1 gap-4 md:grid-cols-6">
-            <LiveDataConsole
-              data={{ apollo: apolloData, linkedin: linkedinData, zoominfo: zoominfoData }}
-              totalRows={totalRows}
-            />
+          <div className="mx-auto max-w-7xl">
+            <div className="mb-12 flex flex-wrap items-end justify-between gap-6">
+              <div>
+                <p className="font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-indigo">Why LyraData</p>
+                <h2 className="mt-2 font-display text-3xl font-bold lg:text-5xl">Built for operators who ship.</h2>
+              </div>
+              <Link
+                to="/sample-data"
+                className="inline-flex items-center gap-1.5 font-semibold text-indigo hover:underline"
+              >
+                Preview live sample data <PremiumArrowRight className="size-4" />
+              </Link>
+            </div>
 
-            {/* Instant quote CTA */}
-            <button
-              onClick={openOrderDrawer}
-              className="group relative col-span-1 row-span-2 overflow-hidden rounded-3xl border border-indigo/40 bg-gradient-to-br from-indigo to-[oklch(0.42_0.22_275)] p-6 text-left text-white transition-transform hover:-translate-y-0.5 md:col-span-2"
+            {/* Sample data teaser card */}
+            <Link
+              to="/sample-data"
+              className="group relative mb-6 flex flex-col justify-between overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-[#0a0c1b]/80 to-indigo/10 p-8 transition-all hover:-translate-y-0.5 hover:border-indigo/40 md:flex-row md:items-center md:gap-8"
             >
-              <div className="pointer-events-none absolute -right-8 -top-8 size-48 rounded-full bg-white/15 blur-2xl" />
-              <div className="relative flex h-full flex-col justify-between">
-                <div>
-                  <PremiumSparkles className="size-6" />
-                  <h3 className="mt-6 font-display text-2xl font-bold leading-tight md:text-3xl">Get your price in 30 seconds.</h3>
-                  <p className="mt-3 text-sm text-white/80">Slide out the builder, pick a service, see the exact cost. No calls, no forms.</p>
+              <div className="pointer-events-none absolute -top-24 -right-24 size-80 rounded-full bg-indigo/15 blur-[100px]" />
+              <div className="relative">
+                <div className="flex items-center gap-2">
+                  <span className="relative flex size-2">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald/60 opacity-75" />
+                    <span className="relative inline-flex size-2 rounded-full bg-emerald" />
+                  </span>
+                  <span className="font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-foreground/60">
+                    {totalRows.toLocaleString()} live rows · 3 sources
+                  </span>
                 </div>
-                <span className="inline-flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-widest">
-                  Open builder <PremiumArrowUpRight className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                <h3 className="mt-4 font-display text-2xl font-bold leading-tight md:text-3xl">
+                  Explore real Apollo, LinkedIn & ZoomInfo samples
+                </h3>
+                <p className="mt-2 max-w-xl text-sm text-foreground/60">
+                  Search verified rows, download CSVs, and see the exact format we deliver — before you order.
+                </p>
+              </div>
+              <div className="relative mt-6 flex items-center gap-4 md:mt-0">
+                <div className="flex -space-x-2">
+                  <span className="grid size-9 place-items-center rounded-full border border-white/10 bg-blue-500/20 font-mono text-[10px] font-bold text-blue-300">AP</span>
+                  <span className="grid size-9 place-items-center rounded-full border border-white/10 bg-indigo-500/20 font-mono text-[10px] font-bold text-indigo-300">LI</span>
+                  <span className="grid size-9 place-items-center rounded-full border border-white/10 bg-orange-500/20 font-mono text-[10px] font-bold text-orange-300">ZI</span>
+                </div>
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo px-5 py-2.5 text-sm font-semibold text-white shadow-[0_10px_30px_-10px_rgba(79,70,229,0.8)] transition-transform group-hover:translate-x-0.5">
+                  Open sample <PremiumArrowUpRight className="size-4" />
                 </span>
               </div>
-            </button>
+            </Link>
 
-            {/* Verified feature */}
-            <article className="col-span-1 overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] p-6 md:col-span-2">
-              <div className="grid size-10 place-items-center rounded-xl bg-emerald/15 text-emerald">
-                <PremiumShieldCheck className="size-5" />
-              </div>
-              <h3 className="mt-4 font-display text-lg font-bold">Real-time verification</h3>
-              <p className="mt-1 text-sm text-foreground/60">Every email pinged live. Bounces replaced free.</p>
-            </article>
+            {/* Feature grid */}
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              <article className="rounded-3xl border border-white/10 bg-white/[0.03] p-6">
+                <div className="grid size-10 place-items-center rounded-xl bg-emerald/15 text-emerald">
+                  <PremiumShieldCheck className="size-5" />
+                </div>
+                <h3 className="mt-4 font-display text-lg font-bold">Real-time verification</h3>
+                <p className="mt-1 text-sm text-foreground/60">Every email pinged live. Bounces replaced free.</p>
+              </article>
 
-            {/* 24h feature */}
-            <article className="col-span-1 overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] p-6 md:col-span-2">
-              <div className="grid size-10 place-items-center rounded-xl bg-indigo/15 text-indigo">
-                <PremiumTimer className="size-5" />
-              </div>
-              <h3 className="mt-4 font-display text-lg font-bold">24h turnaround</h3>
-              <p className="mt-1 text-sm text-foreground/60">Requirements in, cleaned dataset out — under a business day.</p>
-            </article>
+              <article className="rounded-3xl border border-white/10 bg-white/[0.03] p-6">
+                <div className="grid size-10 place-items-center rounded-xl bg-indigo/15 text-indigo">
+                  <PremiumTimer className="size-5" />
+                </div>
+                <h3 className="mt-4 font-display text-lg font-bold">24h turnaround</h3>
+                <p className="mt-1 text-sm text-foreground/60">Requirements in, cleaned dataset out — under a business day.</p>
+              </article>
 
-            {/* CRM feature */}
-            <article className="col-span-1 overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] p-6 md:col-span-2">
-              <div className="grid size-10 place-items-center rounded-xl bg-coral/15 text-coral">
-                <PremiumLayers className="size-5" />
-              </div>
-              <h3 className="mt-4 font-display text-lg font-bold">CRM-native format</h3>
-              <p className="mt-1 text-sm text-foreground/60">Mapped for HubSpot, Salesforce, Pipedrive. Single-click import.</p>
-            </article>
+              <article className="rounded-3xl border border-white/10 bg-white/[0.03] p-6">
+                <div className="grid size-10 place-items-center rounded-xl bg-coral/15 text-coral">
+                  <PremiumLayers className="size-5" />
+                </div>
+                <h3 className="mt-4 font-display text-lg font-bold">CRM-native format</h3>
+                <p className="mt-1 text-sm text-foreground/60">Mapped for HubSpot, Salesforce, Pipedrive. Single-click import.</p>
+              </article>
 
-            {/* ICP */}
-            <article className="col-span-1 overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] p-6 md:col-span-3">
-              <div className="flex items-start gap-4">
-                <div className="grid size-10 shrink-0 place-items-center rounded-xl bg-indigo/15 text-indigo">
+              <article className="rounded-3xl border border-white/10 bg-white/[0.03] p-6">
+                <div className="grid size-10 place-items-center rounded-xl bg-indigo/15 text-indigo">
                   <PremiumTarget className="size-5" />
                 </div>
-                <div>
-                  <h3 className="font-display text-lg font-bold">Precise ICP targeting</h3>
-                  <p className="mt-1 text-sm text-foreground/60">Filter by title, seniority, tech-stack, funding, geo — pick a saved Apollo URL or paste your own.</p>
-                </div>
-              </div>
-            </article>
+                <h3 className="mt-4 font-display text-lg font-bold">Precise ICP targeting</h3>
+                <p className="mt-1 text-sm text-foreground/60">Filter by title, seniority, tech-stack, funding, geo.</p>
+              </article>
 
-            {/* Global */}
-            <article className="col-span-1 overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] p-6 md:col-span-3">
-              <div className="flex items-start gap-4">
-                <div className="grid size-10 shrink-0 place-items-center rounded-xl bg-emerald/15 text-emerald">
+              <article className="rounded-3xl border border-white/10 bg-white/[0.03] p-6">
+                <div className="grid size-10 place-items-center rounded-xl bg-emerald/15 text-emerald">
                   <PremiumGlobe className="size-5" />
                 </div>
-                <div>
-                  <h3 className="font-display text-lg font-bold">Global coverage</h3>
-                  <p className="mt-1 text-sm text-foreground/60">100M+ contacts across 180+ countries, GDPR &amp; CCPA compliant.</p>
+                <h3 className="mt-4 font-display text-lg font-bold">Global coverage</h3>
+                <p className="mt-1 text-sm text-foreground/60">100M+ contacts across 180+ countries, GDPR &amp; CCPA compliant.</p>
+              </article>
+
+              <button
+                onClick={openOrderDrawer}
+                className="group relative overflow-hidden rounded-3xl border border-indigo/40 bg-gradient-to-br from-indigo to-[oklch(0.42_0.22_275)] p-6 text-left text-white transition-transform hover:-translate-y-0.5"
+              >
+                <div className="pointer-events-none absolute -right-8 -top-8 size-40 rounded-full bg-white/15 blur-2xl" />
+                <div className="relative">
+                  <PremiumSparkles className="size-6" />
+                  <h3 className="mt-4 font-display text-lg font-bold">Get your price in 30 seconds</h3>
+                  <p className="mt-1 text-sm text-white/80">Slide out the builder, pick a service, see the exact cost.</p>
+                  <span className="mt-4 inline-flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-widest">
+                    Open builder <PremiumArrowUpRight className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  </span>
                 </div>
-              </div>
-            </article>
+              </button>
+            </div>
           </div>
         </section>
 

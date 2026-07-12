@@ -167,7 +167,7 @@ export function ProductCard({ product }: { product: Product }) {
 
         <button
           onClick={() => add(product)}
-          className="mt-auto w-full rounded-xl bg-ink py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-violet hover:shadow-md active:scale-[0.98] mt-4"
+          className="mt-auto w-full rounded-xl bg-gold py-2.5 text-sm font-semibold text-black shadow-sm transition-all hover:bg-amber-accent hover:shadow-md active:scale-[0.98] mt-4"
         >
           Add to cart
         </button>

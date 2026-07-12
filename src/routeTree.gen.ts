@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as StoreRouteImport } from './routes/store'
 import { Route as PricingRouteImport } from './routes/pricing'
+import { Route as LinkedinSalesNavigatorLeadsRouteImport } from './routes/linkedin-sales-navigator-leads'
 import { Route as ApolloLeadsExportRouteImport } from './routes/apollo-leads-export'
 import { Route as IndexRouteImport } from './routes/index'
 
@@ -24,6 +25,12 @@ const PricingRoute = PricingRouteImport.update({
   path: '/pricing',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LinkedinSalesNavigatorLeadsRoute =
+  LinkedinSalesNavigatorLeadsRouteImport.update({
+    id: '/linkedin-sales-navigator-leads',
+    path: '/linkedin-sales-navigator-leads',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApolloLeadsExportRoute = ApolloLeadsExportRouteImport.update({
   id: '/apollo-leads-export',
   path: '/apollo-leads-export',
@@ -38,12 +45,14 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/apollo-leads-export': typeof ApolloLeadsExportRoute
+  '/linkedin-sales-navigator-leads': typeof LinkedinSalesNavigatorLeadsRoute
   '/pricing': typeof PricingRoute
   '/store': typeof StoreRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/apollo-leads-export': typeof ApolloLeadsExportRoute
+  '/linkedin-sales-navigator-leads': typeof LinkedinSalesNavigatorLeadsRoute
   '/pricing': typeof PricingRoute
   '/store': typeof StoreRoute
 }
@@ -51,20 +60,38 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/apollo-leads-export': typeof ApolloLeadsExportRoute
+  '/linkedin-sales-navigator-leads': typeof LinkedinSalesNavigatorLeadsRoute
   '/pricing': typeof PricingRoute
   '/store': typeof StoreRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/apollo-leads-export' | '/pricing' | '/store'
+  fullPaths:
+    | '/'
+    | '/apollo-leads-export'
+    | '/linkedin-sales-navigator-leads'
+    | '/pricing'
+    | '/store'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/apollo-leads-export' | '/pricing' | '/store'
-  id: '__root__' | '/' | '/apollo-leads-export' | '/pricing' | '/store'
+  to:
+    | '/'
+    | '/apollo-leads-export'
+    | '/linkedin-sales-navigator-leads'
+    | '/pricing'
+    | '/store'
+  id:
+    | '__root__'
+    | '/'
+    | '/apollo-leads-export'
+    | '/linkedin-sales-navigator-leads'
+    | '/pricing'
+    | '/store'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ApolloLeadsExportRoute: typeof ApolloLeadsExportRoute
+  LinkedinSalesNavigatorLeadsRoute: typeof LinkedinSalesNavigatorLeadsRoute
   PricingRoute: typeof PricingRoute
   StoreRoute: typeof StoreRoute
 }
@@ -83,6 +110,13 @@ declare module '@tanstack/react-router' {
       path: '/pricing'
       fullPath: '/pricing'
       preLoaderRoute: typeof PricingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/linkedin-sales-navigator-leads': {
+      id: '/linkedin-sales-navigator-leads'
+      path: '/linkedin-sales-navigator-leads'
+      fullPath: '/linkedin-sales-navigator-leads'
+      preLoaderRoute: typeof LinkedinSalesNavigatorLeadsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/apollo-leads-export': {
@@ -105,6 +139,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ApolloLeadsExportRoute: ApolloLeadsExportRoute,
+  LinkedinSalesNavigatorLeadsRoute: LinkedinSalesNavigatorLeadsRoute,
   PricingRoute: PricingRoute,
   StoreRoute: StoreRoute,
 }

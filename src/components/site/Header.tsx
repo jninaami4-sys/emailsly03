@@ -93,7 +93,7 @@ export function Header() {
             <Menu className="size-5" />
           </button>
         </div>
-      </div>
+      </nav>
       {mobileOpen && (
         <div className="border-t border-border bg-background md:hidden">
           <div className="mx-auto flex max-w-7xl flex-col gap-1 px-6 py-3 text-sm font-medium">
@@ -118,6 +118,6 @@ export function Header() {
           </div>
         </div>
       )}
-    </nav>
+    </div>
   );
 }

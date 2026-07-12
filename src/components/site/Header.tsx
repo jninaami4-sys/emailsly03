@@ -113,7 +113,7 @@ export function Header() {
             )}
             <button
               type="button"
-              className={`inline-flex size-11 items-center justify-center rounded-lg lg:hidden ${focusRing}`}
+              className={`inline-flex size-11 items-center justify-center rounded-lg text-foreground lg:hidden ${focusRing}`}
               onClick={() => setMobileOpen((o) => !o)}
               aria-label={mobileOpen ? "Close menu" : "Open menu"}
               aria-expanded={mobileOpen}

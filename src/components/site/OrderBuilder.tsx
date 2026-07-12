@@ -8,6 +8,7 @@ import {
   Plus,
   Lock,
   ArrowRight,
+  ArrowLeft,
   Tag,
   Layers,
   Sliders,
@@ -22,6 +23,10 @@ import {
   ServerCog,
   PenTool,
   Globe2,
+  Check,
+  Rocket,
+  ClipboardList,
+  Wallet,
 } from "lucide-react";
 
 type Service = {
@@ -52,6 +57,13 @@ const SERVICES: Service[] = [
 
 const QTY_PRESETS = [5000, 10000, 15000, 20000, 50000, 100000, 250000, 500000, 1000000];
 
+const STEPS = [
+  { id: 1, label: "Service", icon: Sliders },
+  { id: 2, label: "Configure", icon: ClipboardList },
+  { id: 3, label: "Extras", icon: Sparkles },
+  { id: 4, label: "Review", icon: Wallet },
+] as const;
+
 function formatUSD(n: number) {
   return `$${n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
@@ -62,15 +74,18 @@ function formatCompact(n: number) {
 }
 
 export function OrderBuilder() {
+  const [step, setStep] = useState(1);
   const [serviceId, setServiceId] = useState("apollo");
   const service = SERVICES.find((s) => s.id === serviceId)!;
   const [quantity, setQuantity] = useState(service.minQty);
-  const [extraUrls, setExtraUrls] = useState(1); // 1 = first (free)
+  const [extraUrls, setExtraUrls] = useState(1);
   const [verifier, setVerifier] = useState(false);
   const [rush, setRush] = useState(false);
   const [tip, setTip] = useState(0);
   const [promo, setPromo] = useState("");
   const [agree, setAgree] = useState(false);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
 
   const effectiveQty = service.fixed ? 1 : Math.max(quantity, service.minQty);
 
@@ -84,7 +99,6 @@ export function OrderBuilder() {
       const subtotal = base + extras + rushFee;
       const stripeFee = subtotal * 0.029 + 0.3;
       const total = subtotal + stripeFee;
-      // rough compare (Apollo standard ~$0.20/lead retail; LinkedIn Nav ~$0.10/lead retail)
       const comparePriceApollo = effectiveQty * 0.2;
       const comparePriceLinkedIn = effectiveQty * 0.1;
       const savings = Math.max(0, comparePriceApollo - base);
@@ -95,26 +109,36 @@ export function OrderBuilder() {
   const growthServices = SERVICES.filter((s) => s.group === "growth");
   const designServices = SERVICES.filter((s) => s.group === "design");
 
+  const canNext =
+    step === 1 ? !!serviceId :
+    step === 2 ? (service.fixed || effectiveQty >= service.minQty) :
+    step === 3 ? true :
+    agree && name.trim().length > 1 && /\S+@\S+\.\S+/.test(email);
+
+  const goNext = () => setStep((s) => Math.min(4, s + 1));
+  const goPrev = () => setStep((s) => Math.max(1, s - 1));
+
   return (
     <section id="order" className="relative overflow-hidden px-6 py-24 lg:py-32">
-      {/* Ambient glow */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 mx-auto h-[520px] max-w-6xl bg-[radial-gradient(ellipse_at_top,var(--violet-soft),transparent_70%)]" />
+      {/* Ambient background */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 mx-auto h-[560px] max-w-7xl bg-[radial-gradient(ellipse_at_top,var(--violet-soft),transparent_70%)]" />
       <div className="pointer-events-none absolute bottom-0 right-0 -z-10 h-96 w-96 rounded-full bg-coral-soft blur-3xl" />
+      <div className="pointer-events-none absolute -left-24 top-1/3 -z-10 h-96 w-96 rounded-full bg-violet-soft blur-3xl" />
 
       <div className="mx-auto max-w-7xl">
         {/* Header */}
         <div className="mx-auto max-w-3xl text-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-violet/20 bg-violet-soft px-3 py-1">
-            <Sparkles className="size-3 text-violet" />
+            <Rocket className="size-3 text-violet" />
             <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-violet">
-              Build your quote
+              Guided order builder
             </span>
           </div>
           <h2 className="mt-6 font-display text-4xl font-bold leading-[1.05] tracking-tighter md:text-6xl">
-            Get your <span className="text-violet">price</span> in seconds.
+            Build your order, <span className="text-violet">step by step</span>.
           </h2>
           <p className="mt-5 text-lg leading-relaxed text-muted-foreground">
-            Pick a service, set the details, and see the exact cost upfront — no surprises, no hidden fees.
+            Four quick steps. No hidden fees, no back-and-forth — see your exact price the moment you finish.
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 font-mono text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
             <span className="inline-flex items-center gap-2">
@@ -131,339 +155,484 @@ export function OrderBuilder() {
           </div>
         </div>
 
-        {/* Grid */}
-        <div className="mt-14 grid gap-6 lg:grid-cols-[1.55fr_1fr]">
-          {/* LEFT: form */}
+        {/* Stepper */}
+        <div className="mx-auto mt-14 max-w-5xl">
+          <div className="relative flex items-center justify-between gap-2 rounded-2xl border border-border bg-card/60 p-3 backdrop-blur">
+            {STEPS.map((s, i) => {
+              const Icon = s.icon;
+              const done = step > s.id;
+              const active = step === s.id;
+              return (
+                <div key={s.id} className="flex flex-1 items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => (done ? setStep(s.id) : null)}
+                    className={`group flex flex-1 items-center gap-3 rounded-xl px-3 py-3 text-left transition-all ${
+                      active
+                        ? "bg-violet text-white shadow-lg shadow-violet/25"
+                        : done
+                          ? "bg-emerald-soft text-emerald hover:bg-emerald-soft/80"
+                          : "text-muted-foreground"
+                    }`}
+                  >
+                    <span
+                      className={`grid size-8 shrink-0 place-items-center rounded-lg ${
+                        active
+                          ? "bg-white/15"
+                          : done
+                            ? "bg-emerald/15"
+                            : "bg-secondary"
+                      }`}
+                    >
+                      {done ? <Check className="size-4" /> : <Icon className="size-4" />}
+                    </span>
+                    <span className="min-w-0">
+                      <span className={`block font-mono text-[10px] font-bold uppercase tracking-widest ${active ? "text-white/70" : done ? "text-emerald/80" : "text-muted-foreground/70"}`}>
+                        Step {s.id}
+                      </span>
+                      <span className="block truncate text-sm font-semibold">{s.label}</span>
+                    </span>
+                  </button>
+                  {i < STEPS.length - 1 && (
+                    <div className={`hidden h-px flex-1 sm:block ${step > s.id ? "bg-emerald/40" : "bg-border"}`} />
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Body */}
+        <div className={`mt-8 grid gap-6 ${step === 4 ? "lg:grid-cols-[1.4fr_1fr]" : "lg:grid-cols-1"}`}>
+          {/* MAIN PANEL */}
           <div className="rounded-3xl border border-border bg-card p-6 shadow-[0_20px_60px_-30px_rgba(24,24,60,0.25)] md:p-10">
-            {/* Name + Email */}
-            <div className="grid gap-4 md:grid-cols-2">
-              <Field label="Your name">
-                <input
-                  type="text"
-                  placeholder="Jane Doe"
-                  className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-violet focus:ring-4 focus:ring-violet/10"
+            {step === 1 && (
+              <div>
+                <StepHeader
+                  eyebrow="Step 1 of 4"
+                  title="What are we building today?"
+                  subtitle="Pick the service that fits your growth goal. You can change it any time."
                 />
-              </Field>
-              <Field label="Work email">
-                <input
-                  type="email"
-                  placeholder="jane@company.com"
-                  className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-violet focus:ring-4 focus:ring-violet/10"
-                />
-              </Field>
-            </div>
-
-            {/* Select service */}
-            <div className="mt-8">
-              <SectionLabel icon={Sliders}>Select service</SectionLabel>
-
-              <GroupLabel>Lead generation</GroupLabel>
-              <div className="grid gap-2 sm:grid-cols-2">
-                {dataServices.map((s) => (
-                  <ServiceChip
-                    key={s.id}
-                    service={s}
-                    active={serviceId === s.id}
-                    onClick={() => {
-                      setServiceId(s.id);
-                      setQuantity(s.minQty);
-                    }}
-                    accent="violet"
-                  />
-                ))}
-              </div>
-
-              <GroupLabel>Growth add-ons</GroupLabel>
-              <div className="grid gap-2 sm:grid-cols-2">
-                {growthServices.map((s) => (
-                  <ServiceChip
-                    key={s.id}
-                    service={s}
-                    active={serviceId === s.id}
-                    onClick={() => {
-                      setServiceId(s.id);
-                      setQuantity(s.fixed ? 1 : s.minQty);
-                    }}
-                    accent="coral"
-                  />
-                ))}
-              </div>
-
-              <GroupLabel>Design &amp; web</GroupLabel>
-              <div className="grid gap-2 sm:grid-cols-2">
-                {designServices.map((s) => (
-                  <ServiceChip
-                    key={s.id}
-                    service={s}
-                    active={serviceId === s.id}
-                    onClick={() => {
-                      setServiceId(s.id);
-                      setQuantity(1);
-                    }}
-                    accent="emerald"
-                  />
-                ))}
-              </div>
-            </div>
-
-            {/* Quantity */}
-            {!service.fixed && (
-              <div className="mt-8">
-                <SectionLabel icon={Layers} rightText={`Min ${service.minQty.toLocaleString()}`}>
-                  Lead quantity
-                </SectionLabel>
-                <div className="rounded-2xl border border-border bg-secondary/40 p-6">
-                  <div className="flex items-baseline justify-between">
-                    <div className="font-display text-4xl font-bold tracking-tight md:text-5xl">
-                      {effectiveQty.toLocaleString()}
-                      <span className="ml-2 font-sans text-sm font-medium text-muted-foreground">leads</span>
-                    </div>
-                    <div className="hidden font-mono text-xs text-muted-foreground sm:block">
-                      ${service.rate.toFixed(4)} / {service.unit}
-                    </div>
-                  </div>
-                  <input
-                    type="range"
-                    min={service.minQty}
-                    max={1_000_000}
-                    step={Math.max(Math.round(service.minQty / 20), 1)}
-                    value={effectiveQty}
-                    onChange={(e) => setQuantity(Number(e.target.value))}
-                    className="mt-4 w-full accent-violet"
-                    aria-label="Lead quantity"
-                  />
-                  <div className="mt-4 flex flex-wrap gap-1.5">
-                    {QTY_PRESETS.filter((q) => q >= service.minQty).map((q) => (
-                      <button
-                        key={q}
-                        type="button"
-                        onClick={() => setQuantity(q)}
-                        className={`rounded-full px-3 py-1.5 font-mono text-[11px] font-bold uppercase transition-all ${
-                          effectiveQty === q
-                            ? "bg-violet text-white shadow-sm shadow-violet/30"
-                            : "bg-background text-muted-foreground hover:bg-secondary hover:text-foreground"
-                        }`}
-                      >
-                        {formatCompact(q)}
-                      </button>
-                    ))}
-                  </div>
+                <div className="mt-8 grid gap-6 lg:grid-cols-3">
+                  <CategoryColumn title="Lead generation" accent="violet" services={dataServices} serviceId={serviceId} onPick={(s) => { setServiceId(s.id); setQuantity(s.minQty); }} />
+                  <CategoryColumn title="Growth add-ons" accent="coral" services={growthServices} serviceId={serviceId} onPick={(s) => { setServiceId(s.id); setQuantity(s.fixed ? 1 : s.minQty); }} />
+                  <CategoryColumn title="Design & web" accent="emerald" services={designServices} serviceId={serviceId} onPick={(s) => { setServiceId(s.id); setQuantity(1); }} />
                 </div>
               </div>
             )}
 
-            {/* Price comparison */}
-            {!service.fixed && (
-              <div className="mt-8">
-                <SectionLabel icon={Tag}>Price comparison</SectionLabel>
-                <div className="grid gap-2 sm:grid-cols-2">
-                  <ComparePill label="Apollo.io retail" price={comparePriceApollo} note={`${(comparePriceApollo / base).toFixed(0)}× more`} tone="muted" />
-                  <ComparePill label="LinkedIn Nav" price={comparePriceLinkedIn} note={`${(comparePriceLinkedIn / base).toFixed(0)}× more`} tone="muted" />
-                  <ComparePill label="Our price" price={base} note="Base subtotal" tone="violet" />
-                  <ComparePill label="You save" price={savings} note={`${Math.round((savings / comparePriceApollo) * 100) || 0}% less`} tone="emerald" />
-                </div>
-              </div>
-            )}
+            {step === 2 && (
+              <div>
+                <StepHeader
+                  eyebrow="Step 2 of 4"
+                  title={service.fixed ? "Confirm the scope" : "Set the volume"}
+                  subtitle={service.fixed ? "This is a flat-price service — review the details below." : "Slide to your target volume. Watch the price update live."}
+                />
 
-            {/* Apollo search URLs (only for apollo) */}
-            {service.id === "apollo" && (
-              <>
-                <div className="mt-8">
-                  <SectionLabel icon={Zap} rightText="1st free · +$5 each extra">
-                    Number of Apollo search URLs
-                  </SectionLabel>
-                  <div className="inline-flex items-center gap-4 rounded-xl border border-input bg-background px-2 py-2">
-                    <button
-                      type="button"
-                      onClick={() => setExtraUrls((n) => Math.max(1, n - 1))}
-                      className="grid size-9 place-items-center rounded-lg text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-                      aria-label="Decrease"
-                    >
-                      <Minus className="size-4" />
-                    </button>
-                    <span className="min-w-6 text-center font-mono text-lg font-bold">{extraUrls}</span>
-                    <button
-                      type="button"
-                      onClick={() => setExtraUrls((n) => n + 1)}
-                      className="grid size-9 place-items-center rounded-lg text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-                      aria-label="Increase"
-                    >
-                      <Plus className="size-4" />
-                    </button>
+                <div className="mt-8 rounded-2xl border border-violet/20 bg-violet-soft/50 p-5">
+                  <div className="flex items-center gap-3">
+                    <span className="grid size-10 place-items-center rounded-xl bg-violet text-white">
+                      <service.icon className="size-5" />
+                    </span>
+                    <div>
+                      <div className="font-mono text-[10px] font-bold uppercase tracking-widest text-violet/80">Selected service</div>
+                      <div className="text-lg font-bold">{service.name}</div>
+                    </div>
                   </div>
                 </div>
+
+                {!service.fixed && (
+                  <div className="mt-8">
+                    <SectionLabel icon={Layers} rightText={`Min ${service.minQty.toLocaleString()}`}>
+                      {service.unit === "lead" ? "Lead quantity" : "Quantity"}
+                    </SectionLabel>
+                    <div className="rounded-2xl border border-border bg-secondary/40 p-6">
+                      <div className="flex items-baseline justify-between">
+                        <div className="font-display text-4xl font-bold tracking-tight md:text-5xl">
+                          {effectiveQty.toLocaleString()}
+                          <span className="ml-2 font-sans text-sm font-medium text-muted-foreground">{service.unit}s</span>
+                        </div>
+                        <div className="hidden font-mono text-xs text-muted-foreground sm:block">
+                          ${service.rate.toFixed(4)} / {service.unit}
+                        </div>
+                      </div>
+                      <input
+                        type="range"
+                        min={service.minQty}
+                        max={1_000_000}
+                        step={Math.max(Math.round(service.minQty / 20), 1)}
+                        value={effectiveQty}
+                        onChange={(e) => setQuantity(Number(e.target.value))}
+                        className="mt-4 w-full accent-violet"
+                        aria-label="Quantity"
+                      />
+                      <div className="mt-4 flex flex-wrap gap-1.5">
+                        {QTY_PRESETS.filter((q) => q >= service.minQty).map((q) => (
+                          <button
+                            key={q}
+                            type="button"
+                            onClick={() => setQuantity(q)}
+                            className={`rounded-full px-3 py-1.5 font-mono text-[11px] font-bold uppercase transition-all ${
+                              effectiveQty === q
+                                ? "bg-violet text-white shadow-sm shadow-violet/30"
+                                : "bg-background text-muted-foreground hover:bg-secondary hover:text-foreground"
+                            }`}
+                          >
+                            {formatCompact(q)}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="mt-8">
+                      <SectionLabel icon={Tag}>Price comparison</SectionLabel>
+                      <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+                        <ComparePill label="Apollo.io retail" price={comparePriceApollo} note={`${(comparePriceApollo / base).toFixed(0)}× more`} tone="muted" />
+                        <ComparePill label="LinkedIn Nav" price={comparePriceLinkedIn} note={`${(comparePriceLinkedIn / base).toFixed(0)}× more`} tone="muted" />
+                        <ComparePill label="Our price" price={base} note="Base subtotal" tone="violet" />
+                        <ComparePill label="You save" price={savings} note={`${Math.round((savings / comparePriceApollo) * 100) || 0}% less`} tone="emerald" />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {service.id === "apollo" && (
+                  <div className="mt-8 grid gap-6 md:grid-cols-2">
+                    <div>
+                      <SectionLabel icon={Zap} rightText="1st free · +$5 each extra">
+                        Apollo search URLs
+                      </SectionLabel>
+                      <div className="inline-flex items-center gap-4 rounded-xl border border-input bg-background px-2 py-2">
+                        <button
+                          type="button"
+                          onClick={() => setExtraUrls((n) => Math.max(1, n - 1))}
+                          className="grid size-9 place-items-center rounded-lg text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+                          aria-label="Decrease"
+                        >
+                          <Minus className="size-4" />
+                        </button>
+                        <span className="min-w-6 text-center font-mono text-lg font-bold">{extraUrls}</span>
+                        <button
+                          type="button"
+                          onClick={() => setExtraUrls((n) => n + 1)}
+                          className="grid size-9 place-items-center rounded-lg text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+                          aria-label="Increase"
+                        >
+                          <Plus className="size-4" />
+                        </button>
+                      </div>
+                    </div>
+
+                    <Field label="Apollo search links">
+                      <textarea
+                        placeholder="https://app.apollo.io/#/people?..."
+                        rows={2}
+                        className="w-full resize-none rounded-xl border border-input bg-background px-4 py-3 font-mono text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-violet focus:ring-4 focus:ring-violet/10"
+                      />
+                    </Field>
+                  </div>
+                )}
 
                 <div className="mt-6">
-                  <Field label="Apollo search links">
+                  <Field label="Notes (optional)">
                     <textarea
-                      placeholder="https://app.apollo.io/#/people?..."
-                      rows={2}
-                      className="w-full resize-none rounded-xl border border-input bg-background px-4 py-3 text-sm font-mono outline-none transition-colors placeholder:text-muted-foreground focus:border-violet focus:ring-4 focus:ring-violet/10"
+                      placeholder="Any specific instructions, ICP notes, or delivery preferences…"
+                      rows={3}
+                      className="w-full resize-none rounded-xl border border-input bg-background px-4 py-3 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-violet focus:ring-4 focus:ring-violet/10"
                     />
                   </Field>
                 </div>
-              </>
+              </div>
             )}
 
-            {/* Notes */}
-            <div className="mt-6">
-              <Field label="Notes (optional)">
-                <textarea
-                  placeholder="Any specific instructions, ICP notes, or delivery preferences…"
-                  rows={3}
-                  className="w-full resize-none rounded-xl border border-input bg-background px-4 py-3 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-violet focus:ring-4 focus:ring-violet/10"
+            {step === 3 && (
+              <div>
+                <StepHeader
+                  eyebrow="Step 3 of 4"
+                  title="Boost your order"
+                  subtitle="Optional upgrades that make the delivery faster and cleaner."
                 />
-              </Field>
-            </div>
-
-            {/* Add-ons */}
-            <div className="mt-8">
-              <SectionLabel icon={Sparkles}>Add-ons</SectionLabel>
-              <div className="grid gap-2 sm:grid-cols-2">
-                <AddonToggle
-                  active={verifier}
-                  onToggle={() => setVerifier((v) => !v)}
-                  title="MillionVerifier"
-                  sub="99% deliverability"
-                  price="+$0.002 / lead"
-                  accent="emerald"
-                />
-                <AddonToggle
-                  active={rush}
-                  onToggle={() => setRush((r) => !r)}
-                  title="Rush order"
-                  sub="Priority delivery"
-                  price="+25%"
-                  accent="coral"
-                />
-              </div>
-            </div>
-
-            {/* Agree */}
-            <label className="mt-8 flex items-start gap-3 text-sm text-muted-foreground">
-              <input
-                type="checkbox"
-                checked={agree}
-                onChange={(e) => setAgree(e.target.checked)}
-                className="mt-0.5 size-4 rounded border-input accent-violet"
-              />
-              <span>
-                I agree to the{" "}
-                <a href="/privacy-policy" className="font-semibold text-violet hover:underline">
-                  Data Usage Policy
-                </a>{" "}
-                and GDPR/CCPA compliance.
-              </span>
-            </label>
-          </div>
-
-          {/* RIGHT: order summary */}
-          <div className="lg:sticky lg:top-24 lg:self-start">
-            <div className="relative overflow-hidden rounded-3xl border border-ink/10 bg-ink p-6 text-white shadow-[0_30px_80px_-30px_rgba(24,24,60,0.5)] md:p-8">
-              {/* corner glow */}
-              <div className="pointer-events-none absolute -right-16 -top-16 size-64 rounded-full bg-violet/25 blur-3xl" />
-              <div className="pointer-events-none absolute -bottom-16 -left-16 size-64 rounded-full bg-coral/15 blur-3xl" />
-
-              <div className="relative flex items-center justify-between">
-                <h3 className="font-display text-xl font-bold">Order summary</h3>
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-white/80">
-                  <Lock className="size-3" /> Secure
-                </span>
-              </div>
-
-              <dl className="relative mt-6 space-y-3 text-sm">
-                <SummaryRow label="Service" value={service.name} />
-                <SummaryRow label="Quantity" value={service.fixed ? "1" : effectiveQty.toLocaleString()} />
-                <SummaryRow label="Rate" value={service.fixed ? `${formatUSD(service.minOrder)} flat` : `$${service.rate.toFixed(4)} / ${service.unit}`} />
-                <SummaryRow
-                  label="Extras"
-                  value={formatUSD((verifier && !service.fixed ? effectiveQty * 0.002 : 0) + Math.max(0, extraUrls - 1) * 5)}
-                />
-                {rush && <SummaryRow label="Rush (+25%)" value={formatUSD(rushFee)} />}
-              </dl>
-
-              {/* Tip */}
-              <div className="relative mt-5 flex items-center justify-between gap-3 rounded-xl bg-white/5 px-4 py-3">
-                <label htmlFor="tip" className="text-sm text-white/70">
-                  Tip
-                </label>
-                <div className="flex items-center gap-1 rounded-lg bg-white/10 px-2 py-1">
-                  <span className="text-xs text-white/60">$</span>
-                  <input
-                    id="tip"
-                    type="number"
-                    min={0}
-                    step={1}
-                    value={tip || ""}
-                    onChange={(e) => setTip(Math.max(0, Number(e.target.value) || 0))}
-                    placeholder="0"
-                    className="w-16 bg-transparent text-right font-mono text-sm outline-none placeholder:text-white/40"
+                <div className="mt-8 grid gap-3 md:grid-cols-2">
+                  <AddonToggle
+                    active={verifier}
+                    onToggle={() => setVerifier((v) => !v)}
+                    title="MillionVerifier"
+                    sub="99% deliverability, bounce-safe"
+                    price="+$0.002 / lead"
+                    accent="emerald"
+                  />
+                  <AddonToggle
+                    active={rush}
+                    onToggle={() => setRush((r) => !r)}
+                    title="Rush order"
+                    sub="Priority queue · fastest turnaround"
+                    price="+25%"
+                    accent="coral"
                   />
                 </div>
-              </div>
 
-              {/* Promo */}
-              <div className="relative mt-3">
-                <label className="block font-mono text-[10px] font-bold uppercase tracking-widest text-white/50">
-                  Promo code
-                </label>
-                <div className="mt-2 flex gap-2">
+                <div className="mt-10 rounded-2xl border border-border bg-secondary/40 p-6">
+                  <div className="flex items-center gap-3">
+                    <span className="grid size-10 place-items-center rounded-xl bg-violet/10 text-violet">
+                      <Sparkles className="size-5" />
+                    </span>
+                    <div>
+                      <div className="text-sm font-semibold">Running total</div>
+                      <div className="font-mono text-[11px] text-muted-foreground">Before Stripe fees</div>
+                    </div>
+                    <div className="ml-auto font-display text-3xl font-bold tracking-tight text-violet">
+                      {formatUSD(subtotal)}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {step === 4 && (
+              <div>
+                <StepHeader
+                  eyebrow="Step 4 of 4"
+                  title="Almost there — your details"
+                  subtitle="We'll send the preview and delivery link to this address."
+                />
+                <div className="mt-8 grid gap-4 md:grid-cols-2">
+                  <Field label="Your name">
+                    <input
+                      type="text"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="Jane Doe"
+                      className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-violet focus:ring-4 focus:ring-violet/10"
+                    />
+                  </Field>
+                  <Field label="Work email">
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="jane@company.com"
+                      className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-violet focus:ring-4 focus:ring-violet/10"
+                    />
+                  </Field>
+                </div>
+
+                <label className="mt-8 flex items-start gap-3 text-sm text-muted-foreground">
                   <input
-                    value={promo}
-                    onChange={(e) => setPromo(e.target.value.toUpperCase())}
-                    placeholder="ENTER CODE"
-                    className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 font-mono text-xs uppercase tracking-widest outline-none placeholder:text-white/30 focus:border-white/30"
+                    type="checkbox"
+                    checked={agree}
+                    onChange={(e) => setAgree(e.target.checked)}
+                    className="mt-0.5 size-4 rounded border-input accent-violet"
                   />
-                  <button
-                    type="button"
-                    className="rounded-lg bg-white/10 px-4 text-xs font-bold uppercase tracking-widest text-white/80 transition-colors hover:bg-white/15"
-                  >
-                    Apply
-                  </button>
-                </div>
+                  <span>
+                    I agree to the{" "}
+                    <a href="/privacy-policy" className="font-semibold text-violet hover:underline">
+                      Data Usage Policy
+                    </a>{" "}
+                    and GDPR/CCPA compliance.
+                  </span>
+                </label>
               </div>
+            )}
 
-              {/* Totals */}
-              <div className="relative mt-6 space-y-2 border-t border-white/10 pt-5 text-sm">
-                <div className="flex items-center justify-between text-white/70">
-                  <span>Order subtotal</span>
-                  <span className="font-mono">{formatUSD(subtotal - (rush ? rushFee : 0) - tip - (verifier && !service.fixed ? effectiveQty * 0.002 : 0) - Math.max(0, extraUrls - 1) * 5 + (rush ? rushFee : 0))}</span>
-                </div>
-                <div className="flex items-center justify-between text-white/70">
-                  <span>Stripe processing fee</span>
-                  <span className="font-mono">+{formatUSD(stripeFee)}</span>
-                </div>
-              </div>
-
-              <div className="relative mt-5 flex items-end justify-between">
-                <div>
-                  <div className="text-sm font-semibold text-white">Total charged</div>
-                  <div className="text-[11px] text-white/50">Includes Stripe fee</div>
-                </div>
-                <div className="font-display text-4xl font-bold tracking-tight">
-                  {formatUSD(total)}
-                </div>
-              </div>
-
+            {/* Nav */}
+            <div className="mt-10 flex items-center justify-between gap-3 border-t border-border pt-6">
               <button
                 type="button"
-                disabled={!agree}
-                className="relative mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-violet px-6 py-4 text-sm font-bold text-white shadow-lg shadow-violet/30 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-violet/40 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
+                onClick={goPrev}
+                disabled={step === 1}
+                className="inline-flex items-center gap-2 rounded-xl border border-border bg-background px-5 py-3 text-sm font-semibold text-foreground transition-all hover:border-foreground/20 disabled:cursor-not-allowed disabled:opacity-40"
               >
-                Checkout with Stripe <ArrowRight className="size-4" />
+                <ArrowLeft className="size-4" /> Back
               </button>
-              <p className="relative mt-3 flex items-center justify-center gap-1.5 font-mono text-[10px] font-bold uppercase tracking-widest text-white/40">
-                <Lock className="size-3" /> 256-bit SSL encrypted
-              </p>
+              <div className="hidden font-mono text-[11px] font-bold uppercase tracking-widest text-muted-foreground sm:block">
+                {step === 4 ? "Ready to checkout" : `${STEPS.length - step} step${STEPS.length - step === 1 ? "" : "s"} left`}
+              </div>
+              {step < 4 && (
+                <button
+                  type="button"
+                  onClick={goNext}
+                  disabled={!canNext}
+                  className="inline-flex items-center gap-2 rounded-xl bg-violet px-6 py-3 text-sm font-bold text-white shadow-lg shadow-violet/30 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-violet/40 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
+                >
+                  Continue <ArrowRight className="size-4" />
+                </button>
+              )}
             </div>
           </div>
+
+          {/* SUMMARY — only on step 4 */}
+          {step === 4 && (
+            <div className="lg:sticky lg:top-24 lg:self-start">
+              <div className="relative overflow-hidden rounded-3xl border border-ink/10 bg-ink p-6 text-white shadow-[0_30px_80px_-30px_rgba(24,24,60,0.5)] md:p-8">
+                <div className="pointer-events-none absolute -right-16 -top-16 size-64 rounded-full bg-violet/25 blur-3xl" />
+                <div className="pointer-events-none absolute -bottom-16 -left-16 size-64 rounded-full bg-coral/15 blur-3xl" />
+
+                <div className="relative flex items-center justify-between">
+                  <h3 className="font-display text-xl font-bold">Order summary</h3>
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-white/80">
+                    <Lock className="size-3" /> Secure
+                  </span>
+                </div>
+
+                <dl className="relative mt-6 space-y-3 text-sm">
+                  <SummaryRow label="Service" value={service.name} />
+                  <SummaryRow label="Quantity" value={service.fixed ? "1" : effectiveQty.toLocaleString()} />
+                  <SummaryRow label="Rate" value={service.fixed ? `${formatUSD(service.minOrder)} flat` : `$${service.rate.toFixed(4)} / ${service.unit}`} />
+                  <SummaryRow
+                    label="Extras"
+                    value={formatUSD((verifier && !service.fixed ? effectiveQty * 0.002 : 0) + Math.max(0, extraUrls - 1) * 5)}
+                  />
+                  {rush && <SummaryRow label="Rush (+25%)" value={formatUSD(rushFee)} />}
+                </dl>
+
+                <div className="relative mt-5 flex items-center justify-between gap-3 rounded-xl bg-white/5 px-4 py-3">
+                  <label htmlFor="tip" className="text-sm text-white/70">Tip</label>
+                  <div className="flex items-center gap-1 rounded-lg bg-white/10 px-2 py-1">
+                    <span className="text-xs text-white/60">$</span>
+                    <input
+                      id="tip"
+                      type="number"
+                      min={0}
+                      step={1}
+                      value={tip || ""}
+                      onChange={(e) => setTip(Math.max(0, Number(e.target.value) || 0))}
+                      placeholder="0"
+                      className="w-16 bg-transparent text-right font-mono text-sm outline-none placeholder:text-white/40"
+                    />
+                  </div>
+                </div>
+
+                <div className="relative mt-3">
+                  <label className="block font-mono text-[10px] font-bold uppercase tracking-widest text-white/50">
+                    Promo code
+                  </label>
+                  <div className="mt-2 flex gap-2">
+                    <input
+                      value={promo}
+                      onChange={(e) => setPromo(e.target.value.toUpperCase())}
+                      placeholder="ENTER CODE"
+                      className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 font-mono text-xs uppercase tracking-widest outline-none placeholder:text-white/30 focus:border-white/30"
+                    />
+                    <button
+                      type="button"
+                      className="rounded-lg bg-white/10 px-4 text-xs font-bold uppercase tracking-widest text-white/80 transition-colors hover:bg-white/15"
+                    >
+                      Apply
+                    </button>
+                  </div>
+                </div>
+
+                <div className="relative mt-6 space-y-2 border-t border-white/10 pt-5 text-sm">
+                  <div className="flex items-center justify-between text-white/70">
+                    <span>Order subtotal</span>
+                    <span className="font-mono">{formatUSD(subtotal)}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-white/70">
+                    <span>Stripe processing fee</span>
+                    <span className="font-mono">+{formatUSD(stripeFee)}</span>
+                  </div>
+                </div>
+
+                <div className="relative mt-5 flex items-end justify-between">
+                  <div>
+                    <div className="text-sm font-semibold text-white">Total charged</div>
+                    <div className="text-[11px] text-white/50">Includes Stripe fee</div>
+                  </div>
+                  <div className="font-display text-4xl font-bold tracking-tight">
+                    {formatUSD(total)}
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  disabled={!agree}
+                  className="relative mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-violet px-6 py-4 text-sm font-bold text-white shadow-lg shadow-violet/30 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-violet/40 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
+                >
+                  Checkout with Stripe <ArrowRight className="size-4" />
+                </button>
+                <p className="relative mt-3 flex items-center justify-center gap-1.5 font-mono text-[10px] font-bold uppercase tracking-widest text-white/40">
+                  <Lock className="size-3" /> 256-bit SSL encrypted
+                </p>
+              </div>
+            </div>
+          )}
         </div>
+
+        {/* Live mini-total on steps 1-3 */}
+        {step < 4 && (
+          <div className="mx-auto mt-6 flex max-w-5xl items-center justify-between rounded-2xl border border-border bg-card/60 px-6 py-4 backdrop-blur">
+            <div className="flex items-center gap-3">
+              <span className="grid size-9 place-items-center rounded-lg bg-violet/10 text-violet">
+                <Wallet className="size-4" />
+              </span>
+              <div>
+                <div className="font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Live estimate</div>
+                <div className="text-sm font-semibold">{service.name}{!service.fixed && ` · ${effectiveQty.toLocaleString()} ${service.unit}s`}</div>
+              </div>
+            </div>
+            <div className="text-right">
+              <div className="font-display text-2xl font-bold tracking-tight text-violet">{formatUSD(subtotal)}</div>
+              <div className="font-mono text-[10px] text-muted-foreground">before Stripe fee</div>
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );
 }
 
 /* ---------- helpers ---------- */
+
+function StepHeader({ eyebrow, title, subtitle }: { eyebrow: string; title: string; subtitle: string }) {
+  return (
+    <div className="max-w-2xl">
+      <div className="font-mono text-[10px] font-bold uppercase tracking-widest text-violet">{eyebrow}</div>
+      <h3 className="mt-2 font-display text-2xl font-bold tracking-tight md:text-3xl">{title}</h3>
+      <p className="mt-2 text-sm text-muted-foreground md:text-base">{subtitle}</p>
+    </div>
+  );
+}
+
+function CategoryColumn({
+  title,
+  accent,
+  services,
+  serviceId,
+  onPick,
+}: {
+  title: string;
+  accent: "violet" | "coral" | "emerald";
+  services: Service[];
+  serviceId: string;
+  onPick: (s: Service) => void;
+}) {
+  const dot = {
+    violet: "bg-violet",
+    coral: "bg-coral",
+    emerald: "bg-emerald",
+  }[accent];
+  return (
+    <div className="rounded-2xl border border-border bg-secondary/30 p-4">
+      <div className="mb-3 flex items-center gap-2">
+        <span className={`size-2 rounded-full ${dot}`} />
+        <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+          {title}
+        </span>
+      </div>
+      <div className="space-y-2">
+        {services.map((s) => (
+          <ServiceChip
+            key={s.id}
+            service={s}
+            active={serviceId === s.id}
+            onClick={() => onPick(s)}
+            accent={accent}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
@@ -500,14 +669,6 @@ function SectionLabel({
   );
 }
 
-function GroupLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="mb-2 mt-4 font-mono text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/70">
-      {children}
-    </div>
-  );
-}
-
 function ServiceChip({
   service,
   active,
@@ -534,8 +695,8 @@ function ServiceChip({
     <button
       type="button"
       onClick={onClick}
-      className={`group flex items-center gap-3 rounded-xl border px-3 py-3 text-left transition-all ${
-        active ? activeClasses : "border-border bg-background hover:border-foreground/20"
+      className={`group flex w-full items-center gap-3 rounded-xl border bg-background px-3 py-3 text-left transition-all ${
+        active ? activeClasses : "border-border hover:border-foreground/20"
       }`}
     >
       <span className={`grid size-8 shrink-0 place-items-center rounded-lg ${iconBg}`}>
@@ -549,6 +710,7 @@ function ServiceChip({
           {service.fixed ? `$${service.minOrder} flat` : `$${service.rate.toFixed(4)}/${service.unit}`}
         </span>
       </span>
+      {active && <Check className="size-4 shrink-0" />}
     </button>
   );
 }
@@ -612,7 +774,7 @@ function AddonToggle({
     <button
       type="button"
       onClick={onToggle}
-      className={`flex items-center justify-between rounded-xl border px-4 py-3 text-left transition-all ${
+      className={`flex items-center justify-between rounded-2xl border px-5 py-4 text-left transition-all ${
         active ? activeClasses : "border-border bg-background hover:border-foreground/20"
       }`}
     >

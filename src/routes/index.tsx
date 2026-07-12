@@ -165,7 +165,7 @@ function Home() {
               <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
                 <button
                   onClick={openOrderDrawer}
-                  className="group inline-flex w-full items-center justify-center gap-2 rounded-full bg-indigo px-8 py-4 text-base font-semibold text-white shadow-[0_20px_50px_-15px_rgba(79,70,229,0.8)] transition-all hover:-translate-y-0.5 sm:w-auto"
+                  className="group inline-flex w-full items-center justify-center gap-2 rounded-full bg-gold px-8 py-4 text-base font-semibold text-black shadow-[0_20px_50px_-15px_rgba(212,168,83,0.45)] transition-all hover:-translate-y-0.5 sm:w-auto"
                 >
                   Build your order
                   <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />

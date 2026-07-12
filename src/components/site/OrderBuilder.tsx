@@ -204,9 +204,9 @@ export function OrderBuilder() {
         </div>
 
         {/* Body */}
-        <div className={`mt-8 grid gap-6 ${step === 4 ? "lg:grid-cols-[1.4fr_1fr]" : "lg:grid-cols-1"}`}>
+        <div className={`mt-6 grid gap-4 sm:mt-8 sm:gap-6 ${step === 4 ? "lg:grid-cols-[1.4fr_1fr]" : "lg:grid-cols-1"}`}>
           {/* MAIN PANEL */}
-          <div className="rounded-3xl border border-border bg-card p-6 shadow-[0_20px_60px_-30px_rgba(24,24,60,0.25)] md:p-10">
+          <div className="rounded-3xl border border-border bg-card p-4 shadow-[0_20px_60px_-30px_rgba(24,24,60,0.25)] sm:p-6 md:p-8 lg:p-10">
             {step === 1 && (
               <div>
                 <StepHeader
@@ -214,7 +214,23 @@ export function OrderBuilder() {
                   title="What are we building today?"
                   subtitle="Pick the service that fits your growth goal. You can change it any time."
                 />
-                <div className="mt-8 grid gap-6 lg:grid-cols-3">
+                {/* Mobile tab switcher */}
+                <div className="mt-4 block lg:hidden">
+                  <CategoryTabs active={mobileGroup} onChange={setMobileGroup} />
+                  <div className="mt-3 space-y-2">
+                    {SERVICES.filter((s) => s.group === mobileGroup).map((s) => (
+                      <ServiceChip
+                        key={s.id}
+                        service={s}
+                        active={serviceId === s.id}
+                        onClick={() => { setServiceId(s.id); setQuantity(s.fixed ? 1 : s.minQty); setMobileGroup(s.group); }}
+                        accent={s.group === "data" ? "violet" : s.group === "growth" ? "coral" : "emerald"}
+                      />
+                    ))}
+                  </div>
+                </div>
+                {/* Desktop grid */}
+                <div className="mt-6 hidden gap-6 lg:grid lg:grid-cols-3">
                   <CategoryColumn title="Lead generation" accent="violet" services={dataServices} serviceId={serviceId} onPick={(s) => { setServiceId(s.id); setQuantity(s.minQty); }} />
                   <CategoryColumn title="Growth add-ons" accent="coral" services={growthServices} serviceId={serviceId} onPick={(s) => { setServiceId(s.id); setQuantity(s.fixed ? 1 : s.minQty); }} />
                   <CategoryColumn title="Design & web" accent="emerald" services={designServices} serviceId={serviceId} onPick={(s) => { setServiceId(s.id); setQuantity(1); }} />

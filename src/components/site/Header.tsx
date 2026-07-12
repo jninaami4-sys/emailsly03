@@ -33,10 +33,11 @@ export function Header() {
         Skip to main content
       </a>
       <div className="sticky top-4 z-40 px-4">
-        <nav
-          aria-label="Primary"
-          className="relative mx-auto flex h-12 max-w-6xl items-center justify-between overflow-hidden rounded-full border border-white/60 bg-white/60 px-5 shadow-[0_12px_40px_-12px_rgba(0,0,0,0.06),inset_0_1px_1px_0_rgba(255,255,255,0.7),inset_0_-1px_1px_0_rgba(255,255,255,0.15)] backdrop-blur-2xl before:pointer-events-none before:absolute before:inset-0 before:rounded-full before:bg-gradient-to-b before:from-white/25 before:to-transparent"
-        >
+        <div className="relative">
+          <nav
+            aria-label="Primary"
+            className="relative mx-auto flex h-12 max-w-6xl items-center justify-between overflow-hidden rounded-full border border-white/40 bg-white/25 px-5 shadow-[0_8px_32px_0_rgba(31,38,135,0.07),inset_0_0_0_1px_rgba(255,255,255,0.4)] backdrop-blur-3xl backdrop-saturate-150 before:pointer-events-none before:absolute before:inset-0 before:rounded-full before:bg-gradient-to-b before:from-white/20 before:to-transparent"
+          >
           <div className="z-10 flex items-center gap-8">
             <Link
               to="/"
@@ -126,31 +127,33 @@ export function Header() {
           <div className="absolute -top-1/2 -left-[10%] w-[120%] h-full rotate-12 bg-white/5 blur-2xl will-change-transform" />
         </div>
       </nav>
-      {mobileOpen && (
-        <div id="mobile-nav" className="relative mt-2 overflow-hidden rounded-2xl border border-white/60 bg-white/90 shadow-[0_12px_40px_-12px_rgba(0,0,0,0.06),inset_0_1px_1px_0_rgba(255,255,255,0.7),inset_0_-1px_1px_0_rgba(255,255,255,0.15)] backdrop-blur-2xl before:pointer-events-none before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-b before:from-white/25 before:to-transparent lg:hidden">
-          <ul className="relative z-10 flex flex-col gap-1 px-3 py-3 text-sm font-medium text-muted-foreground">
-            {[
-              { to: "/store", label: "Lead Store" },
-              { to: "/pricing", label: "Pricing" },
-              { to: "/apollo-leads-export", label: "Services" },
-              { to: "/track-order", label: "Track Order" },
-              { to: "/blog", label: "Blog" },
-              { to: "/contact", label: "Contact" },
-            ].map((item) => (
-              <li key={item.to}>
-                <Link
-                  to={item.to}
-                  activeProps={{ "aria-current": "page", className: "bg-secondary text-foreground" }}
-                  onClick={() => setMobileOpen(false)}
-                  className={`block rounded-md px-3 py-2 transition-colors hover:bg-secondary hover:text-foreground ${focusRing}`}
-                >
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+      <div className="absolute -inset-1 -z-10 rounded-full bg-white/10 blur-xl" aria-hidden="true" />
+    </div>
+    {mobileOpen && (
+      <div id="mobile-nav" className="relative mt-2 overflow-hidden rounded-2xl border border-white/40 bg-white/40 shadow-[0_8px_32px_0_rgba(31,38,135,0.07),inset_0_0_0_1px_rgba(255,255,255,0.4)] backdrop-blur-3xl backdrop-saturate-150 before:pointer-events-none before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-b before:from-white/20 before:to-transparent lg:hidden">
+        <ul className="relative z-10 flex flex-col gap-1 px-3 py-3 text-sm font-medium text-muted-foreground">
+          {[
+            { to: "/store", label: "Lead Store" },
+            { to: "/pricing", label: "Pricing" },
+            { to: "/apollo-leads-export", label: "Services" },
+            { to: "/track-order", label: "Track Order" },
+            { to: "/blog", label: "Blog" },
+            { to: "/contact", label: "Contact" },
+          ].map((item) => (
+            <li key={item.to}>
+              <Link
+                to={item.to}
+                activeProps={{ "aria-current": "page", className: "bg-secondary text-foreground" }}
+                onClick={() => setMobileOpen(false)}
+                className={`block rounded-md px-3 py-2 transition-colors hover:bg-secondary hover:text-foreground ${focusRing}`}
+              >
+                {item.label}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
       </div>
     </>
   );

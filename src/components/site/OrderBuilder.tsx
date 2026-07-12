@@ -246,26 +246,26 @@ export function OrderBuilder() {
                   subtitle={service.fixed ? "This is a flat-price service — review the details below." : "Slide to your target volume. Watch the price update live."}
                 />
 
-                <div className="mt-8 rounded-2xl border border-violet/20 bg-violet-soft/50 p-5">
+                <div className="mt-6 rounded-2xl border border-violet/20 bg-violet-soft/50 p-4 sm:mt-8 sm:p-5">
                   <div className="flex items-center gap-3">
-                    <span className="grid size-10 place-items-center rounded-xl bg-violet text-white">
-                      <service.icon className="size-5" />
+                    <span className="grid size-9 place-items-center rounded-xl bg-violet text-white sm:size-10">
+                      <service.icon className="size-4 sm:size-5" />
                     </span>
                     <div>
                       <div className="font-mono text-[10px] font-bold uppercase tracking-widest text-violet/80">Selected service</div>
-                      <div className="text-lg font-bold">{service.name}</div>
+                      <div className="text-base font-bold sm:text-lg">{service.name}</div>
                     </div>
                   </div>
                 </div>
 
                 {!service.fixed && (
-                  <div className="mt-8">
+                  <div className="mt-6 sm:mt-8">
                     <SectionLabel icon={Layers} rightText={`Min ${service.minQty.toLocaleString()}`}>
                       {service.unit === "lead" ? "Lead quantity" : "Quantity"}
                     </SectionLabel>
-                    <div className="rounded-2xl border border-border bg-secondary/40 p-6">
+                    <div className="rounded-2xl border border-border bg-secondary/40 p-4 sm:p-6">
                       <div className="flex items-baseline justify-between">
-                        <div className="font-display text-4xl font-bold tracking-tight md:text-5xl">
+                        <div className="font-display text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
                           {effectiveQty.toLocaleString()}
                           <span className="ml-2 font-sans text-sm font-medium text-muted-foreground">{service.unit}s</span>
                         </div>
@@ -301,7 +301,7 @@ export function OrderBuilder() {
                       </div>
                     </div>
 
-                    <div className="mt-8">
+                    <div className="mt-6 sm:mt-8">
                       <SectionLabel icon={Tag}>Price comparison</SectionLabel>
                       <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
                         <ComparePill label="Apollo.io retail" price={comparePriceApollo} note={`${(comparePriceApollo / base).toFixed(0)}× more`} tone="muted" />
@@ -314,7 +314,7 @@ export function OrderBuilder() {
                 )}
 
                 {service.id === "apollo" && (
-                  <div className="mt-8 grid gap-6 md:grid-cols-2">
+                  <div className="mt-6 grid gap-4 sm:mt-8 md:grid-cols-2 md:gap-6">
                     <div>
                       <SectionLabel icon={Zap} rightText="1st free · +$5 each extra">
                         Apollo search URLs
@@ -350,11 +350,11 @@ export function OrderBuilder() {
                   </div>
                 )}
 
-                <div className="mt-6">
+                <div className="mt-5 sm:mt-6">
                   <Field label="Notes (optional)">
                     <textarea
                       placeholder="Any specific instructions, ICP notes, or delivery preferences…"
-                      rows={3}
+                      rows={2}
                       className="w-full resize-none rounded-xl border border-input bg-background px-4 py-3 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-violet focus:ring-4 focus:ring-violet/10"
                     />
                   </Field>

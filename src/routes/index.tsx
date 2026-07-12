@@ -183,8 +183,74 @@ function Home() {
               </div>
             </div>
           </div>
+
+          {/* Caption pointing to full sample */}
+          <div className="mt-5 flex flex-col items-center justify-center gap-2 text-center sm:flex-row sm:gap-3">
+            <span className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
+              Preview shows 4 of 365 rows
+            </span>
+            <Link
+              to="/sample-data"
+              className="group inline-flex items-center gap-1.5 rounded-full bg-violet-soft px-3 py-1 font-mono text-[11px] font-bold uppercase tracking-widest text-violet transition-colors hover:bg-violet hover:text-white"
+            >
+              See the full CSV (365 × 48)
+              <ArrowRight className="size-3 transition-transform group-hover:translate-x-0.5" />
+            </Link>
+          </div>
         </div>
       </section>
+
+      {/* Full sample dataset banner */}
+      <section className="border-y border-border bg-secondary/30 px-6 py-16">
+        <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[1.1fr_1fr] lg:items-center">
+          <div>
+            <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-violet">
+              Real sample export
+            </span>
+            <h2 className="mt-3 font-display text-3xl font-bold tracking-tight md:text-4xl">
+              See exactly what you'll receive — 365 verified leads, every column.
+            </h2>
+            <p className="mt-4 max-w-xl text-muted-foreground">
+              Not a mockup. This is a real Apollo export with all 48 columns intact — emails, phones,
+              LinkedIn URLs, funding, technologies, and everything else. Search it, scroll it, download the CSV.
+            </p>
+            <div className="mt-6 flex flex-wrap items-center gap-3">
+              <Link
+                to="/sample-data"
+                className="inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5"
+              >
+                Open full sample <ArrowRight className="size-4" />
+              </Link>
+              <span className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
+                No signup · Free · CSV download
+              </span>
+            </div>
+          </div>
+
+          {/* Stats card */}
+          <div className="grid grid-cols-2 gap-3 rounded-2xl border border-border bg-card p-4 shadow-sm">
+            {[
+              { label: "Rows", value: "365" },
+              { label: "Columns", value: "48" },
+              { label: "Verified emails", value: "100%" },
+              { label: "Source", value: "Apollo" },
+            ].map((s) => (
+              <div
+                key={s.label}
+                className="rounded-xl border border-border bg-background p-4"
+              >
+                <div className="font-display text-3xl font-bold tracking-tight text-foreground">
+                  {s.value}
+                </div>
+                <div className="mt-1 font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                  {s.label}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
 
       {/* Logo strip */}
       <section className="border-y border-border py-12">

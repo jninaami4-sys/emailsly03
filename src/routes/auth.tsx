@@ -324,9 +324,9 @@ function AuthPage() {
                       </div>
 
                       {info && (
-                        <div className="animate-fade-in rounded-lg border border-emerald/30 bg-emerald/10 px-3 py-3 text-sm text-emerald-foreground">
+                        <div aria-live="polite" className="animate-fade-in rounded-lg border border-emerald/30 bg-emerald/10 px-3 py-3 text-sm text-emerald-foreground">
                           <p className="flex items-start gap-2">
-                            <CheckCircle2 className="mt-0.5 size-4 shrink-0" />
+                            <CheckCircle2 className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
                             {info}
                           </p>
                           {lastEmail && (
@@ -334,7 +334,7 @@ function AuthPage() {
                               type="button"
                               onClick={() => handleResend()}
                               disabled={busy || cooldown > 0}
-                              className="mt-2 w-full text-center text-xs font-medium text-emerald-foreground/80 transition-colors hover:text-emerald-foreground disabled:cursor-not-allowed disabled:opacity-50"
+                              className="mt-2 w-full text-center text-xs font-medium text-emerald-foreground/80 transition-colors hover:text-emerald-foreground focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-ring/30 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
                             >
                               {cooldown > 0 ? `Resend available in ${cooldown}s` : "Didn't receive it? Resend email"}
                             </button>

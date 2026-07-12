@@ -4,7 +4,7 @@ import { PricingCalculator } from "@/components/site/PricingCalculator";
 import { ProductCard } from "@/components/site/ProductCard";
 import { PRODUCTS } from "@/lib/products";
 import { ArrowRight, Zap, Phone, Linkedin, ShieldCheck, Lock, Clock, BadgeCheck, ServerCog, Check } from "lucide-react";
-import { OrderForm } from "@/components/site/OrderForm";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -133,12 +133,12 @@ function Home() {
               Precision-targeted, 99% accurate leads from Apollo, ZoomInfo, and LinkedIn — delivered to your CRM.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <a
-                href="#order"
+              <Link
+                to="/track-order"
                 className="inline-flex items-center gap-2 rounded-xl bg-violet px-5 py-3 font-semibold text-white shadow-lg shadow-violet/25 transition-transform hover:scale-[1.02]"
               >
                 Start Your Order <ArrowRight className="size-4" />
-              </a>
+              </Link>
               <Link
                 to="/pricing"
                 className="inline-flex items-center gap-2 rounded-xl border border-border bg-card px-5 py-3 font-semibold text-foreground transition-colors hover:bg-secondary"
@@ -234,8 +234,6 @@ function Home() {
         </div>
       </section>
 
-      {/* Order form */}
-      <OrderForm />
 
       {/* FAQ */}
       <section className="border-t border-border bg-card px-6 py-24">

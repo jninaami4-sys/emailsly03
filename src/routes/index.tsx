@@ -297,9 +297,9 @@ function Home() {
               <div className="pointer-events-none absolute -right-8 -top-8 size-48 rounded-full bg-white/25 blur-2xl" />
               <div className="relative flex h-full flex-col justify-between">
                 <div>
-                  <Sparkles className="size-6" />
+                  <Sparkles className="size-6 text-black/80" />
                   <h3 className="mt-6 font-display text-2xl font-bold leading-tight md:text-3xl">Get your price in 30 seconds.</h3>
-                  <p className="mt-3 text-sm text-white/80">Slide out the builder, pick a service, see the exact cost. No calls, no forms.</p>
+                  <p className="mt-3 text-sm text-black/70">Slide out the builder, pick a service, see the exact cost. No calls, no forms.</p>
                 </div>
                 <span className="inline-flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-widest">
                   Open builder <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />

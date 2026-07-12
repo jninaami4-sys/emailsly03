@@ -412,7 +412,7 @@ export function OrderBuilder() {
                   title="Almost there — your details"
                   subtitle="We'll send the preview and delivery link to this address."
                 />
-                <div className="mt-8 grid gap-4 md:grid-cols-2">
+                <div className="mt-6 grid gap-4 sm:mt-8 md:grid-cols-2">
                   <Field label="Your name">
                     <input
                       type="text"
@@ -433,7 +433,7 @@ export function OrderBuilder() {
                   </Field>
                 </div>
 
-                <label className="mt-8 flex items-start gap-3 text-sm text-muted-foreground">
+                <label className="mt-6 flex items-start gap-3 text-sm text-muted-foreground sm:mt-8">
                   <input
                     type="checkbox"
                     checked={agree}

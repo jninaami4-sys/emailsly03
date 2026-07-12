@@ -37,7 +37,7 @@ export function Header() {
           aria-label="Primary"
           className="relative mx-auto flex h-12 max-w-6xl items-center justify-between overflow-hidden rounded-full border border-white/50 bg-white/50 px-5 shadow-[0_12px_40px_-12px_rgba(0,0,0,0.08),inset_0_1px_1px_0_rgba(255,255,255,0.6),inset_0_-1px_1px_0_rgba(255,255,255,0.15)] backdrop-blur-2xl before:pointer-events-none before:absolute before:inset-0 before:rounded-full before:bg-gradient-to-b before:from-white/20 before:to-transparent"
         >
-          <div className="z-10 flex items-center gap-8 text-white">
+          <div className="z-10 flex items-center gap-8">
             <Link
               to="/"
               aria-label="LyraData home"
@@ -48,7 +48,7 @@ export function Header() {
               </span>
               LYRA<span className="text-violet">DATA</span>
             </Link>
-            <ul className="hidden items-center gap-6 text-sm font-medium text-white/70 lg:flex">
+            <ul className="hidden items-center gap-6 text-sm font-medium text-muted-foreground lg:flex">
               {[
                 { to: "/store", label: "Lead Store" },
                 { to: "/pricing", label: "Pricing" },
@@ -60,8 +60,8 @@ export function Header() {
                 <li key={item.to}>
                   <Link
                     to={item.to}
-                    activeProps={{ "aria-current": "page", className: "text-white" }}
-                    className={`rounded-md px-1 py-1 transition-colors hover:text-white ${focusRing}`}
+                    activeProps={{ "aria-current": "page", className: "text-foreground" }}
+                    className={`rounded-md px-1 py-1 transition-colors hover:text-foreground ${focusRing}`}
                   >
                     {item.label}
                   </Link>

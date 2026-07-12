@@ -82,6 +82,12 @@ function AuthPage() {
     }
   }, [search.mode]);
 
+  useEffect(() => {
+    if (cooldown <= 0) return;
+    const timer = setInterval(() => setCooldown((c) => Math.max(0, c - 1)), 1000);
+    return () => clearInterval(timer);
+  }, [cooldown]);
+
   function validateField(name: keyof FieldErrors, value: string) {
     const partial = credentials.partial();
     const parsed = partial.safeParse({ [name]: value });

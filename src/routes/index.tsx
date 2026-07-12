@@ -90,35 +90,45 @@ function Home() {
     <SiteShell>
       {/* Hero */}
       <section className="relative overflow-hidden px-6 pt-20 pb-24 lg:pt-24">
-        <div className="pointer-events-none absolute left-1/2 top-0 -z-10 h-[600px] w-[1000px] -translate-x-1/2 bg-[radial-gradient(circle_at_center,var(--violet-soft),transparent_70%)] opacity-70" />
+        {/* Animated WebGL shader background */}
+        <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+          <div className="absolute inset-0 bg-ink" />
+          <ShaderBackground className="absolute inset-0 h-full w-full opacity-90 [mask-image:radial-gradient(ellipse_at_center,black_55%,transparent_85%)]" />
+          {/* readability veil */}
+          <div className="absolute inset-0 bg-gradient-to-b from-ink/30 via-ink/50 to-background" />
+        </div>
+
         <div className="mx-auto max-w-5xl text-center">
-          <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-violet/20 bg-violet-soft px-3 py-1">
+          <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 backdrop-blur-md">
             <span className="relative flex size-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-violet/60 opacity-75" />
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-violet opacity-75" />
               <span className="relative inline-flex size-2 rounded-full bg-violet" />
             </span>
-            <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-violet">
+            <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-white/90">
               Apollo sample included
             </span>
           </div>
-          <h1 className="font-display text-5xl font-bold leading-[1.05] tracking-tighter text-foreground md:text-7xl">
+          <h1 className="font-display text-5xl font-bold leading-[1.05] tracking-tighter text-white drop-shadow-[0_2px_20px_rgba(0,0,0,0.35)] md:text-7xl">
             High-intent B2B leads,
             <br />
-            delivered to your <span className="text-violet">CRM in 24h.</span>
+            delivered to your{" "}
+            <span className="bg-gradient-to-r from-violet via-fuchsia-400 to-violet bg-clip-text text-transparent">
+              CRM in 24h.
+            </span>
           </h1>
-          <p className="mx-auto mt-8 max-w-2xl text-lg leading-relaxed text-muted-foreground md:text-xl">
+          <p className="mx-auto mt-8 max-w-2xl text-lg leading-relaxed text-white/75 md:text-xl">
             Real Apollo sample leads you can preview instantly. Export-ready CSVs with emails, titles, companies, and tech stack.
           </p>
           <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
             <Link
               to="/store"
-              className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-violet px-8 py-4 text-base font-semibold text-white shadow-lg shadow-violet/25 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-violet/30 sm:w-auto"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-violet px-8 py-4 text-base font-semibold text-white shadow-lg shadow-violet/40 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-violet/50 sm:w-auto"
             >
               Start Exporting <ArrowRight className="size-4" />
             </Link>
             <Link
               to="/sample-data"
-              className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-border bg-card px-8 py-4 text-base font-semibold text-foreground transition-colors hover:bg-secondary sm:w-auto"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-white/20 bg-white/10 px-8 py-4 text-base font-semibold text-white backdrop-blur-md transition-colors hover:bg-white/20 sm:w-auto"
             >
               View Sample Data
             </Link>

@@ -36,7 +36,7 @@ export function Header() {
         <div className="relative">
           <nav
             aria-label="Primary"
-            className="relative mx-auto flex h-12 max-w-6xl items-center justify-between overflow-hidden rounded-full border border-white/30 bg-white/30 px-5 shadow-[0_4px_24px_rgba(0,0,0,0.06),inset_0_0.5px_0_0_rgba(255,255,255,0.72),inset_0_-0.5px_0_0_rgba(0,0,0,0.05)] backdrop-blur-2xl backdrop-saturate-[180%]"
+            className="relative mx-auto flex h-12 max-w-6xl items-center justify-between overflow-hidden rounded-full border border-white/40 bg-white/85 px-5 shadow-[0_4px_24px_rgba(0,0,0,0.06),inset_0_0.5px_0_0_rgba(255,255,255,0.72),inset_0_-0.5px_0_0_rgba(0,0,0,0.05)] backdrop-blur-2xl backdrop-saturate-[180%]"
           >
           <div className="z-10 flex items-center gap-8">
             <Link
@@ -49,7 +49,7 @@ export function Header() {
               </span>
               LYRA<span className="text-violet">DATA</span>
             </Link>
-            <ul className="hidden items-center gap-6 text-sm font-medium text-muted-foreground lg:flex">
+            <ul className="hidden items-center gap-6 text-sm font-medium text-foreground lg:flex">
               {[
                 { to: "/store", label: "Lead Store" },
                 { to: "/pricing", label: "Pricing" },
@@ -74,7 +74,7 @@ export function Header() {
             <button
               type="button"
               onClick={open}
-              className={`relative rounded-lg p-2 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground ${focusRing}`}
+              className={`relative rounded-lg p-2 text-foreground transition-colors hover:bg-secondary hover:text-violet ${focusRing}`}
               aria-label={cartLabel}
             >
               <ShoppingCart className="size-5" aria-hidden="true" />
@@ -113,7 +113,7 @@ export function Header() {
             )}
             <button
               type="button"
-              className={`inline-flex size-11 items-center justify-center rounded-lg lg:hidden ${focusRing}`}
+              className={`inline-flex size-11 items-center justify-center rounded-lg text-foreground lg:hidden ${focusRing}`}
               onClick={() => setMobileOpen((o) => !o)}
               aria-label={mobileOpen ? "Close menu" : "Open menu"}
               aria-expanded={mobileOpen}
@@ -127,8 +127,8 @@ export function Header() {
       <div className="absolute -inset-1.5 -z-10 rounded-full bg-white/10 blur-2xl" aria-hidden="true" />
     </div>
     {mobileOpen && (
-      <div id="mobile-nav" className="relative mt-2 overflow-hidden rounded-2xl border border-white/30 bg-white/30 shadow-[0_4px_24px_rgba(0,0,0,0.06),inset_0_0.5px_0_0_rgba(255,255,255,0.72),inset_0_-0.5px_0_0_rgba(0,0,0,0.05)] backdrop-blur-2xl backdrop-saturate-[180%] lg:hidden">
-        <ul className="relative z-10 flex flex-col gap-1 px-3 py-3 text-sm font-medium text-muted-foreground">
+      <div id="mobile-nav" className="relative mt-2 overflow-hidden rounded-2xl border border-white/40 bg-white/85 shadow-[0_4px_24px_rgba(0,0,0,0.06),inset_0_0.5px_0_0_rgba(255,255,255,0.72),inset_0_-0.5px_0_0_rgba(0,0,0,0.05)] backdrop-blur-2xl backdrop-saturate-[180%] lg:hidden">
+        <ul className="relative z-10 flex flex-col gap-1 px-3 py-3 text-sm font-medium text-foreground">
           {[
             { to: "/store", label: "Lead Store" },
             { to: "/pricing", label: "Pricing" },

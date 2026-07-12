@@ -3,12 +3,14 @@ import { useHydrated } from "@/hooks/use-hydrated";
 
 export function Preloader() {
   const hydrated = useHydrated();
-  const [alreadySeen, setAlreadySeen] = useState(() => {
-    if (typeof window === "undefined") return false;
-    return window.sessionStorage.getItem("lyra_preloader_seen") === "true";
-  });
+  const [alreadySeen, setAlreadySeen] = useState(false);
   const [visible, setVisible] = useState(true);
   const [fade, setFade] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    setAlreadySeen(window.sessionStorage.getItem("lyra_preloader_seen") === "true");
+  }, []);
 
   useEffect(() => {
     if (!alreadySeen) {
@@ -26,7 +28,8 @@ export function Preloader() {
     }
   }, [alreadySeen]);
 
-  if (alreadySeen || !visible) return null;
+  if (!hydrated || alreadySeen || !visible) return null;
+
 
   return (
     <div

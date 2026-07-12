@@ -7,11 +7,11 @@ interface PaymentLogosProps {
 export function PaymentLogos({ className }: PaymentLogosProps) {
   const logos = [
     { label: "Stripe", src: "https://cdn.simpleicons.org/stripe/635BFF" },
-    { label: "Visa", src: "https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" },
-    { label: "Mastercard", src: "https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" },
-    { label: "Apple Pay", src: "https://upload.wikimedia.org/wikipedia/commons/b/b0/Apple_Pay_logo.svg" },
+    { label: "Visa", src: "https://cdn.simpleicons.org/visa/1A1F71" },
+    { label: "Mastercard", src: "https://cdn.simpleicons.org/mastercard/EB001B" },
+    { label: "Apple Pay", src: "https://cdn.simpleicons.org/applepay/000000" },
     { label: "Binance", src: "https://cdn.simpleicons.org/binance/F0B90B" },
-    { label: "Payoneer", src: "https://upload.wikimedia.org/wikipedia/commons/e/ea/Payoneer-Logo.png" },
+    { label: "Payoneer", src: "https://cdn.simpleicons.org/payoneer/FF4800" },
   ];
 
   return (

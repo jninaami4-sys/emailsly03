@@ -35,7 +35,7 @@ export function Header() {
       <div className="sticky top-4 z-40 px-4">
         <nav
           aria-label="Primary"
-          className="mx-auto flex h-12 max-w-6xl items-center justify-between rounded-full border border-white/25 bg-white/10 px-5 shadow-[0_8px_30px_-12px_rgba(24,24,60,0.15)] backdrop-blur-2xl backdrop-saturate-150 [-webkit-backdrop-filter:blur(28px)_saturate(150%)]"
+          className="mx-auto flex h-12 max-w-6xl items-center justify-between rounded-full border border-white/25 bg-white/10 px-5 shadow-[0_8px_30px_-12px_rgba(24,24,60,0.15)] backdrop-blur-2xl backdrop-saturate-150"
         >
           <div className="flex items-center gap-8">
             <Link

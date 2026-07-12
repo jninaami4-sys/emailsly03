@@ -100,9 +100,9 @@ function ResetPasswordPage() {
                   <Link
                     to="/auth"
                     search={{ mode: "forgot" }}
-                    className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
+                    className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:outline-none"
                   >
-                    Request a new reset link <ArrowRight className="size-4" />
+                    Request a new reset link <ArrowRight className="size-4" aria-hidden="true" />
                   </Link>
                 </div>
               ) : success ? (

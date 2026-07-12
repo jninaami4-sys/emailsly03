@@ -168,8 +168,31 @@ function AuthPage() {
         redirectTo: `${window.location.origin}/reset-password`,
       });
       if (error) throw error;
+      setLastEmail(parsed.data.email);
+      setCooldown(60);
       setInfo("If this email exists, you'll receive a reset link shortly.");
       setEmail("");
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Something went wrong";
+      setError(message);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function handleResend(e?: React.FormEvent) {
+    e?.preventDefault();
+    if (!lastEmail || cooldown > 0) return;
+    setError(null);
+    setInfo(null);
+    setBusy(true);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(lastEmail, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      if (error) throw error;
+      setCooldown(60);
+      setInfo("Reset link resent. Check your inbox.");
     } catch (err) {
       const message = err instanceof Error ? err.message : "Something went wrong";
       setError(message);

@@ -108,7 +108,7 @@ function Home() {
               Start Exporting <ArrowRight className="size-4" />
             </Link>
             <Link
-              to="/pricing"
+              to="/sample-data"
               className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-border bg-card px-8 py-4 text-base font-semibold text-foreground transition-colors hover:bg-secondary sm:w-auto"
             >
               View Sample Data

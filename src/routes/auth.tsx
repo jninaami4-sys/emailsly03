@@ -486,7 +486,7 @@ function AuthPage() {
                           <button
                             type="button"
                             onClick={() => setMode("forgot")}
-                            className="text-xs font-medium text-muted-foreground transition-colors hover:text-primary"
+                            className="text-xs font-medium text-muted-foreground transition-colors hover:text-primary focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-ring/30 focus-visible:outline-none"
                           >
                             Forgot password?
                           </button>

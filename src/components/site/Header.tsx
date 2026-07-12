@@ -33,11 +33,11 @@ export function Header() {
       >
         Skip to main content
       </a>
-      <div className="sticky top-4 z-40 px-4">
+      <div className="sticky top-0 z-40 sm:top-4 sm:px-4">
         <div className="relative">
           <nav
             aria-label="Primary"
-            className="relative mx-auto flex h-12 max-w-6xl items-center justify-between overflow-hidden rounded-full border border-white/40 bg-white/85 px-5 shadow-[0_4px_24px_rgba(0,0,0,0.06),inset_0_0.5px_0_0_rgba(255,255,255,0.72),inset_0_-0.5px_0_0_rgba(0,0,0,0.05)] backdrop-blur-2xl backdrop-saturate-[180%]"
+            className="relative mx-auto flex h-12 w-full max-w-none items-center justify-between overflow-hidden border-b border-white/40 bg-white/85 px-4 shadow-[0_4px_24px_rgba(0,0,0,0.06)] backdrop-blur-2xl backdrop-saturate-[180%] sm:max-w-6xl sm:rounded-full sm:border sm:px-5 sm:shadow-[0_4px_24px_rgba(0,0,0,0.06),inset_0_0.5px_0_0_rgba(255,255,255,0.72),inset_0_-0.5px_0_0_rgba(0,0,0,0.05)]"
           >
           <div className="z-10 flex items-center gap-8">
             <Link
@@ -133,10 +133,10 @@ export function Header() {
         </div>
         {/* Liquid-glass gloss reflection */}
       </nav>
-      <div className="absolute -inset-1.5 -z-10 rounded-full bg-white/10 blur-2xl" aria-hidden="true" />
+      <div className="absolute -inset-1.5 -z-10 hidden rounded-full bg-white/10 blur-2xl sm:block" aria-hidden="true" />
     </div>
     {mobileOpen && (
-      <div id="mobile-nav" className="relative mt-2 overflow-hidden rounded-2xl border border-white/40 bg-white/85 shadow-[0_4px_24px_rgba(0,0,0,0.06),inset_0_0.5px_0_0_rgba(255,255,255,0.72),inset_0_-0.5px_0_0_rgba(0,0,0,0.05)] backdrop-blur-2xl backdrop-saturate-[180%] lg:hidden">
+      <div id="mobile-nav" className="relative mt-1 overflow-hidden rounded-b-2xl border border-white/40 bg-white/85 shadow-[0_4px_24px_rgba(0,0,0,0.06),inset_0_0.5px_0_0_rgba(255,255,255,0.72),inset_0_-0.5px_0_0_rgba(0,0,0,0.05)] backdrop-blur-2xl backdrop-saturate-[180%] sm:mt-2 sm:rounded-2xl lg:hidden">
         <ul className="relative z-10 flex flex-col gap-1 px-3 py-3 text-sm font-medium text-foreground">
           {[
             { to: "/store", label: "Lead Store" },

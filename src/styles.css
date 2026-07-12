@@ -168,3 +168,12 @@
 .animate-aurora-fast { animation: aurora-fast 11s ease-in-out infinite; }
 
 
+
+@keyframes sheet-in {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes sheet-item-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}

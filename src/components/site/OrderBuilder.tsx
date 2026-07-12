@@ -77,6 +77,7 @@ export function OrderBuilder() {
   const [step, setStep] = useState(1);
   const [serviceId, setServiceId] = useState("apollo");
   const service = SERVICES.find((s) => s.id === serviceId)!;
+  const [mobileGroup, setMobileGroup] = useState<"data" | "growth" | "design">(service.group);
   const [quantity, setQuantity] = useState(service.minQty);
   const [extraUrls, setExtraUrls] = useState(1);
   const [verifier, setVerifier] = useState(false);

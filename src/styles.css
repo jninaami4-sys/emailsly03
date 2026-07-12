@@ -112,7 +112,13 @@
   --midnight-line: oklch(1 0 0 / 0.08);
   --indigo: oklch(0.62 0.22 275);
   --indigo-soft: oklch(0.62 0.22 275 / 0.15);
+
+  /* Neon Orange Peel */
+  --neon-orange: oklch(0.78 0.2 55);           /* vivid #FF9F1C-ish */
+  --neon-orange-soft: oklch(0.78 0.2 55 / 0.18);
 }
+
+
 
 .theme-midnight {
   --background: var(--midnight);

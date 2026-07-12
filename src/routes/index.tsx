@@ -88,7 +88,7 @@ function Home() {
               <h1 className="font-display text-5xl font-extrabold leading-[0.98] tracking-tight text-foreground md:text-7xl lg:text-[88px]">
                 Prospect data that
                 <br />
-                <span className="bg-gradient-to-br from-white via-white to-indigo bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-indigo via-neon-orange to-coral bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(255,159,28,0.35)]">
                   actually converts.
                 </span>
               </h1>

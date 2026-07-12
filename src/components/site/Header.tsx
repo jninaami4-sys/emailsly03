@@ -49,7 +49,7 @@ export function Header() {
               </span>
               LYRA<span className="text-violet">DATA</span>
             </Link>
-            <ul className="hidden items-center gap-6 text-sm font-medium text-muted-foreground lg:flex">
+            <ul className="hidden items-center gap-6 text-sm font-medium text-foreground lg:flex">
               {[
                 { to: "/store", label: "Lead Store" },
                 { to: "/pricing", label: "Pricing" },

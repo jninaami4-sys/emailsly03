@@ -50,9 +50,9 @@ const SOURCES: SourceMeta[] = [
 ];
 
 const ACCENT: Record<SourceMeta["accent"], { dot: string; text: string; ring: string; solid: string }> = {
-  indigo: { dot: "bg-indigo", text: "text-indigo", ring: "ring-indigo/40", solid: "bg-indigo text-white" },
-  coral: { dot: "bg-coral", text: "text-coral", ring: "ring-coral/40", solid: "bg-coral text-white" },
-  emerald: { dot: "bg-emerald", text: "text-emerald", ring: "ring-emerald/40", solid: "bg-emerald text-white" },
+  indigo: { dot: "bg-gold", text: "text-gold", ring: "ring-gold/40", solid: "bg-gold text-black" },
+  coral: { dot: "bg-amber-accent", text: "text-amber-accent", ring: "ring-amber-accent/40", solid: "bg-amber-accent text-black" },
+  emerald: { dot: "bg-gold-soft", text: "text-gold", ring: "ring-gold/40", solid: "bg-gold-soft text-black" },
 };
 
 const SOURCE_DATA: Record<SourceKey, RawData> = {

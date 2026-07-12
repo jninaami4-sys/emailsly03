@@ -9,12 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ZoominfoLeadsRouteImport } from './routes/zoominfo-leads'
 import { Route as StoreRouteImport } from './routes/store'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as LinkedinSalesNavigatorLeadsRouteImport } from './routes/linkedin-sales-navigator-leads'
 import { Route as ApolloLeadsExportRouteImport } from './routes/apollo-leads-export'
 import { Route as IndexRouteImport } from './routes/index'
 
+const ZoominfoLeadsRoute = ZoominfoLeadsRouteImport.update({
+  id: '/zoominfo-leads',
+  path: '/zoominfo-leads',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const StoreRoute = StoreRouteImport.update({
   id: '/store',
   path: '/store',
@@ -48,6 +54,7 @@ export interface FileRoutesByFullPath {
   '/linkedin-sales-navigator-leads': typeof LinkedinSalesNavigatorLeadsRoute
   '/pricing': typeof PricingRoute
   '/store': typeof StoreRoute
+  '/zoominfo-leads': typeof ZoominfoLeadsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -55,6 +62,7 @@ export interface FileRoutesByTo {
   '/linkedin-sales-navigator-leads': typeof LinkedinSalesNavigatorLeadsRoute
   '/pricing': typeof PricingRoute
   '/store': typeof StoreRoute
+  '/zoominfo-leads': typeof ZoominfoLeadsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -63,6 +71,7 @@ export interface FileRoutesById {
   '/linkedin-sales-navigator-leads': typeof LinkedinSalesNavigatorLeadsRoute
   '/pricing': typeof PricingRoute
   '/store': typeof StoreRoute
+  '/zoominfo-leads': typeof ZoominfoLeadsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -72,6 +81,7 @@ export interface FileRouteTypes {
     | '/linkedin-sales-navigator-leads'
     | '/pricing'
     | '/store'
+    | '/zoominfo-leads'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -79,6 +89,7 @@ export interface FileRouteTypes {
     | '/linkedin-sales-navigator-leads'
     | '/pricing'
     | '/store'
+    | '/zoominfo-leads'
   id:
     | '__root__'
     | '/'
@@ -86,6 +97,7 @@ export interface FileRouteTypes {
     | '/linkedin-sales-navigator-leads'
     | '/pricing'
     | '/store'
+    | '/zoominfo-leads'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -94,10 +106,18 @@ export interface RootRouteChildren {
   LinkedinSalesNavigatorLeadsRoute: typeof LinkedinSalesNavigatorLeadsRoute
   PricingRoute: typeof PricingRoute
   StoreRoute: typeof StoreRoute
+  ZoominfoLeadsRoute: typeof ZoominfoLeadsRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/zoominfo-leads': {
+      id: '/zoominfo-leads'
+      path: '/zoominfo-leads'
+      fullPath: '/zoominfo-leads'
+      preLoaderRoute: typeof ZoominfoLeadsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/store': {
       id: '/store'
       path: '/store'
@@ -142,6 +162,7 @@ const rootRouteChildren: RootRouteChildren = {
   LinkedinSalesNavigatorLeadsRoute: LinkedinSalesNavigatorLeadsRoute,
   PricingRoute: PricingRoute,
   StoreRoute: StoreRoute,
+  ZoominfoLeadsRoute: ZoominfoLeadsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

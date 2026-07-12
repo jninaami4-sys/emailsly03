@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { ShoppingCart, Menu, X, LogOut, User as UserIcon } from "lucide-react";
+import { PremiumLogoMark, PremiumShoppingCart, PremiumMenu, PremiumX, PremiumLogOut, PremiumUser } from "./PremiumIcons";
 import { useCart } from "@/lib/cart";
 import { useAuth } from "@/hooks/use-auth";
 import { useState } from "react";
@@ -44,9 +44,7 @@ export function Header() {
               aria-label="LyraData home"
               className={`flex items-center gap-2 rounded-md font-display text-xl font-bold tracking-tight ${focusRing}`}
             >
-              <span className="grid size-6 place-items-center rounded-sm bg-violet" aria-hidden="true">
-                <span className="size-2 rounded-full bg-white" />
-              </span>
+              <PremiumLogoMark className="size-6" aria-hidden="true" />
               LYRA<span className="text-violet">DATA</span>
             </Link>
             <ul className="hidden items-center gap-6 text-sm font-medium text-foreground lg:flex">
@@ -77,7 +75,7 @@ export function Header() {
               className={`relative rounded-lg p-2 text-foreground transition-colors hover:bg-secondary hover:text-violet ${focusRing}`}
               aria-label={cartLabel}
             >
-              <ShoppingCart className="size-5" aria-hidden="true" />
+              <PremiumShoppingCart className="size-5" aria-hidden="true" />
               {count > 0 && (
                 <span
                   aria-hidden="true"
@@ -90,7 +88,7 @@ export function Header() {
             {user ? (
               <>
                 <span className="hidden items-center gap-1.5 rounded-lg bg-secondary px-3 py-2 text-xs font-semibold lg:inline-flex">
-                  <UserIcon className="size-3.5 text-violet" aria-hidden="true" />
+                  <PremiumUser className="size-3.5 text-violet" aria-hidden="true" />
                   <span className="max-w-[140px] truncate" aria-label={`Signed in as ${user.email}`}>
                     {user.email}
                   </span>
@@ -100,7 +98,7 @@ export function Header() {
                   onClick={handleSignOut}
                   className={`hidden items-center gap-1.5 rounded-lg bg-ink px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-violet lg:inline-flex ${focusRing}`}
                 >
-                  <LogOut className="size-3.5" aria-hidden="true" /> Sign out
+                  <PremiumLogOut className="size-3.5" aria-hidden="true" /> Sign out
                 </button>
               </>
             ) : (
@@ -119,7 +117,7 @@ export function Header() {
               aria-expanded={mobileOpen}
               aria-controls="mobile-nav"
             >
-            {mobileOpen ? <X className="size-5" aria-hidden="true" /> : <Menu className="size-5" aria-hidden="true" />}
+            {mobileOpen ? <PremiumX className="size-5" aria-hidden="true" /> : <PremiumMenu className="size-5" aria-hidden="true" />}
           </button>
         </div>
         {/* Liquid-glass gloss reflection */}

@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import type { Product } from "@/lib/products";
 import { useCart } from "@/lib/cart";
-import { Globe, FileText, Upload, ImageIcon, X } from "lucide-react";
+import { Globe, X } from "lucide-react";
+import { PremiumImageIcon, PremiumUpload, PremiumFileText } from "./PremiumIcons";
 
 const chipClass: Record<Product["categoryColor"], string> = {
   violet: "bg-violet-soft text-violet",
@@ -75,7 +76,7 @@ export function ProductCard({ product }: { product: Product }) {
         ) : (
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="flex flex-col items-center gap-2 text-muted-foreground/70">
-              <ImageIcon className="size-8" />
+              <PremiumImageIcon className="size-8" />
               <span className="font-mono text-[10px] uppercase tracking-widest">
                 {product.category}
               </span>
@@ -105,7 +106,7 @@ export function ProductCard({ product }: { product: Product }) {
             className="flex items-center gap-1 rounded-full bg-white/90 px-2.5 py-1 font-mono text-[10px] font-semibold text-ink backdrop-blur transition-colors hover:bg-white"
             aria-label="Upload cover image"
           >
-            <Upload className="size-3" />
+            <PremiumUpload className="size-3" />
             {cover ? "Change cover" : "Upload cover"}
           </button>
           {uploadedCover && (
@@ -156,7 +157,7 @@ export function ProductCard({ product }: { product: Product }) {
             <Globe className="size-3" /> {product.geography}
           </span>
           <span className="inline-flex items-center gap-1 rounded-full bg-secondary px-2 py-0.5 font-mono text-[10px] font-semibold">
-            <FileText className="size-3" /> {product.fileFormat}
+            <PremiumFileText className="size-3" /> {product.fileFormat}
           </span>
         </div>
 

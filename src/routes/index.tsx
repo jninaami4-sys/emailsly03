@@ -9,20 +9,20 @@ import rawZoominfo from "@/lib/zoominfo-leads-raw.json";
 import { openOrderDrawer } from "@/components/site/OrderDrawer";
 
 import {
-  ArrowRight,
-  ArrowUpRight,
-  ShieldCheck,
-  Zap,
-  Database,
-  Star,
-  Download,
-  Search,
-  Sparkles,
-  Layers,
-  Timer,
-  Target,
-  Globe2,
-} from "lucide-react";
+  PremiumArrowRight,
+  PremiumArrowUpRight,
+  PremiumShieldCheck,
+  PremiumZap,
+  PremiumDatabase,
+  PremiumStar,
+  PremiumDownload,
+  PremiumSearch,
+  PremiumSparkles,
+  PremiumLayers,
+  PremiumTimer,
+  PremiumTarget,
+  PremiumGlobe,
+} from "@/components/site/PremiumIcons";
 import { Testimonials } from "@/components/site/Testimonials";
 
 type RawData = {
@@ -168,7 +168,7 @@ function Home() {
                   className="group inline-flex w-full items-center justify-center gap-2 rounded-full bg-indigo px-8 py-4 text-base font-semibold text-white shadow-[0_20px_50px_-15px_rgba(79,70,229,0.8)] transition-all hover:-translate-y-0.5 sm:w-auto"
                 >
                   Build your order
-                  <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  <PremiumArrowUpRight className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </button>
                 <Link
                   to="/sample-data"
@@ -201,7 +201,7 @@ function Home() {
                 <div className="mb-4 flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div className="grid size-9 place-items-center rounded-xl bg-indigo/20 text-indigo">
-                      <Database className="size-4" />
+                      <PremiumDatabase className="size-4" />
                     </div>
                     <div>
                       <p className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-foreground/50">Live data console</p>
@@ -230,7 +230,7 @@ function Home() {
 
                 <div className="mb-3 flex flex-wrap items-center gap-2">
                   <div className="relative flex-1 min-w-[140px]">
-                    <Search className="pointer-events-none absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-foreground/40" />
+                    <PremiumSearch className="pointer-events-none absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-foreground/40" />
                     <input
                       value={query}
                       onChange={(e) => setQuery(e.target.value)}
@@ -242,7 +242,7 @@ function Home() {
                     onClick={() => downloadCsv(active.file, rawActive)}
                     className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[11px] font-semibold text-white transition-transform hover:-translate-y-0.5 ${accent.solid}`}
                   >
-                    <Download className="size-3.5" /> CSV
+                    <PremiumDownload className="size-3.5" /> CSV
                   </button>
                 </div>
 
@@ -283,7 +283,7 @@ function Home() {
                 <div className="mt-3 flex flex-wrap items-center justify-between gap-2 font-mono text-[10px] uppercase tracking-widest text-foreground/50">
                   <span>{filteredRows.length.toLocaleString()} / {active.rows.toLocaleString()} rows · {active.cols} cols</span>
                   <Link to="/sample-data" className={`inline-flex items-center gap-1 ${accent.text} hover:opacity-80`}>
-                    Open full sample <ArrowRight className="size-3" />
+                    Open full sample <PremiumArrowRight className="size-3" />
                   </Link>
                 </div>
               </div>
@@ -297,12 +297,12 @@ function Home() {
               <div className="pointer-events-none absolute -right-8 -top-8 size-48 rounded-full bg-white/15 blur-2xl" />
               <div className="relative flex h-full flex-col justify-between">
                 <div>
-                  <Sparkles className="size-6" />
+                  <PremiumSparkles className="size-6" />
                   <h3 className="mt-6 font-display text-2xl font-bold leading-tight md:text-3xl">Get your price in 30 seconds.</h3>
                   <p className="mt-3 text-sm text-white/80">Slide out the builder, pick a service, see the exact cost. No calls, no forms.</p>
                 </div>
                 <span className="inline-flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-widest">
-                  Open builder <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  Open builder <PremiumArrowUpRight className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </span>
               </div>
             </button>
@@ -310,7 +310,7 @@ function Home() {
             {/* Verified feature */}
             <article className="col-span-1 overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] p-6 md:col-span-2">
               <div className="grid size-10 place-items-center rounded-xl bg-emerald/15 text-emerald">
-                <ShieldCheck className="size-5" />
+                <PremiumShieldCheck className="size-5" />
               </div>
               <h3 className="mt-4 font-display text-lg font-bold">Real-time verification</h3>
               <p className="mt-1 text-sm text-foreground/60">Every email pinged live. Bounces replaced free.</p>
@@ -319,7 +319,7 @@ function Home() {
             {/* 24h feature */}
             <article className="col-span-1 overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] p-6 md:col-span-2">
               <div className="grid size-10 place-items-center rounded-xl bg-indigo/15 text-indigo">
-                <Timer className="size-5" />
+                <PremiumTimer className="size-5" />
               </div>
               <h3 className="mt-4 font-display text-lg font-bold">24h turnaround</h3>
               <p className="mt-1 text-sm text-foreground/60">Requirements in, cleaned dataset out — under a business day.</p>
@@ -328,7 +328,7 @@ function Home() {
             {/* CRM feature */}
             <article className="col-span-1 overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] p-6 md:col-span-2">
               <div className="grid size-10 place-items-center rounded-xl bg-coral/15 text-coral">
-                <Layers className="size-5" />
+                <PremiumLayers className="size-5" />
               </div>
               <h3 className="mt-4 font-display text-lg font-bold">CRM-native format</h3>
               <p className="mt-1 text-sm text-foreground/60">Mapped for HubSpot, Salesforce, Pipedrive. Single-click import.</p>
@@ -338,7 +338,7 @@ function Home() {
             <article className="col-span-1 overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] p-6 md:col-span-3">
               <div className="flex items-start gap-4">
                 <div className="grid size-10 shrink-0 place-items-center rounded-xl bg-indigo/15 text-indigo">
-                  <Target className="size-5" />
+                  <PremiumTarget className="size-5" />
                 </div>
                 <div>
                   <h3 className="font-display text-lg font-bold">Precise ICP targeting</h3>
@@ -351,7 +351,7 @@ function Home() {
             <article className="col-span-1 overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] p-6 md:col-span-3">
               <div className="flex items-start gap-4">
                 <div className="grid size-10 shrink-0 place-items-center rounded-xl bg-emerald/15 text-emerald">
-                  <Globe2 className="size-5" />
+                  <PremiumGlobe className="size-5" />
                 </div>
                 <div>
                   <h3 className="font-display text-lg font-bold">Global coverage</h3>
@@ -372,7 +372,7 @@ function Home() {
                 <p className="mt-2 max-w-xl text-foreground/60">Instant CSV download, verified contacts, ready to import.</p>
               </div>
               <Link to="/store" className="inline-flex items-center gap-1 font-semibold text-indigo hover:underline">
-                Browse full store <ArrowRight className="size-4" />
+                Browse full store <PremiumArrowRight className="size-4" />
               </Link>
             </div>
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -390,7 +390,7 @@ function Home() {
           <div className="relative mx-auto max-w-4xl text-center">
             <div className="mb-8 flex justify-center gap-1 text-indigo">
               {Array.from({ length: 5 }).map((_, i) => (
-                <Star key={i} className="size-5 fill-current" />
+                <PremiumStar key={i} className="size-5" />
               ))}
             </div>
             <blockquote className="font-display text-3xl font-medium leading-snug text-foreground md:text-4xl">
@@ -419,7 +419,7 @@ function Home() {
                 onClick={openOrderDrawer}
                 className="mt-6 inline-flex items-center gap-2 rounded-full bg-indigo px-5 py-3 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5"
               >
-                Build your order <ArrowUpRight className="size-4" />
+                Build your order <PremiumArrowUpRight className="size-4" />
               </button>
             </div>
             <div className="space-y-3">
@@ -428,7 +428,7 @@ function Home() {
                   <summary className="flex cursor-pointer items-center justify-between gap-4 font-semibold text-foreground">
                     {f.q}
                     <span className="grid size-7 shrink-0 place-items-center rounded-full bg-indigo/20 text-indigo transition-transform group-open:rotate-45">
-                      <Zap className="size-3.5" />
+                      <PremiumZap className="size-3.5" />
                     </span>
                   </summary>
                   <p className="mt-4 whitespace-pre-line text-sm leading-relaxed text-foreground/70">{f.a}</p>
@@ -444,7 +444,7 @@ function Home() {
             <div className="pointer-events-none absolute -right-20 top-1/2 size-96 -translate-y-1/2 rounded-full bg-indigo/40 blur-3xl" />
             <div className="relative">
               <div className="mx-auto mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-foreground/80">
-                <Zap className="size-3 text-indigo" /> Ready when you are
+                <PremiumZap className="size-3 text-indigo" /> Ready when you are
               </div>
               <h2 className="font-display text-4xl font-bold tracking-tight md:text-6xl">
                 Your next 10,000 leads <br className="hidden md:block" />are one slide away.
@@ -457,7 +457,7 @@ function Home() {
                   onClick={openOrderDrawer}
                   className="inline-flex items-center gap-2 rounded-full bg-white px-8 py-4 text-base font-bold text-indigo shadow-xl transition-transform hover:-translate-y-0.5"
                 >
-                  Build your order <ArrowUpRight className="size-4" />
+                  Build your order <PremiumArrowUpRight className="size-4" />
                 </button>
                 <Link
                   to="/contact"

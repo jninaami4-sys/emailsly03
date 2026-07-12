@@ -43,6 +43,9 @@ export function Header() {
             <Link to="/track-order" className="transition-colors hover:text-foreground">
               Track Order
             </Link>
+            <Link to="/blog" className="transition-colors hover:text-foreground">
+              Blog
+            </Link>
             <Link to="/contact" className="transition-colors hover:text-foreground">
               Contact
             </Link>
@@ -105,6 +108,9 @@ export function Header() {
             </Link>
             <Link to="/track-order" className="rounded-md px-2 py-2 hover:bg-secondary" onClick={() => setMobileOpen(false)}>
               Track Order
+            </Link>
+            <Link to="/blog" className="rounded-md px-2 py-2 hover:bg-secondary" onClick={() => setMobileOpen(false)}>
+              Blog
             </Link>
             <Link to="/contact" className="rounded-md px-2 py-2 hover:bg-secondary" onClick={() => setMobileOpen(false)}>
               Contact

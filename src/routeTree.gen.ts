@@ -22,9 +22,11 @@ import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as ManualLeadResearchRouteImport } from './routes/manual-lead-research'
 import { Route as LinkedinSalesNavigatorLeadsRouteImport } from './routes/linkedin-sales-navigator-leads'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as BlogRouteImport } from './routes/blog'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ApolloLeadsExportRouteImport } from './routes/apollo-leads-export'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 
 const ZoominfoLeadsRoute = ZoominfoLeadsRouteImport.update({
   id: '/zoominfo-leads',
@@ -92,6 +94,11 @@ const ContactRoute = ContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BlogRoute = BlogRouteImport.update({
+  id: '/blog',
+  path: '/blog',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
@@ -107,11 +114,17 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BlogSlugRoute = BlogSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => BlogRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/apollo-leads-export': typeof ApolloLeadsExportRoute
   '/auth': typeof AuthRoute
+  '/blog': typeof BlogRouteWithChildren
   '/contact': typeof ContactRoute
   '/linkedin-sales-navigator-leads': typeof LinkedinSalesNavigatorLeadsRoute
   '/manual-lead-research': typeof ManualLeadResearchRoute
@@ -125,11 +138,13 @@ export interface FileRoutesByFullPath {
   '/track-order': typeof TrackOrderRoute
   '/website-design': typeof WebsiteDesignRoute
   '/zoominfo-leads': typeof ZoominfoLeadsRoute
+  '/blog/$slug': typeof BlogSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/apollo-leads-export': typeof ApolloLeadsExportRoute
   '/auth': typeof AuthRoute
+  '/blog': typeof BlogRouteWithChildren
   '/contact': typeof ContactRoute
   '/linkedin-sales-navigator-leads': typeof LinkedinSalesNavigatorLeadsRoute
   '/manual-lead-research': typeof ManualLeadResearchRoute
@@ -143,12 +158,14 @@ export interface FileRoutesByTo {
   '/track-order': typeof TrackOrderRoute
   '/website-design': typeof WebsiteDesignRoute
   '/zoominfo-leads': typeof ZoominfoLeadsRoute
+  '/blog/$slug': typeof BlogSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/apollo-leads-export': typeof ApolloLeadsExportRoute
   '/auth': typeof AuthRoute
+  '/blog': typeof BlogRouteWithChildren
   '/contact': typeof ContactRoute
   '/linkedin-sales-navigator-leads': typeof LinkedinSalesNavigatorLeadsRoute
   '/manual-lead-research': typeof ManualLeadResearchRoute
@@ -162,6 +179,7 @@ export interface FileRoutesById {
   '/track-order': typeof TrackOrderRoute
   '/website-design': typeof WebsiteDesignRoute
   '/zoominfo-leads': typeof ZoominfoLeadsRoute
+  '/blog/$slug': typeof BlogSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -169,6 +187,7 @@ export interface FileRouteTypes {
     | '/'
     | '/apollo-leads-export'
     | '/auth'
+    | '/blog'
     | '/contact'
     | '/linkedin-sales-navigator-leads'
     | '/manual-lead-research'
@@ -182,11 +201,13 @@ export interface FileRouteTypes {
     | '/track-order'
     | '/website-design'
     | '/zoominfo-leads'
+    | '/blog/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/apollo-leads-export'
     | '/auth'
+    | '/blog'
     | '/contact'
     | '/linkedin-sales-navigator-leads'
     | '/manual-lead-research'
@@ -200,11 +221,13 @@ export interface FileRouteTypes {
     | '/track-order'
     | '/website-design'
     | '/zoominfo-leads'
+    | '/blog/$slug'
   id:
     | '__root__'
     | '/'
     | '/apollo-leads-export'
     | '/auth'
+    | '/blog'
     | '/contact'
     | '/linkedin-sales-navigator-leads'
     | '/manual-lead-research'
@@ -218,12 +241,14 @@ export interface FileRouteTypes {
     | '/track-order'
     | '/website-design'
     | '/zoominfo-leads'
+    | '/blog/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ApolloLeadsExportRoute: typeof ApolloLeadsExportRoute
   AuthRoute: typeof AuthRoute
+  BlogRoute: typeof BlogRouteWithChildren
   ContactRoute: typeof ContactRoute
   LinkedinSalesNavigatorLeadsRoute: typeof LinkedinSalesNavigatorLeadsRoute
   ManualLeadResearchRoute: typeof ManualLeadResearchRoute
@@ -332,6 +357,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/blog': {
+      id: '/blog'
+      path: '/blog'
+      fullPath: '/blog'
+      preLoaderRoute: typeof BlogRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth': {
       id: '/auth'
       path: '/auth'
@@ -353,13 +385,31 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/blog/$slug': {
+      id: '/blog/$slug'
+      path: '/$slug'
+      fullPath: '/blog/$slug'
+      preLoaderRoute: typeof BlogSlugRouteImport
+      parentRoute: typeof BlogRoute
+    }
   }
 }
+
+interface BlogRouteChildren {
+  BlogSlugRoute: typeof BlogSlugRoute
+}
+
+const BlogRouteChildren: BlogRouteChildren = {
+  BlogSlugRoute: BlogSlugRoute,
+}
+
+const BlogRouteWithChildren = BlogRoute._addFileChildren(BlogRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ApolloLeadsExportRoute: ApolloLeadsExportRoute,
   AuthRoute: AuthRoute,
+  BlogRoute: BlogRouteWithChildren,
   ContactRoute: ContactRoute,
   LinkedinSalesNavigatorLeadsRoute: LinkedinSalesNavigatorLeadsRoute,
   ManualLeadResearchRoute: ManualLeadResearchRoute,

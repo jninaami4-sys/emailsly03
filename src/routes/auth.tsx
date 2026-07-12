@@ -45,7 +45,9 @@ function AuthPage() {
   const [busy, setBusy] = useState(false);
   const [info, setInfo] = useState<string | null>(null);
   const [lastEmail, setLastEmail] = useState<string | null>(null);
-  const [cooldown, setCooldown] = useState(0);
+  const [resetSentAt, setResetSentAt] = useState<number | null>(null);
+  const [now, setNow] = useState(() => Date.now());
+  const cooldown = resetSentAt ? Math.max(0, 60 - Math.floor((now - resetSentAt) / 1000)) : 0;
   const [rememberMe, setRememberMe] = useState(() => {
     if (typeof window === "undefined") return true;
     return window.localStorage.getItem("lyra_remember_me") !== "false";

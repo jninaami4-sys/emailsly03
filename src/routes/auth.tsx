@@ -51,6 +51,13 @@ function AuthPage() {
     return window.localStorage.getItem("lyra_remember_me") !== "false";
   });
   const [signUpSuccess, setSignUpSuccess] = useState(false);
+  const [unconfirmedEmail, setUnconfirmedEmail] = useState<string | null>(null);
+  const [resendState, setResendState] = useState<{ busy: boolean; sentAt: number | null; error: string | null; cooldown: number }>({
+    busy: false,
+    sentAt: null,
+    error: null,
+    cooldown: 0,
+  });
 
   useEffect(() => {
     if (typeof window === "undefined") return;

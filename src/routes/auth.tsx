@@ -324,11 +324,21 @@ function AuthPage() {
                       </div>
 
                       {info && (
-                        <div className="animate-fade-in rounded-lg border border-emerald/30 bg-emerald/10 px-3 py-2 text-sm text-emerald-foreground">
+                        <div className="animate-fade-in rounded-lg border border-emerald/30 bg-emerald/10 px-3 py-3 text-sm text-emerald-foreground">
                           <p className="flex items-start gap-2">
                             <CheckCircle2 className="mt-0.5 size-4 shrink-0" />
                             {info}
                           </p>
+                          {lastEmail && (
+                            <button
+                              type="button"
+                              onClick={() => handleResend()}
+                              disabled={busy || cooldown > 0}
+                              className="mt-2 w-full text-center text-xs font-medium text-emerald-foreground/80 transition-colors hover:text-emerald-foreground disabled:cursor-not-allowed disabled:opacity-50"
+                            >
+                              {cooldown > 0 ? `Resend available in ${cooldown}s` : "Didn't receive it? Resend email"}
+                            </button>
+                          )}
                         </div>
                       )}
                       {error && (

@@ -275,7 +275,40 @@ function AuthPage() {
         }}
       />
 
-      <div className="relative mx-auto grid min-h-screen max-w-6xl grid-cols-1 items-center gap-12 px-6 py-16 lg:grid-cols-2">
+      <div className="relative mx-auto grid min-h-screen max-w-6xl grid-cols-1 items-center gap-8 px-4 py-8 sm:gap-12 sm:px-6 sm:py-12 lg:grid-cols-2 lg:py-16">
+        {/* Mobile / tablet hero (hidden on lg — desktop uses left column below) */}
+        <div className="lg:hidden">
+          <div className="mx-auto flex max-w-md flex-col items-center text-center">
+            <Link to="/" className="inline-flex items-center gap-2 font-display text-lg font-bold tracking-tight text-foreground">
+              <span className="grid size-6 place-items-center rounded-md bg-primary">
+                <span className="size-2 rounded-full bg-primary-foreground" />
+              </span>
+              LYRA<span className="text-muted-foreground">DATA</span>
+            </Link>
+            <div className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-border bg-card/60 px-2.5 py-1 text-[11px] font-medium text-muted-foreground shadow-sm backdrop-blur">
+              <BadgeCheck className="size-3 text-primary" aria-hidden="true" /> Free · No card required
+            </div>
+            <h1 className="mt-3 font-display text-[26px] font-bold leading-[1.1] tracking-tight sm:text-3xl">
+              The revenue team's <span className="text-muted-foreground">shortcut</span> to pipeline.
+            </h1>
+            <p className="mt-2 max-w-sm text-sm text-muted-foreground">
+              99% accurate B2B leads — delivered to your CRM within 24 hours.
+            </p>
+            <ul className="mt-5 flex flex-wrap items-center justify-center gap-1.5 text-[11px]">
+              {[
+                { icon: ShieldCheck, t: "GDPR · 256-bit" },
+                { icon: Zap, t: "99% accuracy" },
+                { icon: Mail, t: "Verified emails" },
+              ].map((f) => (
+                <li key={f.t} className="inline-flex items-center gap-1 rounded-full border border-border bg-card/70 px-2.5 py-1 text-muted-foreground shadow-sm backdrop-blur">
+                  <f.icon className="size-3 text-primary" aria-hidden="true" /> {f.t}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        {/* Desktop hero — left column */}
         <div className="hidden lg:block">
           <Link to="/" className="inline-flex items-center gap-2 font-display text-xl font-bold tracking-tight text-foreground">
             <span className="grid size-6 place-items-center rounded-md bg-primary">
@@ -316,10 +349,10 @@ function AuthPage() {
         <div className="w-full">
           <div className="relative mx-auto max-w-md">
             <div
-              className="relative animate-fade-in rounded-[1.75rem] border border-border bg-card/80 p-8 shadow-xl backdrop-blur-xl"
+              className="relative animate-fade-in rounded-3xl border border-border bg-card/80 p-5 shadow-xl backdrop-blur-xl sm:rounded-[1.75rem] sm:p-8"
               style={{ backdropFilter: "blur(24px) saturate(140%)" }}
             >
-              <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-[1.75rem]">
+              <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-3xl sm:rounded-[1.75rem]">
                 <div className="absolute -top-1/2 left-0 h-full w-full rotate-12 bg-gradient-to-b from-white/60 via-transparent to-transparent opacity-50" />
               </div>
 

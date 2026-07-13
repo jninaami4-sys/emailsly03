@@ -56,6 +56,8 @@ const SERVICES: Service[] = [
 ];
 
 const QTY_PRESETS = [5000, 10000, 15000, 20000, 50000, 100000, 250000, 500000, 1000000];
+const TIER_PRESETS = [100, 200, 300, 400, 500, 750, 1000, 1500, 2000, 3000, 5000, 7500, 10000];
+const TIER_SERVICES = new Set(["manual", "mobile"]);
 
 const STEPS = [
   { id: 1, label: "Service", icon: Sliders },

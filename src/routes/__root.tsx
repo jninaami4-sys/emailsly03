@@ -19,6 +19,7 @@ import { TrackingScripts } from "@/components/site/TrackingScripts";
 import { TrackingDebugPanel } from "@/components/site/TrackingDebugPanel";
 import { CookieConsent } from "@/components/site/CookieConsent";
 import { ChatbotWidget } from "@/components/site/ChatbotWidget";
+import { RouteTransition } from "@/components/site/RouteTransition";
 
 function NotFoundComponent() {
   return (
@@ -138,7 +139,9 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <CartProvider>
-          <Outlet />
+          <RouteTransition>
+            <Outlet />
+          </RouteTransition>
           <CartDrawer />
           <AnnouncementModal />
           <TrackingScripts />

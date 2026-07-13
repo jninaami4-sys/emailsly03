@@ -78,23 +78,44 @@ function TrackOrderPage() {
   const hydrated = useHydrated();
   const [query, setQuery] = useState("");
   const [submitted, setSubmitted] = useState<string | null>(null);
-  const [notFound, setNotFound] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const result = useMemo(() => (submitted ? mockLookup(submitted) : null), [submitted]);
+
+  const detectKind = (q: string): "order" | "invoice" | "email" | "unknown" => {
+    if (q.includes("@")) return /\S+@\S+\.\S+/.test(q) ? "email" : "unknown";
+    if (/^lyr[-_]?\w{3,}$/i.test(q)) return "order";
+    if (/^inv[-_]?\w{3,}$/i.test(q)) return "invoice";
+    return "unknown";
+  };
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const q = query.trim();
-    if (!q) return;
-    // Simple guard: must look like an order ID (LYR-…) or an email
-    const isEmail = /\S+@\S+\.\S+/.test(q);
-    const isOrderId = /^lyr[-_]?\w{3,}$/i.test(q);
-    if (!isEmail && !isOrderId) {
-      setNotFound(true);
+    if (!q) {
+      setErrorMsg("Please enter your order ID, invoice number, or email.");
       setSubmitted(null);
       return;
     }
-    setNotFound(false);
+    if (q.includes("@") && !/\S+@\S+\.\S+/.test(q)) {
+      setErrorMsg("That email looks incomplete — use the full address you paid with.");
+      setSubmitted(null);
+      return;
+    }
+    if (q.length < 4) {
+      setErrorMsg("Too short — order IDs and invoices are at least 4 characters.");
+      setSubmitted(null);
+      return;
+    }
+    const kind = detectKind(q);
+    if (kind === "unknown") {
+      setErrorMsg(
+        "Use an order ID (LYR-000123), an invoice number (INV-000123), or the email you paid with.",
+      );
+      setSubmitted(null);
+      return;
+    }
+    setErrorMsg(null);
     setSubmitted(q);
   };
 

@@ -170,7 +170,7 @@ export function TrackingScripts() {
         }
       });
     }
-  }, [data]);
+  }, [data, consent]);
 
   // Fire pageview on SPA navigation for GA4, Meta, TikTok
   useEffect(() => {

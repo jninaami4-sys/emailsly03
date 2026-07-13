@@ -10,6 +10,7 @@ import {
   readConsent,
   type ConsentCategories,
 } from "@/lib/consent";
+import { pageviewId, reserveEvent } from "@/lib/dedupe";
 
 /**
  * Injects tracking scripts (GTM, GA4, Meta Pixel, TikTok Pixel, custom head HTML)
@@ -93,7 +94,8 @@ export function TrackingScripts() {
         w.dataLayer!.push(arguments);
       };
       w.gtag("js", new Date());
-      w.gtag("config", data.ga4_id);
+      // Suppress the auto page_view — our deduped fire() below owns pageviews.
+      w.gtag("config", data.ga4_id, { send_page_view: false });
     }
 
     // Meta / Facebook Pixel — marketing consent
@@ -119,7 +121,7 @@ export function TrackingScripts() {
         document.head.appendChild(t);
       }
       w.fbq!("init", data.fb_pixel_id);
-      w.fbq!("track", "PageView");
+      // PageView is fired by our deduped fire() so it carries an eventID.
     }
 
     // TikTok Pixel — marketing consent
@@ -144,7 +146,7 @@ export function TrackingScripts() {
             var a=document.getElementsByTagName("script")[0];a.parentNode.insertBefore(s,a)
           };
           ttq.load(${JSON.stringify(data.tiktok_pixel_id)});
-          ttq.page();
+          // ttq.page() is fired by our deduped fire() so it carries event_id.
         }(window, document, 'ttq');`;
         const s = document.createElement("script");
         s.text = src;
@@ -172,25 +174,32 @@ export function TrackingScripts() {
     }
   }, [data, consent]);
 
-  // Fire pageview on SPA navigation for GA4, Meta, TikTok
+  // Fire pageview on SPA navigation for GA4, Meta, TikTok.
+  // Deduped via a stable per-path id shared with the injected snippets'
+  // initial pageview, so React re-mounts, `pushState` doubles, and
+  // same-tab refreshes never double-count.
   useEffect(() => {
     if (typeof window === "undefined") return;
-    let lastPath = window.location.pathname + window.location.search;
+
     const fire = () => {
       const path = window.location.pathname + window.location.search;
-      if (path === lastPath) return;
-      lastPath = path;
+      const id = pageviewId(path);
+      if (!reserveEvent(id, 4_000)) return;
       const w = window as unknown as {
         gtag?: (...args: unknown[]) => void;
         fbq?: (...args: unknown[]) => void;
-        ttq?: { page?: () => void };
+        ttq?: { page?: (params?: unknown) => void };
         dataLayer?: unknown[];
       };
-      w.dataLayer?.push({ event: "pageview", page_path: path });
-      w.gtag?.("event", "page_view", { page_path: path });
-      w.fbq?.("track", "PageView");
-      w.ttq?.page?.();
+      w.dataLayer?.push({ event: "pageview", page_path: path, event_id: id });
+      w.gtag?.("event", "page_view", { page_path: path, event_id: id });
+      w.fbq?.("track", "PageView", {}, { eventID: id });
+      w.ttq?.page?.({ event_id: id });
     };
+
+    // Fire once on mount so hard refreshes count exactly one pageview.
+    fire();
+
     const origPush = history.pushState;
     const origReplace = history.replaceState;
     history.pushState = function (...args) {

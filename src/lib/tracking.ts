@@ -1,4 +1,5 @@
 import { getConversionEvents, type ConversionEvent, type ParamMap } from "@/lib/conversion-events.functions";
+import { conversionEventId, reserveEvent } from "@/lib/dedupe";
 
 // Populated on the client by <TrackingScripts /> (see prime()).
 let cache: ConversionEvent[] = [];
@@ -61,6 +62,15 @@ export async function trackConversion(key: string, overrides?: ParamMap): Promis
     return;
   }
 
+  // Stable id so the same logical event never fires twice — across
+  // re-renders, effect re-runs, or a same-tab refresh — and downstream
+  // (Meta CAPI, GA4 measurement protocol) can dedupe against the client.
+  const eventId = conversionEventId(key, overrides as Record<string, unknown> | undefined);
+  if (!reserveEvent(eventId)) {
+    emitDebug({ ts: Date.now(), key, matched: true, fired, overrides, note: `Deduped (${eventId})` });
+    return;
+  }
+
   const w = window as unknown as {
     gtag?: (...args: unknown[]) => void;
     dataLayer?: unknown[];
@@ -69,7 +79,8 @@ export async function trackConversion(key: string, overrides?: ParamMap): Promis
   };
 
   if (evt.ga4_event_name) {
-    const params = merge(evt.ga4_params, overrides);
+    // GA4 uses `event_id` for its own dedupe on the server side.
+    const params = { ...merge(evt.ga4_params, overrides), event_id: eventId };
     if (w.gtag) {
       w.gtag("event", evt.ga4_event_name, params);
       fired.push({ provider: "GA4", name: evt.ga4_event_name, params });
@@ -87,17 +98,25 @@ export async function trackConversion(key: string, overrides?: ParamMap): Promis
       "CustomizeProduct","Donate","FindLocation","InitiateCheckout","Lead","Purchase",
       "Schedule","Search","StartTrial","SubmitApplication","Subscribe","ViewContent",
     ]);
-    w.fbq(std.has(evt.meta_event_name) ? "track" : "trackCustom", evt.meta_event_name, params);
-    fired.push({ provider: "Meta", name: evt.meta_event_name, params });
+    // Meta browser+CAPI dedupe on `eventID` (third argument).
+    w.fbq(std.has(evt.meta_event_name) ? "track" : "trackCustom", evt.meta_event_name, params, {
+      eventID: eventId,
+    });
+    fired.push({ provider: "Meta", name: evt.meta_event_name, params: { ...params, eventID: eventId } });
   }
 
   if (evt.tiktok_event_name && w.ttq?.track) {
+    // TikTok dedupes on `event_id` in the options bag.
     const params = merge(evt.tiktok_params, overrides);
-    w.ttq.track(evt.tiktok_event_name, params);
-    fired.push({ provider: "TikTok", name: evt.tiktok_event_name, params });
+    (w.ttq.track as (n: string, p?: unknown, o?: unknown) => void)(
+      evt.tiktok_event_name,
+      params,
+      { event_id: eventId },
+    );
+    fired.push({ provider: "TikTok", name: evt.tiktok_event_name, params: { ...params, event_id: eventId } });
   }
 
-  emitDebug({ ts: Date.now(), key, matched: true, fired, overrides });
+  emitDebug({ ts: Date.now(), key, matched: true, fired, overrides, note: `id=${eventId}` });
 }
 
 // Expose for debugging / non-React call sites.

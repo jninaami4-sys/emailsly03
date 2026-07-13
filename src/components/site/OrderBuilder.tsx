@@ -189,7 +189,7 @@ export function OrderBuilder() {
 
         {/* Stepper — mobile/tablet only */}
         <div className="mx-auto mt-6 max-w-5xl sm:mt-10 lg:hidden">
-          <div className="relative flex items-center gap-1.5 overflow-x-auto rounded-2xl border border-border bg-card/60 p-2 backdrop-blur sm:justify-between sm:gap-2 sm:p-3">
+          <div className="relative flex items-stretch gap-1.5 overflow-x-auto rounded-2xl border border-border bg-card/60 p-2 backdrop-blur sm:gap-2 sm:p-3">
             {STEPS.map((s, i) => {
               const Icon = s.icon;
               const done = step > s.id;
@@ -199,7 +199,7 @@ export function OrderBuilder() {
                   <button
                     type="button"
                     onClick={() => (done ? setStep(s.id) : null)}
-                    className={`group flex min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-xl px-1.5 py-2 text-center transition-all sm:flex-row sm:gap-3 sm:px-3 sm:py-3 sm:text-left ${
+                    className={`group flex min-w-0 flex-1 flex-col items-center justify-center gap-1.5 rounded-xl px-2 py-2 text-center transition-all sm:gap-2 sm:px-3 sm:py-3 ${
                       active
                         ? "bg-violet text-white shadow-lg shadow-violet/25"
                         : done
@@ -218,20 +218,21 @@ export function OrderBuilder() {
                     >
                       {done ? <Check className="size-3.5 sm:size-4" /> : <Icon className="size-3.5 sm:size-4" />}
                     </span>
-                    <span className="min-w-0 sm:flex-1">
-                      <span className={`hidden font-mono text-[10px] font-bold uppercase tracking-widest sm:block ${active ? "text-white/70" : done ? "text-emerald/80" : "text-muted-foreground/70"}`}>
+                    <span className="flex min-w-0 flex-col items-center leading-tight">
+                      <span className={`hidden whitespace-nowrap font-mono text-[10px] font-bold uppercase tracking-widest sm:block ${active ? "text-white/70" : done ? "text-emerald/80" : "text-muted-foreground/70"}`}>
                         Step {s.id}
                       </span>
-                      <span className="block text-[11px] font-semibold leading-tight sm:truncate sm:text-sm">{s.label}</span>
+                      <span className="block whitespace-nowrap text-[11px] font-semibold sm:text-sm">{s.label}</span>
                     </span>
                   </button>
                   {i < STEPS.length - 1 && (
-                    <div className={`hidden h-px flex-1 sm:block ${step > s.id ? "bg-emerald/40" : "bg-border"}`} />
+                    <div className={`hidden h-px w-4 shrink-0 sm:block md:w-8 ${step > s.id ? "bg-emerald/40" : "bg-border"}`} />
                   )}
                 </div>
               );
             })}
           </div>
+
         </div>
 
         {/* Body */}

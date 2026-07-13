@@ -82,6 +82,11 @@ export function LiveDataConsole({
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+    void trackConversion("download", {
+      source: activeSource,
+      rows: raw.rows.length,
+      file: `${activeSource}_sample_leads.csv`,
+    });
   };
 
   return (

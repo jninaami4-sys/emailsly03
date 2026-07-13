@@ -136,6 +136,13 @@ export function Footer() {
             <Link to="/contact" className="transition-colors hover:text-white">
               Contact
             </Link>
+            <button
+              type="button"
+              onClick={openConsentPreferences}
+              className="text-left transition-colors hover:text-white"
+            >
+              Cookie preferences
+            </button>
           </div>
         </div>
       </div>

@@ -812,7 +812,7 @@ function ComparePill({
       <div className="font-mono text-[10px] font-bold uppercase leading-relaxed tracking-widest text-muted-foreground">
         {label}
       </div>
-      <div className={`mt-1.5 break-words font-display text-base font-bold leading-tight sm:text-lg ${priceColor}`}>
+      <div className={`mt-1.5 whitespace-nowrap font-display text-base font-bold leading-tight sm:text-lg ${priceColor}`}>
         {formatUSD(price)}
       </div>
       <div className="mt-1.5 font-mono text-[10px] leading-relaxed text-muted-foreground">{note}</div>

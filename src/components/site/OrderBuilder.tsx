@@ -705,11 +705,23 @@ export function OrderBuilder() {
 
 /* ---------- helpers ---------- */
 
-function StepHeader({ eyebrow, title, subtitle }: { eyebrow: string; title: string; subtitle: string }) {
+function StepHeader({
+  eyebrow,
+  title,
+  subtitle,
+  isDesktop,
+}: {
+  eyebrow: string;
+  title: string;
+  subtitle: string;
+  isDesktop?: boolean;
+}) {
   return (
     <div className="max-w-2xl">
-      <div className="font-mono text-[10px] font-bold uppercase tracking-widest text-violet">{eyebrow}</div>
-      <h3 className="mt-2 font-display text-xl font-bold tracking-tight sm:text-2xl md:text-3xl">{title}</h3>
+      {!isDesktop && (
+        <div className="font-mono text-[10px] font-bold uppercase tracking-widest text-violet">{eyebrow}</div>
+      )}
+      <h3 className={`font-display text-xl font-bold tracking-tight sm:text-2xl md:text-3xl ${isDesktop ? "" : "mt-2"}`}>{title}</h3>
       <p className="mt-2 text-sm text-muted-foreground md:text-base">{subtitle}</p>
     </div>
   );

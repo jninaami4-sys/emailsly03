@@ -316,7 +316,7 @@ export function OrderBuilder() {
 
                     <div className="mt-6 sm:mt-8">
                       <SectionLabel icon={Tag}>Price comparison</SectionLabel>
-                      <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+                      <div className="grid gap-3 grid-cols-2">
                         <ComparePill label="Apollo.io retail" price={comparePriceApollo} note={`${(comparePriceApollo / base).toFixed(0)}× more`} tone="muted" />
                         <ComparePill label="LinkedIn Nav" price={comparePriceLinkedIn} note={`${(comparePriceLinkedIn / base).toFixed(0)}× more`} tone="muted" />
                         <ComparePill label="Our price" price={base} note="Base subtotal" tone="violet" />
@@ -766,18 +766,18 @@ function ServiceChip({
     <button
       type="button"
       onClick={onClick}
-      className={`group flex w-full items-start gap-2.5 rounded-xl border bg-background px-3 py-2.5 text-left transition-all sm:gap-3 sm:py-3 ${
+      className={`group flex w-full items-start gap-3 rounded-xl border bg-background px-4 py-3.5 text-left transition-all sm:px-5 sm:py-4 ${
         active ? activeClasses : "border-border hover:border-foreground/20"
       }`}
     >
-      <span className={`mt-0.5 grid size-7 shrink-0 place-items-center rounded-lg sm:size-8 ${iconBg}`}>
-        <Icon className="size-3.5 sm:size-4" />
+      <span className={`mt-0.5 grid size-8 shrink-0 place-items-center rounded-lg sm:size-9 ${iconBg}`}>
+        <Icon className="size-4 sm:size-5" />
       </span>
       <span className="min-w-0 flex-1">
-        <span className={`block text-xs font-semibold leading-snug ${active ? "" : "text-foreground"}`}>
+        <span className={`block text-sm font-semibold leading-relaxed ${active ? "" : "text-foreground"}`}>
           {service.name}
         </span>
-        <span className={`mt-0.5 block font-mono text-[10px] leading-tight ${active ? "opacity-70" : "text-muted-foreground"}`}>
+        <span className={`mt-1 block font-mono text-xs leading-relaxed ${active ? "opacity-70" : "text-muted-foreground"}`}>
           {service.fixed ? `$${service.minOrder} flat` : `$${service.rate.toFixed(4)}/${service.unit}`}
         </span>
       </span>
@@ -808,12 +808,14 @@ function ComparePill({
     emerald: "text-emerald",
   }[tone];
   return (
-    <div className={`min-w-0 rounded-xl border p-4 ${toneClasses}`}>
-      <div className="truncate font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+    <div className={`min-w-0 rounded-xl border p-4 sm:p-5 ${toneClasses}`}>
+      <div className="font-mono text-[10px] font-bold uppercase leading-relaxed tracking-widest text-muted-foreground">
         {label}
       </div>
-      <div className={`mt-1 truncate font-display text-lg font-bold sm:text-xl ${priceColor}`}>{formatUSD(price)}</div>
-      <div className="mt-0.5 truncate font-mono text-[10px] text-muted-foreground">{note}</div>
+      <div className={`mt-1.5 whitespace-nowrap font-display text-base font-bold leading-tight sm:text-lg ${priceColor}`}>
+        {formatUSD(price)}
+      </div>
+      <div className="mt-1.5 font-mono text-[10px] leading-relaxed text-muted-foreground">{note}</div>
     </div>
   );
 }

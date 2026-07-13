@@ -121,7 +121,7 @@ export function TrackingScripts() {
         document.head.appendChild(t);
       }
       w.fbq!("init", data.fb_pixel_id);
-      w.fbq!("track", "PageView");
+      // PageView is fired by our deduped fire() so it carries an eventID.
     }
 
     // TikTok Pixel — marketing consent

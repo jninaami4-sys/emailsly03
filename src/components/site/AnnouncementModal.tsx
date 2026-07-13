@@ -99,9 +99,7 @@ function ModalContent({ a, onClose }: { a: Announcement; onClose: () => void }) 
             <div className="absolute inset-0 bg-gradient-to-t from-card via-card/20 to-transparent" />
           </div>
         ) : (
-          <div
-            className={`relative h-32 w-full bg-gradient-to-br from-${accent}/30 via-${accent}/10 to-transparent`}
-          >
+          <div className={`relative h-32 w-full bg-gradient-to-br ${p.soft} to-transparent`}>
             <div className="absolute inset-0 opacity-40 [background-image:radial-gradient(circle_at_1px_1px,hsl(var(--foreground)/0.15)_1px,transparent_0)] [background-size:16px_16px]" />
           </div>
         )}

@@ -157,19 +157,44 @@ export function ChatbotWidget() {
       .catch(() => setKb([]));
   }, [cfgFn, kbFn]);
 
+  // Prefill from Supabase auth (logged-in visitors skip the lead form)
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const { data } = await supabase.auth.getUser();
+        const u = data.user;
+        if (!cancelled && u?.email) {
+          const meta = (u.user_metadata || {}) as Record<string, string>;
+          const displayName =
+            meta.full_name || meta.name || meta.display_name || u.email.split("@")[0];
+          if (!name) setName(displayName);
+          if (!email) setEmail(u.email);
+        }
+      } catch {}
+      if (!cancelled) setAuthChecked(true);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   // Bootstrap session on open
   useEffect(() => {
-    if (!open) return;
+    if (!open || !authChecked) return;
     let sid = sessionId;
     if (!sid) {
       sid = newSessionId();
       setSessionId(sid);
     }
-    if (name) {
-      // returning visitor — jump to menu
+    const hasLead = !!name && isValidEmail(email);
+    if (hasLead) {
+      // returning / logged-in visitor — jump to menu
       (async () => {
         try {
-          const conv = await startFn({ data: { sessionId: sid!, visitorName: name } });
+          const conv = await startFn({
+            data: { sessionId: sid!, visitorName: name, email },
+          });
           setConversationId(conv.id);
           setLiveStatus(conv.status);
           const rows = await listMsgFn({ data: { sessionId: sid! } });
@@ -185,10 +210,16 @@ export function ChatbotWidget() {
         }
       })();
     } else {
-      setMessages([{ id: "bot-hi", sender: "bot", text: greeting }]);
+      setMessages([
+        {
+          id: "bot-hi",
+          sender: "bot",
+          text: "Hi! Before we start, please share your name and email so our team can follow up.",
+        },
+      ]);
       setScreen({ name: "greet" });
     }
-  }, [open]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [open, authChecked]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Realtime — subscribe to admin/bot messages
   useEffect(() => {

@@ -30,6 +30,20 @@ function merge(base: ParamMap, overrides?: ParamMap): Record<string, unknown> {
   return { ...(base || {}), ...(overrides || {}) };
 }
 
+type DebugEntry = {
+  ts: number;
+  key: string;
+  matched: boolean;
+  fired: { provider: "GA4" | "Meta" | "TikTok" | "dataLayer"; name: string; params: Record<string, unknown> }[];
+  overrides?: ParamMap;
+  note?: string;
+};
+
+function emitDebug(entry: DebugEntry) {
+  if (typeof window === "undefined") return;
+  window.dispatchEvent(new CustomEvent("tracking:debug", { detail: entry }));
+}
+
 /**
  * Fire a conversion event across every configured pixel.
  *

@@ -20,6 +20,8 @@ import {
   PremiumGlobe,
 } from "@/components/site/PremiumIcons";
 import { Testimonials } from "@/components/site/Testimonials";
+import { ServicesCarousel } from "@/components/site/ServicesCarousel";
+
 
 type RawData = {
   headers: string[];
@@ -236,6 +238,8 @@ function Home() {
             </div>
           </div>
         </section>
+
+        <ServicesCarousel />
 
         {/* FEATURED PRODUCTS */}
         <section className="border-t border-white/10 px-6 py-24">

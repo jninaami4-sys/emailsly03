@@ -42,6 +42,7 @@ export function ProductCard({ product }: { product: Product }) {
   const fileRef = useRef<HTMLInputElement>(null);
   const [uploadedCover, setUploadedCover] = useState<string | null>(null);
   const [added, setAdded] = useState(false);
+  const [detailsOpen, setDetailsOpen] = useState(false);
 
   useEffect(() => {
     try {

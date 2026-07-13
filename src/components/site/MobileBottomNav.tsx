@@ -1,6 +1,7 @@
-import { Home, Store, Tag, Mail } from "lucide-react";
+import { Home, Store, ShoppingBag, Tag, Mail } from "lucide-react";
 import { useNavigate, useRouterState } from "@tanstack/react-router";
 import { LimelightNav, type NavItem } from "@/components/ui/limelight-nav";
+import { openOrderDrawer } from "./OrderDrawer";
 
 export function MobileBottomNav() {
   const navigate = useNavigate();
@@ -9,6 +10,7 @@ export function MobileBottomNav() {
   const items: NavItem[] = [
     { id: "home", icon: <Home />, label: "Home", onClick: () => navigate({ to: "/" }) },
     { id: "store", icon: <Store />, label: "Store", onClick: () => navigate({ to: "/store" }) },
+    { id: "order", icon: <ShoppingBag />, label: "Order Now", onClick: () => openOrderDrawer() },
     { id: "pricing", icon: <Tag />, label: "Pricing", onClick: () => navigate({ to: "/pricing" }) },
     { id: "contact", icon: <Mail />, label: "Contact", onClick: () => navigate({ to: "/contact" }) },
   ];
@@ -16,7 +18,7 @@ export function MobileBottomNav() {
   const activeIndex = Math.max(
     0,
     items.findIndex((i) =>
-      i.id === "home" ? pathname === "/" : pathname.startsWith(`/${i.id}`)
+      i.id === "home" ? pathname === "/" : i.id === "order" ? false : pathname.startsWith(`/${i.id}`)
     )
   );
 

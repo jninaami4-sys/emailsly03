@@ -766,22 +766,22 @@ function ServiceChip({
     <button
       type="button"
       onClick={onClick}
-      className={`group flex w-full items-center gap-2.5 rounded-xl border bg-background px-3 py-2.5 text-left transition-all sm:gap-3 sm:py-3 ${
+      className={`group flex w-full items-start gap-2.5 rounded-xl border bg-background px-3 py-2.5 text-left transition-all sm:gap-3 sm:py-3 ${
         active ? activeClasses : "border-border hover:border-foreground/20"
       }`}
     >
-      <span className={`grid size-7 shrink-0 place-items-center rounded-lg sm:size-8 ${iconBg}`}>
+      <span className={`mt-0.5 grid size-7 shrink-0 place-items-center rounded-lg sm:size-8 ${iconBg}`}>
         <Icon className="size-3.5 sm:size-4" />
       </span>
       <span className="min-w-0 flex-1">
-        <span className={`block text-xs font-semibold leading-tight ${active ? "" : "text-foreground"}`}>
+        <span className={`block text-xs font-semibold leading-snug ${active ? "" : "text-foreground"}`}>
           {service.name}
         </span>
-        <span className={`mt-0.5 block font-mono text-[10px] ${active ? "opacity-70" : "text-muted-foreground"}`}>
+        <span className={`mt-0.5 block font-mono text-[10px] leading-tight ${active ? "opacity-70" : "text-muted-foreground"}`}>
           {service.fixed ? `$${service.minOrder} flat` : `$${service.rate.toFixed(4)}/${service.unit}`}
         </span>
       </span>
-      {active && <Check className="size-4 shrink-0" />}
+      {active && <Check className="mt-1 size-4 shrink-0" />}
     </button>
   );
 }

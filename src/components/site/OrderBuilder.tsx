@@ -808,12 +808,12 @@ function ComparePill({
     emerald: "text-emerald",
   }[tone];
   return (
-    <div className={`rounded-xl border p-4 ${toneClasses}`}>
-      <div className="font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+    <div className={`min-w-0 rounded-xl border p-4 ${toneClasses}`}>
+      <div className="truncate font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
         {label}
       </div>
-      <div className={`mt-1 font-display text-xl font-bold ${priceColor}`}>{formatUSD(price)}</div>
-      <div className="mt-0.5 font-mono text-[10px] text-muted-foreground">{note}</div>
+      <div className={`mt-1 truncate font-display text-lg font-bold sm:text-xl ${priceColor}`}>{formatUSD(price)}</div>
+      <div className="mt-0.5 truncate font-mono text-[10px] text-muted-foreground">{note}</div>
     </div>
   );
 }

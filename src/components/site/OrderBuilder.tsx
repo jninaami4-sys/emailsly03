@@ -316,7 +316,7 @@ export function OrderBuilder() {
 
                     <div className="mt-6 sm:mt-8">
                       <SectionLabel icon={Tag}>Price comparison</SectionLabel>
-                      <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+                      <div className="grid gap-3 grid-cols-2">
                         <ComparePill label="Apollo.io retail" price={comparePriceApollo} note={`${(comparePriceApollo / base).toFixed(0)}× more`} tone="muted" />
                         <ComparePill label="LinkedIn Nav" price={comparePriceLinkedIn} note={`${(comparePriceLinkedIn / base).toFixed(0)}× more`} tone="muted" />
                         <ComparePill label="Our price" price={base} note="Base subtotal" tone="violet" />

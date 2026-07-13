@@ -473,6 +473,7 @@ export function OrderBuilder() {
                   eyebrow="Step 3 of 4"
                   title="Boost your order"
                   subtitle="Optional upgrades that make the delivery faster and cleaner."
+                  isDesktop={isDesktop}
                 />
                 <div className="mt-6 grid gap-3 sm:mt-8 md:grid-cols-2">
                   <AddonToggle

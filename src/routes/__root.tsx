@@ -142,6 +142,7 @@ function RootComponent() {
           <AnnouncementModal />
           <TrackingScripts />
           <TrackingDebugPanel />
+          <CookieConsent />
         </CartProvider>
       </AuthProvider>
     </QueryClientProvider>

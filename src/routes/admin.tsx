@@ -8,6 +8,7 @@ import { Footer } from "@/components/site/Footer";
 import { ProductCard } from "@/components/site/ProductCard";
 import { AnnouncementsAdmin } from "@/components/admin/AnnouncementsAdmin";
 import { TrackingAdmin } from "@/components/admin/TrackingAdmin";
+import { ConversionEventsAdmin } from "@/components/admin/ConversionEventsAdmin";
 import { whoAmIAdmin } from "@/lib/announcements.functions";
 import { useAuth } from "@/hooks/use-auth";
 import { Upload, X, Search, ShieldAlert, Lock } from "lucide-react";
@@ -155,6 +156,7 @@ function AdminPage() {
         <div className="mb-10 space-y-6">
           <AnnouncementsAdmin />
           <TrackingAdmin />
+          <ConversionEventsAdmin />
         </div>
 
         <h2 className="mb-4 font-display text-xl font-bold">Product cover editor</h2>

@@ -2,6 +2,8 @@ import { useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { getSiteSettings } from "@/lib/site-settings.functions";
+import { getConversionEvents } from "@/lib/conversion-events.functions";
+import { primeConversionEvents } from "@/lib/tracking";
 
 /**
  * Injects tracking scripts (GTM, GA4, Meta Pixel, TikTok Pixel, custom head HTML)
@@ -10,12 +12,23 @@ import { getSiteSettings } from "@/lib/site-settings.functions";
  */
 export function TrackingScripts() {
   const fn = useServerFn(getSiteSettings);
+  const eventsFn = useServerFn(getConversionEvents);
   const { data } = useQuery({
     queryKey: ["site-settings"],
     queryFn: () => fn(),
     staleTime: 5 * 60_000,
     retry: false,
   });
+  const { data: events } = useQuery({
+    queryKey: ["conversion-events"],
+    queryFn: () => eventsFn(),
+    staleTime: 5 * 60_000,
+    retry: false,
+  });
+
+  useEffect(() => {
+    if (events) primeConversionEvents(events);
+  }, [events]);
 
   const injectedRef = useRef<Set<string>>(new Set());
 

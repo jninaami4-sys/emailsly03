@@ -49,7 +49,7 @@ const services: Service[] = [
     glow: "shadow-[0_40px_100px_-25px_rgba(99,102,241,0.7)]",
     ring: "ring-1 ring-inset ring-white/15",
     accent: "text-[#c4b5fd]",
-    Icon: PremiumZap,
+    Icon: PremiumDatabase,
     bullets: ["Verified emails", "Any ICP filter", "Deduped"],
   },
   {

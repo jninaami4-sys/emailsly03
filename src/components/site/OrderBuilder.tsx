@@ -517,6 +517,7 @@ export function OrderBuilder() {
                   eyebrow="Step 4 of 4"
                   title="Almost there — your details"
                   subtitle="We'll send the preview and delivery link to this address."
+                  isDesktop={isDesktop}
                 />
                 <div className="mt-6 grid gap-4 sm:mt-8 md:grid-cols-2">
                   <Field label="Your name">

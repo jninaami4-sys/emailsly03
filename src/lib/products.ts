@@ -1,3 +1,13 @@
+import coverSaas from "@/assets/cover-saas-founders.jpg";
+import coverShopify from "@/assets/cover-shopify.jpg";
+import coverFortune from "@/assets/cover-fortune1000.jpg";
+import coverNyc from "@/assets/cover-nyc-founders.jpg";
+import coverRealEstate from "@/assets/cover-realestate.jpg";
+import coverHealthcare from "@/assets/cover-healthcare.jpg";
+import coverEuroEcom from "@/assets/cover-euro-ecom.jpg";
+import coverB2bAgency from "@/assets/cover-b2b-agency.jpg";
+import coverFintech from "@/assets/cover-fintech.jpg";
+
 export type Product = {
   id: string;
   slug: string;

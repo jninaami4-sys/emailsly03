@@ -15,6 +15,7 @@ import { CartProvider } from "@/lib/cart";
 import { CartDrawer } from "@/components/site/CartDrawer";
 import { AuthProvider } from "@/hooks/use-auth";
 import { AnnouncementModal } from "@/components/site/AnnouncementModal";
+import { TrackingScripts } from "@/components/site/TrackingScripts";
 
 function NotFoundComponent() {
   return (
@@ -137,6 +138,7 @@ function RootComponent() {
           <Outlet />
           <CartDrawer />
           <AnnouncementModal />
+          <TrackingScripts />
         </CartProvider>
       </AuthProvider>
     </QueryClientProvider>

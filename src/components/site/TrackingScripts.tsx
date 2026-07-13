@@ -71,11 +71,12 @@ export function TrackingScripts() {
           const nn = n as unknown as { callMethod?: (...a: unknown[]) => void; queue: unknown[] };
           if (nn.callMethod) nn.callMethod.apply(n, args);
           else nn.queue.push(args);
-        } as unknown as typeof w.fbq;
-        (n as { push: unknown }).push = n;
-        (n as { loaded: boolean }).loaded = true;
-        (n as { version: string }).version = "2.0";
-        (n as { queue: unknown[] }).queue = [];
+        } as unknown as NonNullable<typeof w.fbq>;
+        const na = n as unknown as Record<string, unknown>;
+        na.push = n;
+        na.loaded = true;
+        na.version = "2.0";
+        na.queue = [];
         w.fbq = n;
         const t = document.createElement("script");
         t.async = true;

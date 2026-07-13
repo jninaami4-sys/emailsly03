@@ -199,26 +199,6 @@ export function PremiumStar({ className }: IconProps) {
   );
 }
 
-export function PremiumZap({ className }: IconProps) {
-  return (
-    <Icon className={className}>
-      {/* Filled bolt for depth */}
-      <path
-        d="M13 2 3 14h9l-1 8 10-12h-9l1-8Z"
-        fill="currentColor"
-        fillOpacity="0.22"
-      />
-      {/* Outer bolt */}
-      <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8Z" strokeLinejoin="round" />
-      {/* Inner highlight edge */}
-      <path
-        d="M12.4 5 6 13h6l-.6 5.2L18 11.5h-6l.4-6.5Z"
-        strokeOpacity="0.55"
-        strokeWidth="1"
-      />
-    </Icon>
-  );
-}
 
 export function PremiumImageIcon({ className }: IconProps) {
   return (

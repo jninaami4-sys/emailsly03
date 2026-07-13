@@ -11,7 +11,7 @@ import {
   PremiumArrowRight,
   PremiumArrowUpRight,
   PremiumShieldCheck,
-  PremiumZap,
+
   PremiumStar,
   PremiumSparkles,
   PremiumLayers,
@@ -322,7 +322,7 @@ function Home() {
                   <summary className="flex cursor-pointer items-center justify-between gap-4 font-semibold text-foreground">
                     {f.q}
                     <span className="grid size-7 shrink-0 place-items-center rounded-full bg-indigo/20 text-indigo transition-transform group-open:rotate-45">
-                      <PremiumZap className="size-3.5" />
+                      <PremiumArrowRight className="size-3.5 -rotate-45" />
                     </span>
                   </summary>
                   <p className="mt-4 whitespace-pre-line text-sm leading-relaxed text-foreground/70">{f.a}</p>
@@ -338,7 +338,7 @@ function Home() {
             <div className="pointer-events-none absolute -right-20 top-1/2 size-96 -translate-y-1/2 rounded-full bg-indigo/40 blur-3xl" />
             <div className="relative">
               <div className="mx-auto mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-foreground/80">
-                <PremiumZap className="size-3 text-indigo" /> Delivered in under 24 hours
+                <PremiumTimer className="size-3 text-indigo" /> Delivered in under 24 hours
               </div>
               <h2 className="font-display text-4xl font-bold tracking-tight md:text-6xl">
                 Stop scraping. <br className="hidden md:block" />Start closing.

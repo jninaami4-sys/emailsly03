@@ -27,6 +27,7 @@ import {
   Rocket,
   ClipboardList,
   Wallet,
+  User,
 } from "lucide-react";
 
 type Service = {
@@ -238,12 +239,44 @@ export function OrderBuilder() {
           {/* MAIN PANEL */}
           <div className="rounded-3xl border border-border bg-card p-4 shadow-[0_20px_60px_-30px_rgba(24,24,60,0.25)] sm:p-6 md:p-8 lg:p-10">
             <div className="lg:space-y-12">
+            {/* Customer lead capture — desktop only */}
+            {isDesktop && (
+              <div className="hidden rounded-2xl border border-border bg-secondary/40 p-4 sm:p-5 lg:block">
+                <div className="flex items-center gap-2">
+                  <span className="grid size-8 place-items-center rounded-lg bg-violet/10 text-violet">
+                    <User className="size-4" />
+                  </span>
+                  <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-violet">Customer details</span>
+                </div>
+                <div className="mt-4 grid gap-4 md:grid-cols-2">
+                  <Field label="Your name">
+                    <input
+                      type="text"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="Jane Doe"
+                      className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-violet focus:ring-4 focus:ring-violet/10"
+                    />
+                  </Field>
+                  <Field label="Work email">
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="jane@company.com"
+                      className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-violet focus:ring-4 focus:ring-violet/10"
+                    />
+                  </Field>
+                </div>
+              </div>
+            )}
             {(step === 1 || isDesktop) && (
               <div className="lg:col-span-2">
                 <StepHeader
                   eyebrow="Step 1 of 4"
                   title="What are we building today?"
                   subtitle="Pick the service that fits your growth goal. You can change it any time."
+                  isDesktop={isDesktop}
                 />
                 {/* Mobile tab switcher */}
                 <div className="mt-4 block lg:hidden">
@@ -277,6 +310,7 @@ export function OrderBuilder() {
                   eyebrow="Step 2 of 4"
                   title={service.fixed ? "Confirm the scope" : "Set the volume"}
                   subtitle={service.fixed ? "This is a flat-price service — review the details below." : "Slide to your target volume. Watch the price update live."}
+                  isDesktop={isDesktop}
                 />
 
                 <div className="mt-6 rounded-2xl border border-violet/20 bg-violet-soft/50 p-4 sm:mt-8 sm:p-5">
@@ -471,6 +505,7 @@ export function OrderBuilder() {
                   eyebrow="Step 3 of 4"
                   title="Boost your order"
                   subtitle="Optional upgrades that make the delivery faster and cleaner."
+                  isDesktop={isDesktop}
                 />
                 <div className="mt-6 grid gap-3 sm:mt-8 md:grid-cols-2">
                   <AddonToggle
@@ -514,27 +549,30 @@ export function OrderBuilder() {
                   eyebrow="Step 4 of 4"
                   title="Almost there — your details"
                   subtitle="We'll send the preview and delivery link to this address."
+                  isDesktop={isDesktop}
                 />
-                <div className="mt-6 grid gap-4 sm:mt-8 md:grid-cols-2">
-                  <Field label="Your name">
-                    <input
-                      type="text"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      placeholder="Jane Doe"
-                      className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-violet focus:ring-4 focus:ring-violet/10"
-                    />
-                  </Field>
-                  <Field label="Work email">
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="jane@company.com"
-                      className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-violet focus:ring-4 focus:ring-violet/10"
-                    />
-                  </Field>
-                </div>
+                {!isDesktop && (
+                  <div className="mt-6 grid gap-4 sm:mt-8 md:grid-cols-2">
+                    <Field label="Your name">
+                      <input
+                        type="text"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        placeholder="Jane Doe"
+                        className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-violet focus:ring-4 focus:ring-violet/10"
+                      />
+                    </Field>
+                    <Field label="Work email">
+                      <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="jane@company.com"
+                        className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-violet focus:ring-4 focus:ring-violet/10"
+                      />
+                    </Field>
+                  </div>
+                )}
 
                 <label className="mt-6 flex items-start gap-3 text-sm text-muted-foreground sm:mt-8">
                   <input
@@ -667,7 +705,7 @@ export function OrderBuilder() {
 
                 <button
                   type="button"
-                  disabled={!agree}
+                  disabled={!agree || name.trim().length < 2 || !/\S+@\S+\.\S+/.test(email)}
                   className="relative mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-violet px-6 py-4 text-sm font-bold text-white shadow-lg shadow-violet/30 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-violet/40 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
                 >
                   Checkout with Stripe <ArrowRight className="size-4" />
@@ -705,11 +743,23 @@ export function OrderBuilder() {
 
 /* ---------- helpers ---------- */
 
-function StepHeader({ eyebrow, title, subtitle }: { eyebrow: string; title: string; subtitle: string }) {
+function StepHeader({
+  eyebrow,
+  title,
+  subtitle,
+  isDesktop,
+}: {
+  eyebrow: string;
+  title: string;
+  subtitle: string;
+  isDesktop?: boolean;
+}) {
   return (
     <div className="max-w-2xl">
-      <div className="font-mono text-[10px] font-bold uppercase tracking-widest text-violet">{eyebrow}</div>
-      <h3 className="mt-2 font-display text-xl font-bold tracking-tight sm:text-2xl md:text-3xl">{title}</h3>
+      {!isDesktop && (
+        <div className="font-mono text-[10px] font-bold uppercase tracking-widest text-violet">{eyebrow}</div>
+      )}
+      <h3 className={`font-display text-xl font-bold tracking-tight sm:text-2xl md:text-3xl ${isDesktop ? "" : "mt-2"}`}>{title}</h3>
       <p className="mt-2 text-sm text-muted-foreground md:text-base">{subtitle}</p>
     </div>
   );

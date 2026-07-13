@@ -1,10 +1,15 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { PRODUCTS, type Product } from "@/lib/products";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { ProductCard } from "@/components/site/ProductCard";
-import { Upload, X, Search } from "lucide-react";
+import { AnnouncementsAdmin } from "@/components/admin/AnnouncementsAdmin";
+import { whoAmIAdmin } from "@/lib/announcements.functions";
+import { useAuth } from "@/hooks/use-auth";
+import { Upload, X, Search, ShieldAlert, Lock } from "lucide-react";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({

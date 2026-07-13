@@ -278,6 +278,7 @@ export function OrderBuilder() {
                   eyebrow="Step 2 of 4"
                   title={service.fixed ? "Confirm the scope" : "Set the volume"}
                   subtitle={service.fixed ? "This is a flat-price service — review the details below." : "Slide to your target volume. Watch the price update live."}
+                  isDesktop={isDesktop}
                 />
 
                 <div className="mt-6 rounded-2xl border border-violet/20 bg-violet-soft/50 p-4 sm:mt-8 sm:p-5">

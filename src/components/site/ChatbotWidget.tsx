@@ -781,7 +781,7 @@ function ScreenOrderForm({
 }) {
   const [f, setF] = useState({
     customer_name: defaultName || "",
-    email: "",
+    email: defaultEmail || "",
     service,
     details: "",
     quantity: 0,

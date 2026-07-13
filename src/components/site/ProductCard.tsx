@@ -251,7 +251,10 @@ export function ProductCard({ product }: { product: Product }) {
           </div>
 
           <button
-            onClick={handleAdd}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleAdd();
+            }}
             className={`group/btn relative inline-flex items-center gap-1.5 overflow-hidden rounded-full px-4 py-2.5 text-sm font-semibold transition-all active:scale-[0.97] ${
               added
                 ? "bg-emerald text-white"
@@ -267,6 +270,17 @@ export function ProductCard({ product }: { product: Product }) {
           </button>
         </div>
 
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            setDetailsOpen(true);
+          }}
+          className="inline-flex items-center gap-1 self-start font-mono text-[10px] font-semibold uppercase tracking-wider text-violet transition-colors hover:text-ink"
+        >
+          <Eye className="size-3" /> View details
+        </button>
+
         {product.sampleNote && (
           <p className="-mt-1 font-mono text-[10px] text-muted-foreground/80">
             {product.sampleNote}
@@ -274,5 +288,11 @@ export function ProductCard({ product }: { product: Product }) {
         )}
       </div>
     </article>
+    <ProductDetailsModal
+      product={product}
+      open={detailsOpen}
+      onClose={() => setDetailsOpen(false)}
+    />
+    </>
   );
 }

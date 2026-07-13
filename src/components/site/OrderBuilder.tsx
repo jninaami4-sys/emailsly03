@@ -690,7 +690,7 @@ function CategoryColumn({
           {title}
         </span>
       </div>
-      <div className="space-y-2">
+      <div className="grid gap-2 sm:grid-cols-2">
         {services.map((s) => (
           <ServiceChip
             key={s.id}

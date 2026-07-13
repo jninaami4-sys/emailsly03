@@ -292,11 +292,21 @@ export function PremiumX({ className }: IconProps) {
 export function PremiumFileText({ className }: IconProps) {
   return (
     <Icon className={className}>
+      {/* Document fill */}
+      <path
+        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"
+        fill="currentColor"
+        fillOpacity="0.15"
+      />
+      {/* Body outline */}
       <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z" />
+      {/* Folded corner with darker fill */}
+      <path d="M14 2v6h6" fill="currentColor" fillOpacity="0.25" />
       <path d="M14 2v6h6" />
-      <path d="M16 13H8" />
-      <path d="M16 17H8" />
-      <path d="M10 9H8" />
+      {/* Ruled lines */}
+      <path d="M16 13H8" strokeWidth="1.6" />
+      <path d="M16 17H8" strokeWidth="1.6" strokeOpacity="0.75" />
+      <path d="M11 9H8" strokeWidth="1.6" strokeOpacity="0.6" />
     </Icon>
   );
 }

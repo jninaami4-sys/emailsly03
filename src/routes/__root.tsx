@@ -140,6 +140,7 @@ function RootComponent() {
           <CartDrawer />
           <AnnouncementModal />
           <TrackingScripts />
+          <TrackingDebugPanel />
         </CartProvider>
       </AuthProvider>
     </QueryClientProvider>

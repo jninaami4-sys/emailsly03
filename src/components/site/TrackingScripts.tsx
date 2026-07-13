@@ -173,25 +173,32 @@ export function TrackingScripts() {
     }
   }, [data, consent]);
 
-  // Fire pageview on SPA navigation for GA4, Meta, TikTok
+  // Fire pageview on SPA navigation for GA4, Meta, TikTok.
+  // Deduped via a stable per-path id shared with the injected snippets'
+  // initial pageview, so React re-mounts, `pushState` doubles, and
+  // same-tab refreshes never double-count.
   useEffect(() => {
     if (typeof window === "undefined") return;
-    let lastPath = window.location.pathname + window.location.search;
+
     const fire = () => {
       const path = window.location.pathname + window.location.search;
-      if (path === lastPath) return;
-      lastPath = path;
+      const id = pageviewId(path);
+      if (!reserveEvent(id, 4_000)) return;
       const w = window as unknown as {
         gtag?: (...args: unknown[]) => void;
         fbq?: (...args: unknown[]) => void;
-        ttq?: { page?: () => void };
+        ttq?: { page?: (params?: unknown) => void };
         dataLayer?: unknown[];
       };
-      w.dataLayer?.push({ event: "pageview", page_path: path });
-      w.gtag?.("event", "page_view", { page_path: path });
-      w.fbq?.("track", "PageView");
-      w.ttq?.page?.();
+      w.dataLayer?.push({ event: "pageview", page_path: path, event_id: id });
+      w.gtag?.("event", "page_view", { page_path: path, event_id: id });
+      w.fbq?.("track", "PageView", {}, { eventID: id });
+      w.ttq?.page?.({ event_id: id });
     };
+
+    // Fire once on mount so hard refreshes count exactly one pageview.
+    fire();
+
     const origPush = history.pushState;
     const origReplace = history.replaceState;
     history.pushState = function (...args) {

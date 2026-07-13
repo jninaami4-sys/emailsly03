@@ -217,7 +217,7 @@ export function OrderBuilder() {
         <div className={`mt-6 grid gap-4 sm:mt-8 sm:gap-6 ${(step === 4 || isDesktop) ? "lg:grid-cols-[1.4fr_1fr]" : "lg:grid-cols-1"}`}>
           {/* MAIN PANEL */}
           <div className="rounded-3xl border border-border bg-card p-4 shadow-[0_20px_60px_-30px_rgba(24,24,60,0.25)] sm:p-6 md:p-8 lg:p-10">
-            <div className="lg:grid lg:grid-cols-2 lg:gap-x-10 lg:gap-y-10">
+            <div className="lg:space-y-12">
             {(step === 1 || isDesktop) && (
               <div className="lg:col-span-2">
                 <StepHeader
@@ -404,14 +404,14 @@ export function OrderBuilder() {
 
                 <div className="mt-6 rounded-2xl border border-border bg-secondary/40 p-4 sm:mt-10 sm:p-6">
                   <div className="flex items-center gap-3">
-                    <span className="grid size-10 place-items-center rounded-xl bg-violet/10 text-violet">
+                    <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-violet/10 text-violet">
                       <Sparkles className="size-5" />
                     </span>
-                    <div>
+                    <div className="min-w-0 flex-1">
                       <div className="text-sm font-semibold">Running total</div>
                       <div className="font-mono text-[11px] text-muted-foreground">Before Stripe fees</div>
                     </div>
-                    <div className="ml-auto font-display text-3xl font-bold tracking-tight text-violet">
+                    <div className="shrink-0 font-display text-2xl font-bold tracking-tight text-violet sm:text-3xl">
                       {formatUSD(subtotal)}
                     </div>
                   </div>
@@ -808,12 +808,12 @@ function ComparePill({
     emerald: "text-emerald",
   }[tone];
   return (
-    <div className={`rounded-xl border p-4 ${toneClasses}`}>
-      <div className="font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+    <div className={`min-w-0 rounded-xl border p-4 ${toneClasses}`}>
+      <div className="truncate font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
         {label}
       </div>
-      <div className={`mt-1 font-display text-xl font-bold ${priceColor}`}>{formatUSD(price)}</div>
-      <div className="mt-0.5 font-mono text-[10px] text-muted-foreground">{note}</div>
+      <div className={`mt-1 truncate font-display text-lg font-bold sm:text-xl ${priceColor}`}>{formatUSD(price)}</div>
+      <div className="mt-0.5 truncate font-mono text-[10px] text-muted-foreground">{note}</div>
     </div>
   );
 }
@@ -845,24 +845,24 @@ function AddonToggle({
     <button
       type="button"
       onClick={onToggle}
-      className={`flex items-center justify-between rounded-2xl border px-4 py-3 text-left transition-all sm:px-5 sm:py-4 ${
+      className={`flex w-full items-start justify-between gap-3 rounded-2xl border px-4 py-3 text-left transition-all sm:px-5 sm:py-4 ${
         active ? activeClasses : "border-border bg-background hover:border-foreground/20"
       }`}
     >
-      <div className="flex items-center gap-2.5 sm:gap-3">
+      <div className="flex min-w-0 flex-1 items-start gap-2.5 sm:gap-3">
         <span
-          className={`grid size-5 place-items-center rounded-full border ${
+          className={`mt-0.5 grid size-5 shrink-0 place-items-center rounded-full border ${
             active ? `border-transparent ${dotColor}` : "border-input bg-background"
           }`}
         >
           {active && <span className="size-2 rounded-full bg-white" />}
         </span>
-        <div>
-          <div className="text-sm font-semibold text-foreground">{title}</div>
-          <div className="font-mono text-[10px] text-muted-foreground">{sub}</div>
+        <div className="min-w-0 flex-1">
+          <div className="text-sm font-semibold leading-snug text-foreground">{title}</div>
+          <div className="mt-0.5 font-mono text-[10px] leading-tight text-muted-foreground">{sub}</div>
         </div>
       </div>
-      <span className="font-mono text-xs font-bold text-foreground">{price}</span>
+      <span className="shrink-0 whitespace-nowrap font-mono text-xs font-bold text-foreground">{price}</span>
     </button>
   );
 }

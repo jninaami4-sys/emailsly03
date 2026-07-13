@@ -52,7 +52,7 @@ export const getConversionEvents = createServerFn({ method: "GET" }).handler(
   async (): Promise<ConversionEvent[]> => {
     const supabase = serverAnonClient();
     const { data, error } = await supabase
-      .from("conversion_events" as never)
+      .from("conversion_events" as never) as any
       .select("*")
       .eq("enabled", true)
       .order("event_key", { ascending: true });
@@ -71,7 +71,7 @@ export const listConversionEventsAdmin = createServerFn({ method: "GET" })
     assertAdmin((context.claims as { email?: string }).email);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data, error } = await supabaseAdmin
-      .from("conversion_events" as never)
+      .from("conversion_events" as never) as any
       .select("*")
       .order("created_at", { ascending: true });
     if (error) throw new Error(error.message);
@@ -118,7 +118,7 @@ export const upsertConversionEvent = createServerFn({ method: "POST" })
     const payload = clean(data);
     if (data.id) {
       const { data: row, error } = await supabaseAdmin
-        .from("conversion_events" as never)
+        .from("conversion_events" as never) as any
         .update(payload)
         .eq("id", data.id)
         .select("*")
@@ -127,7 +127,7 @@ export const upsertConversionEvent = createServerFn({ method: "POST" })
       return row as unknown as ConversionEvent;
     }
     const { data: row, error } = await supabaseAdmin
-      .from("conversion_events" as never)
+      .from("conversion_events" as never) as any
       .insert(payload)
       .select("*")
       .single();
@@ -142,7 +142,7 @@ export const deleteConversionEvent = createServerFn({ method: "POST" })
     assertAdmin((context.claims as { email?: string }).email);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin
-      .from("conversion_events" as never)
+      .from("conversion_events" as never) as any
       .delete()
       .eq("id", data.id);
     if (error) throw new Error(error.message);

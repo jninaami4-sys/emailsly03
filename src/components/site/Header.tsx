@@ -63,7 +63,7 @@ export function Header() {
         <div className="relative">
           <nav
             aria-label="Primary"
-            className="relative mx-auto flex h-12 w-full max-w-6xl items-center justify-between overflow-hidden rounded-full border border-white/40 bg-white/85 px-5 text-ink shadow-[0_4px_24px_rgba(0,0,0,0.06),inset_0_0.5px_0_0_rgba(255,255,255,0.72),inset_0_-0.5px_0_0_rgba(0,0,0,0.05)] backdrop-blur-2xl backdrop-saturate-[180%]"
+            className="relative mx-auto flex h-12 w-full max-w-6xl items-center justify-between rounded-full border border-white/40 bg-white/85 px-5 text-ink shadow-[0_4px_24px_rgba(0,0,0,0.06),inset_0_0.5px_0_0_rgba(255,255,255,0.72),inset_0_-0.5px_0_0_rgba(0,0,0,0.05)] backdrop-blur-2xl backdrop-saturate-[180%]"
           >
             <div className="z-10 flex items-center gap-8">
               <Link
@@ -74,9 +74,8 @@ export function Header() {
                 <PremiumLogoMark className="size-6" aria-hidden="true" />
                 LYRA<span className="text-violet">DATA</span>
               </Link>
-              <ul className="hidden items-center gap-1 rounded-full border border-black/5 bg-white/60 p-1 text-sm font-semibold shadow-inner shadow-black/[0.02] backdrop-blur lg:flex">
+              <ul className="hidden items-center gap-1 text-sm font-medium lg:flex">
                 {NAV_ITEMS.map((item) => {
-                  const Icon = item.icon;
                   const isActive =
                     pathname === item.to || pathname.startsWith(item.to + "/");
                   return (
@@ -84,27 +83,17 @@ export function Header() {
                       <Link
                         to={item.to}
                         aria-current={isActive ? "page" : undefined}
-                        className={`relative flex cursor-pointer items-center gap-1.5 rounded-full px-4 py-1.5 transition-colors ${
-                          isActive
-                            ? "text-violet"
-                            : "text-ink/70 hover:text-ink"
+                        className={`relative inline-flex items-center rounded-full px-3 py-1.5 transition-colors ${
+                          isActive ? "text-violet" : "text-ink/70 hover:text-ink"
                         } ${focusRing}`}
                       >
-                        <Icon className="size-4 md:hidden" aria-hidden="true" />
-                        <span className="hidden md:inline">{item.label}</span>
-                        <span className="md:hidden">{item.label}</span>
+                        <span className="relative z-10">{item.label}</span>
                         {isActive && (
                           <motion.span
-                            layoutId="header-lamp"
+                            layoutId="header-nav-pill"
                             transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                            className="absolute inset-0 -z-10 rounded-full bg-violet/10"
-                          >
-                            <span className="absolute -top-2 left-1/2 h-1 w-8 -translate-x-1/2 rounded-t-full bg-violet">
-                              <span className="absolute -top-2 -left-2 h-6 w-12 rounded-full bg-violet/25 blur-md" />
-                              <span className="absolute -top-1 left-0 h-6 w-8 rounded-full bg-violet/25 blur-md" />
-                              <span className="absolute top-0 left-2 h-4 w-4 rounded-full bg-violet/25 blur-sm" />
-                            </span>
-                          </motion.span>
+                            className="absolute inset-0 rounded-full bg-violet/10"
+                          />
                         )}
                       </Link>
                     </li>
@@ -112,6 +101,7 @@ export function Header() {
                 })}
               </ul>
             </div>
+
             <div className="z-10 flex items-center gap-2">
               <button
                 type="button"

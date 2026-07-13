@@ -104,6 +104,96 @@ export type Database = {
         }
         Relationships: []
       }
+      server_event_log: {
+        Row: {
+          created_at: string
+          error: string | null
+          event_id: string
+          event_key: string
+          id: string
+          ip: unknown
+          providers: Json
+          status: string
+          user_agent: string | null
+        }
+        Insert: {
+          created_at?: string
+          error?: string | null
+          event_id: string
+          event_key: string
+          id?: string
+          ip?: unknown
+          providers?: Json
+          status?: string
+          user_agent?: string | null
+        }
+        Update: {
+          created_at?: string
+          error?: string | null
+          event_id?: string
+          event_key?: string
+          id?: string
+          ip?: unknown
+          providers?: Json
+          status?: string
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
+      server_tracking_config: {
+        Row: {
+          created_at: string
+          ga4_api_secret: string
+          ga4_enabled: boolean
+          ga4_measurement_id: string
+          id: string
+          meta_access_token: string
+          meta_enabled: boolean
+          meta_pixel_id: string
+          meta_test_event_code: string
+          singleton: boolean
+          tiktok_access_token: string
+          tiktok_enabled: boolean
+          tiktok_pixel_id: string
+          tiktok_test_event_code: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          ga4_api_secret?: string
+          ga4_enabled?: boolean
+          ga4_measurement_id?: string
+          id?: string
+          meta_access_token?: string
+          meta_enabled?: boolean
+          meta_pixel_id?: string
+          meta_test_event_code?: string
+          singleton?: boolean
+          tiktok_access_token?: string
+          tiktok_enabled?: boolean
+          tiktok_pixel_id?: string
+          tiktok_test_event_code?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          ga4_api_secret?: string
+          ga4_enabled?: boolean
+          ga4_measurement_id?: string
+          id?: string
+          meta_access_token?: string
+          meta_enabled?: boolean
+          meta_pixel_id?: string
+          meta_test_event_code?: string
+          singleton?: boolean
+          tiktok_access_token?: string
+          tiktok_enabled?: boolean
+          tiktok_pixel_id?: string
+          tiktok_test_event_code?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       site_settings: {
         Row: {
           custom_head_html: string

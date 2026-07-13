@@ -18,7 +18,10 @@ export const ensureDemoAccount = createServerFn({ method: "POST" }).handler(asyn
   if (createError) {
     const msg = createError.message || "";
     const alreadyExists =
-      /already\s*registered|already\s*exists|duplicate|email_exists|User already/i.test(msg);
+      (createError as { code?: string }).code === "email_exists" ||
+      (createError as { status?: number }).status === 422 ||
+      /already.*(registered|exists)|duplicate|email_exists/i.test(msg);
+
 
     if (!alreadyExists) {
       throw new Error(msg || "Failed to prepare demo account");

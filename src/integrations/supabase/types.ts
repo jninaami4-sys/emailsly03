@@ -56,6 +56,36 @@ export type Database = {
         }
         Relationships: []
       }
+      site_settings: {
+        Row: {
+          custom_head_html: string
+          fb_pixel_id: string
+          ga4_id: string
+          gtm_id: string
+          id: boolean
+          tiktok_pixel_id: string
+          updated_at: string
+        }
+        Insert: {
+          custom_head_html?: string
+          fb_pixel_id?: string
+          ga4_id?: string
+          gtm_id?: string
+          id?: boolean
+          tiktok_pixel_id?: string
+          updated_at?: string
+        }
+        Update: {
+          custom_head_html?: string
+          fb_pixel_id?: string
+          ga4_id?: string
+          gtm_id?: string
+          id?: boolean
+          tiktok_pixel_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

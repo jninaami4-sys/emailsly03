@@ -244,6 +244,7 @@ export function OrderBuilder() {
                   eyebrow="Step 1 of 4"
                   title="What are we building today?"
                   subtitle="Pick the service that fits your growth goal. You can change it any time."
+                  isDesktop={isDesktop}
                 />
                 {/* Mobile tab switcher */}
                 <div className="mt-4 block lg:hidden">

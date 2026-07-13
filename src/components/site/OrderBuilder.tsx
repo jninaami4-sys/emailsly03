@@ -241,7 +241,7 @@ export function OrderBuilder() {
                   </div>
                 </div>
                 {/* Desktop grid */}
-                <div className="mt-6 hidden gap-6 lg:grid lg:grid-cols-3">
+                <div className="mt-6 hidden gap-4 lg:block lg:space-y-4">
                   <CategoryColumn title="Lead generation" accent="violet" services={dataServices} serviceId={serviceId} onPick={(s) => { setServiceId(s.id); setQuantity(s.minQty); }} />
                   <CategoryColumn title="Growth add-ons" accent="coral" services={growthServices} serviceId={serviceId} onPick={(s) => { setServiceId(s.id); setQuantity(s.fixed ? 1 : s.minQty); }} />
                   <CategoryColumn title="Design & web" accent="emerald" services={designServices} serviceId={serviceId} onPick={(s) => { setServiceId(s.id); setQuantity(1); }} />
@@ -690,7 +690,7 @@ function CategoryColumn({
           {title}
         </span>
       </div>
-      <div className="space-y-2">
+      <div className="grid gap-2 sm:grid-cols-2">
         {services.map((s) => (
           <ServiceChip
             key={s.id}

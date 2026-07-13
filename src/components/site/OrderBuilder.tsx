@@ -845,24 +845,24 @@ function AddonToggle({
     <button
       type="button"
       onClick={onToggle}
-      className={`flex items-center justify-between rounded-2xl border px-4 py-3 text-left transition-all sm:px-5 sm:py-4 ${
+      className={`flex w-full items-start justify-between gap-3 rounded-2xl border px-4 py-3 text-left transition-all sm:px-5 sm:py-4 ${
         active ? activeClasses : "border-border bg-background hover:border-foreground/20"
       }`}
     >
-      <div className="flex items-center gap-2.5 sm:gap-3">
+      <div className="flex min-w-0 flex-1 items-start gap-2.5 sm:gap-3">
         <span
-          className={`grid size-5 place-items-center rounded-full border ${
+          className={`mt-0.5 grid size-5 shrink-0 place-items-center rounded-full border ${
             active ? `border-transparent ${dotColor}` : "border-input bg-background"
           }`}
         >
           {active && <span className="size-2 rounded-full bg-white" />}
         </span>
-        <div>
-          <div className="text-sm font-semibold text-foreground">{title}</div>
-          <div className="font-mono text-[10px] text-muted-foreground">{sub}</div>
+        <div className="min-w-0 flex-1">
+          <div className="text-sm font-semibold leading-snug text-foreground">{title}</div>
+          <div className="mt-0.5 font-mono text-[10px] leading-tight text-muted-foreground">{sub}</div>
         </div>
       </div>
-      <span className="font-mono text-xs font-bold text-foreground">{price}</span>
+      <span className="shrink-0 whitespace-nowrap font-mono text-xs font-bold text-foreground">{price}</span>
     </button>
   );
 }

@@ -188,11 +188,11 @@ export function ServicesCarousel() {
             className="!pb-16"
           >
             {services.map((s) => (
-              <SwiperSlide key={s.serviceId} className="!w-[290px] sm:!w-[360px] md:!w-[420px]">
+              <SwiperSlide key={s.serviceId} className="!w-[280px] !h-auto sm:!w-[360px] md:!w-[420px]">
                 <button
                   type="button"
                   onClick={() => openOrderDrawer(s.serviceId)}
-                  className={`group relative block h-[480px] w-full overflow-hidden rounded-[28px] border border-white/10 bg-gradient-to-br ${s.gradient} p-7 text-left text-white transition-all duration-500 hover:-translate-y-1.5 ${s.glow} ${s.ring}`}
+                  className={`group relative block w-full overflow-hidden rounded-[28px] border border-white/10 bg-gradient-to-br ${s.gradient} p-5 text-left text-white transition-all duration-500 hover:-translate-y-1.5 sm:p-6 md:p-7 ${s.glow} ${s.ring}`}
                 >
                   {/* Sheen */}
                   <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-white/[0.08]" />
@@ -200,13 +200,13 @@ export function ServicesCarousel() {
                   <div className="pointer-events-none absolute -right-20 -top-20 size-64 rounded-full bg-white/25 blur-3xl" />
                   <div className="pointer-events-none absolute -bottom-24 -left-16 size-52 rounded-full bg-black/40 blur-3xl" />
 
-                  <div className="relative flex h-full flex-col">
+                  <div className="relative flex flex-col gap-4 sm:gap-5">
                     {/* Top row */}
-                    <div className="flex items-start justify-between">
-                      <div className="grid size-14 place-items-center rounded-2xl bg-white/15 shadow-inner shadow-white/10 backdrop-blur">
-                        <s.Icon className="size-7 text-white" />
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="grid size-11 shrink-0 place-items-center rounded-2xl bg-white/15 shadow-inner shadow-white/10 backdrop-blur sm:size-14">
+                        <s.Icon className="size-5 text-white sm:size-7" />
                       </div>
-                      <span className="inline-flex items-center gap-1.5 rounded-full border border-white/25 bg-white/10 px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-widest backdrop-blur">
+                      <span className="inline-flex items-center gap-1.5 rounded-full border border-white/25 bg-white/10 px-2 py-1 font-mono text-[9px] font-bold uppercase tracking-widest backdrop-blur sm:px-2.5 sm:text-[10px]">
                         <span className="size-1.5 rounded-full bg-white" />
                         {s.badge}
                       </span>
@@ -214,61 +214,61 @@ export function ServicesCarousel() {
 
                     {/* Price ribbon */}
                     {s.tiers ? (
-                      <div className="mt-5 space-y-1.5">
+                      <div className="space-y-1.5">
                         {s.tiers.map((tier) => (
                           <div
                             key={tier.qty}
-                            className="flex items-center justify-between rounded-xl border border-white/15 bg-white/10 px-3 py-1.5 backdrop-blur"
+                            className="flex items-center justify-between gap-2 rounded-xl border border-white/15 bg-white/10 px-2.5 py-1.5 backdrop-blur sm:px-3"
                           >
-                            <div className="flex items-baseline gap-2">
-                              <span className="font-display text-xl font-bold tracking-tight">{tier.price}</span>
-                              <span className={`font-mono text-[10px] font-bold uppercase tracking-widest ${s.accent}`}>
+                            <div className="flex min-w-0 items-baseline gap-2">
+                              <span className="font-display text-lg font-bold tracking-tight sm:text-xl">{tier.price}</span>
+                              <span className={`truncate font-mono text-[9px] font-bold uppercase tracking-widest sm:text-[10px] ${s.accent}`}>
                                 {tier.qty} {s.unit}
                               </span>
                             </div>
-                            <span className="font-mono text-[10px] font-semibold text-white/80">{tier.unitRate}/ea</span>
+                            <span className="shrink-0 font-mono text-[9px] font-semibold text-white/80 sm:text-[10px]">{tier.unitRate}/ea</span>
                           </div>
                         ))}
                       </div>
                     ) : (
-                      <div className="mt-6 flex items-baseline gap-2">
-                        <span className="font-display text-4xl font-extrabold tracking-tight md:text-5xl">
+                      <div className="flex items-baseline gap-2">
+                        <span className="font-display text-3xl font-extrabold tracking-tight sm:text-4xl md:text-5xl">
                           {s.price}
                         </span>
-                        <span className={`font-mono text-[11px] font-bold uppercase tracking-widest ${s.accent}`}>
+                        <span className={`font-mono text-[10px] font-bold uppercase tracking-widest sm:text-[11px] ${s.accent}`}>
                           {s.perUnit}
                         </span>
                       </div>
                     )}
 
-                    <div className="mt-auto">
-                      <h3 className="font-display text-2xl font-bold leading-tight md:text-[28px]">
+                    <div>
+                      <h3 className="font-display text-xl font-bold leading-tight sm:text-2xl md:text-[28px]">
                         {s.title}
                       </h3>
-                      <p className="mt-2 text-sm leading-relaxed text-white/85">{s.tagline}</p>
+                      <p className="mt-2 text-[13px] leading-relaxed text-white/85 sm:text-sm">{s.tagline}</p>
 
                       {/* Meta strip */}
-                      <div className="mt-4 grid grid-cols-2 gap-2 rounded-2xl border border-white/15 bg-black/20 p-3 backdrop-blur">
-                        <div>
+                      <div className="mt-4 grid grid-cols-2 gap-2 rounded-2xl border border-white/15 bg-black/20 p-2.5 backdrop-blur sm:p-3">
+                        <div className="min-w-0">
                           <div className={`font-mono text-[9px] font-bold uppercase tracking-widest ${s.accent}`}>
                             Min order
                           </div>
-                          <div className="mt-0.5 text-sm font-semibold">{s.minOrder}</div>
+                          <div className="mt-0.5 truncate text-[13px] font-semibold sm:text-sm">{s.minOrder}</div>
                         </div>
-                        <div>
+                        <div className="min-w-0">
                           <div className={`font-mono text-[9px] font-bold uppercase tracking-widest ${s.accent}`}>
                             Turnaround
                           </div>
-                          <div className="mt-0.5 text-sm font-semibold">{s.turnaround}</div>
+                          <div className="mt-0.5 truncate text-[13px] font-semibold sm:text-sm">{s.turnaround}</div>
                         </div>
                       </div>
 
                       {/* Bullets */}
-                      <ul className="mt-4 flex flex-wrap gap-1.5">
+                      <ul className="mt-3 flex flex-wrap gap-1.5">
                         {s.bullets.map((b) => (
                           <li
                             key={b}
-                            className="rounded-full border border-white/20 bg-white/10 px-2.5 py-1 font-mono text-[10px] font-semibold uppercase tracking-wider backdrop-blur"
+                            className="rounded-full border border-white/20 bg-white/10 px-2 py-0.5 font-mono text-[9px] font-semibold uppercase tracking-wider backdrop-blur sm:px-2.5 sm:py-1 sm:text-[10px]"
                           >
                             {b}
                           </li>
@@ -276,10 +276,10 @@ export function ServicesCarousel() {
                       </ul>
 
                       {/* CTA */}
-                      <div className="mt-5 flex items-center justify-between">
-                        <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-4 py-2 text-sm font-bold text-black shadow-lg shadow-black/20 transition-transform group-hover:translate-x-0.5">
+                      <div className="mt-4 flex flex-wrap items-center justify-between gap-2 sm:mt-5">
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-xs font-bold text-black shadow-lg shadow-black/20 transition-transform group-hover:translate-x-0.5 sm:px-4 sm:py-2 sm:text-sm">
                           Explore service
-                          <PremiumArrowUpRight className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                          <PremiumArrowUpRight className="size-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 sm:size-4" />
                         </span>
                         <span className={`font-mono text-[10px] font-bold uppercase tracking-widest ${s.accent}`}>
                           Order now →
@@ -288,6 +288,7 @@ export function ServicesCarousel() {
                     </div>
                   </div>
                 </button>
+
               </SwiperSlide>
             ))}
           </Swiper>

@@ -146,7 +146,7 @@ export function TrackingScripts() {
             var a=document.getElementsByTagName("script")[0];a.parentNode.insertBefore(s,a)
           };
           ttq.load(${JSON.stringify(data.tiktok_pixel_id)});
-          ttq.page();
+          // ttq.page() is fired by our deduped fire() so it carries event_id.
         }(window, document, 'ttq');`;
         const s = document.createElement("script");
         s.text = src;

@@ -1,1 +1,4 @@
 project_id = "mnvszrkzdqpulbmevngq"
+
+[functions.track-server-event]
+verify_jwt = false

@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { Search, ArrowUpRight, Download, CheckCircle2 } from "lucide-react";
 import type { Lead } from "@/lib/sample-apollo-leads";
+import { trackConversion } from "@/lib/tracking";
 
 interface SampleDataTableProps {
   leads: Lead[];
@@ -58,6 +59,11 @@ export function SampleDataTable({ leads }: SampleDataTableProps) {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+    void trackConversion("download", {
+      source: "apollo_sample",
+      rows: leads.length,
+      file: "apollo_sample_leads.csv",
+    });
   };
 
   return (

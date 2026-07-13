@@ -10,6 +10,7 @@ import { AnnouncementsAdmin } from "@/components/admin/AnnouncementsAdmin";
 import { TrackingAdmin } from "@/components/admin/TrackingAdmin";
 import { ConversionEventsAdmin } from "@/components/admin/ConversionEventsAdmin";
 import { DebugModeAdmin } from "@/components/admin/DebugModeAdmin";
+import { ServerTrackingAdmin } from "@/components/admin/ServerTrackingAdmin";
 import { whoAmIAdmin } from "@/lib/announcements.functions";
 import { useAuth } from "@/hooks/use-auth";
 import { Upload, X, Search, ShieldAlert, Lock } from "lucide-react";
@@ -158,6 +159,8 @@ function AdminPage() {
           <AnnouncementsAdmin />
           <TrackingAdmin />
           <ConversionEventsAdmin />
+          <ConversionEventsAdmin />
+          <ServerTrackingAdmin />
           <DebugModeAdmin />
         </div>
 

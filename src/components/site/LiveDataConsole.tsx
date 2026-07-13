@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { PremiumSearch, PremiumDownload } from "./PremiumIcons";
 import { Link } from "@tanstack/react-router";
+import { trackConversion } from "@/lib/tracking";
 
 const SOURCES = ["apollo", "linkedin", "zoominfo"] as const;
 type SourceKey = (typeof SOURCES)[number];
@@ -81,6 +82,11 @@ export function LiveDataConsole({
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+    void trackConversion("download", {
+      source: activeSource,
+      rows: raw.rows.length,
+      file: `${activeSource}_sample_leads.csv`,
+    });
   };
 
   return (

@@ -625,19 +625,36 @@ export function ChatbotWidget() {
 // ---------------------------------------------------------------------------
 // Sub-screens
 // ---------------------------------------------------------------------------
-function ScreenServices({
+const CATEGORY_LABELS: Record<string, string> = {
+  services: "Our services",
+  catalog: "Prebuilt lead lists",
+  faq: "Frequently asked",
+  policies: "Policies",
+  pages: "Site pages",
+  blog: "Blog & guides",
+};
+
+function ScreenKbList({
+  category,
   kbByCategory,
   onAnswer,
   onBack,
 }: {
+  category: string;
   kbByCategory: Map<string, KbEntry[]>;
   onAnswer: (a: string) => void;
   onBack: () => void;
 }) {
-  const services = kbByCategory.get("services") ?? [];
+  const rows = kbByCategory.get(category) ?? [];
   return (
     <div className="mt-2 space-y-2">
-      {services.map((k) => (
+      <div className="text-xs font-semibold text-muted-foreground px-1">
+        {CATEGORY_LABELS[category] ?? category}
+      </div>
+      {rows.length === 0 && (
+        <div className="text-xs text-muted-foreground px-1">Nothing here yet.</div>
+      )}
+      {rows.map((k) => (
         <QuickButton
           key={k.id}
           onClick={() => onAnswer(`**${k.title}**\n${k.answer}`)}

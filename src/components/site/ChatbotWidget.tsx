@@ -36,6 +36,11 @@ type Screen =
 
 const LS_SESSION = "chatbot.session";
 const LS_NAME = "chatbot.name";
+const LS_EMAIL = "chatbot.email";
+
+function isValidEmail(v: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
+}
 
 function newSessionId() {
   return (
@@ -114,17 +119,20 @@ export function ChatbotWidget() {
   const [enabled, setEnabled] = useState<boolean | null>(null);
   const [greeting, setGreeting] = useState("Hi! What's your name?");
   const [name, setName] = useLocalString(LS_NAME);
+  const [email, setEmail] = useLocalString(LS_EMAIL);
   const [sessionId, setSessionId] = useLocalString(LS_SESSION);
   const [screen, setScreen] = useState<Screen>({ name: "greet" });
   const [messages, setMessages] = useState<
     Array<ChatMessage | { sender: string; text: string; id: string; created_at?: string }>
   >([]);
   const [input, setInput] = useState("");
+  const [emailInput, setEmailInput] = useState("");
   const [kb, setKb] = useState<KbEntry[]>([]);
   const [busy, setBusy] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [liveStatus, setLiveStatus] = useState<"bot" | "live" | "closed">("bot");
+  const [authChecked, setAuthChecked] = useState(false);
 
   const cfgFn = useServerFn(getChatbotPublicConfig);
   const kbFn = useServerFn(listKb);
@@ -149,19 +157,44 @@ export function ChatbotWidget() {
       .catch(() => setKb([]));
   }, [cfgFn, kbFn]);
 
+  // Prefill from Supabase auth (logged-in visitors skip the lead form)
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const { data } = await supabase.auth.getUser();
+        const u = data.user;
+        if (!cancelled && u?.email) {
+          const meta = (u.user_metadata || {}) as Record<string, string>;
+          const displayName =
+            meta.full_name || meta.name || meta.display_name || u.email.split("@")[0];
+          if (!name) setName(displayName);
+          if (!email) setEmail(u.email);
+        }
+      } catch {}
+      if (!cancelled) setAuthChecked(true);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   // Bootstrap session on open
   useEffect(() => {
-    if (!open) return;
+    if (!open || !authChecked) return;
     let sid = sessionId;
     if (!sid) {
       sid = newSessionId();
       setSessionId(sid);
     }
-    if (name) {
-      // returning visitor — jump to menu
+    const hasLead = !!name && isValidEmail(email);
+    if (hasLead) {
+      // returning / logged-in visitor — jump to menu
       (async () => {
         try {
-          const conv = await startFn({ data: { sessionId: sid!, visitorName: name } });
+          const conv = await startFn({
+            data: { sessionId: sid!, visitorName: name, email },
+          });
           setConversationId(conv.id);
           setLiveStatus(conv.status);
           const rows = await listMsgFn({ data: { sessionId: sid! } });
@@ -177,10 +210,16 @@ export function ChatbotWidget() {
         }
       })();
     } else {
-      setMessages([{ id: "bot-hi", sender: "bot", text: greeting }]);
+      setMessages([
+        {
+          id: "bot-hi",
+          sender: "bot",
+          text: "Hi! Before we start, please share your name and email so our team can follow up.",
+        },
+      ]);
       setScreen({ name: "greet" });
     }
-  }, [open]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [open, authChecked]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Realtime — subscribe to admin/bot messages
   useEffect(() => {
@@ -248,14 +287,18 @@ export function ChatbotWidget() {
     ]);
   }
 
-  async function ensureConversation(nameOverride?: string) {
+  async function ensureConversation(nameOverride?: string, emailOverride?: string) {
     let sid = sessionId;
     if (!sid) {
       sid = newSessionId();
       setSessionId(sid);
     }
     const conv = await startFn({
-      data: { sessionId: sid, visitorName: nameOverride || name || "Visitor" },
+      data: {
+        sessionId: sid,
+        visitorName: nameOverride || name || "Visitor",
+        email: emailOverride || email || undefined,
+      },
     });
     setConversationId(conv.id);
     setLiveStatus(conv.status);
@@ -271,14 +314,21 @@ export function ChatbotWidget() {
     }
   }
 
-  async function submitName() {
+  async function submitLead() {
     const n = input.trim();
+    const em = emailInput.trim();
     if (!n) return;
+    if (!isValidEmail(em)) {
+      addLocal("bot", "Please enter a valid email so we can follow up.");
+      return;
+    }
     setBusy(true);
     setName(n);
-    addLocal("user", n);
+    setEmail(em);
+    addLocal("user", `${n} — ${em}`);
     setInput("");
-    await ensureConversation(n);
+    setEmailInput("");
+    await ensureConversation(n, em);
     addLocal("bot", `Nice to meet you, ${n}! How can I help today?`);
     setScreen({ name: "menu" });
     setBusy(false);
@@ -409,21 +459,37 @@ export function ChatbotWidget() {
 
             {/* Screen-specific button blocks */}
             {screen.name === "greet" && (
-              <div className="mt-2 flex gap-2">
+              <div className="mt-2 space-y-2 rounded-xl border border-border p-3">
+                <div className="text-xs font-semibold text-muted-foreground">
+                  Get started
+                </div>
                 <input
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && submitName()}
+                  onKeyDown={(e) => e.key === "Enter" && submitLead()}
                   placeholder="Your name"
-                  className="flex-1 rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none focus:border-violet"
+                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-violet"
+                />
+                <input
+                  value={emailInput}
+                  type="email"
+                  onChange={(e) => setEmailInput(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && submitLead()}
+                  placeholder="Your email"
+                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-violet"
                 />
                 <button
-                  onClick={submitName}
-                  disabled={busy || !input.trim()}
-                  className="rounded-xl bg-violet px-3 py-2 text-white disabled:opacity-50"
+                  type="button"
+                  onClick={submitLead}
+                  disabled={busy || !input.trim() || !isValidEmail(emailInput)}
+                  className="w-full flex items-center justify-center gap-2 rounded-lg bg-violet px-3 py-2 text-sm font-semibold text-white disabled:opacity-50"
                 >
                   <User className="size-4" />
+                  Start chatting
                 </button>
+                <div className="text-[10px] text-muted-foreground">
+                  We only use this to reply to you. No spam.
+                </div>
               </div>
             )}
 
@@ -498,6 +564,7 @@ export function ChatbotWidget() {
                 service={screen.service}
                 amount={screen.amount}
                 defaultName={name}
+                defaultEmail={email}
                 busy={busy}
                 onSubmit={async (payload) => {
                   setBusy(true);
@@ -547,6 +614,7 @@ export function ChatbotWidget() {
             {screen.name === "ticket" && (
               <ScreenTicket
                 defaultName={name}
+                defaultEmail={email}
                 busy={busy}
                 onSubmit={async (payload) => {
                   setBusy(true);
@@ -691,6 +759,7 @@ function ScreenOrderForm({
   service,
   amount,
   defaultName,
+  defaultEmail,
   busy,
   onSubmit,
   onBack,
@@ -698,6 +767,7 @@ function ScreenOrderForm({
   service: string;
   amount: number;
   defaultName: string;
+  defaultEmail: string;
   busy: boolean;
   onSubmit: (p: {
     customer_name: string;
@@ -711,7 +781,7 @@ function ScreenOrderForm({
 }) {
   const [f, setF] = useState({
     customer_name: defaultName || "",
-    email: "",
+    email: defaultEmail || "",
     service,
     details: "",
     quantity: 0,
@@ -822,16 +892,18 @@ function ScreenOrderStatus({
 
 function ScreenTicket({
   defaultName,
+  defaultEmail,
   busy,
   onSubmit,
   onBack,
 }: {
   defaultName: string;
+  defaultEmail: string;
   busy: boolean;
   onSubmit: (p: { name: string; email: string; issue: string }) => void;
   onBack: () => void;
 }) {
-  const [f, setF] = useState({ name: defaultName || "", email: "", issue: "" });
+  const [f, setF] = useState({ name: defaultName || "", email: defaultEmail || "", issue: "" });
   return (
     <div className="mt-2 space-y-2 rounded-xl border border-border p-3">
       <div className="text-xs font-semibold text-muted-foreground">Raise a support ticket</div>

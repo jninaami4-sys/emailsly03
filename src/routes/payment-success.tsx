@@ -48,16 +48,25 @@ function PaymentSuccessPage() {
   const search = Route.useSearch();
   const [now] = useState(() => new Date());
   const orderId = useMemo(() => search.order || genOrderId(), [search.order]);
+  const invoiceNo = useMemo(
+    () => `INV-${orderId.replace(/^LD-/, "")}`,
+    [orderId],
+  );
   const amountNum = Number(search.amount ?? 79);
   const amount = Number.isFinite(amountNum) ? amountNum : 79;
   const email = search.email || "customer@example.com";
   const name = search.name || "Valued Customer";
   const service = search.service || "SaaS Founders & Decision Makers";
   const qty = Number(search.qty ?? 5000);
+  const unit = search.unit || "lead";
 
-  const subtotal = amount;
+  const feeNum = Number(search.fee ?? NaN);
+  const subtotalNum = Number(search.subtotal ?? NaN);
+  const fee = Number.isFinite(feeNum) ? feeNum : Math.max(0, amount * 0.029 + 0.3);
+  const subtotal = Number.isFinite(subtotalNum) ? subtotalNum : Math.max(0, amount - fee);
   const tax = 0;
-  const total = subtotal + tax;
+  const total = amount;
+  const unitPrice = qty > 0 ? subtotal / qty : subtotal;
 
   const dateStr = now.toLocaleDateString("en-US", {
     year: "numeric",
@@ -65,6 +74,31 @@ function PaymentSuccessPage() {
     day: "numeric",
   });
   const timeStr = now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
+
+  const receiptFilename = `${invoiceNo}.html`;
+  const receiptHref = useMemo(
+    () =>
+      "data:text/html;charset=utf-8," +
+      encodeURIComponent(
+        buildReceiptHtml({
+          orderId,
+          invoiceNo,
+          dateStr,
+          timeStr,
+          name,
+          email,
+          service,
+          qty,
+          unit,
+          unitPrice,
+          subtotal,
+          fee,
+          tax,
+          total,
+        }),
+      ),
+    [orderId, invoiceNo, dateStr, timeStr, name, email, service, qty, unit, unitPrice, subtotal, fee, tax, total],
+  );
 
   return (
     <div className="relative min-h-[calc(100vh-4rem)] overflow-hidden bg-background px-4 py-12 md:py-20">
@@ -96,17 +130,18 @@ function PaymentSuccessPage() {
             >
               <Printer className="size-4" /> Print receipt
             </button>
-            <button
-              onClick={() => window.print()}
-              className="inline-flex items-center gap-2 rounded-xl bg-foreground px-4 py-2.5 text-sm font-medium text-background shadow-sm transition-transform hover:scale-[1.02]"
-            >
-              <Download className="size-4" /> Download PDF
-            </button>
-            <Link
-              to="/track-order"
+            <a
+              href={receiptHref}
+              download={receiptFilename}
               className="inline-flex items-center gap-2 rounded-xl bg-violet px-4 py-2.5 text-sm font-medium text-white shadow-lg shadow-violet/25 transition-transform hover:scale-[1.02]"
             >
-              Track your order <ArrowRight className="size-4" />
+              <Download className="size-4" /> Download receipt
+            </a>
+            <Link
+              to="/"
+              className="inline-flex items-center gap-2 rounded-xl bg-foreground px-4 py-2.5 text-sm font-medium text-background shadow-sm transition-transform hover:scale-[1.02]"
+            >
+              Back to home <ArrowRight className="size-4" />
             </Link>
           </div>
         </div>
@@ -114,16 +149,21 @@ function PaymentSuccessPage() {
         {/* Invoice / Receipt — always white */}
         <Invoice
           orderId={orderId}
+          invoiceNo={invoiceNo}
           dateStr={dateStr}
           timeStr={timeStr}
           name={name}
           email={email}
           service={service}
           qty={qty}
+          unit={unit}
+          unitPrice={unitPrice}
           subtotal={subtotal}
+          fee={fee}
           tax={tax}
           total={total}
         />
+
 
         {/* Perks strip */}
         <div className="mt-8 grid gap-3 sm:grid-cols-3 print:hidden">

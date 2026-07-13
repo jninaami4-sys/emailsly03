@@ -1,9 +1,15 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { getSiteSettings } from "@/lib/site-settings.functions";
 import { getConversionEvents } from "@/lib/conversion-events.functions";
 import { primeConversionEvents } from "@/lib/tracking";
+import {
+  CONSENT_EVENT,
+  DEFAULT_CONSENT,
+  readConsent,
+  type ConsentCategories,
+} from "@/lib/consent";
 
 /**
  * Injects tracking scripts (GTM, GA4, Meta Pixel, TikTok Pixel, custom head HTML)
@@ -30,14 +36,30 @@ export function TrackingScripts() {
     if (events) primeConversionEvents(events);
   }, [events]);
 
+  const [consent, setConsent] = useState<ConsentCategories>(() => {
+    if (typeof window === "undefined") return { ...DEFAULT_CONSENT };
+    return readConsent()?.categories ?? { ...DEFAULT_CONSENT };
+  });
+  useEffect(() => {
+    const sync = () => {
+      setConsent(readConsent()?.categories ?? { ...DEFAULT_CONSENT });
+    };
+    window.addEventListener(CONSENT_EVENT, sync);
+    window.addEventListener("storage", sync);
+    return () => {
+      window.removeEventListener(CONSENT_EVENT, sync);
+      window.removeEventListener("storage", sync);
+    };
+  }, []);
+
   const injectedRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
     if (!data || typeof window === "undefined") return;
     const injected = injectedRef.current;
 
-    // Google Tag Manager
-    if (data.gtm_id && /^GTM-[A-Z0-9]+$/i.test(data.gtm_id) && !injected.has(`gtm:${data.gtm_id}`)) {
+    // Google Tag Manager — analytics consent
+    if (consent.analytics && data.gtm_id && /^GTM-[A-Z0-9]+$/i.test(data.gtm_id) && !injected.has(`gtm:${data.gtm_id}`)) {
       injected.add(`gtm:${data.gtm_id}`);
       const w = window as unknown as { dataLayer?: unknown[] };
       w.dataLayer = w.dataLayer || [];
@@ -57,8 +79,8 @@ export function TrackingScripts() {
       document.body.insertBefore(ns, document.body.firstChild);
     }
 
-    // Google Analytics 4 (direct gtag)
-    if (data.ga4_id && /^G-[A-Z0-9]+$/i.test(data.ga4_id) && !injected.has(`ga4:${data.ga4_id}`)) {
+    // Google Analytics 4 (direct gtag) — analytics consent
+    if (consent.analytics && data.ga4_id && /^G-[A-Z0-9]+$/i.test(data.ga4_id) && !injected.has(`ga4:${data.ga4_id}`)) {
       injected.add(`ga4:${data.ga4_id}`);
       const s = document.createElement("script");
       s.async = true;
@@ -74,8 +96,8 @@ export function TrackingScripts() {
       w.gtag("config", data.ga4_id);
     }
 
-    // Meta / Facebook Pixel
-    if (data.fb_pixel_id && /^\d{6,20}$/.test(data.fb_pixel_id) && !injected.has(`fb:${data.fb_pixel_id}`)) {
+    // Meta / Facebook Pixel — marketing consent
+    if (consent.marketing && data.fb_pixel_id && /^\d{6,20}$/.test(data.fb_pixel_id) && !injected.has(`fb:${data.fb_pixel_id}`)) {
       injected.add(`fb:${data.fb_pixel_id}`);
       // Standard Meta Pixel snippet
       const w = window as unknown as { fbq?: { (...args: unknown[]): void; callMethod?: unknown; queue?: unknown[]; push?: unknown; loaded?: boolean; version?: string } };
@@ -100,8 +122,8 @@ export function TrackingScripts() {
       w.fbq!("track", "PageView");
     }
 
-    // TikTok Pixel
-    if (data.tiktok_pixel_id && /^[A-Z0-9]{10,40}$/i.test(data.tiktok_pixel_id) && !injected.has(`tt:${data.tiktok_pixel_id}`)) {
+    // TikTok Pixel — marketing consent
+    if (consent.marketing && data.tiktok_pixel_id && /^[A-Z0-9]{10,40}$/i.test(data.tiktok_pixel_id) && !injected.has(`tt:${data.tiktok_pixel_id}`)) {
       injected.add(`tt:${data.tiktok_pixel_id}`);
       const w = window as unknown as { ttq?: unknown; TiktokAnalyticsObject?: string };
       if (!w.ttq) {
@@ -130,8 +152,8 @@ export function TrackingScripts() {
       }
     }
 
-    // Custom head HTML (raw snippet supplied by admin)
-    if (data.custom_head_html && !injected.has(`custom:${data.updated_at}`)) {
+    // Custom head HTML (raw snippet supplied by admin) — marketing consent
+    if (consent.marketing && data.custom_head_html && !injected.has(`custom:${data.updated_at}`)) {
       injected.add(`custom:${data.updated_at}`);
       const container = document.createElement("div");
       container.innerHTML = data.custom_head_html;
@@ -148,7 +170,7 @@ export function TrackingScripts() {
         }
       });
     }
-  }, [data]);
+  }, [data, consent]);
 
   // Fire pageview on SPA navigation for GA4, Meta, TikTok
   useEffect(() => {

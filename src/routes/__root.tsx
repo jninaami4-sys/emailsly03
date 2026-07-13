@@ -17,6 +17,7 @@ import { AuthProvider } from "@/hooks/use-auth";
 import { AnnouncementModal } from "@/components/site/AnnouncementModal";
 import { TrackingScripts } from "@/components/site/TrackingScripts";
 import { TrackingDebugPanel } from "@/components/site/TrackingDebugPanel";
+import { CookieConsent } from "@/components/site/CookieConsent";
 
 function NotFoundComponent() {
   return (
@@ -141,6 +142,7 @@ function RootComponent() {
           <AnnouncementModal />
           <TrackingScripts />
           <TrackingDebugPanel />
+          <CookieConsent />
         </CartProvider>
       </AuthProvider>
     </QueryClientProvider>

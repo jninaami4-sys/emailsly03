@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { PaymentLogos } from "./PaymentLogos";
 import { PremiumZap, PremiumShieldCheck, PremiumArrowRight } from "./PremiumIcons";
+import { openConsentPreferences } from "@/lib/consent";
 
 const productLinks = [
   { to: "/store", label: "Lead Store" },
@@ -135,6 +136,13 @@ export function Footer() {
             <Link to="/contact" className="transition-colors hover:text-white">
               Contact
             </Link>
+            <button
+              type="button"
+              onClick={openConsentPreferences}
+              className="text-left transition-colors hover:text-white"
+            >
+              Cookie preferences
+            </button>
           </div>
         </div>
       </div>

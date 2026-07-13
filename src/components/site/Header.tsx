@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
   PremiumLogoMark,
   PremiumShoppingCart,
@@ -12,6 +12,24 @@ import { useAuth } from "@/hooks/use-auth";
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { openOrderDrawer } from "./OrderDrawer";
+import { motion } from "framer-motion";
+import {
+  Store,
+  Tag,
+  Briefcase,
+  PackageSearch,
+  Newspaper,
+  Mail,
+} from "lucide-react";
+
+const NAV_ITEMS = [
+  { to: "/store", label: "Lead Store", icon: Store },
+  { to: "/pricing", label: "Pricing", icon: Tag },
+  { to: "/apollo-leads-export", label: "Services", icon: Briefcase },
+  { to: "/track-order", label: "Track Order", icon: PackageSearch },
+  { to: "/blog", label: "Blog", icon: Newspaper },
+  { to: "/contact", label: "Contact", icon: Mail },
+] as const;
 
 const focusRing =
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet focus-visible:ring-offset-2 focus-visible:ring-offset-background";
@@ -22,6 +40,7 @@ export function Header() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   async function handleSignOut() {
     await queryClient.cancelQueries();
@@ -55,25 +74,42 @@ export function Header() {
                 <PremiumLogoMark className="size-6" aria-hidden="true" />
                 LYRA<span className="text-violet">DATA</span>
               </Link>
-              <ul className="hidden items-center gap-6 text-sm font-medium lg:flex">
-                {[
-                  { to: "/store", label: "Lead Store" },
-                  { to: "/pricing", label: "Pricing" },
-                  { to: "/apollo-leads-export", label: "Services" },
-                  { to: "/track-order", label: "Track Order" },
-                  { to: "/blog", label: "Blog" },
-                  { to: "/contact", label: "Contact" },
-                ].map((item) => (
-                  <li key={item.to}>
-                    <Link
-                      to={item.to}
-                      activeProps={{ "aria-current": "page", className: "text-ink" }}
-                      className={`rounded-md px-1 py-1 transition-colors hover:text-ink ${focusRing}`}
-                    >
-                      {item.label}
-                    </Link>
-                  </li>
-                ))}
+              <ul className="hidden items-center gap-1 rounded-full border border-black/5 bg-white/60 p-1 text-sm font-semibold shadow-inner shadow-black/[0.02] backdrop-blur lg:flex">
+                {NAV_ITEMS.map((item) => {
+                  const Icon = item.icon;
+                  const isActive =
+                    pathname === item.to || pathname.startsWith(item.to + "/");
+                  return (
+                    <li key={item.to} className="relative">
+                      <Link
+                        to={item.to}
+                        aria-current={isActive ? "page" : undefined}
+                        className={`relative flex cursor-pointer items-center gap-1.5 rounded-full px-4 py-1.5 transition-colors ${
+                          isActive
+                            ? "text-violet"
+                            : "text-ink/70 hover:text-ink"
+                        } ${focusRing}`}
+                      >
+                        <Icon className="size-4 md:hidden" aria-hidden="true" />
+                        <span className="hidden md:inline">{item.label}</span>
+                        <span className="md:hidden">{item.label}</span>
+                        {isActive && (
+                          <motion.span
+                            layoutId="header-lamp"
+                            transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                            className="absolute inset-0 -z-10 rounded-full bg-violet/10"
+                          >
+                            <span className="absolute -top-2 left-1/2 h-1 w-8 -translate-x-1/2 rounded-t-full bg-violet">
+                              <span className="absolute -top-2 -left-2 h-6 w-12 rounded-full bg-violet/25 blur-md" />
+                              <span className="absolute -top-1 left-0 h-6 w-8 rounded-full bg-violet/25 blur-md" />
+                              <span className="absolute top-0 left-2 h-4 w-4 rounded-full bg-violet/25 blur-sm" />
+                            </span>
+                          </motion.span>
+                        )}
+                      </Link>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
             <div className="z-10 flex items-center gap-2">

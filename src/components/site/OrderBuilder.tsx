@@ -704,13 +704,25 @@ export function OrderBuilder() {
                   </div>
                 </div>
 
-                <button
-                  type="button"
-                  disabled={!agree || name.trim().length < 2 || !/\S+@\S+\.\S+/.test(email)}
-                  className="relative mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-violet px-6 py-4 text-sm font-bold text-white shadow-lg shadow-violet/30 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-violet/40 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
+                <Link
+                  to="/payment-success"
+                  search={{
+                    amount: total.toFixed(2),
+                    email,
+                    name,
+                    service: service.name,
+                    qty: String(effectiveQty),
+                  }}
+                  aria-disabled={!agree || name.trim().length < 2 || !/\S+@\S+\.\S+/.test(email)}
+                  onClick={(e) => {
+                    if (!agree || name.trim().length < 2 || !/\S+@\S+\.\S+/.test(email)) {
+                      e.preventDefault();
+                    }
+                  }}
+                  className="relative mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-violet px-6 py-4 text-sm font-bold text-white shadow-lg shadow-violet/30 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-violet/40 aria-disabled:cursor-not-allowed aria-disabled:opacity-50 aria-disabled:hover:translate-y-0"
                 >
-                  Checkout with Stripe <ArrowRight className="size-4" />
-                </button>
+                  Checkout (demo — bypasses Stripe) <ArrowRight className="size-4" />
+                </Link>
                 <p className="relative mt-3 flex items-center justify-center gap-1.5 font-mono text-[10px] font-bold uppercase tracking-widest text-white/40">
                   <Lock className="size-3" /> 256-bit SSL encrypted
                 </p>

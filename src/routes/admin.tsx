@@ -19,8 +19,69 @@ export const Route = createFileRoute("/admin")({
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),
-  component: AdminPage,
+  component: AdminGate,
 });
+
+function AdminGate() {
+  const { user, loading } = useAuth();
+  const whoFn = useServerFn(whoAmIAdmin);
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["admin-check", user?.id],
+    queryFn: () => whoFn(),
+    enabled: !!user,
+    retry: false,
+  });
+
+  if (loading || (user && isLoading)) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <div className="mx-auto max-w-md px-4 py-24 text-center text-sm text-muted-foreground">
+          Checking access…
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <main className="mx-auto max-w-md px-4 py-24 text-center">
+          <div className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-violet/10 text-violet">
+            <Lock className="size-6" />
+          </div>
+          <h1 className="mt-4 font-display text-2xl font-bold">Admin sign-in required</h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Sign in with the admin email to manage site content.
+          </p>
+          <Link to="/auth" className="mt-6 inline-flex rounded-xl bg-violet px-5 py-2.5 text-sm font-semibold text-white">
+            Go to sign in
+          </Link>
+        </main>
+      </div>
+    );
+  }
+
+  if (error || !data?.isAdmin) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <main className="mx-auto max-w-md px-4 py-24 text-center">
+          <div className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-rose-500/10 text-rose-500">
+            <ShieldAlert className="size-6" />
+          </div>
+          <h1 className="mt-4 font-display text-2xl font-bold">Not authorized</h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            {user.email} isn't the admin account. Sign in with the admin email.
+          </p>
+        </main>
+      </div>
+    );
+  }
+
+  return <AdminPage />;
+}
 
 const coverKey = (id: string) => `product-cover:${id}`;
 

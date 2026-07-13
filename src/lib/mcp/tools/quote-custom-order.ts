@@ -3,11 +3,11 @@ import { z } from "zod";
 
 // Pricing tiers mirror the public /pricing calculator.
 const TIERS = [
-  { minQty: 100, maxQty: 499, pricePerLead: 0.18 },
-  { minQty: 500, maxQty: 999, pricePerLead: 0.15 },
-  { minQty: 1000, maxQty: 4999, pricePerLead: 0.12 },
-  { minQty: 5000, maxQty: 9999, pricePerLead: 0.09 },
-  { minQty: 10000, maxQty: 1_000_000, pricePerLead: 0.07 },
+  { minQty: 100, maxQty: 499, pricePerLead: 0.35 },
+  { minQty: 500, maxQty: 999, pricePerLead: 0.35 },
+  { minQty: 1000, maxQty: 4999, pricePerLead: 0.35 },
+  { minQty: 5000, maxQty: 9999, pricePerLead: 0.35 },
+  { minQty: 10000, maxQty: 1_000_000, pricePerLead: 0.35 },
 ];
 
 export default defineTool({

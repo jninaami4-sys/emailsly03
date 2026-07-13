@@ -152,10 +152,16 @@ export function ProductCard({ product }: { product: Product }) {
         </div>
 
         {/* Upload controls (hover) */}
-        <div className="absolute bottom-3 right-3 flex gap-1.5 opacity-0 transition-opacity group-hover:opacity-100">
+        <div
+          className="absolute bottom-3 right-3 flex gap-1.5 opacity-0 transition-opacity group-hover:opacity-100"
+          onClick={(e) => e.stopPropagation()}
+        >
           <button
             type="button"
-            onClick={() => fileRef.current?.click()}
+            onClick={(e) => {
+              e.stopPropagation();
+              fileRef.current?.click();
+            }}
             className="flex items-center gap-1 rounded-full bg-white/95 px-2.5 py-1 font-mono text-[10px] font-semibold text-ink backdrop-blur transition-colors hover:bg-white"
             aria-label="Upload cover image"
           >
@@ -165,7 +171,10 @@ export function ProductCard({ product }: { product: Product }) {
           {uploadedCover && (
             <button
               type="button"
-              onClick={clearCover}
+              onClick={(e) => {
+                e.stopPropagation();
+                clearCover();
+              }}
               className="rounded-full bg-white/95 p-1.5 text-ink backdrop-blur transition-colors hover:bg-white"
               aria-label="Remove uploaded cover"
             >

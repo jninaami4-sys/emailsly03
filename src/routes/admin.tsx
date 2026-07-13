@@ -164,6 +164,7 @@ function AdminPage() {
           <ConversionEventsAdmin />
           <ServerTrackingAdmin />
           <DebugModeAdmin />
+          <ChatbotAdmin />
         </div>
 
         <h2 className="mb-4 font-display text-xl font-bold">Product cover editor</h2>

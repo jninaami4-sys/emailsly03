@@ -56,6 +56,220 @@ export type Database = {
         }
         Relationships: []
       }
+      chatbot_conversations: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          last_message: string
+          order_id: string | null
+          session_id: string
+          short_code: string
+          status: string
+          updated_at: string
+          visitor_name: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          last_message?: string
+          order_id?: string | null
+          session_id: string
+          short_code?: string
+          status?: string
+          updated_at?: string
+          visitor_name?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          last_message?: string
+          order_id?: string | null
+          session_id?: string
+          short_code?: string
+          status?: string
+          updated_at?: string
+          visitor_name?: string
+        }
+        Relationships: []
+      }
+      chatbot_kb: {
+        Row: {
+          answer: string
+          category: string
+          created_at: string
+          enabled: boolean
+          id: string
+          sort_order: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          answer?: string
+          category?: string
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          sort_order?: number
+          title?: string
+          updated_at?: string
+        }
+        Update: {
+          answer?: string
+          category?: string
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          sort_order?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      chatbot_messages: {
+        Row: {
+          conversation_id: string
+          created_at: string
+          id: string
+          sender: string
+          text: string
+        }
+        Insert: {
+          conversation_id: string
+          created_at?: string
+          id?: string
+          sender: string
+          text: string
+        }
+        Update: {
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          sender?: string
+          text?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chatbot_messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "chatbot_conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chatbot_orders: {
+        Row: {
+          amount: number
+          created_at: string
+          customer_name: string
+          details: string
+          email: string
+          id: string
+          notes: string
+          order_id: string
+          quantity: number
+          service: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          amount?: number
+          created_at?: string
+          customer_name?: string
+          details?: string
+          email?: string
+          id?: string
+          notes?: string
+          order_id?: string
+          quantity?: number
+          service?: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          customer_name?: string
+          details?: string
+          email?: string
+          id?: string
+          notes?: string
+          order_id?: string
+          quantity?: number
+          service?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      chatbot_telegram_map: {
+        Row: {
+          conversation_id: string
+          created_at: string
+          id: string
+          telegram_chat_id: number
+          telegram_message_id: number
+        }
+        Insert: {
+          conversation_id: string
+          created_at?: string
+          id?: string
+          telegram_chat_id: number
+          telegram_message_id: number
+        }
+        Update: {
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          telegram_chat_id?: number
+          telegram_message_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chatbot_telegram_map_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "chatbot_conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chatbot_tickets: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          issue: string
+          name: string
+          status: string
+          ticket_no: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string
+          id?: string
+          issue?: string
+          name?: string
+          status?: string
+          ticket_no?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          issue?: string
+          name?: string
+          status?: string
+          ticket_no?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       conversion_events: {
         Row: {
           created_at: string
@@ -263,15 +477,42 @@ export type Database = {
         }
         Relationships: []
       }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "moderator" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -398,6 +639,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "moderator", "user"],
+    },
   },
 } as const

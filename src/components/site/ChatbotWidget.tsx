@@ -1,0 +1,808 @@
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
+import { MessageCircle, X, ArrowLeft, User, Send, Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import {
+  createOrder,
+  createTicket,
+  getChatbotPublicConfig,
+  listKb,
+  listMessages,
+  lookupOrder,
+  postMessage,
+  requestHumanHandoff,
+  startConversation,
+  type ChatMessage,
+  type KbEntry,
+} from "@/lib/chatbot.functions";
+
+// ---------------------------------------------------------------------------
+// Types & storage
+// ---------------------------------------------------------------------------
+type Screen =
+  | { name: "greet" }
+  | { name: "menu" }
+  | { name: "services" }
+  | { name: "quote" }
+  | { name: "order-form"; service: string; amount: number }
+  | { name: "order-status" }
+  | { name: "ticket" }
+  | { name: "live" };
+
+const LS_SESSION = "chatbot.session";
+const LS_NAME = "chatbot.name";
+
+function newSessionId() {
+  return (
+    "s_" +
+    Math.random().toString(36).slice(2, 10) +
+    Date.now().toString(36).slice(-4)
+  );
+}
+
+function useLocalString(key: string) {
+  const [v, setV] = useState<string>("");
+  useEffect(() => {
+    try {
+      setV(localStorage.getItem(key) || "");
+    } catch {}
+  }, [key]);
+  const set = (n: string) => {
+    setV(n);
+    try {
+      localStorage.setItem(key, n);
+    } catch {}
+  };
+  return [v, set] as const;
+}
+
+// ---------------------------------------------------------------------------
+// Small UI helpers
+// ---------------------------------------------------------------------------
+function Bubble({ m }: { m: ChatMessage | { sender: string; text: string; id?: string } }) {
+  const mine = m.sender === "user";
+  const admin = m.sender === "admin";
+  return (
+    <div className={`flex ${mine ? "justify-end" : "justify-start"} mb-2`}>
+      <div
+        className={`max-w-[80%] rounded-2xl px-3 py-2 text-sm whitespace-pre-wrap break-words ${
+          mine
+            ? "bg-violet text-white rounded-br-sm"
+            : admin
+              ? "bg-emerald-500 text-white rounded-bl-sm"
+              : "bg-secondary text-foreground rounded-bl-sm"
+        }`}
+      >
+        {admin && <div className="text-[10px] font-bold opacity-80 mb-0.5">Team</div>}
+        {m.text}
+      </div>
+    </div>
+  );
+}
+
+function QuickButton({
+  onClick,
+  children,
+  disabled,
+}: {
+  onClick: () => void;
+  children: React.ReactNode;
+  disabled?: boolean;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      className="w-full text-left rounded-xl border border-border bg-background hover:bg-secondary transition-colors px-3 py-2 text-sm font-medium text-foreground disabled:opacity-50"
+    >
+      {children}
+    </button>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Widget
+// ---------------------------------------------------------------------------
+export function ChatbotWidget() {
+  const [open, setOpen] = useState(false);
+  const [enabled, setEnabled] = useState<boolean | null>(null);
+  const [greeting, setGreeting] = useState("Hi! What's your name?");
+  const [name, setName] = useLocalString(LS_NAME);
+  const [sessionId, setSessionId] = useLocalString(LS_SESSION);
+  const [screen, setScreen] = useState<Screen>({ name: "greet" });
+  const [messages, setMessages] = useState<
+    Array<ChatMessage | { sender: string; text: string; id: string; created_at?: string }>
+  >([]);
+  const [input, setInput] = useState("");
+  const [kb, setKb] = useState<KbEntry[]>([]);
+  const [busy, setBusy] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [conversationId, setConversationId] = useState<string | null>(null);
+  const [liveStatus, setLiveStatus] = useState<"bot" | "live" | "closed">("bot");
+
+  const cfgFn = useServerFn(getChatbotPublicConfig);
+  const kbFn = useServerFn(listKb);
+  const startFn = useServerFn(startConversation);
+  const listMsgFn = useServerFn(listMessages);
+  const postFn = useServerFn(postMessage);
+  const lookupFn = useServerFn(lookupOrder);
+  const orderFn = useServerFn(createOrder);
+  const ticketFn = useServerFn(createTicket);
+  const handoffFn = useServerFn(requestHumanHandoff);
+
+  // Load config once
+  useEffect(() => {
+    cfgFn()
+      .then((c) => {
+        setEnabled(c.enabled);
+        setGreeting(c.greeting || "Hi! What's your name?");
+      })
+      .catch(() => setEnabled(true));
+    kbFn()
+      .then((rows) => setKb(rows))
+      .catch(() => setKb([]));
+  }, [cfgFn, kbFn]);
+
+  // Bootstrap session on open
+  useEffect(() => {
+    if (!open) return;
+    let sid = sessionId;
+    if (!sid) {
+      sid = newSessionId();
+      setSessionId(sid);
+    }
+    if (name) {
+      // returning visitor — jump to menu
+      (async () => {
+        try {
+          const conv = await startFn({ data: { sessionId: sid!, visitorName: name } });
+          setConversationId(conv.id);
+          setLiveStatus(conv.status);
+          const rows = await listMsgFn({ data: { sessionId: sid! } });
+          setMessages(rows);
+          setScreen(rows.length ? (conv.status === "live" ? { name: "live" } : { name: "menu" }) : { name: "menu" });
+          if (!rows.length) {
+            setMessages([
+              { id: "bot-hi", sender: "bot", text: `Welcome back, ${name}! How can we help today?` },
+            ]);
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      })();
+    } else {
+      setMessages([{ id: "bot-hi", sender: "bot", text: greeting }]);
+      setScreen({ name: "greet" });
+    }
+  }, [open]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Realtime — subscribe to admin/bot messages
+  useEffect(() => {
+    if (!conversationId) return;
+    const channel = supabase
+      .channel(`chatbot:${conversationId}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "chatbot_messages",
+          filter: `conversation_id=eq.${conversationId}`,
+        },
+        (payload) => {
+          const row = payload.new as ChatMessage;
+          setMessages((prev) => {
+            if (prev.find((m) => (m as any).id === row.id)) return prev;
+            // Skip user echoes (we already appended optimistically)
+            if (row.sender === "user") return prev;
+            return [...prev, row];
+          });
+        },
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "chatbot_conversations",
+          filter: `id=eq.${conversationId}`,
+        },
+        (payload) => {
+          const status = (payload.new as any).status;
+          setLiveStatus(status);
+          if (status === "live") setScreen({ name: "live" });
+        },
+      )
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [conversationId]);
+
+  // Auto-scroll
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
+  }, [messages, screen]);
+
+  const kbByCategory = useMemo(() => {
+    const map = new Map<string, KbEntry[]>();
+    for (const k of kb) {
+      const list = map.get(k.category) ?? [];
+      list.push(k);
+      map.set(k.category, list);
+    }
+    return map;
+  }, [kb]);
+
+  function addLocal(sender: "user" | "bot", text: string) {
+    setMessages((p) => [
+      ...p,
+      { id: `local-${Date.now()}-${Math.random()}`, sender, text },
+    ]);
+  }
+
+  async function ensureConversation(nameOverride?: string) {
+    let sid = sessionId;
+    if (!sid) {
+      sid = newSessionId();
+      setSessionId(sid);
+    }
+    const conv = await startFn({
+      data: { sessionId: sid, visitorName: nameOverride || name || "Visitor" },
+    });
+    setConversationId(conv.id);
+    setLiveStatus(conv.status);
+    return { sid, conv };
+  }
+
+  async function saveUserMessage(text: string) {
+    try {
+      const { sid } = await ensureConversation();
+      await postFn({ data: { sessionId: sid, sender: "user", text } });
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  async function submitName() {
+    const n = input.trim();
+    if (!n) return;
+    setBusy(true);
+    setName(n);
+    addLocal("user", n);
+    setInput("");
+    await ensureConversation(n);
+    addLocal("bot", `Nice to meet you, ${n}! How can I help today?`);
+    setScreen({ name: "menu" });
+    setBusy(false);
+  }
+
+  // ---- keyword router (fallback for free typing) ---------------------------
+  function routeKeyword(txt: string): Screen | null {
+    const t = txt.toLowerCase();
+    if (/human|agent|support|talk|person/.test(t)) return { name: "live" };
+    if (/(price|cost|quote|apollo|lead)/.test(t)) return { name: "quote" };
+    if (/(order|status|track)/.test(t)) return { name: "order-status" };
+    if (/(help|problem|issue|broken|complain|ticket)/.test(t)) return { name: "ticket" };
+    if (/(service|website|app|ad|google|meta)/.test(t)) return { name: "services" };
+    return null;
+  }
+
+  async function handleFreeText() {
+    const t = input.trim();
+    if (!t) return;
+    setInput("");
+    addLocal("user", t);
+    await saveUserMessage(t);
+
+    // If we're in live mode the message goes to the human via the server fn
+    if (liveStatus === "live") return;
+
+    const next = routeKeyword(t);
+    if (next) {
+      addLocal("bot", "Here's what might help:");
+      setScreen(next);
+    } else {
+      addLocal("bot", "I didn't quite catch that — pick an option below:");
+      setScreen({ name: "menu" });
+    }
+  }
+
+  async function handoff() {
+    setBusy(true);
+    addLocal("bot", "Connecting you to the team…");
+    try {
+      const { sid } = await ensureConversation();
+      const last =
+        [...messages].reverse().find((m) => m.sender === "user")?.text || "Live chat request";
+      await handoffFn({ data: { sessionId: sid, lastMessage: last } });
+      setScreen({ name: "live" });
+    } catch (e) {
+      console.error(e);
+      addLocal("bot", "Couldn't reach the team right now. Please raise a ticket.");
+      setScreen({ name: "ticket" });
+    }
+    setBusy(false);
+  }
+
+  // ---------------------------------------------------------------------------
+  if (enabled === false) return null;
+
+  return (
+    <>
+      {/* Floating button */}
+      {!open && (
+        <button
+          type="button"
+          aria-label="Open chat"
+          onClick={() => setOpen(true)}
+          className="fixed bottom-5 right-5 z-[60] flex size-14 items-center justify-center rounded-full bg-violet text-white shadow-lg hover:bg-violet/90 transition-colors"
+        >
+          <MessageCircle className="size-6" />
+        </button>
+      )}
+
+      {/* Panel */}
+      {open && (
+        <div className="fixed bottom-5 right-5 z-[60] flex h-[600px] max-h-[85vh] w-[380px] max-w-[calc(100vw-2rem)] flex-col rounded-2xl border border-border bg-background shadow-2xl overflow-hidden">
+          {/* Header */}
+          <div className="flex items-center justify-between border-b border-border bg-violet px-4 py-3 text-white">
+            <div className="flex items-center gap-2">
+              <div className="flex size-8 items-center justify-center rounded-full bg-white/20">
+                <MessageCircle className="size-4" />
+              </div>
+              <div>
+                <div className="text-sm font-semibold">Support</div>
+                <div className="text-[11px] opacity-80">
+                  {liveStatus === "live" ? "Connected to team" : "We reply fast"}
+                </div>
+              </div>
+            </div>
+            <button
+              type="button"
+              aria-label="Close chat"
+              onClick={() => setOpen(false)}
+              className="rounded-full p-1 hover:bg-white/10"
+            >
+              <X className="size-4" />
+            </button>
+          </div>
+
+          {/* Messages */}
+          <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-3 bg-background">
+            {messages.map((m) => (
+              <Bubble key={(m as any).id} m={m as any} />
+            ))}
+
+            {/* Screen-specific button blocks */}
+            {screen.name === "greet" && (
+              <div className="mt-2 flex gap-2">
+                <input
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && submitName()}
+                  placeholder="Your name"
+                  className="flex-1 rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none focus:border-violet"
+                />
+                <button
+                  onClick={submitName}
+                  disabled={busy || !input.trim()}
+                  className="rounded-xl bg-violet px-3 py-2 text-white disabled:opacity-50"
+                >
+                  <User className="size-4" />
+                </button>
+              </div>
+            )}
+
+            {screen.name === "menu" && (
+              <div className="mt-2 space-y-2">
+                <QuickButton onClick={() => setScreen({ name: "services" })}>
+                  💼 Our services
+                </QuickButton>
+                <QuickButton onClick={() => setScreen({ name: "quote" })}>
+                  💰 Get a leads quote
+                </QuickButton>
+                <QuickButton
+                  onClick={() =>
+                    setScreen({ name: "order-form", service: "Custom order", amount: 0 })
+                  }
+                >
+                  🛒 Place a custom order
+                </QuickButton>
+                <QuickButton onClick={() => setScreen({ name: "order-status" })}>
+                  📦 Check order status
+                </QuickButton>
+                <QuickButton onClick={() => setScreen({ name: "ticket" })}>
+                  🎫 Raise a support ticket
+                </QuickButton>
+                <QuickButton onClick={handoff} disabled={busy}>
+                  🧑‍💼 Talk to a human
+                </QuickButton>
+              </div>
+            )}
+
+            {screen.name === "services" && (
+              <ScreenServices
+                kbByCategory={kbByCategory}
+                onAnswer={(a) => addLocal("bot", a)}
+                onBack={() => setScreen({ name: "menu" })}
+              />
+            )}
+
+            {screen.name === "quote" && (
+              <ScreenQuote
+                onPick={(service, amount) => {
+                  addLocal("user", `Interested in ${service} — $${amount}`);
+                  setScreen({ name: "order-form", service, amount });
+                }}
+                onBack={() => setScreen({ name: "menu" })}
+              />
+            )}
+
+            {screen.name === "order-form" && (
+              <ScreenOrderForm
+                service={screen.service}
+                amount={screen.amount}
+                defaultName={name}
+                busy={busy}
+                onSubmit={async (payload) => {
+                  setBusy(true);
+                  try {
+                    await ensureConversation();
+                    const r = await orderFn({ data: payload });
+                    addLocal(
+                      "bot",
+                      `✅ Order placed! Your order ID is ${r.order_id}. We'll email updates to ${payload.email}.`,
+                    );
+                    setScreen({ name: "menu" });
+                  } catch (e: any) {
+                    addLocal("bot", `Sorry, that didn't go through: ${e?.message || "error"}`);
+                  }
+                  setBusy(false);
+                }}
+                onBack={() => setScreen({ name: "menu" })}
+              />
+            )}
+
+            {screen.name === "order-status" && (
+              <ScreenOrderStatus
+                busy={busy}
+                onLookup={async (orderId) => {
+                  setBusy(true);
+                  addLocal("user", `Order: ${orderId}`);
+                  try {
+                    const r = await lookupFn({ data: { orderId } });
+                    if (r.found && r.order) {
+                      addLocal(
+                        "bot",
+                        `📦 ${r.order.order_id}\nService: ${r.order.service}\nStatus: ${r.order.status}\nAmount: $${r.order.amount}\n${r.order.notes ? `Notes: ${r.order.notes}` : ""}`,
+                      );
+                    } else {
+                      addLocal("bot", "I couldn't find that order. Want to raise a ticket or talk to a human?");
+                    }
+                  } catch (e: any) {
+                    addLocal("bot", "Something went wrong looking that up.");
+                  }
+                  setBusy(false);
+                  setScreen({ name: "menu" });
+                }}
+                onBack={() => setScreen({ name: "menu" })}
+              />
+            )}
+
+            {screen.name === "ticket" && (
+              <ScreenTicket
+                defaultName={name}
+                busy={busy}
+                onSubmit={async (payload) => {
+                  setBusy(true);
+                  try {
+                    const r = await ticketFn({ data: payload });
+                    addLocal(
+                      "bot",
+                      `✅ Ticket ${r.ticket_no} created. Our team will get back to you at ${payload.email}.`,
+                    );
+                    setScreen({ name: "menu" });
+                  } catch (e: any) {
+                    addLocal("bot", `Ticket failed: ${e?.message || "error"}`);
+                  }
+                  setBusy(false);
+                }}
+                onBack={() => setScreen({ name: "menu" })}
+              />
+            )}
+
+            {screen.name === "live" && (
+              <div className="mt-3 rounded-xl border border-emerald-500/40 bg-emerald-500/10 p-3 text-xs text-emerald-700 dark:text-emerald-400">
+                You're connected to a team member. Just type your message below.
+              </div>
+            )}
+          </div>
+
+          {/* Composer */}
+          <div className="border-t border-border p-2">
+            {screen.name !== "greet" && (
+              <div className="flex items-end gap-2">
+                {screen.name !== "menu" && (
+                  <button
+                    onClick={() => setScreen({ name: "menu" })}
+                    className="rounded-xl p-2 text-muted-foreground hover:bg-secondary"
+                    aria-label="Back to menu"
+                    type="button"
+                  >
+                    <ArrowLeft className="size-4" />
+                  </button>
+                )}
+                <textarea
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.shiftKey) {
+                      e.preventDefault();
+                      handleFreeText();
+                    }
+                  }}
+                  rows={1}
+                  placeholder={
+                    liveStatus === "live"
+                      ? "Message the team…"
+                      : "Type a message, or use the buttons above"
+                  }
+                  className="flex-1 resize-none rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none focus:border-violet max-h-24"
+                />
+                <button
+                  onClick={handleFreeText}
+                  disabled={busy || !input.trim()}
+                  className="rounded-xl bg-violet p-2 text-white disabled:opacity-50"
+                  aria-label="Send"
+                  type="button"
+                >
+                  {busy ? <Loader2 className="size-4 animate-spin" /> : <Send className="size-4" />}
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Sub-screens
+// ---------------------------------------------------------------------------
+function ScreenServices({
+  kbByCategory,
+  onAnswer,
+  onBack,
+}: {
+  kbByCategory: Map<string, KbEntry[]>;
+  onAnswer: (a: string) => void;
+  onBack: () => void;
+}) {
+  const services = kbByCategory.get("services") ?? [];
+  return (
+    <div className="mt-2 space-y-2">
+      {services.map((k) => (
+        <QuickButton
+          key={k.id}
+          onClick={() => onAnswer(`**${k.title}**\n${k.answer}`)}
+        >
+          {k.title}
+        </QuickButton>
+      ))}
+      <QuickButton onClick={onBack}>⬅ Back to menu</QuickButton>
+    </div>
+  );
+}
+
+function ScreenQuote({
+  onPick,
+  onBack,
+}: {
+  onPick: (service: string, amount: number) => void;
+  onBack: () => void;
+}) {
+  return (
+    <div className="mt-2 space-y-2">
+      <QuickButton onClick={() => onPick("5,000 Apollo leads", 20)}>
+        5,000 leads — $20
+      </QuickButton>
+      <QuickButton onClick={() => onPick("10,000 Apollo leads", 35)}>
+        10,000 leads — $35
+      </QuickButton>
+      <QuickButton onClick={onBack}>⬅ Back to menu</QuickButton>
+    </div>
+  );
+}
+
+function ScreenOrderForm({
+  service,
+  amount,
+  defaultName,
+  busy,
+  onSubmit,
+  onBack,
+}: {
+  service: string;
+  amount: number;
+  defaultName: string;
+  busy: boolean;
+  onSubmit: (p: {
+    customer_name: string;
+    email: string;
+    service: string;
+    details: string;
+    quantity: number;
+    amount: number;
+  }) => void;
+  onBack: () => void;
+}) {
+  const [f, setF] = useState({
+    customer_name: defaultName || "",
+    email: "",
+    service,
+    details: "",
+    quantity: 0,
+    amount,
+  });
+  return (
+    <div className="mt-2 space-y-2 rounded-xl border border-border p-3">
+      <div className="text-xs font-semibold text-muted-foreground">Order — {service}</div>
+      <input
+        value={f.customer_name}
+        onChange={(e) => setF({ ...f, customer_name: e.target.value })}
+        placeholder="Your name"
+        className="w-full rounded-lg border border-border bg-background px-2 py-1.5 text-sm"
+      />
+      <input
+        value={f.email}
+        type="email"
+        onChange={(e) => setF({ ...f, email: e.target.value })}
+        placeholder="Your email"
+        className="w-full rounded-lg border border-border bg-background px-2 py-1.5 text-sm"
+      />
+      {service === "Custom order" && (
+        <>
+          <input
+            value={f.service}
+            onChange={(e) => setF({ ...f, service: e.target.value })}
+            placeholder="What service?"
+            className="w-full rounded-lg border border-border bg-background px-2 py-1.5 text-sm"
+          />
+          <input
+            value={f.amount || ""}
+            type="number"
+            onChange={(e) => setF({ ...f, amount: Number(e.target.value) })}
+            placeholder="Budget ($) — optional"
+            className="w-full rounded-lg border border-border bg-background px-2 py-1.5 text-sm"
+          />
+        </>
+      )}
+      <textarea
+        value={f.details}
+        onChange={(e) => setF({ ...f, details: e.target.value })}
+        placeholder="Details / requirements"
+        rows={3}
+        className="w-full rounded-lg border border-border bg-background px-2 py-1.5 text-sm"
+      />
+      <div className="flex gap-2">
+        <button
+          onClick={onBack}
+          type="button"
+          className="rounded-lg border border-border px-3 py-1.5 text-sm"
+        >
+          Back
+        </button>
+        <button
+          disabled={busy || !f.customer_name || !f.email}
+          onClick={() => onSubmit(f)}
+          type="button"
+          className="flex-1 rounded-lg bg-violet px-3 py-1.5 text-sm font-semibold text-white disabled:opacity-50"
+        >
+          {busy ? "Submitting…" : "Place order"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function ScreenOrderStatus({
+  busy,
+  onLookup,
+  onBack,
+}: {
+  busy: boolean;
+  onLookup: (orderId: string) => void;
+  onBack: () => void;
+}) {
+  const [id, setId] = useState("");
+  return (
+    <div className="mt-2 space-y-2 rounded-xl border border-border p-3">
+      <div className="text-xs font-semibold text-muted-foreground">
+        Enter your order ID (e.g. ORD-1042)
+      </div>
+      <input
+        value={id}
+        onChange={(e) => setId(e.target.value)}
+        placeholder="ORD-1042"
+        className="w-full rounded-lg border border-border bg-background px-2 py-1.5 text-sm"
+      />
+      <div className="flex gap-2">
+        <button
+          onClick={onBack}
+          type="button"
+          className="rounded-lg border border-border px-3 py-1.5 text-sm"
+        >
+          Back
+        </button>
+        <button
+          disabled={busy || !id.trim()}
+          onClick={() => onLookup(id.trim())}
+          type="button"
+          className="flex-1 rounded-lg bg-violet px-3 py-1.5 text-sm font-semibold text-white disabled:opacity-50"
+        >
+          {busy ? "Looking up…" : "Check status"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function ScreenTicket({
+  defaultName,
+  busy,
+  onSubmit,
+  onBack,
+}: {
+  defaultName: string;
+  busy: boolean;
+  onSubmit: (p: { name: string; email: string; issue: string }) => void;
+  onBack: () => void;
+}) {
+  const [f, setF] = useState({ name: defaultName || "", email: "", issue: "" });
+  return (
+    <div className="mt-2 space-y-2 rounded-xl border border-border p-3">
+      <div className="text-xs font-semibold text-muted-foreground">Raise a support ticket</div>
+      <input
+        value={f.name}
+        onChange={(e) => setF({ ...f, name: e.target.value })}
+        placeholder="Your name"
+        className="w-full rounded-lg border border-border bg-background px-2 py-1.5 text-sm"
+      />
+      <input
+        value={f.email}
+        type="email"
+        onChange={(e) => setF({ ...f, email: e.target.value })}
+        placeholder="Your email"
+        className="w-full rounded-lg border border-border bg-background px-2 py-1.5 text-sm"
+      />
+      <textarea
+        value={f.issue}
+        onChange={(e) => setF({ ...f, issue: e.target.value })}
+        placeholder="Describe your issue"
+        rows={4}
+        className="w-full rounded-lg border border-border bg-background px-2 py-1.5 text-sm"
+      />
+      <div className="flex gap-2">
+        <button
+          onClick={onBack}
+          type="button"
+          className="rounded-lg border border-border px-3 py-1.5 text-sm"
+        >
+          Back
+        </button>
+        <button
+          disabled={busy || !f.name || !f.email || !f.issue}
+          onClick={() => onSubmit(f)}
+          type="button"
+          className="flex-1 rounded-lg bg-violet px-3 py-1.5 text-sm font-semibold text-white disabled:opacity-50"
+        >
+          {busy ? "Sending…" : "Submit ticket"}
+        </button>
+      </div>
+    </div>
+  );
+}

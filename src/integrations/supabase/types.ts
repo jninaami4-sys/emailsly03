@@ -56,6 +56,36 @@ export type Database = {
         }
         Relationships: []
       }
+      chatbot_config: {
+        Row: {
+          enabled: boolean
+          greeting: string
+          human_hours_note: string
+          id: boolean
+          telegram_admin_chat_id: string
+          ticket_webhook_url: string
+          updated_at: string
+        }
+        Insert: {
+          enabled?: boolean
+          greeting?: string
+          human_hours_note?: string
+          id?: boolean
+          telegram_admin_chat_id?: string
+          ticket_webhook_url?: string
+          updated_at?: string
+        }
+        Update: {
+          enabled?: boolean
+          greeting?: string
+          human_hours_note?: string
+          id?: boolean
+          telegram_admin_chat_id?: string
+          ticket_webhook_url?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       chatbot_conversations: {
         Row: {
           created_at: string

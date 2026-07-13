@@ -24,7 +24,6 @@ import {
 } from "lucide-react";
 
 const NAV_ITEMS = [
-  { to: "/", label: "Home", icon: Home },
   { to: "/store", label: "Lead Store", icon: Store },
   { to: "/pricing", label: "Pricing", icon: Tag },
   { to: "/apollo-leads-export", label: "Services", icon: Briefcase },
@@ -79,10 +78,8 @@ export function Header() {
               <ul className="hidden items-center gap-1 rounded-full border border-black/5 bg-white/60 p-1 text-sm font-semibold shadow-inner shadow-black/[0.02] backdrop-blur lg:flex">
                 {NAV_ITEMS.map((item) => {
                   const Icon = item.icon;
-                  const isActive =
-                    item.to === "/"
-                      ? pathname === "/"
-                      : pathname === item.to || pathname.startsWith(item.to + "/");
+const isActive =
+  pathname === item.to || pathname.startsWith(item.to + "/");
                   return (
                     <li key={item.to} className="relative">
                       <Link
@@ -199,7 +196,6 @@ export function Header() {
           >
             <ul className="relative z-10 flex flex-col gap-1 px-3 py-3 text-sm font-medium">
               {[
-                { to: "/", label: "Home" },
                 { to: "/store", label: "Lead Store" },
                 { to: "/pricing", label: "Pricing" },
                 { to: "/apollo-leads-export", label: "Services" },

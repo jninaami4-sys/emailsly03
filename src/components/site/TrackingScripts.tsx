@@ -152,8 +152,8 @@ export function TrackingScripts() {
       }
     }
 
-    // Custom head HTML (raw snippet supplied by admin)
-    if (data.custom_head_html && !injected.has(`custom:${data.updated_at}`)) {
+    // Custom head HTML (raw snippet supplied by admin) — marketing consent
+    if (consent.marketing && data.custom_head_html && !injected.has(`custom:${data.updated_at}`)) {
       injected.add(`custom:${data.updated_at}`);
       const container = document.createElement("div");
       container.innerHTML = data.custom_head_html;

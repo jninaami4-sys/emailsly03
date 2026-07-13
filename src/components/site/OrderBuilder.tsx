@@ -27,6 +27,7 @@ import {
   Rocket,
   ClipboardList,
   Wallet,
+  User,
 } from "lucide-react";
 
 type Service = {

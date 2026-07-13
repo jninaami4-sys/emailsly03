@@ -551,26 +551,28 @@ export function OrderBuilder() {
                   subtitle="We'll send the preview and delivery link to this address."
                   isDesktop={isDesktop}
                 />
-                <div className="mt-6 grid gap-4 sm:mt-8 md:grid-cols-2">
-                  <Field label="Your name">
-                    <input
-                      type="text"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      placeholder="Jane Doe"
-                      className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-violet focus:ring-4 focus:ring-violet/10"
-                    />
-                  </Field>
-                  <Field label="Work email">
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="jane@company.com"
-                      className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-violet focus:ring-4 focus:ring-violet/10"
-                    />
-                  </Field>
-                </div>
+                {!isDesktop && (
+                  <div className="mt-6 grid gap-4 sm:mt-8 md:grid-cols-2">
+                    <Field label="Your name">
+                      <input
+                        type="text"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        placeholder="Jane Doe"
+                        className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-violet focus:ring-4 focus:ring-violet/10"
+                      />
+                    </Field>
+                    <Field label="Work email">
+                      <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="jane@company.com"
+                        className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-violet focus:ring-4 focus:ring-violet/10"
+                      />
+                    </Field>
+                  </div>
+                )}
 
                 <label className="mt-6 flex items-start gap-3 text-sm text-muted-foreground sm:mt-8">
                   <input

@@ -56,6 +56,54 @@ export type Database = {
         }
         Relationships: []
       }
+      conversion_events: {
+        Row: {
+          created_at: string
+          description: string
+          enabled: boolean
+          event_key: string
+          ga4_event_name: string
+          ga4_params: Json
+          id: string
+          meta_event_name: string
+          meta_params: Json
+          name: string
+          tiktok_event_name: string
+          tiktok_params: Json
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string
+          enabled?: boolean
+          event_key: string
+          ga4_event_name?: string
+          ga4_params?: Json
+          id?: string
+          meta_event_name?: string
+          meta_params?: Json
+          name?: string
+          tiktok_event_name?: string
+          tiktok_params?: Json
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          enabled?: boolean
+          event_key?: string
+          ga4_event_name?: string
+          ga4_params?: Json
+          id?: string
+          meta_event_name?: string
+          meta_params?: Json
+          name?: string
+          tiktok_event_name?: string
+          tiktok_params?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
       site_settings: {
         Row: {
           custom_head_html: string

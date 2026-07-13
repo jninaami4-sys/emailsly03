@@ -79,8 +79,8 @@ export function TrackingScripts() {
       document.body.insertBefore(ns, document.body.firstChild);
     }
 
-    // Google Analytics 4 (direct gtag)
-    if (data.ga4_id && /^G-[A-Z0-9]+$/i.test(data.ga4_id) && !injected.has(`ga4:${data.ga4_id}`)) {
+    // Google Analytics 4 (direct gtag) — analytics consent
+    if (consent.analytics && data.ga4_id && /^G-[A-Z0-9]+$/i.test(data.ga4_id) && !injected.has(`ga4:${data.ga4_id}`)) {
       injected.add(`ga4:${data.ga4_id}`);
       const s = document.createElement("script");
       s.async = true;

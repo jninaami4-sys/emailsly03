@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
   PremiumLogoMark,
   PremiumShoppingCart,
@@ -12,6 +12,24 @@ import { useAuth } from "@/hooks/use-auth";
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { openOrderDrawer } from "./OrderDrawer";
+import { motion } from "framer-motion";
+import {
+  Store,
+  Tag,
+  Briefcase,
+  PackageSearch,
+  Newspaper,
+  Mail,
+} from "lucide-react";
+
+const NAV_ITEMS = [
+  { to: "/store", label: "Lead Store", icon: Store },
+  { to: "/pricing", label: "Pricing", icon: Tag },
+  { to: "/apollo-leads-export", label: "Services", icon: Briefcase },
+  { to: "/track-order", label: "Track Order", icon: PackageSearch },
+  { to: "/blog", label: "Blog", icon: Newspaper },
+  { to: "/contact", label: "Contact", icon: Mail },
+] as const;
 
 const focusRing =
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet focus-visible:ring-offset-2 focus-visible:ring-offset-background";

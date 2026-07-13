@@ -571,3 +571,138 @@ function Perk({
     </div>
   );
 }
+
+/* ----------------------------- Receipt HTML ------------------------------- */
+function buildReceiptHtml(r: {
+  orderId: string;
+  invoiceNo: string;
+  dateStr: string;
+  timeStr: string;
+  name: string;
+  email: string;
+  service: string;
+  qty: number;
+  unit: string;
+  unitPrice: number;
+  subtotal: number;
+  fee: number;
+  tax: number;
+  total: number;
+}) {
+  const esc = (s: string) =>
+    s.replace(/[&<>"']/g, (c) =>
+      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c] as string),
+    );
+  const money = (n: number) => `$${n.toFixed(2)}`;
+  return `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Receipt ${esc(r.invoiceNo)} — LyraData</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif; background:#f6f7fb; color:#111827; }
+  .wrap { max-width: 820px; margin: 40px auto; background:#fff; border-radius: 18px; overflow:hidden; box-shadow: 0 20px 60px -30px rgba(15,15,40,.35); }
+  .ribbon { height: 8px; background: linear-gradient(90deg,#7c5cff,#ff7a70,#22c39a); }
+  .pad { padding: 40px; }
+  .row { display:flex; justify-content:space-between; align-items:flex-start; gap:24px; flex-wrap:wrap; }
+  .brand { display:flex; align-items:center; gap:12px; }
+  .brand .mark { width:44px; height:44px; border-radius:12px; background:linear-gradient(135deg,#7c5cff,#4338ca); color:#fff; display:grid; place-items:center; font-weight:800; }
+  .muted { color:#6b7280; font-size:12px; text-transform:uppercase; letter-spacing:.14em; font-weight:700; }
+  h1 { margin: 0; font-size: 20px; letter-spacing:-0.01em; }
+  .grid { display:grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 32px; }
+  table { width:100%; border-collapse: collapse; margin-top: 28px; border:1px solid #e5e7eb; border-radius:12px; overflow:hidden; }
+  th, td { padding: 12px 14px; text-align:left; font-size:14px; }
+  th { background:#f9fafb; color:#6b7280; font-size:11px; text-transform:uppercase; letter-spacing:.12em; }
+  td.num, th.num { text-align:right; font-variant-numeric: tabular-nums; }
+  tr + tr td { border-top: 1px solid #f1f5f9; }
+  tfoot td { background:#fafafa; }
+  .total td { font-weight:700; font-size:16px; }
+  .paid { display:inline-block; border:3px solid rgba(16,185,129,.7); color:rgba(16,185,129,.9); font-weight:900; padding:4px 10px; border-radius:6px; letter-spacing:.18em; transform: rotate(-8deg); }
+  .foot { padding: 18px 40px; border-top:1px dashed #e5e7eb; color:#6b7280; font-size:12px; display:flex; justify-content:space-between; }
+  @media print { body { background:#fff; } .wrap { box-shadow:none; margin:0; border-radius:0; } }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="ribbon"></div>
+    <div class="pad">
+      <div class="row">
+        <div class="brand">
+          <div class="mark">L</div>
+          <div>
+            <h1>LyraData</h1>
+            <div class="muted">Official Receipt</div>
+          </div>
+        </div>
+        <div style="text-align:right;">
+          <div class="muted">Invoice</div>
+          <div style="font-family:ui-monospace,Menlo,monospace;">${esc(r.invoiceNo)}</div>
+          <div class="paid" style="margin-top:8px;">PAID</div>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div>
+          <div class="muted">Billed to</div>
+          <div style="font-weight:600; margin-top:4px;">${esc(r.name)}</div>
+          <div style="color:#4b5563;">${esc(r.email)}</div>
+        </div>
+        <div>
+          <div class="muted">From</div>
+          <div style="font-weight:600; margin-top:4px;">LyraData, Inc.</div>
+          <div style="color:#4b5563;">548 Market St #92384<br />San Francisco, CA 94104</div>
+        </div>
+        <div>
+          <div class="muted">Order #</div>
+          <div style="font-family:ui-monospace,Menlo,monospace; margin-top:4px;">${esc(r.orderId)}</div>
+        </div>
+        <div>
+          <div class="muted">Date</div>
+          <div style="margin-top:4px;">${esc(r.dateStr)} · ${esc(r.timeStr)}</div>
+        </div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Description</th>
+            <th class="num">Qty</th>
+            <th class="num">Unit</th>
+            <th class="num">Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div style="font-weight:600;">${esc(r.service)}</div>
+              <div style="color:#6b7280; font-size:12px;">Verified contacts · CSV delivery · 24h SLA</div>
+            </td>
+            <td class="num">${r.qty.toLocaleString()}</td>
+            <td class="num" style="color:#6b7280;">$${r.unitPrice.toFixed(4)}/${esc(r.unit)}</td>
+            <td class="num">${money(r.subtotal)}</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr><td colspan="2"></td><td class="num" style="color:#6b7280;">Subtotal</td><td class="num">${money(r.subtotal)}</td></tr>
+          <tr><td colspan="2"></td><td class="num" style="color:#6b7280;">Processing fee</td><td class="num">${money(r.fee)}</td></tr>
+          <tr><td colspan="2"></td><td class="num" style="color:#6b7280;">Tax</td><td class="num">${money(r.tax)}</td></tr>
+          <tr class="total"><td colspan="2"></td><td class="num">Total paid</td><td class="num">${money(r.total)} USD</td></tr>
+        </tfoot>
+      </table>
+
+      <p style="margin-top:24px; font-size:12px; color:#6b7280;">
+        Thank you for your business. Questions? Contact support@lyradata.com.
+      </p>
+    </div>
+    <div class="foot">
+      <span>LyraData · lyradata.com</span>
+      <span>${esc(r.invoiceNo)}</span>
+    </div>
+  </div>
+</body>
+</html>`;
+}
+

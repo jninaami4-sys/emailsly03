@@ -1,4 +1,5 @@
 import { getConversionEvents, type ConversionEvent, type ParamMap } from "@/lib/conversion-events.functions";
+import { conversionEventId, reserveEvent } from "@/lib/dedupe";
 
 // Populated on the client by <TrackingScripts /> (see prime()).
 let cache: ConversionEvent[] = [];

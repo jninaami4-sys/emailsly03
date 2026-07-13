@@ -85,9 +85,9 @@ const DATA_TIERS: Tier[] = [
   {
     id: "manual",
     name: "Manual Research",
-    price: "$0.15",
-    per: "/ lead",
-    min: "Min 134 leads · $20 min order",
+    price: "$35",
+    per: "/ 100 leads",
+    min: "100 leads · $0.35 per lead",
     desc: "100% human-verified research for niche or complex ICPs.",
     icon: PenTool,
     features: ["Human-verified", "Custom criteria", "48h delivery", "Any data field"],
@@ -95,7 +95,7 @@ const DATA_TIERS: Tier[] = [
 ];
 
 const ADD_ONS = [
-  { id: "mobile", name: "Apollo Mobiles", icon: Smartphone, price: "$0.10/record", desc: "Mobile number enrichment for existing lists." },
+  { id: "mobile", name: "Apollo Mobiles", icon: Smartphone, price: "$0.35/record", desc: "Mobile number enrichment for existing lists." },
   { id: "pixel", name: "Facebook Pixel", icon: MousePointerClick, price: "$100 flat", desc: "Expert Pixel & CAPI setup for conversion tracking." },
   { id: "ads", name: "Google Ads Setup", icon: LineChart, price: "$100 flat", desc: "High-ROAS campaign structure with tracking." },
   { id: "tracking", name: "Server-Side Tracking", icon: Server, price: "$150 flat", desc: "Bypass ad blockers with Stape.io & GTM Server." },

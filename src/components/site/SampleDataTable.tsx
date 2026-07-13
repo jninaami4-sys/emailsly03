@@ -59,6 +59,11 @@ export function SampleDataTable({ leads }: SampleDataTableProps) {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+    void trackConversion("download", {
+      source: "apollo_sample",
+      rows: leads.length,
+      file: "apollo_sample_leads.csv",
+    });
   };
 
   return (

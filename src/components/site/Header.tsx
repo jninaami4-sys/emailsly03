@@ -20,9 +20,11 @@ import {
   PackageSearch,
   Newspaper,
   Mail,
+  Home,
 } from "lucide-react";
 
 const NAV_ITEMS = [
+  { to: "/", label: "Home", icon: Home },
   { to: "/store", label: "Lead Store", icon: Store },
   { to: "/pricing", label: "Pricing", icon: Tag },
   { to: "/apollo-leads-export", label: "Services", icon: Briefcase },
@@ -78,7 +80,9 @@ export function Header() {
                 {NAV_ITEMS.map((item) => {
                   const Icon = item.icon;
                   const isActive =
-                    pathname === item.to || pathname.startsWith(item.to + "/");
+                    item.to === "/"
+                      ? pathname === "/"
+                      : pathname === item.to || pathname.startsWith(item.to + "/");
                   return (
                     <li key={item.to} className="relative">
                       <Link
@@ -195,6 +199,7 @@ export function Header() {
           >
             <ul className="relative z-10 flex flex-col gap-1 px-3 py-3 text-sm font-medium">
               {[
+                { to: "/", label: "Home" },
                 { to: "/store", label: "Lead Store" },
                 { to: "/pricing", label: "Pricing" },
                 { to: "/apollo-leads-export", label: "Services" },

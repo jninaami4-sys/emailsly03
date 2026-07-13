@@ -287,14 +287,18 @@ export function ChatbotWidget() {
     ]);
   }
 
-  async function ensureConversation(nameOverride?: string) {
+  async function ensureConversation(nameOverride?: string, emailOverride?: string) {
     let sid = sessionId;
     if (!sid) {
       sid = newSessionId();
       setSessionId(sid);
     }
     const conv = await startFn({
-      data: { sessionId: sid, visitorName: nameOverride || name || "Visitor" },
+      data: {
+        sessionId: sid,
+        visitorName: nameOverride || name || "Visitor",
+        email: emailOverride || email || undefined,
+      },
     });
     setConversationId(conv.id);
     setLiveStatus(conv.status);
@@ -310,14 +314,21 @@ export function ChatbotWidget() {
     }
   }
 
-  async function submitName() {
+  async function submitLead() {
     const n = input.trim();
+    const em = emailInput.trim();
     if (!n) return;
+    if (!isValidEmail(em)) {
+      addLocal("bot", "Please enter a valid email so we can follow up.");
+      return;
+    }
     setBusy(true);
     setName(n);
-    addLocal("user", n);
+    setEmail(em);
+    addLocal("user", `${n} — ${em}`);
     setInput("");
-    await ensureConversation(n);
+    setEmailInput("");
+    await ensureConversation(n, em);
     addLocal("bot", `Nice to meet you, ${n}! How can I help today?`);
     setScreen({ name: "menu" });
     setBusy(false);

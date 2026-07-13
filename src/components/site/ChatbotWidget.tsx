@@ -564,6 +564,7 @@ export function ChatbotWidget() {
                 service={screen.service}
                 amount={screen.amount}
                 defaultName={name}
+                defaultEmail={email}
                 busy={busy}
                 onSubmit={async (payload) => {
                   setBusy(true);

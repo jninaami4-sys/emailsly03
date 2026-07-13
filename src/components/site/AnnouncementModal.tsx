@@ -58,7 +58,14 @@ function ModalContent({ a, onClose }: { a: Announcement; onClose: () => void }) 
     };
   }, [onClose]);
 
-  const accent = a.accent || "violet";
+  const palette: Record<string, { bg: string; text: string; ring: string; soft: string; shadow: string }> = {
+    violet: { bg: "bg-violet", text: "text-violet", ring: "border-violet/30", soft: "bg-violet/10", shadow: "shadow-violet/30" },
+    emerald: { bg: "bg-emerald", text: "text-emerald", ring: "border-emerald/30", soft: "bg-emerald/10", shadow: "shadow-emerald/30" },
+    amber: { bg: "bg-amber-500", text: "text-amber-500", ring: "border-amber-500/30", soft: "bg-amber-500/10", shadow: "shadow-amber-500/30" },
+    rose: { bg: "bg-rose-500", text: "text-rose-500", ring: "border-rose-500/30", soft: "bg-rose-500/10", shadow: "shadow-rose-500/30" },
+    sky: { bg: "bg-sky-500", text: "text-sky-500", ring: "border-sky-500/30", soft: "bg-sky-500/10", shadow: "shadow-sky-500/30" },
+  };
+  const p = palette[a.accent] ?? palette.violet;
 
   return (
     <div

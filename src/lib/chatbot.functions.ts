@@ -687,3 +687,19 @@ export const adminSetTelegramWebhook = createServerFn({ method: "POST" })
     });
     return { ok: res.ok, description: res.description };
   });
+
+// -----------------------------------------------------------------------------
+// KB auto-sync (pulls latest pricing / policies / FAQs / catalog from the site)
+// -----------------------------------------------------------------------------
+export const adminSyncKb = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }): Promise<{
+    ok: true;
+    inserted: number;
+    removed: number;
+    categories: Record<string, number>;
+  }> => {
+    assertAdmin((context.claims as { email?: string }).email);
+    const { runKbSync } = await import("./chatbot-sync");
+    return runKbSync();
+  });

@@ -133,6 +133,8 @@ export type Database = {
           enabled: boolean
           id: string
           sort_order: number
+          source: string
+          source_key: string | null
           title: string
           updated_at: string
         }
@@ -143,6 +145,8 @@ export type Database = {
           enabled?: boolean
           id?: string
           sort_order?: number
+          source?: string
+          source_key?: string | null
           title?: string
           updated_at?: string
         }
@@ -153,6 +157,8 @@ export type Database = {
           enabled?: boolean
           id?: string
           sort_order?: number
+          source?: string
+          source_key?: string | null
           title?: string
           updated_at?: string
         }

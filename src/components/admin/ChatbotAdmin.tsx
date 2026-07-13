@@ -16,6 +16,7 @@ import {
   adminSaveConfig,
   adminSetTelegramWebhook,
   adminUpdateTicket,
+  adminSyncKb,
   adminUpsertKb,
   adminUpsertOrder,
   type ChatbotConfig,
@@ -456,30 +457,64 @@ function KbPane() {
   const listFn = useServerFn(adminListKb);
   const upsertFn = useServerFn(adminUpsertKb);
   const delFn = useServerFn(adminDeleteKb);
+  const syncFn = useServerFn(adminSyncKb);
   const qc = useQueryClient();
   const { data: kb = [] } = useQuery({
     queryKey: ["chatbot-admin-kb"],
     queryFn: () => listFn(),
   });
   const [editing, setEditing] = useState<Partial<KbEntry> | null>(null);
+  const [syncing, setSyncing] = useState(false);
+  const [syncMsg, setSyncMsg] = useState<string | null>(null);
+
+  async function handleSync() {
+    setSyncing(true);
+    setSyncMsg(null);
+    try {
+      const res = await syncFn();
+      setSyncMsg(`Synced ${res.inserted} entries (replaced ${res.removed}).`);
+      qc.invalidateQueries({ queryKey: ["chatbot-admin-kb"] });
+    } catch (err) {
+      setSyncMsg(err instanceof Error ? err.message : "Sync failed");
+    } finally {
+      setSyncing(false);
+    }
+  }
+
+  const autoCount = kb.filter((k) => (k as KbEntry & { source?: string }).source === "auto").length;
 
   return (
     <div className="grid gap-4 lg:grid-cols-[1fr_320px]">
       <div>
-        <button
-          onClick={() =>
-            setEditing({
-              category: "services",
-              title: "",
-              answer: "",
-              sort_order: 100,
-              enabled: true,
-            })
-          }
-          className="mb-2 flex items-center gap-1 rounded-lg bg-violet px-2 py-1 text-xs font-semibold text-white"
-        >
-          <Plus className="size-3" /> New answer
-        </button>
+        <div className="mb-2 flex flex-wrap items-center gap-2">
+          <button
+            onClick={() =>
+              setEditing({
+                category: "services",
+                title: "",
+                answer: "",
+                sort_order: 100,
+                enabled: true,
+              })
+            }
+            className="flex items-center gap-1 rounded-lg bg-violet px-2 py-1 text-xs font-semibold text-white"
+          >
+            <Plus className="size-3" /> New answer
+          </button>
+          <button
+            onClick={handleSync}
+            disabled={syncing}
+            className="flex items-center gap-1 rounded-lg border border-border px-2 py-1 text-xs font-semibold hover:bg-secondary disabled:opacity-50"
+            title="Pull latest pricing, policies, FAQs, catalog & blog from the site"
+          >
+            {syncing ? <Loader2 className="size-3 animate-spin" /> : <RefreshCw className="size-3" />}
+            Sync from site
+          </button>
+          <span className="text-xs text-muted-foreground">
+            {autoCount} auto-synced · {kb.length - autoCount} manual
+          </span>
+          {syncMsg && <span className="text-xs text-emerald-600">{syncMsg}</span>}
+        </div>
         <div className="max-h-[500px] overflow-y-auto rounded-xl border border-border">
           <table className="w-full text-xs">
             <thead className="bg-secondary text-left">

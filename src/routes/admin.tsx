@@ -9,6 +9,7 @@ import { ProductCard } from "@/components/site/ProductCard";
 import { AnnouncementsAdmin } from "@/components/admin/AnnouncementsAdmin";
 import { TrackingAdmin } from "@/components/admin/TrackingAdmin";
 import { ConversionEventsAdmin } from "@/components/admin/ConversionEventsAdmin";
+import { DebugModeAdmin } from "@/components/admin/DebugModeAdmin";
 import { whoAmIAdmin } from "@/lib/announcements.functions";
 import { useAuth } from "@/hooks/use-auth";
 import { Upload, X, Search, ShieldAlert, Lock } from "lucide-react";

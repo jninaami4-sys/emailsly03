@@ -759,6 +759,7 @@ function ScreenOrderForm({
   service,
   amount,
   defaultName,
+  defaultEmail,
   busy,
   onSubmit,
   onBack,
@@ -766,6 +767,7 @@ function ScreenOrderForm({
   service: string;
   amount: number;
   defaultName: string;
+  defaultEmail: string;
   busy: boolean;
   onSubmit: (p: {
     customer_name: string;

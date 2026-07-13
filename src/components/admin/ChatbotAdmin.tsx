@@ -16,6 +16,7 @@ import {
   adminSaveConfig,
   adminSetTelegramWebhook,
   adminUpdateTicket,
+  adminSyncKb,
   adminUpsertKb,
   adminUpsertOrder,
   type ChatbotConfig,

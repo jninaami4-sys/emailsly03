@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { Search, ArrowUpRight, Download, CheckCircle2 } from "lucide-react";
 import type { Lead } from "@/lib/sample-apollo-leads";
+import { trackConversion } from "@/lib/tracking";
 
 interface SampleDataTableProps {
   leads: Lead[];

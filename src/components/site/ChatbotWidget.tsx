@@ -119,17 +119,20 @@ export function ChatbotWidget() {
   const [enabled, setEnabled] = useState<boolean | null>(null);
   const [greeting, setGreeting] = useState("Hi! What's your name?");
   const [name, setName] = useLocalString(LS_NAME);
+  const [email, setEmail] = useLocalString(LS_EMAIL);
   const [sessionId, setSessionId] = useLocalString(LS_SESSION);
   const [screen, setScreen] = useState<Screen>({ name: "greet" });
   const [messages, setMessages] = useState<
     Array<ChatMessage | { sender: string; text: string; id: string; created_at?: string }>
   >([]);
   const [input, setInput] = useState("");
+  const [emailInput, setEmailInput] = useState("");
   const [kb, setKb] = useState<KbEntry[]>([]);
   const [busy, setBusy] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [liveStatus, setLiveStatus] = useState<"bot" | "live" | "closed">("bot");
+  const [authChecked, setAuthChecked] = useState(false);
 
   const cfgFn = useServerFn(getChatbotPublicConfig);
   const kbFn = useServerFn(listKb);

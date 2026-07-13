@@ -322,7 +322,7 @@ function Home() {
                   <summary className="flex cursor-pointer items-center justify-between gap-4 font-semibold text-foreground">
                     {f.q}
                     <span className="grid size-7 shrink-0 place-items-center rounded-full bg-indigo/20 text-indigo transition-transform group-open:rotate-45">
-                      <PremiumZap className="size-3.5" />
+                      <PremiumArrowRight className="size-3.5 -rotate-45" />
                     </span>
                   </summary>
                   <p className="mt-4 whitespace-pre-line text-sm leading-relaxed text-foreground/70">{f.a}</p>

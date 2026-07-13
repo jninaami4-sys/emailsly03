@@ -144,13 +144,18 @@ function AdminPage() {
             Admin
           </span>
           <h1 className="mt-1 font-display text-3xl font-bold sm:text-4xl">
-            Product Cover Editor
+            Site control panel
           </h1>
           <p className="mt-2 max-w-2xl text-muted-foreground">
-            Upload a thumbnail cover for each prebuilt leads product. Changes save to
-            this browser and preview live on the storefront.
+            Manage marketing announcements shown to visitors and product covers on the storefront.
           </p>
         </header>
+
+        <div className="mb-10">
+          <AnnouncementsAdmin />
+        </div>
+
+        <h2 className="mb-4 font-display text-xl font-bold">Product cover editor</h2>
 
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
           {/* LIST */}

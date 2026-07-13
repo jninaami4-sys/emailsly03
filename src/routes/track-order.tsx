@@ -300,7 +300,7 @@ function TrackOrderPage() {
           )}
 
           {/* Empty state (before search) */}
-          {!result && !notFound && (
+          {!result && !errorMsg && (
             <div className="mx-auto mt-10 grid max-w-3xl gap-3 sm:grid-cols-3">
               {[
                 { icon: Hash, title: "Find your ID", desc: "It's in the confirmation email subject line (LYR-…)." },

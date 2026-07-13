@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import type { Product } from "@/lib/products";
 import { useCart } from "@/lib/cart";
-import { ArrowUpRight, Check, Globe, ShieldCheck, X } from "lucide-react";
+import { ArrowUpRight, Check, Globe, ShieldCheck, X, Eye } from "lucide-react";
 import { PremiumImageIcon, PremiumUpload, PremiumFileText } from "./PremiumIcons";
+import { ProductDetailsModal } from "./ProductDetailsModal";
 
 const accentClass: Record<Product["categoryColor"], { dot: string; ring: string; chip: string; glow: string }> = {
   violet: {

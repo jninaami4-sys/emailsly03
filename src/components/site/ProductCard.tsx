@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import type { Product } from "@/lib/products";
 import { useCart } from "@/lib/cart";
-import { ArrowUpRight, Check, Globe, ShieldCheck, X } from "lucide-react";
+import { ArrowUpRight, Check, Globe, ShieldCheck, X, Eye } from "lucide-react";
 import { PremiumImageIcon, PremiumUpload, PremiumFileText } from "./PremiumIcons";
+import { ProductDetailsModal } from "./ProductDetailsModal";
 
 const accentClass: Record<Product["categoryColor"], { dot: string; ring: string; chip: string; glow: string }> = {
   violet: {
@@ -41,6 +42,7 @@ export function ProductCard({ product }: { product: Product }) {
   const fileRef = useRef<HTMLInputElement>(null);
   const [uploadedCover, setUploadedCover] = useState<string | null>(null);
   const [added, setAdded] = useState(false);
+  const [detailsOpen, setDetailsOpen] = useState(false);
 
   useEffect(() => {
     try {
@@ -87,8 +89,10 @@ export function ProductCard({ product }: { product: Product }) {
   };
 
   return (
+    <>
     <article
-      className={`group relative flex flex-col overflow-hidden rounded-3xl border border-border bg-card transition-all duration-500 hover:-translate-y-1.5 hover:border-transparent hover:shadow-[0_30px_60px_-25px_hsl(var(--ink)/0.35)] hover:ring-2 ${accent.ring}`}
+      onClick={() => setDetailsOpen(true)}
+      className={`group relative flex cursor-pointer flex-col overflow-hidden rounded-3xl border border-border bg-card transition-all duration-500 hover:-translate-y-1.5 hover:border-transparent hover:shadow-[0_30px_60px_-25px_hsl(var(--ink)/0.35)] hover:ring-2 ${accent.ring}`}
     >
       {/* Ambient accent glow on hover */}
       <div
@@ -148,10 +152,16 @@ export function ProductCard({ product }: { product: Product }) {
         </div>
 
         {/* Upload controls (hover) */}
-        <div className="absolute bottom-3 right-3 flex gap-1.5 opacity-0 transition-opacity group-hover:opacity-100">
+        <div
+          className="absolute bottom-3 right-3 flex gap-1.5 opacity-0 transition-opacity group-hover:opacity-100"
+          onClick={(e) => e.stopPropagation()}
+        >
           <button
             type="button"
-            onClick={() => fileRef.current?.click()}
+            onClick={(e) => {
+              e.stopPropagation();
+              fileRef.current?.click();
+            }}
             className="flex items-center gap-1 rounded-full bg-white/95 px-2.5 py-1 font-mono text-[10px] font-semibold text-ink backdrop-blur transition-colors hover:bg-white"
             aria-label="Upload cover image"
           >
@@ -161,7 +171,10 @@ export function ProductCard({ product }: { product: Product }) {
           {uploadedCover && (
             <button
               type="button"
-              onClick={clearCover}
+              onClick={(e) => {
+                e.stopPropagation();
+                clearCover();
+              }}
               className="rounded-full bg-white/95 p-1.5 text-ink backdrop-blur transition-colors hover:bg-white"
               aria-label="Remove uploaded cover"
             >
@@ -238,7 +251,10 @@ export function ProductCard({ product }: { product: Product }) {
           </div>
 
           <button
-            onClick={handleAdd}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleAdd();
+            }}
             className={`group/btn relative inline-flex items-center gap-1.5 overflow-hidden rounded-full px-4 py-2.5 text-sm font-semibold transition-all active:scale-[0.97] ${
               added
                 ? "bg-emerald text-white"
@@ -254,6 +270,17 @@ export function ProductCard({ product }: { product: Product }) {
           </button>
         </div>
 
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            setDetailsOpen(true);
+          }}
+          className="inline-flex items-center gap-1 self-start font-mono text-[10px] font-semibold uppercase tracking-wider text-violet transition-colors hover:text-ink"
+        >
+          <Eye className="size-3" /> View details
+        </button>
+
         {product.sampleNote && (
           <p className="-mt-1 font-mono text-[10px] text-muted-foreground/80">
             {product.sampleNote}
@@ -261,5 +288,11 @@ export function ProductCard({ product }: { product: Product }) {
         )}
       </div>
     </article>
+    <ProductDetailsModal
+      product={product}
+      open={detailsOpen}
+      onClose={() => setDetailsOpen(false)}
+    />
+    </>
   );
 }

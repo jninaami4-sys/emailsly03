@@ -11,6 +11,7 @@ import { TrackingAdmin } from "@/components/admin/TrackingAdmin";
 import { ConversionEventsAdmin } from "@/components/admin/ConversionEventsAdmin";
 import { DebugModeAdmin } from "@/components/admin/DebugModeAdmin";
 import { ServerTrackingAdmin } from "@/components/admin/ServerTrackingAdmin";
+import { ProductDetailsAdmin } from "@/components/admin/ProductDetailsAdmin";
 import { whoAmIAdmin } from "@/lib/announcements.functions";
 import { useAuth } from "@/hooks/use-auth";
 import { Upload, X, Search, ShieldAlert, Lock } from "lucide-react";
@@ -157,8 +158,8 @@ function AdminPage() {
 
         <div className="mb-10 space-y-6">
           <AnnouncementsAdmin />
+          <ProductDetailsAdmin />
           <TrackingAdmin />
-          <ConversionEventsAdmin />
           <ConversionEventsAdmin />
           <ServerTrackingAdmin />
           <DebugModeAdmin />

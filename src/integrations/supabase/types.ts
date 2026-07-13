@@ -104,6 +104,45 @@ export type Database = {
         }
         Relationships: []
       }
+      product_details: {
+        Row: {
+          created_at: string
+          cta_label: string
+          cta_url: string
+          enabled: boolean
+          extra_info: string
+          id: string
+          image_url: string
+          long_description: string
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          cta_label?: string
+          cta_url?: string
+          enabled?: boolean
+          extra_info?: string
+          id?: string
+          image_url?: string
+          long_description?: string
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          cta_label?: string
+          cta_url?: string
+          enabled?: boolean
+          extra_info?: string
+          id?: string
+          image_url?: string
+          long_description?: string
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       server_event_log: {
         Row: {
           created_at: string

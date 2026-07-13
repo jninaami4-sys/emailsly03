@@ -143,8 +143,8 @@ function TrackOrderPage() {
               Where's my <span className="text-violet">order</span>?
             </h1>
             <p className="mx-auto mt-4 max-w-xl text-base text-muted-foreground sm:text-lg">
-              Enter your order ID (from your confirmation email) or the email you used to
-              place the order — we'll show live status in seconds.
+              Enter your order ID, invoice number, or the email you used to place the
+              order — we'll show live status in seconds.
             </p>
           </div>
 
@@ -158,9 +158,18 @@ function TrackOrderPage() {
                 <Search className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
                 <input
                   value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  placeholder="LYR-000123  or  you@company.com"
-                  className="w-full rounded-2xl border border-input bg-background py-3.5 pl-11 pr-4 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-violet focus:ring-4 focus:ring-violet/10 sm:text-base"
+                  onChange={(e) => {
+                    setQuery(e.target.value);
+                    if (errorMsg) setErrorMsg(null);
+                  }}
+                  aria-invalid={!!errorMsg}
+                  aria-describedby={errorMsg ? "track-error" : undefined}
+                  placeholder="LYR-000123, INV-000123, or you@company.com"
+                  className={`w-full rounded-2xl border bg-background py-3.5 pl-11 pr-4 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:ring-4 sm:text-base ${
+                    errorMsg
+                      ? "border-coral focus:border-coral focus:ring-coral/10"
+                      : "border-input focus:border-violet focus:ring-violet/10"
+                  }`}
                 />
               </div>
               <button
@@ -172,24 +181,30 @@ function TrackOrderPage() {
             </div>
             <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 px-2 font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
               <span className="inline-flex items-center gap-1.5"><Hash className="size-3" /> Order ID</span>
+              <span className="inline-flex items-center gap-1.5"><Hash className="size-3" /> Invoice #</span>
               <span className="inline-flex items-center gap-1.5"><Mail className="size-3" /> Email</span>
               <span className="ml-auto inline-flex items-center gap-1.5 text-emerald"><ShieldCheck className="size-3" /> Private lookup</span>
             </div>
           </form>
 
-          {/* Not found state */}
-          {notFound && (
-            <div className="mx-auto mt-6 flex max-w-2xl items-start gap-3 rounded-2xl border border-coral/30 bg-coral-soft/60 p-4 text-left">
+          {/* Validation / not-found state */}
+          {errorMsg && (
+            <div
+              id="track-error"
+              role="alert"
+              className="mx-auto mt-6 flex max-w-2xl items-start gap-3 rounded-2xl border border-coral/30 bg-coral-soft/60 p-4 text-left"
+            >
               <AlertCircle className="mt-0.5 size-5 shrink-0 text-coral" />
               <div className="text-sm">
-                <div className="font-semibold text-foreground">We couldn't find that order</div>
+                <div className="font-semibold text-foreground">Check your input</div>
                 <div className="mt-1 text-muted-foreground">
-                  Double-check your order ID (starts with <span className="font-mono font-semibold">LYR-</span>) or use the email you paid with.
+                  {errorMsg}{" "}
                   Still stuck? <Link to="/contact" className="font-semibold text-violet hover:underline">Contact support</Link>.
                 </div>
               </div>
             </div>
           )}
+
 
           {/* Result */}
           {result && (

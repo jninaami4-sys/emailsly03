@@ -1,5 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
-import { createClient } from "@supabase/supabase-js";
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import type { Database } from "@/integrations/supabase/types";
 
@@ -21,7 +21,10 @@ export type ConversionEvent = {
   updated_at: string;
 };
 
-function serverAnonClient() {
+// Table isn't in generated types yet; cast to a loose client for these calls.
+type LooseClient = SupabaseClient;
+
+function serverAnonClient(): LooseClient {
   const url = process.env.SUPABASE_URL!;
   const key = process.env.SUPABASE_PUBLISHABLE_KEY!;
   return createClient<Database>(url, key, {
@@ -36,7 +39,7 @@ function serverAnonClient() {
         return fetch(input, { ...init, headers: h });
       },
     },
-  });
+  }) as unknown as LooseClient;
 }
 
 function assertAdmin(email: string | undefined | null) {
@@ -47,12 +50,16 @@ function assertAdmin(email: string | undefined | null) {
   }
 }
 
-/** Public: enabled events, for the tracking client. */
+async function adminClient(): Promise<LooseClient> {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  return supabaseAdmin as unknown as LooseClient;
+}
+
 export const getConversionEvents = createServerFn({ method: "GET" }).handler(
   async (): Promise<ConversionEvent[]> => {
     const supabase = serverAnonClient();
     const { data, error } = await supabase
-      .from("conversion_events" as never) as any
+      .from("conversion_events")
       .select("*")
       .eq("enabled", true)
       .order("event_key", { ascending: true });
@@ -60,22 +67,21 @@ export const getConversionEvents = createServerFn({ method: "GET" }).handler(
       console.error("getConversionEvents", error);
       return [];
     }
-    return (data as unknown as ConversionEvent[]) ?? [];
+    return (data ?? []) as ConversionEvent[];
   },
 );
 
-/** Admin: all events. */
 export const listConversionEventsAdmin = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }): Promise<ConversionEvent[]> => {
     assertAdmin((context.claims as { email?: string }).email);
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data, error } = await supabaseAdmin
-      .from("conversion_events" as never) as any
+    const db = await adminClient();
+    const { data, error } = await db
+      .from("conversion_events")
       .select("*")
       .order("created_at", { ascending: true });
     if (error) throw new Error(error.message);
-    return (data as unknown as ConversionEvent[]) ?? [];
+    return (data ?? []) as ConversionEvent[];
   });
 
 type UpsertInput = {
@@ -93,7 +99,11 @@ type UpsertInput = {
 };
 
 function clean(input: UpsertInput) {
-  const key = String(input.event_key || "").trim().toLowerCase().replace(/[^a-z0-9_]+/g, "_").slice(0, 60);
+  const key = String(input.event_key || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9_]+/g, "_")
+    .slice(0, 60);
   if (!key) throw new Error("event_key is required");
   return {
     event_key: key,
@@ -114,25 +124,25 @@ export const upsertConversionEvent = createServerFn({ method: "POST" })
   .inputValidator((data: UpsertInput) => data)
   .handler(async ({ data, context }): Promise<ConversionEvent> => {
     assertAdmin((context.claims as { email?: string }).email);
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const db = await adminClient();
     const payload = clean(data);
     if (data.id) {
-      const { data: row, error } = await supabaseAdmin
-        .from("conversion_events" as never) as any
+      const { data: row, error } = await db
+        .from("conversion_events")
         .update(payload)
         .eq("id", data.id)
         .select("*")
         .single();
       if (error) throw new Error(error.message);
-      return row as unknown as ConversionEvent;
+      return row as ConversionEvent;
     }
-    const { data: row, error } = await supabaseAdmin
-      .from("conversion_events" as never) as any
+    const { data: row, error } = await db
+      .from("conversion_events")
       .insert(payload)
       .select("*")
       .single();
     if (error) throw new Error(error.message);
-    return row as unknown as ConversionEvent;
+    return row as ConversionEvent;
   });
 
 export const deleteConversionEvent = createServerFn({ method: "POST" })
@@ -140,11 +150,8 @@ export const deleteConversionEvent = createServerFn({ method: "POST" })
   .inputValidator((data: { id: string }) => data)
   .handler(async ({ data, context }): Promise<{ ok: true }> => {
     assertAdmin((context.claims as { email?: string }).email);
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { error } = await supabaseAdmin
-      .from("conversion_events" as never) as any
-      .delete()
-      .eq("id", data.id);
+    const db = await adminClient();
+    const { error } = await db.from("conversion_events").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true };
   });

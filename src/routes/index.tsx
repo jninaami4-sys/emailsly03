@@ -11,7 +11,7 @@ import {
   PremiumArrowRight,
   PremiumArrowUpRight,
   PremiumShieldCheck,
-  PremiumZap,
+  PremiumStar,
   PremiumStar,
   PremiumSparkles,
   PremiumLayers,

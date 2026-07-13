@@ -116,10 +116,90 @@ export async function trackConversion(key: string, overrides?: ParamMap): Promis
     fired.push({ provider: "TikTok", name: evt.tiktok_event_name, params: { ...params, event_id: eventId } });
   }
 
+  // Fire-and-forget server-side dispatch (GA4 Measurement Protocol,
+  // Meta Conversions API, TikTok Events API). Shares `eventId` with the
+  // browser fires so downstream providers dedupe against them.
+  void dispatchServerEvent(key, eventId, overrides).then((res) => {
+    if (!res) return;
+    emitDebug({
+      ts: Date.now(),
+      key,
+      matched: true,
+      fired: (res.providers || []).map((p) => ({
+        provider: (p.provider as "GA4" | "Meta" | "TikTok"),
+        name: `server (${p.status})`,
+        params: { ok: p.ok },
+      })),
+      overrides,
+      note: `server:${res.status}${res.deduped ? " (deduped)" : ""}`,
+    });
+  });
+
   emitDebug({ ts: Date.now(), key, matched: true, fired, overrides, note: `id=${eventId}` });
+}
+
+function readCookie(name: string): string | undefined {
+  if (typeof document === "undefined") return undefined;
+  const m = document.cookie.match(
+    new RegExp("(?:^|; )" + name.replace(/([.$?*|{}()[\]\\/+^])/g, "\\$1") + "=([^;]*)"),
+  );
+  return m ? decodeURIComponent(m[1]) : undefined;
+}
+
+type ServerDispatchResult = {
+  ok: boolean;
+  status: string;
+  providers: Array<{ provider: string; ok: boolean; status: number }>;
+  deduped?: boolean;
+};
+
+async function dispatchServerEvent(
+  key: string,
+  eventId: string,
+  overrides?: ParamMap,
+): Promise<ServerDispatchResult | null> {
+  try {
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined;
+    const supabaseKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string | undefined;
+    if (!supabaseUrl || !supabaseKey) return null;
+
+    // GA cookie shape: "GA1.1.<clientId>.<ts>" — last two dot-parts are the client id.
+    const _ga = readCookie("_ga");
+    const client_id = _ga ? _ga.split(".").slice(-2).join(".") : undefined;
+
+    const body = {
+      event_key: key,
+      event_id: eventId,
+      event_source_url: window.location.href,
+      user_data: {
+        client_id,
+        fbp: readCookie("_fbp"),
+        fbc: readCookie("_fbc"),
+        ttclid: readCookie("ttclid"),
+        email: typeof overrides?.email === "string" ? overrides.email : undefined,
+        phone: typeof overrides?.phone === "string" ? overrides.phone : undefined,
+        external_id:
+          typeof overrides?.external_id === "string" ? overrides.external_id : undefined,
+      },
+      custom_data: overrides,
+    };
+
+    const res = await fetch(`${supabaseUrl}/functions/v1/track-server-event`, {
+      method: "POST",
+      headers: { "content-type": "application/json", apikey: supabaseKey },
+      body: JSON.stringify(body),
+      keepalive: true,
+    });
+    if (!res.ok) return null;
+    return (await res.json()) as ServerDispatchResult;
+  } catch (e) {
+    console.error("[tracking] server dispatch failed", e);
+    return null;
+  }
 }
 
 // Expose for debugging / non-React call sites.
 if (typeof window !== "undefined") {
-  (window as unknown as { trackConversion?: typeof trackConversion }).trackConversion = trackConversion;
+  (window as unknown as { trackConversion?: typeof trackConversion }).trackConversion =
+    trackConversion;
 }

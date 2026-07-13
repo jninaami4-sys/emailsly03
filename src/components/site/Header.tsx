@@ -20,7 +20,6 @@ import {
   PackageSearch,
   Newspaper,
   Mail,
-  Home,
 } from "lucide-react";
 
 const NAV_ITEMS = [

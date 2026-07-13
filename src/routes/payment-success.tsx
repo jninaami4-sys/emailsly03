@@ -10,25 +10,30 @@ import {
   ShieldCheck,
   Clock,
 } from "lucide-react";
+import { PremiumLogoMark } from "@/components/site/PremiumIcons";
 
 export const Route = createFileRoute("/payment-success")({
   component: PaymentSuccessPage,
   validateSearch: (s: Record<string, unknown>) => ({
     order: typeof s.order === "string" ? s.order : undefined,
     amount: typeof s.amount === "string" ? s.amount : undefined,
+    subtotal: typeof s.subtotal === "string" ? s.subtotal : undefined,
+    fee: typeof s.fee === "string" ? s.fee : undefined,
     email: typeof s.email === "string" ? s.email : undefined,
     name: typeof s.name === "string" ? s.name : undefined,
     service: typeof s.service === "string" ? s.service : undefined,
     qty: typeof s.qty === "string" ? s.qty : undefined,
+    unit: typeof s.unit === "string" ? s.unit : undefined,
   }),
   head: () => ({
     meta: [
-      { title: "Payment successful — Lyra Data" },
+      { title: "Payment successful — LyraData" },
       { name: "description", content: "Your order has been received and payment confirmed." },
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),
 });
+
 
 function genOrderId() {
   const d = new Date();
@@ -43,16 +48,25 @@ function PaymentSuccessPage() {
   const search = Route.useSearch();
   const [now] = useState(() => new Date());
   const orderId = useMemo(() => search.order || genOrderId(), [search.order]);
+  const invoiceNo = useMemo(
+    () => `INV-${orderId.replace(/^LD-/, "")}`,
+    [orderId],
+  );
   const amountNum = Number(search.amount ?? 79);
   const amount = Number.isFinite(amountNum) ? amountNum : 79;
   const email = search.email || "customer@example.com";
   const name = search.name || "Valued Customer";
   const service = search.service || "SaaS Founders & Decision Makers";
   const qty = Number(search.qty ?? 5000);
+  const unit = search.unit || "lead";
 
-  const subtotal = amount;
+  const feeNum = Number(search.fee ?? NaN);
+  const subtotalNum = Number(search.subtotal ?? NaN);
+  const fee = Number.isFinite(feeNum) ? feeNum : Math.max(0, amount * 0.029 + 0.3);
+  const subtotal = Number.isFinite(subtotalNum) ? subtotalNum : Math.max(0, amount - fee);
   const tax = 0;
-  const total = subtotal + tax;
+  const total = amount;
+  const unitPrice = qty > 0 ? subtotal / qty : subtotal;
 
   const dateStr = now.toLocaleDateString("en-US", {
     year: "numeric",
@@ -60,6 +74,31 @@ function PaymentSuccessPage() {
     day: "numeric",
   });
   const timeStr = now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
+
+  const receiptFilename = `${invoiceNo}.html`;
+  const receiptHref = useMemo(
+    () =>
+      "data:text/html;charset=utf-8," +
+      encodeURIComponent(
+        buildReceiptHtml({
+          orderId,
+          invoiceNo,
+          dateStr,
+          timeStr,
+          name,
+          email,
+          service,
+          qty,
+          unit,
+          unitPrice,
+          subtotal,
+          fee,
+          tax,
+          total,
+        }),
+      ),
+    [orderId, invoiceNo, dateStr, timeStr, name, email, service, qty, unit, unitPrice, subtotal, fee, tax, total],
+  );
 
   return (
     <div className="relative min-h-[calc(100vh-4rem)] overflow-hidden bg-background px-4 py-12 md:py-20">
@@ -91,17 +130,18 @@ function PaymentSuccessPage() {
             >
               <Printer className="size-4" /> Print receipt
             </button>
-            <button
-              onClick={() => window.print()}
-              className="inline-flex items-center gap-2 rounded-xl bg-foreground px-4 py-2.5 text-sm font-medium text-background shadow-sm transition-transform hover:scale-[1.02]"
-            >
-              <Download className="size-4" /> Download PDF
-            </button>
-            <Link
-              to="/track-order"
+            <a
+              href={receiptHref}
+              download={receiptFilename}
               className="inline-flex items-center gap-2 rounded-xl bg-violet px-4 py-2.5 text-sm font-medium text-white shadow-lg shadow-violet/25 transition-transform hover:scale-[1.02]"
             >
-              Track your order <ArrowRight className="size-4" />
+              <Download className="size-4" /> Download receipt
+            </a>
+            <Link
+              to="/"
+              className="inline-flex items-center gap-2 rounded-xl bg-foreground px-4 py-2.5 text-sm font-medium text-background shadow-sm transition-transform hover:scale-[1.02]"
+            >
+              Back to home <ArrowRight className="size-4" />
             </Link>
           </div>
         </div>
@@ -109,16 +149,21 @@ function PaymentSuccessPage() {
         {/* Invoice / Receipt — always white */}
         <Invoice
           orderId={orderId}
+          invoiceNo={invoiceNo}
           dateStr={dateStr}
           timeStr={timeStr}
           name={name}
           email={email}
           service={service}
           qty={qty}
+          unit={unit}
+          unitPrice={unitPrice}
           subtotal={subtotal}
+          fee={fee}
           tax={tax}
           total={total}
         />
+
 
         {/* Perks strip */}
         <div className="mt-8 grid gap-3 sm:grid-cols-3 print:hidden">
@@ -264,25 +309,33 @@ function BackdropFx() {
 /* --------------------------------- Invoice --------------------------------- */
 function Invoice(props: {
   orderId: string;
+  invoiceNo: string;
   dateStr: string;
   timeStr: string;
   name: string;
   email: string;
   service: string;
   qty: number;
+  unit: string;
+  unitPrice: number;
   subtotal: number;
+  fee: number;
   tax: number;
   total: number;
 }) {
   const {
     orderId,
+    invoiceNo,
     dateStr,
     timeStr,
     name,
     email,
     service,
     qty,
+    unit,
+    unitPrice,
     subtotal,
+    fee,
     tax,
     total,
   } = props;
@@ -313,11 +366,11 @@ function Invoice(props: {
         {/* Left: brand + billing */}
         <div>
           <div className="flex items-center gap-3">
-            <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet to-indigo text-white shadow-md">
-              <Sparkles className="size-5" />
+            <div className="flex size-11 items-center justify-center rounded-xl bg-gradient-to-br from-violet to-indigo text-white shadow-md">
+              <PremiumLogoMark className="size-6" />
             </div>
             <div>
-              <div className="font-display text-lg font-bold leading-none">Lyra Data</div>
+              <div className="font-display text-lg font-bold leading-none">LyraData</div>
               <div className="text-[11px] uppercase tracking-widest text-neutral-500">
                 Official Receipt
               </div>
@@ -336,7 +389,7 @@ function Invoice(props: {
               <div className="mb-1 font-mono text-[10px] font-semibold uppercase tracking-widest text-neutral-400">
                 From
               </div>
-              <div className="font-semibold">Lyra Data, Inc.</div>
+              <div className="font-semibold">LyraData, Inc.</div>
               <div className="text-neutral-600">
                 548 Market St #92384
                 <br />
@@ -356,6 +409,9 @@ function Invoice(props: {
                     Qty
                   </th>
                   <th className="px-4 py-3 text-right font-mono text-[10px] font-semibold uppercase tracking-widest">
+                    Unit
+                  </th>
+                  <th className="px-4 py-3 text-right font-mono text-[10px] font-semibold uppercase tracking-widest">
                     Amount
                   </th>
                 </tr>
@@ -369,22 +425,30 @@ function Invoice(props: {
                     </div>
                   </td>
                   <td className="px-4 py-4 text-right tabular-nums">{qty.toLocaleString()}</td>
+                  <td className="px-4 py-4 text-right tabular-nums text-neutral-500">
+                    ${unitPrice.toFixed(4)}/{unit}
+                  </td>
                   <td className="px-4 py-4 text-right tabular-nums">${subtotal.toFixed(2)}</td>
                 </tr>
               </tbody>
               <tfoot>
                 <tr className="border-t border-neutral-200 text-sm">
-                  <td className="px-4 py-2" />
+                  <td className="px-4 py-2" colSpan={2} />
                   <td className="px-4 py-2 text-right text-neutral-500">Subtotal</td>
                   <td className="px-4 py-2 text-right tabular-nums">${subtotal.toFixed(2)}</td>
                 </tr>
                 <tr className="text-sm">
-                  <td className="px-4 py-2" />
+                  <td className="px-4 py-2" colSpan={2} />
+                  <td className="px-4 py-2 text-right text-neutral-500">Processing fee</td>
+                  <td className="px-4 py-2 text-right tabular-nums">${fee.toFixed(2)}</td>
+                </tr>
+                <tr className="text-sm">
+                  <td className="px-4 py-2" colSpan={2} />
                   <td className="px-4 py-2 text-right text-neutral-500">Tax</td>
                   <td className="px-4 py-2 text-right tabular-nums">${tax.toFixed(2)}</td>
                 </tr>
                 <tr className="border-t border-neutral-200 bg-neutral-50">
-                  <td className="px-4 py-3" />
+                  <td className="px-4 py-3" colSpan={2} />
                   <td className="px-4 py-3 text-right font-semibold">Total paid</td>
                   <td className="px-4 py-3 text-right font-display text-lg font-bold tabular-nums">
                     ${total.toFixed(2)} USD
@@ -401,11 +465,14 @@ function Invoice(props: {
           </p>
         </div>
 
+
+
         {/* Right: meta card + stamp */}
         <div className="relative">
           <div className="rounded-2xl border border-neutral-200 bg-neutral-50 p-6">
             <div className="grid gap-4 text-sm">
-              <MetaRow label="Receipt #" value={orderId} mono />
+              <MetaRow label="Invoice #" value={invoiceNo} mono />
+              <MetaRow label="Order #" value={orderId} mono />
               <MetaRow label="Date" value={dateStr} />
               <MetaRow label="Time" value={timeStr} />
               <MetaRow label="Method" value="Visa •••• 4242" />
@@ -504,3 +571,138 @@ function Perk({
     </div>
   );
 }
+
+/* ----------------------------- Receipt HTML ------------------------------- */
+function buildReceiptHtml(r: {
+  orderId: string;
+  invoiceNo: string;
+  dateStr: string;
+  timeStr: string;
+  name: string;
+  email: string;
+  service: string;
+  qty: number;
+  unit: string;
+  unitPrice: number;
+  subtotal: number;
+  fee: number;
+  tax: number;
+  total: number;
+}) {
+  const esc = (s: string) =>
+    s.replace(/[&<>"']/g, (c) =>
+      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c] as string),
+    );
+  const money = (n: number) => `$${n.toFixed(2)}`;
+  return `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Receipt ${esc(r.invoiceNo)} — LyraData</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif; background:#f6f7fb; color:#111827; }
+  .wrap { max-width: 820px; margin: 40px auto; background:#fff; border-radius: 18px; overflow:hidden; box-shadow: 0 20px 60px -30px rgba(15,15,40,.35); }
+  .ribbon { height: 8px; background: linear-gradient(90deg,#7c5cff,#ff7a70,#22c39a); }
+  .pad { padding: 40px; }
+  .row { display:flex; justify-content:space-between; align-items:flex-start; gap:24px; flex-wrap:wrap; }
+  .brand { display:flex; align-items:center; gap:12px; }
+  .brand .mark { width:44px; height:44px; border-radius:12px; background:linear-gradient(135deg,#7c5cff,#4338ca); color:#fff; display:grid; place-items:center; font-weight:800; }
+  .muted { color:#6b7280; font-size:12px; text-transform:uppercase; letter-spacing:.14em; font-weight:700; }
+  h1 { margin: 0; font-size: 20px; letter-spacing:-0.01em; }
+  .grid { display:grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 32px; }
+  table { width:100%; border-collapse: collapse; margin-top: 28px; border:1px solid #e5e7eb; border-radius:12px; overflow:hidden; }
+  th, td { padding: 12px 14px; text-align:left; font-size:14px; }
+  th { background:#f9fafb; color:#6b7280; font-size:11px; text-transform:uppercase; letter-spacing:.12em; }
+  td.num, th.num { text-align:right; font-variant-numeric: tabular-nums; }
+  tr + tr td { border-top: 1px solid #f1f5f9; }
+  tfoot td { background:#fafafa; }
+  .total td { font-weight:700; font-size:16px; }
+  .paid { display:inline-block; border:3px solid rgba(16,185,129,.7); color:rgba(16,185,129,.9); font-weight:900; padding:4px 10px; border-radius:6px; letter-spacing:.18em; transform: rotate(-8deg); }
+  .foot { padding: 18px 40px; border-top:1px dashed #e5e7eb; color:#6b7280; font-size:12px; display:flex; justify-content:space-between; }
+  @media print { body { background:#fff; } .wrap { box-shadow:none; margin:0; border-radius:0; } }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="ribbon"></div>
+    <div class="pad">
+      <div class="row">
+        <div class="brand">
+          <div class="mark">L</div>
+          <div>
+            <h1>LyraData</h1>
+            <div class="muted">Official Receipt</div>
+          </div>
+        </div>
+        <div style="text-align:right;">
+          <div class="muted">Invoice</div>
+          <div style="font-family:ui-monospace,Menlo,monospace;">${esc(r.invoiceNo)}</div>
+          <div class="paid" style="margin-top:8px;">PAID</div>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div>
+          <div class="muted">Billed to</div>
+          <div style="font-weight:600; margin-top:4px;">${esc(r.name)}</div>
+          <div style="color:#4b5563;">${esc(r.email)}</div>
+        </div>
+        <div>
+          <div class="muted">From</div>
+          <div style="font-weight:600; margin-top:4px;">LyraData, Inc.</div>
+          <div style="color:#4b5563;">548 Market St #92384<br />San Francisco, CA 94104</div>
+        </div>
+        <div>
+          <div class="muted">Order #</div>
+          <div style="font-family:ui-monospace,Menlo,monospace; margin-top:4px;">${esc(r.orderId)}</div>
+        </div>
+        <div>
+          <div class="muted">Date</div>
+          <div style="margin-top:4px;">${esc(r.dateStr)} · ${esc(r.timeStr)}</div>
+        </div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Description</th>
+            <th class="num">Qty</th>
+            <th class="num">Unit</th>
+            <th class="num">Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div style="font-weight:600;">${esc(r.service)}</div>
+              <div style="color:#6b7280; font-size:12px;">Verified contacts · CSV delivery · 24h SLA</div>
+            </td>
+            <td class="num">${r.qty.toLocaleString()}</td>
+            <td class="num" style="color:#6b7280;">$${r.unitPrice.toFixed(4)}/${esc(r.unit)}</td>
+            <td class="num">${money(r.subtotal)}</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr><td colspan="2"></td><td class="num" style="color:#6b7280;">Subtotal</td><td class="num">${money(r.subtotal)}</td></tr>
+          <tr><td colspan="2"></td><td class="num" style="color:#6b7280;">Processing fee</td><td class="num">${money(r.fee)}</td></tr>
+          <tr><td colspan="2"></td><td class="num" style="color:#6b7280;">Tax</td><td class="num">${money(r.tax)}</td></tr>
+          <tr class="total"><td colspan="2"></td><td class="num">Total paid</td><td class="num">${money(r.total)} USD</td></tr>
+        </tfoot>
+      </table>
+
+      <p style="margin-top:24px; font-size:12px; color:#6b7280;">
+        Thank you for your business. Questions? Contact support@lyradata.com.
+      </p>
+    </div>
+    <div class="foot">
+      <span>LyraData · lyradata.com</span>
+      <span>${esc(r.invoiceNo)}</span>
+    </div>
+  </div>
+</body>
+</html>`;
+}
+

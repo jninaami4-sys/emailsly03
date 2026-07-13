@@ -709,10 +709,13 @@ export function OrderBuilder() {
                   to="/payment-success"
                   search={{
                     amount: total.toFixed(2),
+                    subtotal: subtotal.toFixed(2),
+                    fee: stripeFee.toFixed(2),
                     email,
                     name,
                     service: service.name,
                     qty: String(effectiveQty),
+                    unit: service.unit,
                   }}
                   aria-disabled={!agree || name.trim().length < 2 || !/\S+@\S+\.\S+/.test(email)}
                   onClick={(e: MouseEvent<HTMLAnchorElement>) => {

@@ -1,0 +1,506 @@
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  CheckCircle2,
+  Download,
+  Printer,
+  ArrowRight,
+  Sparkles,
+  Mail,
+  ShieldCheck,
+  Clock,
+} from "lucide-react";
+
+export const Route = createFileRoute("/payment-success")({
+  component: PaymentSuccessPage,
+  validateSearch: (s: Record<string, unknown>) => ({
+    order: typeof s.order === "string" ? s.order : undefined,
+    amount: typeof s.amount === "string" ? s.amount : undefined,
+    email: typeof s.email === "string" ? s.email : undefined,
+    name: typeof s.name === "string" ? s.name : undefined,
+    service: typeof s.service === "string" ? s.service : undefined,
+    qty: typeof s.qty === "string" ? s.qty : undefined,
+  }),
+  head: () => ({
+    meta: [
+      { title: "Payment successful — Lyra Data" },
+      { name: "description", content: "Your order has been received and payment confirmed." },
+      { name: "robots", content: "noindex, nofollow" },
+    ],
+  }),
+});
+
+function genOrderId() {
+  const d = new Date();
+  const yy = String(d.getFullYear()).slice(-2);
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  const rand = Math.random().toString(36).slice(2, 7).toUpperCase();
+  return `LD-${yy}${mm}${dd}-${rand}`;
+}
+
+function PaymentSuccessPage() {
+  const search = Route.useSearch();
+  const [now] = useState(() => new Date());
+  const orderId = useMemo(() => search.order || genOrderId(), [search.order]);
+  const amountNum = Number(search.amount ?? 79);
+  const amount = Number.isFinite(amountNum) ? amountNum : 79;
+  const email = search.email || "customer@example.com";
+  const name = search.name || "Valued Customer";
+  const service = search.service || "SaaS Founders & Decision Makers";
+  const qty = Number(search.qty ?? 5000);
+
+  const subtotal = amount;
+  const tax = 0;
+  const total = subtotal + tax;
+
+  const dateStr = now.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+  const timeStr = now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
+
+  return (
+    <div className="relative min-h-[calc(100vh-4rem)] overflow-hidden bg-background px-4 py-12 md:py-20">
+      <BackdropFx />
+      <div className="relative mx-auto max-w-4xl">
+        {/* Success hero */}
+        <div className="mb-10 text-center print:hidden">
+          <SuccessMark />
+          <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-emerald/20 bg-emerald/10 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-emerald animate-fade-in">
+            <Sparkles className="size-3" /> Payment confirmed
+          </div>
+          <h1 className="mt-4 font-display text-4xl font-bold tracking-tight md:text-6xl animate-fade-in">
+            Thank you,{" "}
+            <span className="relative inline-block">
+              <span className="relative z-10 italic text-violet">{name.split(" ")[0]}</span>
+              <span className="absolute -bottom-1 left-0 h-3 w-full -rotate-1 bg-coral-soft" />
+            </span>
+          </h1>
+          <p className="mx-auto mt-4 max-w-xl text-muted-foreground animate-fade-in">
+            Your order is in. A receipt has been sent to{" "}
+            <span className="font-medium text-foreground">{email}</span>. Our team begins delivery
+            within the next business hour.
+          </p>
+
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-2 print:hidden">
+            <button
+              onClick={() => window.print()}
+              className="inline-flex items-center gap-2 rounded-xl border border-border bg-card px-4 py-2.5 text-sm font-medium shadow-sm transition-colors hover:bg-muted"
+            >
+              <Printer className="size-4" /> Print receipt
+            </button>
+            <button
+              onClick={() => window.print()}
+              className="inline-flex items-center gap-2 rounded-xl bg-foreground px-4 py-2.5 text-sm font-medium text-background shadow-sm transition-transform hover:scale-[1.02]"
+            >
+              <Download className="size-4" /> Download PDF
+            </button>
+            <Link
+              to="/track-order"
+              className="inline-flex items-center gap-2 rounded-xl bg-violet px-4 py-2.5 text-sm font-medium text-white shadow-lg shadow-violet/25 transition-transform hover:scale-[1.02]"
+            >
+              Track your order <ArrowRight className="size-4" />
+            </Link>
+          </div>
+        </div>
+
+        {/* Invoice / Receipt — always white */}
+        <Invoice
+          orderId={orderId}
+          dateStr={dateStr}
+          timeStr={timeStr}
+          name={name}
+          email={email}
+          service={service}
+          qty={qty}
+          subtotal={subtotal}
+          tax={tax}
+          total={total}
+        />
+
+        {/* Perks strip */}
+        <div className="mt-8 grid gap-3 sm:grid-cols-3 print:hidden">
+          <Perk
+            icon={<Clock className="size-4" />}
+            title="Delivery within 24h"
+            body="Standard turnaround for verified datasets."
+          />
+          <Perk
+            icon={<Mail className="size-4" />}
+            title="Receipt emailed"
+            body={`Sent to ${email}`}
+          />
+          <Perk
+            icon={<ShieldCheck className="size-4" />}
+            title="Encrypted & GDPR"
+            body="256-bit end-to-end. Compliance built in."
+          />
+        </div>
+      </div>
+
+      <style>{`
+        @media print {
+          body { background: white !important; }
+          .print\\:hidden { display: none !important; }
+        }
+      `}</style>
+    </div>
+  );
+}
+
+/* ------------------------------- Success Mark ------------------------------ */
+function SuccessMark() {
+  return (
+    <div className="relative mx-auto flex size-28 items-center justify-center">
+      {/* Rings */}
+      <span className="absolute inset-0 rounded-full border border-emerald/30 [animation:pingSlow_2.4s_ease-out_infinite]" />
+      <span className="absolute inset-2 rounded-full border border-emerald/20 [animation:pingSlow_2.4s_ease-out_infinite] [animation-delay:.4s]" />
+      <span className="absolute inset-4 rounded-full border border-emerald/10 [animation:pingSlow_2.4s_ease-out_infinite] [animation-delay:.8s]" />
+      {/* Glow */}
+      <span className="absolute inset-0 rounded-full bg-emerald/20 blur-2xl" />
+      {/* Core */}
+      <span className="relative flex size-20 items-center justify-center rounded-full bg-gradient-to-br from-emerald to-[oklch(0.68_0.18_155)] shadow-[0_20px_60px_-15px_oklch(0.6_0.15_155/0.6)] animate-scale-in">
+        <svg viewBox="0 0 52 52" className="size-12">
+          <circle
+            cx="26"
+            cy="26"
+            r="24"
+            fill="none"
+            stroke="white"
+            strokeOpacity="0.35"
+            strokeWidth="2"
+          />
+          <path
+            d="M14 27 L23 36 L39 18"
+            fill="none"
+            stroke="white"
+            strokeWidth="3.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            style={{
+              strokeDasharray: 60,
+              strokeDashoffset: 60,
+              animation: "drawCheck 700ms cubic-bezier(.65,0,.35,1) 250ms forwards",
+            }}
+          />
+        </svg>
+      </span>
+      {/* Confetti */}
+      <Confetti />
+      <style>{`
+        @keyframes drawCheck { to { stroke-dashoffset: 0; } }
+        @keyframes pingSlow {
+          0% { transform: scale(1); opacity: .7; }
+          80%, 100% { transform: scale(1.9); opacity: 0; }
+        }
+      `}</style>
+    </div>
+  );
+}
+
+function Confetti() {
+  const pieces = useMemo(
+    () =>
+      Array.from({ length: 22 }, (_, i) => {
+        const angle = (i / 22) * Math.PI * 2;
+        const dist = 120 + Math.random() * 80;
+        return {
+          id: i,
+          x: Math.cos(angle) * dist,
+          y: Math.sin(angle) * dist - 20,
+          rot: Math.random() * 360,
+          delay: Math.random() * 150,
+          color: ["#7c5cff", "#ff7a70", "#22c39a", "#ffd166"][i % 4],
+          size: 6 + Math.random() * 6,
+        };
+      }),
+    [],
+  );
+  return (
+    <div className="pointer-events-none absolute inset-0">
+      {pieces.map((p) => (
+        <span
+          key={p.id}
+          className="absolute left-1/2 top-1/2 block"
+          style={{
+            width: p.size,
+            height: p.size * 0.4,
+            background: p.color,
+            borderRadius: 2,
+            transform: `translate(-50%,-50%) rotate(${p.rot}deg)`,
+            animation: `confetti 1200ms cubic-bezier(.2,.7,.2,1) ${p.delay}ms forwards`,
+            // @ts-expect-error CSS var
+            "--tx": `${p.x}px`,
+            "--ty": `${p.y}px`,
+            opacity: 0,
+          }}
+        />
+      ))}
+      <style>{`
+        @keyframes confetti {
+          0% { opacity: 0; transform: translate(-50%,-50%) rotate(0deg); }
+          20% { opacity: 1; }
+          100% { opacity: 0; transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) rotate(540deg); }
+        }
+      `}</style>
+    </div>
+  );
+}
+
+/* --------------------------------- Backdrop -------------------------------- */
+function BackdropFx() {
+  return (
+    <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden print:hidden">
+      <div className="absolute -left-32 top-10 size-96 rounded-full bg-violet/20 blur-3xl" />
+      <div className="absolute -right-24 top-32 size-96 rounded-full bg-emerald/15 blur-3xl" />
+      <div className="absolute bottom-0 left-1/3 size-80 rounded-full bg-coral/10 blur-3xl" />
+      <div className="absolute inset-0 bg-[radial-gradient(oklch(0.6_0.12_280/0.06)_1px,transparent_1px)] [background-size:22px_22px] opacity-40" />
+    </div>
+  );
+}
+
+/* --------------------------------- Invoice --------------------------------- */
+function Invoice(props: {
+  orderId: string;
+  dateStr: string;
+  timeStr: string;
+  name: string;
+  email: string;
+  service: string;
+  qty: number;
+  subtotal: number;
+  tax: number;
+  total: number;
+}) {
+  const {
+    orderId,
+    dateStr,
+    timeStr,
+    name,
+    email,
+    service,
+    qty,
+    subtotal,
+    tax,
+    total,
+  } = props;
+
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!ref.current) return;
+    ref.current.style.opacity = "0";
+    ref.current.style.transform = "translateY(16px)";
+    requestAnimationFrame(() => {
+      if (!ref.current) return;
+      ref.current.style.transition = "opacity 700ms ease, transform 700ms cubic-bezier(.2,.7,.2,1)";
+      ref.current.style.opacity = "1";
+      ref.current.style.transform = "translateY(0)";
+    });
+  }, []);
+
+  return (
+    <div
+      ref={ref}
+      className="relative mx-auto overflow-hidden rounded-3xl bg-white text-neutral-900 shadow-[0_30px_80px_-30px_rgba(15,15,40,0.35)] ring-1 ring-black/5 print:shadow-none print:ring-0"
+    >
+      {/* Top ribbon */}
+      <div className="h-2 w-full bg-gradient-to-r from-violet via-coral to-emerald" />
+
+      <div className="grid gap-8 p-8 md:grid-cols-[1.4fr_1fr] md:p-12">
+        {/* Left: brand + billing */}
+        <div>
+          <div className="flex items-center gap-3">
+            <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet to-indigo text-white shadow-md">
+              <Sparkles className="size-5" />
+            </div>
+            <div>
+              <div className="font-display text-lg font-bold leading-none">Lyra Data</div>
+              <div className="text-[11px] uppercase tracking-widest text-neutral-500">
+                Official Receipt
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-10 grid grid-cols-2 gap-6 text-sm">
+            <div>
+              <div className="mb-1 font-mono text-[10px] font-semibold uppercase tracking-widest text-neutral-400">
+                Billed to
+              </div>
+              <div className="font-semibold">{name}</div>
+              <div className="text-neutral-600">{email}</div>
+            </div>
+            <div>
+              <div className="mb-1 font-mono text-[10px] font-semibold uppercase tracking-widest text-neutral-400">
+                From
+              </div>
+              <div className="font-semibold">Lyra Data, Inc.</div>
+              <div className="text-neutral-600">
+                548 Market St #92384
+                <br />
+                San Francisco, CA 94104
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-8 overflow-hidden rounded-2xl border border-neutral-200">
+            <table className="w-full text-sm">
+              <thead className="bg-neutral-50 text-neutral-500">
+                <tr>
+                  <th className="px-4 py-3 text-left font-mono text-[10px] font-semibold uppercase tracking-widest">
+                    Description
+                  </th>
+                  <th className="px-4 py-3 text-right font-mono text-[10px] font-semibold uppercase tracking-widest">
+                    Qty
+                  </th>
+                  <th className="px-4 py-3 text-right font-mono text-[10px] font-semibold uppercase tracking-widest">
+                    Amount
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr className="border-t border-neutral-200">
+                  <td className="px-4 py-4">
+                    <div className="font-medium text-neutral-900">{service}</div>
+                    <div className="text-xs text-neutral-500">
+                      Verified contacts · CSV delivery · 24h SLA
+                    </div>
+                  </td>
+                  <td className="px-4 py-4 text-right tabular-nums">{qty.toLocaleString()}</td>
+                  <td className="px-4 py-4 text-right tabular-nums">${subtotal.toFixed(2)}</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr className="border-t border-neutral-200 text-sm">
+                  <td className="px-4 py-2" />
+                  <td className="px-4 py-2 text-right text-neutral-500">Subtotal</td>
+                  <td className="px-4 py-2 text-right tabular-nums">${subtotal.toFixed(2)}</td>
+                </tr>
+                <tr className="text-sm">
+                  <td className="px-4 py-2" />
+                  <td className="px-4 py-2 text-right text-neutral-500">Tax</td>
+                  <td className="px-4 py-2 text-right tabular-nums">${tax.toFixed(2)}</td>
+                </tr>
+                <tr className="border-t border-neutral-200 bg-neutral-50">
+                  <td className="px-4 py-3" />
+                  <td className="px-4 py-3 text-right font-semibold">Total paid</td>
+                  <td className="px-4 py-3 text-right font-display text-lg font-bold tabular-nums">
+                    ${total.toFixed(2)} USD
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+
+          <p className="mt-6 text-xs text-neutral-500">
+            Thank you for your business. If you have questions about this receipt, reply to your
+            confirmation email or contact{" "}
+            <span className="text-neutral-700">support@lyradata.com</span>.
+          </p>
+        </div>
+
+        {/* Right: meta card + stamp */}
+        <div className="relative">
+          <div className="rounded-2xl border border-neutral-200 bg-neutral-50 p-6">
+            <div className="grid gap-4 text-sm">
+              <MetaRow label="Receipt #" value={orderId} mono />
+              <MetaRow label="Date" value={dateStr} />
+              <MetaRow label="Time" value={timeStr} />
+              <MetaRow label="Method" value="Visa •••• 4242" />
+              <MetaRow label="Status" value="Paid" pill />
+            </div>
+          </div>
+
+          {/* Paid stamp */}
+          <div className="pointer-events-none absolute right-2 top-2 rotate-[-14deg] select-none rounded-md border-[3px] border-emerald/70 px-3 py-1 font-display text-xl font-black uppercase tracking-widest text-emerald/70 opacity-90">
+            Paid
+          </div>
+
+          <div className="mt-6 rounded-2xl border border-dashed border-neutral-300 p-5 text-xs text-neutral-500">
+            <div className="mb-2 font-mono text-[10px] font-semibold uppercase tracking-widest text-neutral-400">
+              What happens next
+            </div>
+            <ol className="space-y-2">
+              <li className="flex gap-2">
+                <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-emerald" />
+                Order queued and assigned to a specialist.
+              </li>
+              <li className="flex gap-2">
+                <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-emerald" />
+                Verification & enrichment (~2–6 hours).
+              </li>
+              <li className="flex gap-2">
+                <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-emerald" />
+                Final CSV emailed within 24 hours.
+              </li>
+            </ol>
+          </div>
+        </div>
+      </div>
+
+      {/* Perforated footer */}
+      <div className="relative">
+        <div className="absolute inset-x-0 -top-2 h-4 bg-[radial-gradient(circle_at_8px_8px,white_6px,transparent_7px)] [background-size:16px_16px]" />
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-dashed border-neutral-200 px-8 py-5 text-[11px] text-neutral-500 md:px-12">
+          <span className="font-mono uppercase tracking-widest">
+            Lyra Data · lyradata.com
+          </span>
+          <span className="font-mono">{orderId}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function MetaRow({
+  label,
+  value,
+  mono,
+  pill,
+}: {
+  label: string;
+  value: string;
+  mono?: boolean;
+  pill?: boolean;
+}) {
+  return (
+    <div className="flex items-center justify-between gap-4">
+      <span className="font-mono text-[10px] font-semibold uppercase tracking-widest text-neutral-400">
+        {label}
+      </span>
+      {pill ? (
+        <span className="inline-flex items-center gap-1 rounded-full bg-emerald/10 px-2.5 py-0.5 text-[11px] font-semibold text-emerald">
+          <span className="size-1.5 rounded-full bg-emerald" /> {value}
+        </span>
+      ) : (
+        <span className={`text-neutral-900 ${mono ? "font-mono text-xs" : "font-medium"}`}>
+          {value}
+        </span>
+      )}
+    </div>
+  );
+}
+
+function Perk({
+  icon,
+  title,
+  body,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  body: string;
+}) {
+  return (
+    <div className="rounded-2xl border border-border bg-card p-4">
+      <div className="flex items-center gap-2 text-sm font-semibold">
+        <span className="inline-flex size-7 items-center justify-center rounded-lg bg-violet-soft text-violet">
+          {icon}
+        </span>
+        {title}
+      </div>
+      <p className="mt-1 text-xs text-muted-foreground">{body}</p>
+    </div>
+  );
+}

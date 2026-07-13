@@ -78,9 +78,7 @@ export function Header() {
                 {NAV_ITEMS.map((item) => {
                   const Icon = item.icon;
                   const isActive =
-                    item.to === "/"
-                      ? pathname === "/"
-                      : pathname === item.to || pathname.startsWith(item.to + "/");
+                    pathname === item.to || pathname.startsWith(item.to + "/");
                   return (
                     <li key={item.to} className="relative">
                       <Link

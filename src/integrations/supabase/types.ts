@@ -14,7 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      announcements: {
+        Row: {
+          accent: string
+          badge: string
+          body: string
+          created_at: string
+          cta_label: string
+          cta_url: string
+          enabled: boolean
+          id: string
+          image_url: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          accent?: string
+          badge?: string
+          body?: string
+          created_at?: string
+          cta_label?: string
+          cta_url?: string
+          enabled?: boolean
+          id?: string
+          image_url?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          accent?: string
+          badge?: string
+          body?: string
+          created_at?: string
+          cta_label?: string
+          cta_url?: string
+          enabled?: boolean
+          id?: string
+          image_url?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

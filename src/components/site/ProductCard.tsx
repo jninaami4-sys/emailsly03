@@ -89,8 +89,10 @@ export function ProductCard({ product }: { product: Product }) {
   };
 
   return (
+    <>
     <article
-      className={`group relative flex flex-col overflow-hidden rounded-3xl border border-border bg-card transition-all duration-500 hover:-translate-y-1.5 hover:border-transparent hover:shadow-[0_30px_60px_-25px_hsl(var(--ink)/0.35)] hover:ring-2 ${accent.ring}`}
+      onClick={() => setDetailsOpen(true)}
+      className={`group relative flex cursor-pointer flex-col overflow-hidden rounded-3xl border border-border bg-card transition-all duration-500 hover:-translate-y-1.5 hover:border-transparent hover:shadow-[0_30px_60px_-25px_hsl(var(--ink)/0.35)] hover:ring-2 ${accent.ring}`}
     >
       {/* Ambient accent glow on hover */}
       <div

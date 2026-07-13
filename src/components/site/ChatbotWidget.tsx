@@ -614,6 +614,7 @@ export function ChatbotWidget() {
             {screen.name === "ticket" && (
               <ScreenTicket
                 defaultName={name}
+                defaultEmail={email}
                 busy={busy}
                 onSubmit={async (payload) => {
                   setBusy(true);

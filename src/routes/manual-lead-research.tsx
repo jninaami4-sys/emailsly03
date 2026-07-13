@@ -16,7 +16,7 @@ export const Route = createFileRoute("/manual-lead-research")({
       title="Human researchers,"
       highlight="niche precision."
       subtitle="When databases fall short, our research team builds your list from scratch. Any niche. Any custom data field. Delivered in 48 hours with 99%+ accuracy."
-      priceFrom="$1.50 / lead"
+      priceFrom="$0.35 / lead"
       accent="violet"
       bullets={[
         "Human-verified against LinkedIn, company sites, and public records",

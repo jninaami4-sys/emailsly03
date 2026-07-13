@@ -24,6 +24,7 @@ type Service = {
   badge: string;
   price: string;
   perUnit: string;
+  unit?: string;
   minOrder: string;
   turnaround: string;
   gradient: string;
@@ -32,6 +33,7 @@ type Service = {
   accent: string;
   Icon: React.ComponentType<{ className?: string }>;
   bullets: string[];
+  tiers?: { qty: string; price: string; unitRate: string }[];
 };
 
 const services: Service[] = [
@@ -88,8 +90,9 @@ const services: Service[] = [
     title: "Hand-Picked Leads",
     tagline: "100% human-verified prospecting for complex, high-value ICPs.",
     badge: "Human-verified",
-    price: "$0.15",
+    price: "$0.35",
     perUnit: "per lead",
+    unit: "leads",
     minOrder: "100 min",
     turnaround: "48–72h",
     gradient: "from-[#065f46] via-[#10b981] to-[#22d3ee]",
@@ -98,14 +101,20 @@ const services: Service[] = [
     accent: "text-[#a7f3d0]",
     Icon: PremiumShieldCheck,
     bullets: ["1-by-1 vetted", "Niche ICPs", "0% bounce"],
+    tiers: [
+      { qty: "100", price: "$35", unitRate: "$0.35" },
+      { qty: "500", price: "$175", unitRate: "$0.35" },
+      { qty: "1,000", price: "$350", unitRate: "$0.35" },
+    ],
   },
   {
     serviceId: "mobile",
     title: "Mobile Number Lookup",
     tagline: "Append verified mobile numbers to your existing contact list.",
     badge: "Append",
-    price: "$0.10",
+    price: "$0.35",
     perUnit: "per record",
+    unit: "records",
     minOrder: "100 min",
     turnaround: "≤24h",
     gradient: "from-[#7c2d92] via-[#a855f7] to-[#ec4899]",
@@ -114,6 +123,11 @@ const services: Service[] = [
     accent: "text-[#f5d0fe]",
     Icon: PremiumFileText,
     bullets: ["Cell-verified", "US + intl.", "CSV in / CSV out"],
+    tiers: [
+      { qty: "100", price: "$35", unitRate: "$0.35" },
+      { qty: "500", price: "$175", unitRate: "$0.35" },
+      { qty: "1,000", price: "$350", unitRate: "$0.35" },
+    ],
   },
   {
     serviceId: "webdesign",
@@ -200,14 +214,33 @@ export function ServicesCarousel() {
                     </div>
 
                     {/* Price ribbon */}
-                    <div className="mt-6 flex items-baseline gap-2">
-                      <span className="font-display text-4xl font-extrabold tracking-tight md:text-5xl">
-                        {s.price}
-                      </span>
-                      <span className={`font-mono text-[11px] font-bold uppercase tracking-widest ${s.accent}`}>
-                        {s.perUnit}
-                      </span>
-                    </div>
+                    {s.tiers ? (
+                      <div className="mt-5 space-y-1.5">
+                        {s.tiers.map((tier) => (
+                          <div
+                            key={tier.qty}
+                            className="flex items-center justify-between rounded-xl border border-white/15 bg-white/10 px-3 py-1.5 backdrop-blur"
+                          >
+                            <div className="flex items-baseline gap-2">
+                              <span className="font-display text-xl font-bold tracking-tight">{tier.price}</span>
+                              <span className={`font-mono text-[10px] font-bold uppercase tracking-widest ${s.accent}`}>
+                                {tier.qty} {s.unit}
+                              </span>
+                            </div>
+                            <span className="font-mono text-[10px] font-semibold text-white/80">{tier.unitRate}/ea</span>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="mt-6 flex items-baseline gap-2">
+                        <span className="font-display text-4xl font-extrabold tracking-tight md:text-5xl">
+                          {s.price}
+                        </span>
+                        <span className={`font-mono text-[11px] font-bold uppercase tracking-widest ${s.accent}`}>
+                          {s.perUnit}
+                        </span>
+                      </div>
+                    )}
 
                     <div className="mt-auto">
                       <h3 className="font-display text-2xl font-bold leading-tight md:text-[28px]">

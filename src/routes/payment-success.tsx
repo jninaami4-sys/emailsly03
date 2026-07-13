@@ -10,25 +10,30 @@ import {
   ShieldCheck,
   Clock,
 } from "lucide-react";
+import { PremiumLogoMark } from "@/components/site/PremiumIcons";
 
 export const Route = createFileRoute("/payment-success")({
   component: PaymentSuccessPage,
   validateSearch: (s: Record<string, unknown>) => ({
     order: typeof s.order === "string" ? s.order : undefined,
     amount: typeof s.amount === "string" ? s.amount : undefined,
+    subtotal: typeof s.subtotal === "string" ? s.subtotal : undefined,
+    fee: typeof s.fee === "string" ? s.fee : undefined,
     email: typeof s.email === "string" ? s.email : undefined,
     name: typeof s.name === "string" ? s.name : undefined,
     service: typeof s.service === "string" ? s.service : undefined,
     qty: typeof s.qty === "string" ? s.qty : undefined,
+    unit: typeof s.unit === "string" ? s.unit : undefined,
   }),
   head: () => ({
     meta: [
-      { title: "Payment successful — Lyra Data" },
+      { title: "Payment successful — LyraData" },
       { name: "description", content: "Your order has been received and payment confirmed." },
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),
 });
+
 
 function genOrderId() {
   const d = new Date();

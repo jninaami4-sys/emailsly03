@@ -404,14 +404,14 @@ export function OrderBuilder() {
 
                 <div className="mt-6 rounded-2xl border border-border bg-secondary/40 p-4 sm:mt-10 sm:p-6">
                   <div className="flex items-center gap-3">
-                    <span className="grid size-10 place-items-center rounded-xl bg-violet/10 text-violet">
+                    <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-violet/10 text-violet">
                       <Sparkles className="size-5" />
                     </span>
-                    <div>
+                    <div className="min-w-0 flex-1">
                       <div className="text-sm font-semibold">Running total</div>
                       <div className="font-mono text-[11px] text-muted-foreground">Before Stripe fees</div>
                     </div>
-                    <div className="ml-auto font-display text-3xl font-bold tracking-tight text-violet">
+                    <div className="shrink-0 font-display text-2xl font-bold tracking-tight text-violet sm:text-3xl">
                       {formatUSD(subtotal)}
                     </div>
                   </div>

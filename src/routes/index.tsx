@@ -110,6 +110,13 @@ function Home() {
                 >
                   Preview live samples
                 </Link>
+                <Link
+                  to="/store"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-8 py-4 text-base font-semibold text-foreground backdrop-blur transition-colors hover:bg-white/[0.08] sm:w-auto"
+                >
+                  Prebuilt lead store
+                  <PremiumArrowRight className="size-4" />
+                </Link>
               </div>
 
               {/* Stat strip */}

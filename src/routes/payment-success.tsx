@@ -309,25 +309,33 @@ function BackdropFx() {
 /* --------------------------------- Invoice --------------------------------- */
 function Invoice(props: {
   orderId: string;
+  invoiceNo: string;
   dateStr: string;
   timeStr: string;
   name: string;
   email: string;
   service: string;
   qty: number;
+  unit: string;
+  unitPrice: number;
   subtotal: number;
+  fee: number;
   tax: number;
   total: number;
 }) {
   const {
     orderId,
+    invoiceNo,
     dateStr,
     timeStr,
     name,
     email,
     service,
     qty,
+    unit,
+    unitPrice,
     subtotal,
+    fee,
     tax,
     total,
   } = props;
@@ -358,11 +366,11 @@ function Invoice(props: {
         {/* Left: brand + billing */}
         <div>
           <div className="flex items-center gap-3">
-            <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet to-indigo text-white shadow-md">
-              <Sparkles className="size-5" />
+            <div className="flex size-11 items-center justify-center rounded-xl bg-gradient-to-br from-violet to-indigo text-white shadow-md">
+              <PremiumLogoMark className="size-6" />
             </div>
             <div>
-              <div className="font-display text-lg font-bold leading-none">Lyra Data</div>
+              <div className="font-display text-lg font-bold leading-none">LyraData</div>
               <div className="text-[11px] uppercase tracking-widest text-neutral-500">
                 Official Receipt
               </div>
@@ -381,7 +389,7 @@ function Invoice(props: {
               <div className="mb-1 font-mono text-[10px] font-semibold uppercase tracking-widest text-neutral-400">
                 From
               </div>
-              <div className="font-semibold">Lyra Data, Inc.</div>
+              <div className="font-semibold">LyraData, Inc.</div>
               <div className="text-neutral-600">
                 548 Market St #92384
                 <br />
@@ -401,6 +409,9 @@ function Invoice(props: {
                     Qty
                   </th>
                   <th className="px-4 py-3 text-right font-mono text-[10px] font-semibold uppercase tracking-widest">
+                    Unit
+                  </th>
+                  <th className="px-4 py-3 text-right font-mono text-[10px] font-semibold uppercase tracking-widest">
                     Amount
                   </th>
                 </tr>
@@ -414,22 +425,30 @@ function Invoice(props: {
                     </div>
                   </td>
                   <td className="px-4 py-4 text-right tabular-nums">{qty.toLocaleString()}</td>
+                  <td className="px-4 py-4 text-right tabular-nums text-neutral-500">
+                    ${unitPrice.toFixed(4)}/{unit}
+                  </td>
                   <td className="px-4 py-4 text-right tabular-nums">${subtotal.toFixed(2)}</td>
                 </tr>
               </tbody>
               <tfoot>
                 <tr className="border-t border-neutral-200 text-sm">
-                  <td className="px-4 py-2" />
+                  <td className="px-4 py-2" colSpan={2} />
                   <td className="px-4 py-2 text-right text-neutral-500">Subtotal</td>
                   <td className="px-4 py-2 text-right tabular-nums">${subtotal.toFixed(2)}</td>
                 </tr>
                 <tr className="text-sm">
-                  <td className="px-4 py-2" />
+                  <td className="px-4 py-2" colSpan={2} />
+                  <td className="px-4 py-2 text-right text-neutral-500">Processing fee</td>
+                  <td className="px-4 py-2 text-right tabular-nums">${fee.toFixed(2)}</td>
+                </tr>
+                <tr className="text-sm">
+                  <td className="px-4 py-2" colSpan={2} />
                   <td className="px-4 py-2 text-right text-neutral-500">Tax</td>
                   <td className="px-4 py-2 text-right tabular-nums">${tax.toFixed(2)}</td>
                 </tr>
                 <tr className="border-t border-neutral-200 bg-neutral-50">
-                  <td className="px-4 py-3" />
+                  <td className="px-4 py-3" colSpan={2} />
                   <td className="px-4 py-3 text-right font-semibold">Total paid</td>
                   <td className="px-4 py-3 text-right font-display text-lg font-bold tabular-nums">
                     ${total.toFixed(2)} USD
@@ -445,6 +464,8 @@ function Invoice(props: {
             <span className="text-neutral-700">support@lyradata.com</span>.
           </p>
         </div>
+
+
 
         {/* Right: meta card + stamp */}
         <div className="relative">

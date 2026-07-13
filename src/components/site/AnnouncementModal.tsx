@@ -107,7 +107,7 @@ function ModalContent({ a, onClose }: { a: Announcement; onClose: () => void }) 
         <div className="relative p-6 sm:p-8">
           {a.badge && (
             <span
-              className={`inline-flex items-center gap-1.5 rounded-full border border-${accent}/30 bg-${accent}/10 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-${accent}`}
+              className={`inline-flex items-center gap-1.5 rounded-full border ${p.ring} ${p.soft} px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-widest ${p.text}`}
             >
               <Sparkles className="size-3" />
               {a.badge}

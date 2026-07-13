@@ -3,12 +3,18 @@ import { X } from "lucide-react";
 import { OrderBuilder } from "./OrderBuilder";
 
 export const OPEN_ORDER_EVENT = "lyra:open-order";
+export const PRESELECT_SERVICE_EVENT = "lyra:preselect-service";
 
-export function openOrderDrawer() {
-  if (typeof window !== "undefined") {
-    window.dispatchEvent(new CustomEvent(OPEN_ORDER_EVENT));
+export function openOrderDrawer(serviceId?: string) {
+  if (typeof window === "undefined") return;
+  if (serviceId) {
+    window.dispatchEvent(
+      new CustomEvent(PRESELECT_SERVICE_EVENT, { detail: { serviceId } }),
+    );
   }
+  window.dispatchEvent(new CustomEvent(OPEN_ORDER_EVENT));
 }
+
 
 export function OrderDrawer() {
   const [open, setOpen] = useState(false);

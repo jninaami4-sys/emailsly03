@@ -98,6 +98,24 @@ export function OrderBuilder() {
     return () => mq.removeEventListener("change", update);
   }, []);
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const onPreselect = (e: Event) => {
+      const detail = (e as CustomEvent<{ serviceId?: string }>).detail;
+      const id = detail?.serviceId;
+      if (!id) return;
+      const svc = SERVICES.find((s) => s.id === id);
+      if (!svc) return;
+      setServiceId(svc.id);
+      setMobileGroup(svc.group);
+      setQuantity(svc.fixed ? 1 : svc.minQty);
+      setStep(2);
+    };
+    window.addEventListener("lyra:preselect-service", onPreselect);
+    return () => window.removeEventListener("lyra:preselect-service", onPreselect);
+  }, []);
+
+
   const effectiveQty = service.fixed ? 1 : Math.max(quantity, service.minQty);
 
   const { base, extras, rushFee, subtotal, stripeFee, total, savings, comparePriceApollo, comparePriceLinkedIn } =

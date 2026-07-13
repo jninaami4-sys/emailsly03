@@ -36,6 +36,11 @@ type Screen =
 
 const LS_SESSION = "chatbot.session";
 const LS_NAME = "chatbot.name";
+const LS_EMAIL = "chatbot.email";
+
+function isValidEmail(v: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
+}
 
 function newSessionId() {
   return (

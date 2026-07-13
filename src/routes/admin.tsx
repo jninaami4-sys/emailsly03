@@ -1,10 +1,15 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { PRODUCTS, type Product } from "@/lib/products";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { ProductCard } from "@/components/site/ProductCard";
-import { Upload, X, Search } from "lucide-react";
+import { AnnouncementsAdmin } from "@/components/admin/AnnouncementsAdmin";
+import { whoAmIAdmin } from "@/lib/announcements.functions";
+import { useAuth } from "@/hooks/use-auth";
+import { Upload, X, Search, ShieldAlert, Lock } from "lucide-react";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
@@ -14,8 +19,69 @@ export const Route = createFileRoute("/admin")({
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),
-  component: AdminPage,
+  component: AdminGate,
 });
+
+function AdminGate() {
+  const { user, loading } = useAuth();
+  const whoFn = useServerFn(whoAmIAdmin);
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["admin-check", user?.id],
+    queryFn: () => whoFn(),
+    enabled: !!user,
+    retry: false,
+  });
+
+  if (loading || (user && isLoading)) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <div className="mx-auto max-w-md px-4 py-24 text-center text-sm text-muted-foreground">
+          Checking access…
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <main className="mx-auto max-w-md px-4 py-24 text-center">
+          <div className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-violet/10 text-violet">
+            <Lock className="size-6" />
+          </div>
+          <h1 className="mt-4 font-display text-2xl font-bold">Admin sign-in required</h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Sign in with the admin email to manage site content.
+          </p>
+          <Link to="/auth" className="mt-6 inline-flex rounded-xl bg-violet px-5 py-2.5 text-sm font-semibold text-white">
+            Go to sign in
+          </Link>
+        </main>
+      </div>
+    );
+  }
+
+  if (error || !data?.isAdmin) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <main className="mx-auto max-w-md px-4 py-24 text-center">
+          <div className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-rose-500/10 text-rose-500">
+            <ShieldAlert className="size-6" />
+          </div>
+          <h1 className="mt-4 font-display text-2xl font-bold">Not authorized</h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            {user.email} isn't the admin account. Sign in with the admin email.
+          </p>
+        </main>
+      </div>
+    );
+  }
+
+  return <AdminPage />;
+}
 
 const coverKey = (id: string) => `product-cover:${id}`;
 
@@ -78,13 +144,18 @@ function AdminPage() {
             Admin
           </span>
           <h1 className="mt-1 font-display text-3xl font-bold sm:text-4xl">
-            Product Cover Editor
+            Site control panel
           </h1>
           <p className="mt-2 max-w-2xl text-muted-foreground">
-            Upload a thumbnail cover for each prebuilt leads product. Changes save to
-            this browser and preview live on the storefront.
+            Manage marketing announcements shown to visitors and product covers on the storefront.
           </p>
         </header>
+
+        <div className="mb-10">
+          <AnnouncementsAdmin />
+        </div>
+
+        <h2 className="mb-4 font-display text-xl font-bold">Product cover editor</h2>
 
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
           {/* LIST */}

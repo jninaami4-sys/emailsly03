@@ -1,9 +1,15 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { getSiteSettings } from "@/lib/site-settings.functions";
 import { getConversionEvents } from "@/lib/conversion-events.functions";
 import { primeConversionEvents } from "@/lib/tracking";
+import {
+  CONSENT_EVENT,
+  DEFAULT_CONSENT,
+  readConsent,
+  type ConsentCategories,
+} from "@/lib/consent";
 
 /**
  * Injects tracking scripts (GTM, GA4, Meta Pixel, TikTok Pixel, custom head HTML)

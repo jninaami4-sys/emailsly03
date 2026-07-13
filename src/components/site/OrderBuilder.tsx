@@ -777,7 +777,7 @@ function ServiceChip({
         <span className={`block text-sm font-semibold leading-relaxed ${active ? "" : "text-foreground"}`}>
           {service.name}
         </span>
-        <span className={`mt-1 block font-mono text-[11px] leading-relaxed ${active ? "opacity-70" : "text-muted-foreground"}`}>
+        <span className={`mt-1 block font-mono text-xs leading-relaxed ${active ? "opacity-70" : "text-muted-foreground"}`}>
           {service.fixed ? `$${service.minOrder} flat` : `$${service.rate.toFixed(4)}/${service.unit}`}
         </span>
       </span>

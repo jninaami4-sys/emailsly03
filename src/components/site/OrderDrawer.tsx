@@ -5,15 +5,16 @@ import { OrderBuilder } from "./OrderBuilder";
 export const OPEN_ORDER_EVENT = "lyra:open-order";
 export const PRESELECT_SERVICE_EVENT = "lyra:preselect-service";
 
-export function openOrderDrawer(serviceId?: string) {
+export function openOrderDrawer(serviceId?: unknown) {
   if (typeof window === "undefined") return;
-  if (serviceId) {
+  if (typeof serviceId === "string" && serviceId) {
     window.dispatchEvent(
       new CustomEvent(PRESELECT_SERVICE_EVENT, { detail: { serviceId } }),
     );
   }
   window.dispatchEvent(new CustomEvent(OPEN_ORDER_EVENT));
 }
+
 
 
 export function OrderDrawer() {

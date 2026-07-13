@@ -892,16 +892,18 @@ function ScreenOrderStatus({
 
 function ScreenTicket({
   defaultName,
+  defaultEmail,
   busy,
   onSubmit,
   onBack,
 }: {
   defaultName: string;
+  defaultEmail: string;
   busy: boolean;
   onSubmit: (p: { name: string; email: string; issue: string }) => void;
   onBack: () => void;
 }) {
-  const [f, setF] = useState({ name: defaultName || "", email: "", issue: "" });
+  const [f, setF] = useState({ name: defaultName || "", email: defaultEmail || "", issue: "" });
   return (
     <div className="mt-2 space-y-2 rounded-xl border border-border p-3">
       <div className="text-xs font-semibold text-muted-foreground">Raise a support ticket</div>

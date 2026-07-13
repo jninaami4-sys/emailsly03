@@ -122,8 +122,8 @@ export function TrackingScripts() {
       w.fbq!("track", "PageView");
     }
 
-    // TikTok Pixel
-    if (data.tiktok_pixel_id && /^[A-Z0-9]{10,40}$/i.test(data.tiktok_pixel_id) && !injected.has(`tt:${data.tiktok_pixel_id}`)) {
+    // TikTok Pixel — marketing consent
+    if (consent.marketing && data.tiktok_pixel_id && /^[A-Z0-9]{10,40}$/i.test(data.tiktok_pixel_id) && !injected.has(`tt:${data.tiktok_pixel_id}`)) {
       injected.add(`tt:${data.tiktok_pixel_id}`);
       const w = window as unknown as { ttq?: unknown; TiktokAnalyticsObject?: string };
       if (!w.ttq) {

@@ -106,43 +106,58 @@ const ADD_ONS = [
 function Pricing() {
   return (
     <SiteShell>
-      {/* Hero — editorial, matches homepage */}
-      <section className="relative overflow-hidden px-6 pt-20 pb-20 lg:pt-24">
-        <div className="pointer-events-none absolute left-1/2 top-0 -z-10 h-[600px] w-[1000px] -translate-x-1/2 bg-[radial-gradient(circle_at_center,var(--violet-soft),transparent_70%)] opacity-70" />
-        <div className="mx-auto max-w-4xl text-center">
-          <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-violet/20 bg-violet-soft px-3 py-1">
-            <Sparkles className="size-3 text-violet" />
-            <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-violet">
-              Transparent Pricing
-            </span>
+      {/* Hero — light panel on md+, dark on mobile, buttery gradient into next */}
+      <section className="relative px-4 pt-14 pb-24 md:px-6 md:pt-20 md:pb-32">
+        {/* Mobile ambient glow */}
+        <div className="pointer-events-none absolute left-1/2 top-0 -z-10 h-[600px] w-[1000px] -translate-x-1/2 bg-[radial-gradient(circle_at_center,var(--violet-soft),transparent_70%)] opacity-70 md:hidden" />
+
+        {/* Desktop / tablet light panel */}
+        <div className="relative mx-auto max-w-6xl md:overflow-hidden md:rounded-[2.5rem] md:border md:border-white/10 md:bg-gradient-to-br md:from-white md:via-[oklch(0.985_0.005_285)] md:to-[oklch(0.96_0.03_285)] md:px-10 md:py-24 md:shadow-[0_30px_80px_-30px_rgba(79,70,229,0.35)] lg:px-16 lg:py-28">
+          {/* Decorative light-mode auras (md+) */}
+          <div className="pointer-events-none absolute inset-0 hidden md:block">
+            <div className="absolute -left-24 -top-24 h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(139,92,246,0.25),transparent_70%)] blur-2xl" />
+            <div className="absolute -right-32 -bottom-24 h-96 w-96 rounded-full bg-[radial-gradient(circle,rgba(236,72,153,0.18),transparent_70%)] blur-3xl" />
+            <div className="absolute inset-0 bg-[radial-gradient(1200px_400px_at_50%_-10%,rgba(255,255,255,0.9),transparent_60%)]" />
           </div>
-          <h1 className="font-display text-5xl font-bold leading-[1.05] tracking-tighter text-foreground md:text-6xl">
-            Simple, honest pricing.
-            <br />
-            <span className="text-violet">Pay only for what you need.</span>
-          </h1>
-          <p className="mx-auto mt-8 max-w-2xl text-lg leading-relaxed text-muted-foreground md:text-xl">
-            B2B leads at a fraction of the cost. No hidden fees, no monthly subscriptions — just verified data delivered to your CRM.
-          </p>
-          <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
-            <a
-              href="#calculator"
-              className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-violet px-8 py-4 text-base font-semibold text-white shadow-lg shadow-violet/25 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-violet/30 sm:w-auto"
-            >
-              Calculate Your Price <ArrowRight className="size-4" />
-            </a>
-            <a
-              href="#tiers"
-              className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-border bg-card px-8 py-4 text-base font-semibold text-foreground transition-colors hover:bg-secondary sm:w-auto"
-            >
-              Compare Plans
-            </a>
+
+          <div className="relative mx-auto max-w-4xl text-center">
+            <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-violet/20 bg-violet-soft px-3 py-1 md:border-violet/30 md:bg-white/70 md:backdrop-blur">
+              <Sparkles className="size-3 text-violet" />
+              <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-violet">
+                Transparent Pricing
+              </span>
+            </div>
+            <h1 className="font-display text-5xl font-bold leading-[1.05] tracking-tighter text-foreground md:text-6xl md:text-[oklch(0.18_0.02_260)] lg:text-7xl">
+              Simple, honest pricing.
+              <br />
+              <span className="text-violet">Pay only for what you need.</span>
+            </h1>
+            <p className="mx-auto mt-8 max-w-2xl text-lg leading-relaxed text-muted-foreground md:text-xl md:text-[oklch(0.38_0.02_260)]">
+              B2B leads at a fraction of the cost. No hidden fees, no monthly subscriptions — just verified data delivered to your CRM.
+            </p>
+            <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
+              <a
+                href="#calculator"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-violet px-8 py-4 text-base font-semibold text-white shadow-lg shadow-violet/25 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-violet/40 sm:w-auto"
+              >
+                Calculate Your Price <ArrowRight className="size-4" />
+              </a>
+              <a
+                href="#tiers"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-border bg-card px-8 py-4 text-base font-semibold text-foreground transition-colors hover:bg-secondary md:border-[oklch(0.18_0.02_260/0.15)] md:bg-white/80 md:text-[oklch(0.18_0.02_260)] md:backdrop-blur md:hover:bg-white sm:w-auto"
+              >
+                Compare Plans
+              </a>
+            </div>
           </div>
         </div>
+
+        {/* Buttery gradient bleed into next section */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-40 bg-gradient-to-b from-transparent to-background md:h-56" />
       </section>
 
       {/* Data tiers — editorial cards */}
-      <section id="tiers" className="border-t border-border px-6 py-24">
+      <section id="tiers" className="px-6 py-24 md:pt-8">
         <div className="mx-auto max-w-7xl">
           <div className="mx-auto mb-16 max-w-2xl text-center">
             <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-violet">

@@ -177,5 +177,6 @@ export const PRODUCTS: Product[] = [
     description:
       "Growth and revenue leaders at Series-B fintech companies with $10M–$50M ARR. Verified within the last 24 hours.",
     fields: ["Name", "Verified Email", "LinkedIn", "Company", "Revenue", "Direct Dial"],
+    coverImage: coverFintech,
   },
 ];

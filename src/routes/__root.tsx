@@ -16,6 +16,7 @@ import { CartDrawer } from "@/components/site/CartDrawer";
 import { AuthProvider } from "@/hooks/use-auth";
 import { AnnouncementModal } from "@/components/site/AnnouncementModal";
 import { TrackingScripts } from "@/components/site/TrackingScripts";
+import { TrackingDebugPanel } from "@/components/site/TrackingDebugPanel";
 
 function NotFoundComponent() {
   return (

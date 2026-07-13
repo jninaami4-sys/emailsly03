@@ -282,12 +282,31 @@ export function ChatbotWidget() {
   // ---- keyword router (fallback for free typing) ---------------------------
   function routeKeyword(txt: string): Screen | null {
     const t = txt.toLowerCase();
-    if (/human|agent|support|talk|person/.test(t)) return { name: "live" };
-    if (/(price|cost|quote|apollo|lead)/.test(t)) return { name: "quote" };
-    if (/(order|status|track)/.test(t)) return { name: "order-status" };
-    if (/(help|problem|issue|broken|complain|ticket)/.test(t)) return { name: "ticket" };
-    if (/(service|website|app|ad|google|meta)/.test(t)) return { name: "services" };
+    if (/human|agent|talk to|person|representative/.test(t)) return { name: "live" };
+    if (/(order|status|track).*(id|number|#|ord-)|ord-\d+|my order/.test(t)) return { name: "order-status" };
+    if (/(complain|broken|bug|not working|refund|issue|problem|ticket)/.test(t)) return { name: "ticket" };
+    if (/(catalog|store|shopify|fortune|saas|founder|ecom|healthcare|real estate|fintech|cmo)/.test(t)) return { name: "catalog" };
+    if (/(price|cost|quote|apollo|zoominfo|linkedin|manual|research|pricing)/.test(t)) return { name: "quote" };
+    if (/(service|website|app|ads?|google|meta|facebook|logo|pixel|design)/.test(t)) return { name: "services" };
+    if (/(faq|question|delivery|format|sample|country|bounce|gdpr|payment|resell)/.test(t)) return { name: "faq" };
+    if (/(refund|privacy|terms|policy|policies|legal)/.test(t)) return { name: "policies" };
+    if (/(blog|guide|article|deliverability|icp|crm)/.test(t)) return { name: "blog" };
+    if (/(page|link|where|find|contact)/.test(t)) return { name: "pages" };
     return null;
+  }
+
+  // Search KB for best-matching entry (token overlap)
+  function searchKb(q: string): KbEntry | null {
+    const tokens = q.toLowerCase().split(/[^a-z0-9]+/).filter((w) => w.length > 2);
+    if (!tokens.length) return null;
+    let best: { entry: KbEntry; score: number } | null = null;
+    for (const k of kb) {
+      const hay = `${k.title} ${k.answer} ${k.category}`.toLowerCase();
+      let score = 0;
+      for (const tok of tokens) if (hay.includes(tok)) score++;
+      if (score > 0 && (!best || score > best.score)) best = { entry: k, score };
+    }
+    return best && best.score >= Math.min(2, tokens.length) ? best.entry : null;
   }
 
   async function handleFreeText() {
@@ -300,12 +319,19 @@ export function ChatbotWidget() {
     // If we're in live mode the message goes to the human via the server fn
     if (liveStatus === "live") return;
 
+    // Try direct KB match first — that's the "smart" answer
+    const hit = searchKb(t);
+    if (hit) {
+      addLocal("bot", `**${hit.title}**\n${hit.answer}`);
+      return;
+    }
+
     const next = routeKeyword(t);
     if (next) {
       addLocal("bot", "Here's what might help:");
       setScreen(next);
     } else {
-      addLocal("bot", "I didn't quite catch that — pick an option below:");
+      addLocal("bot", "I didn't quite catch that — pick an option below, or ask again in different words:");
       setScreen({ name: "menu" });
     }
   }

@@ -209,4 +209,45 @@
 .animate-aurora-med  { animation: aurora-med 14s ease-in-out infinite; }
 .animate-aurora-fast { animation: aurora-fast 11s ease-in-out infinite; }
 
+/* Route + section transitions */
+.route-transition {
+  will-change: opacity, transform, filter;
+  transition:
+    opacity 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 420ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 320ms ease;
+}
+.route-transition-out {
+  opacity: 0;
+  transform: translateY(8px);
+  filter: blur(4px);
+}
+.route-transition-in {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+}
+
+@keyframes route-progress {
+  0%   { transform: translateX(-100%); }
+  60%  { transform: translateX(20%); }
+  100% { transform: translateX(100%); }
+}
+.route-progress-bar {
+  animation: route-progress 900ms cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+html { scroll-behavior: smooth; }
+
+@media (prefers-reduced-motion: reduce) {
+  .route-transition {
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+  html { scroll-behavior: auto; }
+}
+
+
 

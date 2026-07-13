@@ -96,8 +96,8 @@ export function TrackingScripts() {
       w.gtag("config", data.ga4_id);
     }
 
-    // Meta / Facebook Pixel
-    if (data.fb_pixel_id && /^\d{6,20}$/.test(data.fb_pixel_id) && !injected.has(`fb:${data.fb_pixel_id}`)) {
+    // Meta / Facebook Pixel — marketing consent
+    if (consent.marketing && data.fb_pixel_id && /^\d{6,20}$/.test(data.fb_pixel_id) && !injected.has(`fb:${data.fb_pixel_id}`)) {
       injected.add(`fb:${data.fb_pixel_id}`);
       // Standard Meta Pixel snippet
       const w = window as unknown as { fbq?: { (...args: unknown[]): void; callMethod?: unknown; queue?: unknown[]; push?: unknown; loaded?: boolean; version?: string } };

@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { PaymentLogos } from "./PaymentLogos";
-import { PremiumZap, PremiumShieldCheck, PremiumArrowRight } from "./PremiumIcons";
+import { PremiumSparkles, PremiumShieldCheck, PremiumArrowRight } from "./PremiumIcons";
 import { openConsentPreferences } from "@/lib/consent";
 
 const productLinks = [

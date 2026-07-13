@@ -715,7 +715,7 @@ export function OrderBuilder() {
                     qty: String(effectiveQty),
                   }}
                   aria-disabled={!agree || name.trim().length < 2 || !/\S+@\S+\.\S+/.test(email)}
-                  onClick={(e) => {
+                  onClick={(e: MouseEvent<HTMLAnchorElement>) => {
                     if (!agree || name.trim().length < 2 || !/\S+@\S+\.\S+/.test(email)) {
                       e.preventDefault();
                     }

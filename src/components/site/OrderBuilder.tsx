@@ -774,10 +774,10 @@ function ServiceChip({
         <Icon className="size-3.5 sm:size-4" />
       </span>
       <span className="min-w-0 flex-1">
-        <span className={`block truncate text-xs font-semibold ${active ? "" : "text-foreground"}`}>
+        <span className={`block text-xs font-semibold leading-tight ${active ? "" : "text-foreground"}`}>
           {service.name}
         </span>
-        <span className={`mt-0.5 block truncate font-mono text-[10px] ${active ? "opacity-70" : "text-muted-foreground"}`}>
+        <span className={`mt-0.5 block font-mono text-[10px] ${active ? "opacity-70" : "text-muted-foreground"}`}>
           {service.fixed ? `$${service.minOrder} flat` : `$${service.rate.toFixed(4)}/${service.unit}`}
         </span>
       </span>

@@ -56,6 +56,8 @@ const SERVICES: Service[] = [
 ];
 
 const QTY_PRESETS = [5000, 10000, 15000, 20000, 50000, 100000, 250000, 500000, 1000000];
+const TIER_PRESETS = [100, 200, 300, 400, 500, 750, 1000, 1500, 2000, 3000, 5000, 7500, 10000];
+const TIER_SERVICES = new Set(["manual", "mobile"]);
 
 const STEPS = [
   { id: 1, label: "Service", icon: Sliders },
@@ -289,7 +291,76 @@ export function OrderBuilder() {
                   </div>
                 </div>
 
-                {!service.fixed && (
+                {!service.fixed && TIER_SERVICES.has(service.id) && (
+                  <div className="mt-6 sm:mt-8">
+                    <SectionLabel icon={Layers} rightText={`Min ${service.minQty.toLocaleString()} · Max 10,000`}>
+                      Pick a tier
+                    </SectionLabel>
+                    <div className="rounded-2xl border border-border bg-secondary/40 p-4 sm:p-6">
+                      <div className="flex items-baseline justify-between">
+                        <div className="font-display text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
+                          {effectiveQty.toLocaleString()}
+                          <span className="ml-2 font-sans text-sm font-medium text-muted-foreground">{service.unit}s</span>
+                        </div>
+                        <div className="hidden font-mono text-xs text-muted-foreground sm:block">
+                          ${service.rate.toFixed(2)} / {service.unit}
+                        </div>
+                      </div>
+                      <p className="mt-2 text-xs text-muted-foreground">
+                        Choose a fixed tier from 100 to 10,000 {service.unit}s. No slider, no guesswork.
+                      </p>
+                      <div className="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-5">
+                        {TIER_PRESETS.map((q) => {
+                          const active = effectiveQty === q;
+                          return (
+                            <button
+                              key={q}
+                              type="button"
+                              onClick={() => setQuantity(q)}
+                              className={`rounded-xl border px-3 py-2.5 text-center font-mono text-[12px] font-bold uppercase transition-all ${
+                                active
+                                  ? "border-violet bg-violet text-white shadow-sm shadow-violet/30"
+                                  : "border-border bg-background text-foreground hover:border-violet/40 hover:bg-secondary"
+                              }`}
+                            >
+                              {q.toLocaleString()}
+                            </button>
+                          );
+                        })}
+                      </div>
+
+                      <div className="mt-5 flex flex-col items-start justify-between gap-3 rounded-xl border border-dashed border-border bg-background/60 p-4 sm:flex-row sm:items-center">
+                        <div>
+                          <div className="font-mono text-[10px] font-bold uppercase tracking-widest text-coral">
+                            Need more than 10,000?
+                          </div>
+                          <div className="mt-0.5 text-sm text-muted-foreground">
+                            Bulk orders get a custom quote and dedicated project manager.
+                          </div>
+                        </div>
+                        <a
+                          href="/contact"
+                          className="inline-flex items-center gap-1.5 rounded-full bg-ink px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-violet"
+                        >
+                          Contact sales
+                          <ArrowRight className="size-4" />
+                        </a>
+                      </div>
+                    </div>
+
+                    <div className="mt-6 sm:mt-8">
+                      <SectionLabel icon={Tag}>Price comparison</SectionLabel>
+                      <div className="grid gap-3 grid-cols-2">
+                        <ComparePill label="Apollo.io retail" price={comparePriceApollo} note={`${(comparePriceApollo / base).toFixed(0)}× more`} tone="muted" />
+                        <ComparePill label="LinkedIn Nav" price={comparePriceLinkedIn} note={`${(comparePriceLinkedIn / base).toFixed(0)}× more`} tone="muted" />
+                        <ComparePill label="Our price" price={base} note="Base subtotal" tone="violet" />
+                        <ComparePill label="You save" price={savings} note={`${Math.round((savings / comparePriceApollo) * 100) || 0}% less`} tone="emerald" />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {!service.fixed && !TIER_SERVICES.has(service.id) && (
                   <div className="mt-6 sm:mt-8">
                     <SectionLabel icon={Layers} rightText={`Min ${service.minQty.toLocaleString()}`}>
                       {service.unit === "lead" ? "Lead quantity" : "Quantity"}

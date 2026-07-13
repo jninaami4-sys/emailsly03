@@ -12,6 +12,7 @@ import { ConversionEventsAdmin } from "@/components/admin/ConversionEventsAdmin"
 import { DebugModeAdmin } from "@/components/admin/DebugModeAdmin";
 import { ServerTrackingAdmin } from "@/components/admin/ServerTrackingAdmin";
 import { ProductDetailsAdmin } from "@/components/admin/ProductDetailsAdmin";
+import { ChatbotAdmin } from "@/components/admin/ChatbotAdmin";
 import { whoAmIAdmin } from "@/lib/announcements.functions";
 import { useAuth } from "@/hooks/use-auth";
 import { Upload, X, Search, ShieldAlert, Lock } from "lucide-react";

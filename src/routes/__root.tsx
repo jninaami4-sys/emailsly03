@@ -18,6 +18,7 @@ import { AnnouncementModal } from "@/components/site/AnnouncementModal";
 import { TrackingScripts } from "@/components/site/TrackingScripts";
 import { TrackingDebugPanel } from "@/components/site/TrackingDebugPanel";
 import { CookieConsent } from "@/components/site/CookieConsent";
+import { ChatbotWidget } from "@/components/site/ChatbotWidget";
 
 function NotFoundComponent() {
   return (
@@ -143,6 +144,7 @@ function RootComponent() {
           <TrackingScripts />
           <TrackingDebugPanel />
           <CookieConsent />
+          <ChatbotWidget />
         </CartProvider>
       </AuthProvider>
     </QueryClientProvider>

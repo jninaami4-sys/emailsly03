@@ -14,6 +14,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { CartProvider } from "@/lib/cart";
 import { CartDrawer } from "@/components/site/CartDrawer";
 import { AuthProvider } from "@/hooks/use-auth";
+import { AnnouncementModal } from "@/components/site/AnnouncementModal";
 
 function NotFoundComponent() {
   return (
@@ -135,6 +136,7 @@ function RootComponent() {
         <CartProvider>
           <Outlet />
           <CartDrawer />
+          <AnnouncementModal />
         </CartProvider>
       </AuthProvider>
     </QueryClientProvider>

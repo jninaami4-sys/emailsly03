@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { PremiumSearch, PremiumDownload } from "./PremiumIcons";
 import { Link } from "@tanstack/react-router";
+import { trackConversion } from "@/lib/tracking";
 
 const SOURCES = ["apollo", "linkedin", "zoominfo"] as const;
 type SourceKey = (typeof SOURCES)[number];

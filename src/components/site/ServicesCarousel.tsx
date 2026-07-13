@@ -12,7 +12,6 @@ import {
   PremiumGlobe,
   PremiumLayers,
   PremiumShieldCheck,
-  PremiumZap,
   PremiumDatabase,
   PremiumFileText,
 } from "@/components/site/PremiumIcons";

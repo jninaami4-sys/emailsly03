@@ -471,7 +471,8 @@ function Invoice(props: {
         <div className="relative">
           <div className="rounded-2xl border border-neutral-200 bg-neutral-50 p-6">
             <div className="grid gap-4 text-sm">
-              <MetaRow label="Receipt #" value={orderId} mono />
+              <MetaRow label="Invoice #" value={invoiceNo} mono />
+              <MetaRow label="Order #" value={orderId} mono />
               <MetaRow label="Date" value={dateStr} />
               <MetaRow label="Time" value={timeStr} />
               <MetaRow label="Method" value="Visa •••• 4242" />

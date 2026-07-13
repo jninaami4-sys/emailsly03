@@ -89,17 +89,22 @@ export function Header() {
                       >
                         <span className="relative z-10">{item.label}</span>
                         {isActive && (
-                          <motion.span
-                            layoutId="header-nav-pill"
-                            transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                            className="absolute inset-0 rounded-full bg-violet/10"
-                          >
-                            <span className="absolute -top-[7px] left-1/2 h-1 w-8 -translate-x-1/2 rounded-full bg-violet">
+                          <>
+                            <motion.span
+                              layoutId="header-nav-pill"
+                              transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                              className="absolute inset-0 rounded-full bg-violet/10"
+                            />
+                            <motion.span
+                              layoutId="header-nav-lamp"
+                              transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                              className="pointer-events-none absolute -top-[7px] left-1/2 z-20 h-1 w-8 -translate-x-1/2 rounded-full bg-violet"
+                            >
                               <span className="absolute -top-2 -left-2 h-6 w-12 rounded-full bg-violet/30 blur-md" />
                               <span className="absolute -top-1 left-0 h-6 w-8 rounded-full bg-violet/25 blur-md" />
                               <span className="absolute top-0 left-2 h-4 w-4 rounded-full bg-violet/25 blur-sm" />
-                            </span>
-                          </motion.span>
+                            </motion.span>
+                          </>
                         )}
                       </Link>
                     </li>

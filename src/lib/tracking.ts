@@ -55,7 +55,11 @@ export async function trackConversion(key: string, overrides?: ParamMap): Promis
   if (typeof window === "undefined") return;
   if (!ready) await loadOnce();
   const evt = cache.find((e) => e.event_key === key);
-  if (!evt) return;
+  const fired: DebugEntry["fired"] = [];
+  if (!evt) {
+    emitDebug({ ts: Date.now(), key, matched: false, fired, overrides, note: "No matching conversion event" });
+    return;
+  }
 
   const w = window as unknown as {
     gtag?: (...args: unknown[]) => void;
@@ -64,14 +68,18 @@ export async function trackConversion(key: string, overrides?: ParamMap): Promis
     ttq?: { track?: (name: string, params?: unknown) => void };
   };
 
-  // GA4 (works via direct gtag OR via GTM's dataLayer)
   if (evt.ga4_event_name) {
     const params = merge(evt.ga4_params, overrides);
-    w.gtag?.("event", evt.ga4_event_name, params);
-    w.dataLayer?.push({ event: evt.ga4_event_name, ...params });
+    if (w.gtag) {
+      w.gtag("event", evt.ga4_event_name, params);
+      fired.push({ provider: "GA4", name: evt.ga4_event_name, params });
+    }
+    if (w.dataLayer) {
+      w.dataLayer.push({ event: evt.ga4_event_name, ...params });
+      fired.push({ provider: "dataLayer", name: evt.ga4_event_name, params });
+    }
   }
 
-  // Meta Pixel
   if (evt.meta_event_name && w.fbq) {
     const params = merge(evt.meta_params, overrides);
     const std = new Set([
@@ -80,13 +88,16 @@ export async function trackConversion(key: string, overrides?: ParamMap): Promis
       "Schedule","Search","StartTrial","SubmitApplication","Subscribe","ViewContent",
     ]);
     w.fbq(std.has(evt.meta_event_name) ? "track" : "trackCustom", evt.meta_event_name, params);
+    fired.push({ provider: "Meta", name: evt.meta_event_name, params });
   }
 
-  // TikTok Pixel
   if (evt.tiktok_event_name && w.ttq?.track) {
     const params = merge(evt.tiktok_params, overrides);
     w.ttq.track(evt.tiktok_event_name, params);
+    fired.push({ provider: "TikTok", name: evt.tiktok_event_name, params });
   }
+
+  emitDebug({ ts: Date.now(), key, matched: true, fired, overrides });
 }
 
 // Expose for debugging / non-React call sites.

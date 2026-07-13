@@ -459,21 +459,37 @@ export function ChatbotWidget() {
 
             {/* Screen-specific button blocks */}
             {screen.name === "greet" && (
-              <div className="mt-2 flex gap-2">
+              <div className="mt-2 space-y-2 rounded-xl border border-border p-3">
+                <div className="text-xs font-semibold text-muted-foreground">
+                  Get started
+                </div>
                 <input
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && submitName()}
+                  onKeyDown={(e) => e.key === "Enter" && submitLead()}
                   placeholder="Your name"
-                  className="flex-1 rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none focus:border-violet"
+                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-violet"
+                />
+                <input
+                  value={emailInput}
+                  type="email"
+                  onChange={(e) => setEmailInput(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && submitLead()}
+                  placeholder="Your email"
+                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-violet"
                 />
                 <button
-                  onClick={submitName}
-                  disabled={busy || !input.trim()}
-                  className="rounded-xl bg-violet px-3 py-2 text-white disabled:opacity-50"
+                  type="button"
+                  onClick={submitLead}
+                  disabled={busy || !input.trim() || !isValidEmail(emailInput)}
+                  className="w-full flex items-center justify-center gap-2 rounded-lg bg-violet px-3 py-2 text-sm font-semibold text-white disabled:opacity-50"
                 >
                   <User className="size-4" />
+                  Start chatting
                 </button>
+                <div className="text-[10px] text-muted-foreground">
+                  We only use this to reply to you. No spam.
+                </div>
               </div>
             )}
 

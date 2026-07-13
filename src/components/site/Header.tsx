@@ -40,6 +40,7 @@ export function Header() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   async function handleSignOut() {
     await queryClient.cancelQueries();

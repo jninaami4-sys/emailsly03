@@ -703,7 +703,7 @@ export function OrderBuilder() {
 
                 <button
                   type="button"
-                  disabled={!agree}
+                  disabled={!agree || name.trim().length < 2 || !/\S+@\S+\.\S+/.test(email)}
                   className="relative mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-violet px-6 py-4 text-sm font-bold text-white shadow-lg shadow-violet/30 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-violet/40 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
                 >
                   Checkout with Stripe <ArrowRight className="size-4" />

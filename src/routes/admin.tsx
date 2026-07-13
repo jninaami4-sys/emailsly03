@@ -159,6 +159,8 @@ function AdminPage() {
           <AnnouncementsAdmin />
           <TrackingAdmin />
           <ConversionEventsAdmin />
+          <ConversionEventsAdmin />
+          <ServerTrackingAdmin />
           <DebugModeAdmin />
         </div>
 

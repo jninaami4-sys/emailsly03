@@ -429,6 +429,9 @@ export function ChatbotWidget() {
 
             {screen.name === "menu" && (
               <div className="mt-2 space-y-2">
+                <QuickButton onClick={() => setScreen({ name: "catalog" })}>
+                  🗂️ Browse lead catalog (9 lists)
+                </QuickButton>
                 <QuickButton onClick={() => setScreen({ name: "services" })}>
                   💼 Our services
                 </QuickButton>
@@ -445,6 +448,18 @@ export function ChatbotWidget() {
                 <QuickButton onClick={() => setScreen({ name: "order-status" })}>
                   📦 Check order status
                 </QuickButton>
+                <QuickButton onClick={() => setScreen({ name: "faq" })}>
+                  ❓ FAQ (delivery, formats, samples)
+                </QuickButton>
+                <QuickButton onClick={() => setScreen({ name: "pages" })}>
+                  🧭 Site pages & quick links
+                </QuickButton>
+                <QuickButton onClick={() => setScreen({ name: "blog" })}>
+                  📰 Blog & guides
+                </QuickButton>
+                <QuickButton onClick={() => setScreen({ name: "policies" })}>
+                  📜 Policies (refund, privacy, terms)
+                </QuickButton>
                 <QuickButton onClick={() => setScreen({ name: "ticket" })}>
                   🎫 Raise a support ticket
                 </QuickButton>
@@ -454,8 +469,14 @@ export function ChatbotWidget() {
               </div>
             )}
 
-            {screen.name === "services" && (
-              <ScreenServices
+            {(screen.name === "services" ||
+              screen.name === "catalog" ||
+              screen.name === "faq" ||
+              screen.name === "policies" ||
+              screen.name === "pages" ||
+              screen.name === "blog") && (
+              <ScreenKbList
+                category={screen.name}
                 kbByCategory={kbByCategory}
                 onAnswer={(a) => addLocal("bot", a)}
                 onBack={() => setScreen({ name: "menu" })}

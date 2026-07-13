@@ -152,8 +152,9 @@ function AdminPage() {
           </p>
         </header>
 
-        <div className="mb-10">
+        <div className="mb-10 space-y-6">
           <AnnouncementsAdmin />
+          <TrackingAdmin />
         </div>
 
         <h2 className="mb-4 font-display text-xl font-bold">Product cover editor</h2>

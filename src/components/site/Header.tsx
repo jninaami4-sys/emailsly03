@@ -77,8 +77,8 @@ export function Header() {
               <ul className="hidden items-center gap-1 rounded-full border border-black/5 bg-white/60 p-1 text-sm font-semibold shadow-inner shadow-black/[0.02] backdrop-blur lg:flex">
                 {NAV_ITEMS.map((item) => {
                   const Icon = item.icon;
-const isActive =
-  pathname === item.to || pathname.startsWith(item.to + "/");
+                  const isActive =
+                    pathname === item.to || pathname.startsWith(item.to + "/");
                   return (
                     <li key={item.to} className="relative">
                       <Link

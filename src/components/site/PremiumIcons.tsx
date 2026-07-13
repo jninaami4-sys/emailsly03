@@ -28,10 +28,23 @@ function Icon({
 export function PremiumDatabase({ className }: IconProps) {
   return (
     <Icon className={className}>
-      <ellipse cx="12" cy="5" rx="9" ry="4" />
-      <path d="M3 5v6c0 2.2 4.03 4 9 4s9-1.8 9-4V5" />
-      <path d="M3 11v6c0 2.2 4.03 4 9 4s9-1.8 9-4v-6" />
-      <path d="M3 5c0 2.2 4.03 4 9 4s9-1.8 9-4" />
+      {/* Body fill for depth */}
+      <path
+        d="M3 5v14c0 2.2 4.03 4 9 4s9-1.8 9-4V5"
+        fill="currentColor"
+        fillOpacity="0.12"
+        stroke="none"
+      />
+      {/* Outer disks */}
+      <ellipse cx="12" cy="5" rx="9" ry="3.2" />
+      <ellipse cx="12" cy="5" rx="9" ry="3.2" fill="currentColor" fillOpacity="0.25" stroke="none" />
+      <path d="M3 5v6c0 2 4.03 3.6 9 3.6s9-1.6 9-3.6V5" />
+      <path d="M3 11v6c0 2 4.03 3.6 9 3.6s9-1.6 9-3.6v-6" />
+      {/* Inner highlight */}
+      <ellipse cx="12" cy="5" rx="5.5" ry="1.6" strokeOpacity="0.55" />
+      {/* Data dots */}
+      <circle cx="7" cy="11" r="0.7" fill="currentColor" stroke="none" />
+      <circle cx="7" cy="17" r="0.7" fill="currentColor" stroke="none" />
     </Icon>
   );
 }
@@ -40,7 +53,11 @@ export function PremiumSparkles({ className }: IconProps) {
   return (
     <Icon className={className} viewBox="0 0 24 24">
       <path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1" />
-      <path d="M12 7c-2 3.5-4 5.5-7 7 3 1.5 5 3.5 7 7 2-3.5 4-5.5 7-7-3-1.5-5-3.5-7-7Z" />
+      <path
+        d="M12 7c-2 3.5-4 5.5-7 7 3 1.5 5 3.5 7 7 2-3.5 4-5.5 7-7-3-1.5-5-3.5-7-7Z"
+        fill="currentColor"
+        fillOpacity="0.18"
+      />
     </Icon>
   );
 }
@@ -48,8 +65,21 @@ export function PremiumSparkles({ className }: IconProps) {
 export function PremiumShieldCheck({ className }: IconProps) {
   return (
     <Icon className={className}>
+      {/* Shield fill */}
+      <path
+        d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"
+        fill="currentColor"
+        fillOpacity="0.15"
+      />
+      {/* Inner shield ring */}
+      <path
+        d="M12 19.4s5.6-2.8 5.6-7V6.4L12 4.3 6.4 6.4V12.4c0 4.2 5.6 7 5.6 7Z"
+        strokeOpacity="0.45"
+      />
+      {/* Outer shield */}
       <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" />
-      <path d="m9 12 2 2 4-4" />
+      {/* Check */}
+      <path d="m8.5 12.2 2.4 2.3 4.6-4.8" strokeWidth="1.8" />
     </Icon>
   );
 }
@@ -57,9 +87,12 @@ export function PremiumShieldCheck({ className }: IconProps) {
 export function PremiumTimer({ className }: IconProps) {
   return (
     <Icon className={className}>
+      <circle cx="12" cy="12" r="9" fill="currentColor" fillOpacity="0.12" />
       <circle cx="12" cy="12" r="9" />
-      <path d="M12 6v6l4 2" />
+      <circle cx="12" cy="12" r="6" strokeOpacity="0.4" />
+      <path d="M12 7v5l3.5 2" strokeWidth="1.8" />
       <path d="M12 2v2M17 3l-1 2M7 3l1 2" />
+      <circle cx="12" cy="12" r="1" fill="currentColor" stroke="none" />
     </Icon>
   );
 }
@@ -67,9 +100,25 @@ export function PremiumTimer({ className }: IconProps) {
 export function PremiumLayers({ className }: IconProps) {
   return (
     <Icon className={className}>
+      {/* Back layer */}
+      <path
+        d="M3 13.5c0 1.1.55 2 1.3 2.6l6.7 4.2c.7.4 1.5.4 2.2 0l6.5-4.2c.85-.55 1.3-1.5 1.3-2.6"
+        strokeOpacity="0.5"
+      />
+      {/* Mid layer */}
+      <path
+        d="M3 8.5c0 1.1.55 2 1.3 2.6l6.7 4.2c.7.4 1.5.4 2.2 0l6.5-4.2c.85-.55 1.3-1.5 1.3-2.6"
+        strokeOpacity="0.75"
+      />
+      {/* Front diamond with fill */}
+      <path
+        d="m12.83 2.18 7.53 4.32a1 1 0 0 1 0 1.74l-7.53 4.32a2 2 0 0 1-1.66 0L3.63 8.24a1 1 0 0 1 0-1.74L11.17 2.18a2 2 0 0 1 1.66 0Z"
+        fill="currentColor"
+        fillOpacity="0.22"
+      />
       <path d="m12.83 2.18 7.53 4.32a1 1 0 0 1 0 1.74l-7.53 4.32a2 2 0 0 1-1.66 0L3.63 8.24a1 1 0 0 1 0-1.74L11.17 2.18a2 2 0 0 1 1.66 0Z" />
-      <path d="M3 13.5c0 1.1.55 2 1.3 2.6l6.7 4.2c.7.4 1.5.4 2.2 0l6.5-4.2c.85-.55 1.3-1.5 1.3-2.6" />
-      <path d="M3 8.5c0 1.1.55 2 1.3 2.6l6.7 4.2c.7.4 1.5.4 2.2 0l6.5-4.2c.85-.55 1.3-1.5 1.3-2.6" />
+      {/* Highlight */}
+      <path d="M8 5.5 12 3.5l4 2" strokeOpacity="0.7" strokeWidth="1" />
     </Icon>
   );
 }
@@ -77,10 +126,16 @@ export function PremiumLayers({ className }: IconProps) {
 export function PremiumTarget({ className }: IconProps) {
   return (
     <Icon className={className}>
+      <circle cx="12" cy="12" r="10" fill="currentColor" fillOpacity="0.1" />
       <circle cx="12" cy="12" r="10" />
-      <circle cx="12" cy="12" r="6" />
-      <circle cx="12" cy="12" r="2" />
-      <path d="M12 2v2M12 20v2M2 12h2M20 12h2" />
+      <circle cx="12" cy="12" r="6.5" strokeOpacity="0.55" />
+      <circle cx="12" cy="12" r="3" fill="currentColor" fillOpacity="0.35" />
+      <circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none" />
+      {/* Crosshair ticks */}
+      <path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3" strokeWidth="1.6" />
+      {/* Arrow */}
+      <path d="m18 6-4.5 4.5" strokeWidth="1.6" />
+      <path d="M15 6h3v3" strokeWidth="1.6" />
     </Icon>
   );
 }
@@ -147,7 +202,20 @@ export function PremiumStar({ className }: IconProps) {
 export function PremiumZap({ className }: IconProps) {
   return (
     <Icon className={className}>
-      <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8Z" />
+      {/* Filled bolt for depth */}
+      <path
+        d="M13 2 3 14h9l-1 8 10-12h-9l1-8Z"
+        fill="currentColor"
+        fillOpacity="0.22"
+      />
+      {/* Outer bolt */}
+      <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8Z" strokeLinejoin="round" />
+      {/* Inner highlight edge */}
+      <path
+        d="M12.4 5 6 13h6l-.6 5.2L18 11.5h-6l.4-6.5Z"
+        strokeOpacity="0.55"
+        strokeWidth="1"
+      />
     </Icon>
   );
 }
@@ -224,11 +292,21 @@ export function PremiumX({ className }: IconProps) {
 export function PremiumFileText({ className }: IconProps) {
   return (
     <Icon className={className}>
+      {/* Document fill */}
+      <path
+        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"
+        fill="currentColor"
+        fillOpacity="0.15"
+      />
+      {/* Body outline */}
       <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z" />
+      {/* Folded corner with darker fill */}
+      <path d="M14 2v6h6" fill="currentColor" fillOpacity="0.25" />
       <path d="M14 2v6h6" />
-      <path d="M16 13H8" />
-      <path d="M16 17H8" />
-      <path d="M10 9H8" />
+      {/* Ruled lines */}
+      <path d="M16 13H8" strokeWidth="1.6" />
+      <path d="M16 17H8" strokeWidth="1.6" strokeOpacity="0.75" />
+      <path d="M11 9H8" strokeWidth="1.6" strokeOpacity="0.6" />
     </Icon>
   );
 }

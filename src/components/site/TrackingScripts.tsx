@@ -36,14 +36,30 @@ export function TrackingScripts() {
     if (events) primeConversionEvents(events);
   }, [events]);
 
+  const [consent, setConsent] = useState<ConsentCategories>(() => {
+    if (typeof window === "undefined") return { ...DEFAULT_CONSENT };
+    return readConsent()?.categories ?? { ...DEFAULT_CONSENT };
+  });
+  useEffect(() => {
+    const sync = () => {
+      setConsent(readConsent()?.categories ?? { ...DEFAULT_CONSENT });
+    };
+    window.addEventListener(CONSENT_EVENT, sync);
+    window.addEventListener("storage", sync);
+    return () => {
+      window.removeEventListener(CONSENT_EVENT, sync);
+      window.removeEventListener("storage", sync);
+    };
+  }, []);
+
   const injectedRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
     if (!data || typeof window === "undefined") return;
     const injected = injectedRef.current;
 
-    // Google Tag Manager
-    if (data.gtm_id && /^GTM-[A-Z0-9]+$/i.test(data.gtm_id) && !injected.has(`gtm:${data.gtm_id}`)) {
+    // Google Tag Manager — analytics consent
+    if (consent.analytics && data.gtm_id && /^GTM-[A-Z0-9]+$/i.test(data.gtm_id) && !injected.has(`gtm:${data.gtm_id}`)) {
       injected.add(`gtm:${data.gtm_id}`);
       const w = window as unknown as { dataLayer?: unknown[] };
       w.dataLayer = w.dataLayer || [];

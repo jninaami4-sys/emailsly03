@@ -23,6 +23,11 @@ type Screen =
   | { name: "greet" }
   | { name: "menu" }
   | { name: "services" }
+  | { name: "catalog" }
+  | { name: "faq" }
+  | { name: "policies" }
+  | { name: "pages" }
+  | { name: "blog" }
   | { name: "quote" }
   | { name: "order-form"; service: string; amount: number }
   | { name: "order-status" }

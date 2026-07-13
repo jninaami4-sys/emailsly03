@@ -21,6 +21,7 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RefundPolicyRouteImport } from './routes/refund-policy'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as PricingRouteImport } from './routes/pricing'
+import { Route as PaymentSuccessRouteImport } from './routes/payment-success'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as ManualLeadResearchRouteImport } from './routes/manual-lead-research'
 import { Route as LinkedinSalesNavigatorLeadsRouteImport } from './routes/linkedin-sales-navigator-leads'
@@ -96,6 +97,11 @@ const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
 const PricingRoute = PricingRouteImport.update({
   id: '/pricing',
   path: '/pricing',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PaymentSuccessRoute = PaymentSuccessRouteImport.update({
+  id: '/payment-success',
+  path: '/payment-success',
   getParentRoute: () => rootRouteImport,
 } as any)
 const McpRoute = McpRouteImport.update({
@@ -194,6 +200,7 @@ export interface FileRoutesByFullPath {
   '/linkedin-sales-navigator-leads': typeof LinkedinSalesNavigatorLeadsRoute
   '/manual-lead-research': typeof ManualLeadResearchRoute
   '/mcp': typeof McpRoute
+  '/payment-success': typeof PaymentSuccessRoute
   '/pricing': typeof PricingRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/refund-policy': typeof RefundPolicyRoute
@@ -224,6 +231,7 @@ export interface FileRoutesByTo {
   '/linkedin-sales-navigator-leads': typeof LinkedinSalesNavigatorLeadsRoute
   '/manual-lead-research': typeof ManualLeadResearchRoute
   '/mcp': typeof McpRoute
+  '/payment-success': typeof PaymentSuccessRoute
   '/pricing': typeof PricingRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/refund-policy': typeof RefundPolicyRoute
@@ -255,6 +263,7 @@ export interface FileRoutesById {
   '/linkedin-sales-navigator-leads': typeof LinkedinSalesNavigatorLeadsRoute
   '/manual-lead-research': typeof ManualLeadResearchRoute
   '/mcp': typeof McpRoute
+  '/payment-success': typeof PaymentSuccessRoute
   '/pricing': typeof PricingRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/refund-policy': typeof RefundPolicyRoute
@@ -287,6 +296,7 @@ export interface FileRouteTypes {
     | '/linkedin-sales-navigator-leads'
     | '/manual-lead-research'
     | '/mcp'
+    | '/payment-success'
     | '/pricing'
     | '/privacy-policy'
     | '/refund-policy'
@@ -317,6 +327,7 @@ export interface FileRouteTypes {
     | '/linkedin-sales-navigator-leads'
     | '/manual-lead-research'
     | '/mcp'
+    | '/payment-success'
     | '/pricing'
     | '/privacy-policy'
     | '/refund-policy'
@@ -347,6 +358,7 @@ export interface FileRouteTypes {
     | '/linkedin-sales-navigator-leads'
     | '/manual-lead-research'
     | '/mcp'
+    | '/payment-success'
     | '/pricing'
     | '/privacy-policy'
     | '/refund-policy'
@@ -378,6 +390,7 @@ export interface RootRouteChildren {
   LinkedinSalesNavigatorLeadsRoute: typeof LinkedinSalesNavigatorLeadsRoute
   ManualLeadResearchRoute: typeof ManualLeadResearchRoute
   McpRoute: typeof McpRoute
+  PaymentSuccessRoute: typeof PaymentSuccessRoute
   PricingRoute: typeof PricingRoute
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   RefundPolicyRoute: typeof RefundPolicyRoute
@@ -482,6 +495,13 @@ declare module '@tanstack/react-router' {
       path: '/pricing'
       fullPath: '/pricing'
       preLoaderRoute: typeof PricingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/payment-success': {
+      id: '/payment-success'
+      path: '/payment-success'
+      fullPath: '/payment-success'
+      preLoaderRoute: typeof PaymentSuccessRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/mcp': {
@@ -619,6 +639,7 @@ const rootRouteChildren: RootRouteChildren = {
   LinkedinSalesNavigatorLeadsRoute: LinkedinSalesNavigatorLeadsRoute,
   ManualLeadResearchRoute: ManualLeadResearchRoute,
   McpRoute: McpRoute,
+  PaymentSuccessRoute: PaymentSuccessRoute,
   PricingRoute: PricingRoute,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
   RefundPolicyRoute: RefundPolicyRoute,

@@ -45,7 +45,7 @@ export function Footer() {
             <h3 className="font-display text-4xl font-bold leading-tight tracking-tight text-white md:text-5xl">
               Verified insights.
               <br />
-              <span className="text-violet">No free samples.</span>
+              <span className="text-violet">Built for growth.</span>
             </h3>
             <p className="mt-4 max-w-md text-white/60">
               Join 4,000+ paid operators who get the market edge before the week starts.

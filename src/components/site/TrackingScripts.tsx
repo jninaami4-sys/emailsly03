@@ -94,7 +94,8 @@ export function TrackingScripts() {
         w.dataLayer!.push(arguments);
       };
       w.gtag("js", new Date());
-      w.gtag("config", data.ga4_id);
+      // Suppress the auto page_view — our deduped fire() below owns pageviews.
+      w.gtag("config", data.ga4_id, { send_page_view: false });
     }
 
     // Meta / Facebook Pixel — marketing consent

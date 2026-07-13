@@ -130,7 +130,7 @@ function ModalContent({ a, onClose }: { a: Announcement; onClose: () => void }) 
               <a
                 href={a.cta_url}
                 onClick={onClose}
-                className={`inline-flex items-center justify-center rounded-xl bg-${accent} px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-${accent}/30 transition-transform hover:scale-[1.02]`}
+                className={`inline-flex items-center justify-center rounded-xl ${p.bg} px-5 py-2.5 text-sm font-semibold text-white shadow-lg ${p.shadow} transition-transform hover:scale-[1.02]`}
               >
                 {a.cta_label}
               </a>

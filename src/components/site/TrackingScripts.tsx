@@ -12,12 +12,23 @@ import { primeConversionEvents } from "@/lib/tracking";
  */
 export function TrackingScripts() {
   const fn = useServerFn(getSiteSettings);
+  const eventsFn = useServerFn(getConversionEvents);
   const { data } = useQuery({
     queryKey: ["site-settings"],
     queryFn: () => fn(),
     staleTime: 5 * 60_000,
     retry: false,
   });
+  const { data: events } = useQuery({
+    queryKey: ["conversion-events"],
+    queryFn: () => eventsFn(),
+    staleTime: 5 * 60_000,
+    retry: false,
+  });
+
+  useEffect(() => {
+    if (events) primeConversionEvents(events);
+  }, [events]);
 
   const injectedRef = useRef<Set<string>>(new Set());
 

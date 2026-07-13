@@ -10,6 +10,7 @@ import {
   readConsent,
   type ConsentCategories,
 } from "@/lib/consent";
+import { pageviewId, reserveEvent } from "@/lib/dedupe";
 
 /**
  * Injects tracking scripts (GTM, GA4, Meta Pixel, TikTok Pixel, custom head HTML)

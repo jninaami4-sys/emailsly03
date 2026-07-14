@@ -251,33 +251,85 @@ export function ServiceLanding(p: ServicePageProps) {
         </section>
       )}
 
-      {/* Calculator */}
-      {showCalculator && (
-        <section className="relative overflow-hidden border-t border-border bg-card px-6 py-32">
-          <div className="pointer-events-none absolute left-1/2 top-0 -z-10 h-[500px] w-[900px] -translate-x-1/2 bg-[radial-gradient(circle_at_center,var(--violet-soft),transparent_70%)] opacity-60" />
-          <div className="mx-auto max-w-6xl">
-            <div className="grid gap-16 lg:grid-cols-[1fr_1.15fr] lg:items-center">
-              <div>
-                <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-violet">
-                  Instant quote
-                </span>
-                <h2 className="mt-3 font-display text-4xl font-bold tracking-tight md:text-5xl">
-                  See your price in seconds.
-                </h2>
-                <p className="mt-6 max-w-md text-lg leading-relaxed text-muted-foreground">
-                  Drag the slider, pick a service, and get a live quote — no sales call required.
-                </p>
-              </div>
-              <div className="relative">
-                <div className="pointer-events-none absolute -inset-4 -z-10 rounded-[2.5rem] bg-violet-soft/60 blur-3xl" />
-                <div className="rounded-2xl border border-border bg-background p-2 shadow-2xl">
-                  <PricingCalculator compact defaultId={p.calculatorServiceId} />
-                </div>
-              </div>
-            </div>
+      {/* Premium SaaS-grade operations */}
+      <section className="relative overflow-hidden border-t border-border bg-card px-6 py-24">
+        <div className="pointer-events-none absolute inset-0 -z-10">
+          <div className="absolute left-1/2 top-0 h-[500px] w-[900px] -translate-x-1/2 bg-[radial-gradient(circle_at_center,var(--violet-soft),transparent_70%)] opacity-60" />
+          <div className="absolute -right-24 bottom-0 h-80 w-80 rounded-full bg-coral/10 blur-[100px]" />
+        </div>
+        <div className="mx-auto max-w-7xl">
+          <div className="mx-auto max-w-2xl text-center">
+            <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-violet">
+              Premium operations
+            </span>
+            <h2 className="mt-3 font-display text-4xl font-bold tracking-tight md:text-5xl">
+              SaaS-grade reliability for your pipeline.
+            </h2>
+            <p className="mt-4 text-muted-foreground">
+              Enterprise infrastructure, white-glove delivery, and pricing that scales with your growth.
+            </p>
           </div>
-        </section>
-      )}
+
+          <div className="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+            {[
+              {
+                icon: ShieldCheck,
+                title: "99%+ verified",
+                desc: "Every record is validated and formatted before it reaches your inbox.",
+              },
+              {
+                icon: Rocket,
+                title: "24h delivery SLA",
+                desc: "Standard orders delivered next business day. Volume orders get a clear timeline.",
+              },
+              {
+                icon: Headphones,
+                title: "Dedicated support",
+                desc: "Slack, email, or calls — a real account manager owns your success.",
+              },
+              {
+                icon: Lock,
+                title: "GDPR & CCPA ready",
+                desc: "Compliance-first sourcing with opt-out handling and audit trails.",
+              },
+            ].map((item) => (
+              <div
+                key={item.title}
+                className="rounded-2xl border border-border bg-background p-6 transition-all hover:-translate-y-0.5 hover:border-violet/30 hover:shadow-lg hover:shadow-violet/5"
+              >
+                <div className="mb-5 inline-grid size-11 place-items-center rounded-xl bg-violet-soft text-violet">
+                  <item.icon className="size-5" />
+                </div>
+                <h3 className="font-display text-lg font-bold">{item.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-12 grid gap-5 md:grid-cols-3">
+            {[
+              { value: "500+", label: "Teams served" },
+              { value: "100M+", label: "Leads delivered" },
+              { value: "4.9/5", label: "Average rating" },
+            ].map((stat) => (
+              <div
+                key={stat.label}
+                className="flex flex-col items-center justify-center rounded-2xl border border-border bg-background p-8 text-center"
+              >
+                <div className="flex items-center gap-2">
+                  <TrendingUp className="size-5 text-emerald" />
+                  <span className="font-display text-3xl font-bold tracking-tight md:text-4xl">
+                    {stat.value}
+                  </span>
+                </div>
+                <span className="mt-2 font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
+                  {stat.label}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* Testimonial band — matches homepage */}
       {testimonials.length > 0 && (

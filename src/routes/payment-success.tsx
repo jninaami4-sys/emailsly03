@@ -812,20 +812,11 @@ function buildReceiptHtml(r: {
             <th class="num">Amount</th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <td>
-              <div style="font-weight:600;">${esc(r.service)}</div>
-              <div style="color:#6b7280; font-size:12px;">Verified contacts · CSV delivery · 24h SLA</div>
-            </td>
-            <td class="num">${r.qty.toLocaleString()}</td>
-            <td class="num" style="color:#6b7280;">$${r.unitPrice.toFixed(4)}/${esc(r.unit)}</td>
-            <td class="num">${money(r.subtotal)}</td>
-          </tr>
+        <tbody>${itemsHtml}
         </tbody>
         <tfoot>
           <tr><td colspan="2"></td><td class="num" style="color:#6b7280;">Subtotal</td><td class="num">${money(r.subtotal)}</td></tr>
-          <tr><td colspan="2"></td><td class="num" style="color:#6b7280;">Processing fee</td><td class="num">${money(r.fee)}</td></tr>
+          <tr><td colspan="2"></td><td class="num" style="color:#6b7280;">Stripe processing fee (2.9% + $0.30)</td><td class="num">${money(r.fee)}</td></tr>
           <tr><td colspan="2"></td><td class="num" style="color:#6b7280;">Tax</td><td class="num">${money(r.tax)}</td></tr>
           <tr class="total"><td colspan="2"></td><td class="num">Total paid</td><td class="num">${money(r.total)} USD</td></tr>
         </tfoot>

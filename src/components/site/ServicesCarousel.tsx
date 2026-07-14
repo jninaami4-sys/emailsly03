@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, EffectCoverflow, Pagination } from "swiper/modules";
+import { Autoplay, EffectCoverflow, FreeMode, Mousewheel, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/effect-coverflow";
+import "swiper/css/free-mode";
 import "swiper/css/pagination";
 
 import { openOrderDrawer } from "@/components/site/OrderDrawer";
@@ -192,14 +193,35 @@ export function ServicesCarousel() {
             loop
             slidesPerView="auto"
             spaceBetween={isMobile ? 16 : 0}
-            speed={isMobile ? 450 : 600}
-            resistanceRatio={0.85}
+            speed={isMobile ? 500 : 600}
+            resistanceRatio={0.72}
             touchReleaseOnEdges
+            threshold={4}
+            touchAngle={40}
+            touchRatio={1.35}
+            longSwipesRatio={0.18}
+            longSwipesMs={200}
+            followFinger
+            freeMode={
+              isMobile
+                ? {
+                    enabled: true,
+                    momentum: true,
+                    momentumRatio: 0.85,
+                    momentumVelocityRatio: 0.9,
+                    momentumBounce: true,
+                    momentumBounceRatio: 0.6,
+                    minimumVelocity: 0.02,
+                    sticky: true,
+                  }
+                : false
+            }
+            mousewheel={{ forceToAxis: true, sensitivity: 0.6, thresholdDelta: 12 }}
             autoplay={{ delay: 3200, disableOnInteraction: false, pauseOnMouseEnter: true }}
             coverflowEffect={{ rotate: 28, stretch: 0, depth: 180, modifier: 1.4, slideShadows: false }}
-            pagination={{ clickable: true }}
-            modules={[EffectCoverflow, Autoplay, Pagination]}
-            className="!pb-16"
+            pagination={{ clickable: true, dynamicBullets: isMobile }}
+            modules={[EffectCoverflow, Autoplay, Pagination, FreeMode, Mousewheel]}
+            className="!pb-16 services-swiper"
           >
 
             {services.map((s) => (
@@ -311,6 +333,18 @@ export function ServicesCarousel() {
       </div>
 
       <style>{`
+        .services-swiper {
+          -webkit-overflow-scrolling: touch;
+          overscroll-behavior-x: contain;
+        }
+        .services-swiper .swiper-wrapper {
+          transition-timing-function: cubic-bezier(0.22, 0.61, 0.36, 1);
+          will-change: transform;
+        }
+        .services-swiper .swiper-slide {
+          touch-action: pan-y;
+          transform: translate3d(0, 0, 0);
+        }
         .services-swiper-wrapper .swiper-pagination-bullet {
           background: rgba(255,255,255,0.35);
           opacity: 1;

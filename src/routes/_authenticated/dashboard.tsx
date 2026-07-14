@@ -584,7 +584,7 @@ function OrderDrawer({ id, onClose }: { id: string; onClose: () => void }) {
       onClick={onClose}
     >
       <div
-        className="theme-midnight h-full w-full max-w-xl overflow-y-auto border-l border-border bg-background p-6 shadow-2xl"
+        className="theme-midnight max-h-[92vh] w-full max-w-xl overflow-y-auto rounded-t-3xl border border-border bg-background p-5 shadow-2xl sm:h-full sm:max-h-none sm:rounded-none sm:border-l sm:p-6"
         onClick={(e) => e.stopPropagation()}
       >
         <button

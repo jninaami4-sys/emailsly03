@@ -415,7 +415,7 @@ function OrdersTab({ orders, loading }: { orders: any[]; loading: boolean }) {
   return (
     <>
       <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <div className="relative flex-1 sm:max-w-xs">
+        <div className="relative w-full sm:max-w-xs">
           <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           <input
             value={query}
@@ -424,18 +424,20 @@ function OrdersTab({ orders, loading }: { orders: any[]; loading: boolean }) {
             className="w-full rounded-xl border border-border bg-card py-2 pl-9 pr-3 text-sm focus:border-violet focus:outline-none"
           />
         </div>
-        <div className="flex gap-1 overflow-x-auto rounded-xl border border-border bg-card p-1">
-          {(["all", "pending", "in_progress", "delivered", "revision_requested"] as const).map((s) => (
-            <button
-              key={s}
-              onClick={() => setFilter(s)}
-              className={`whitespace-nowrap rounded-lg px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-wider transition-colors ${
-                filter === s ? "bg-violet text-white" : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              {s.replace("_", " ")}
-            </button>
-          ))}
+        <div className="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <div className="flex min-w-max gap-1 rounded-xl border border-border bg-card p-1">
+            {(["all", "pending", "in_progress", "delivered", "revision_requested"] as const).map((s) => (
+              <button
+                key={s}
+                onClick={() => setFilter(s)}
+                className={`whitespace-nowrap rounded-lg px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-wider transition-colors ${
+                  filter === s ? "bg-violet text-white" : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {s.replace("_", " ")}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 

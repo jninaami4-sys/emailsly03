@@ -124,17 +124,17 @@ function Pricing() {
             </p>
             <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
               <a
-                href="#calculator"
+                href="#tiers"
                 className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-violet px-8 py-4 text-base font-semibold text-white shadow-lg shadow-violet/25 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-violet/40 sm:w-auto"
               >
-                Calculate Your Price <ArrowRight className="size-4" />
+                Compare Plans <ArrowRight className="size-4" />
               </a>
-              <a
-                href="#tiers"
+              <Link
+                to="/contact"
                 className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-border bg-card px-8 py-4 text-base font-semibold text-foreground transition-colors hover:bg-secondary md:border-[oklch(0.18_0.02_260/0.15)] md:bg-white/80 md:text-[oklch(0.18_0.02_260)] md:backdrop-blur md:hover:bg-white sm:w-auto"
               >
-                Compare Plans
-              </a>
+                Talk to Sales
+              </Link>
             </div>
           </div>
         </div>

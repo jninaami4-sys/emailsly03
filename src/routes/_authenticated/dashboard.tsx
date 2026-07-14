@@ -906,21 +906,61 @@ function ProfileTab() {
 
 /* ------------------------------ sidebar cards ------------------------------ */
 
-function ReferralCard({ email }: { email?: string | null }) {
+function ReferralCard() {
   const [copied, setCopied] = useState(false);
-  const code = (email?.split("@")[0] ?? "friend").toUpperCase().slice(0, 10);
-  const link = `https://lyradata.com/?ref=${code}`;
+  const summaryFn = useServerFn(getMyReferralSummary);
+  const { data } = useQuery({
+    queryKey: ["my-referral-summary"],
+    queryFn: () => summaryFn(),
+    staleTime: 30_000,
+  });
+  const code = data?.referral_code ?? "…";
+  const link = typeof window !== "undefined"
+    ? `${window.location.origin}/?ref=${code}`
+    : `https://lyradata.com/?ref=${code}`;
+  const balance = (data?.balance_cents ?? 0) / 100;
+  const earned = (data?.totals.earned_cents ?? 0) / 100;
+  const pending = (data?.totals.pending_cents ?? 0) / 100;
+  const qualified = data?.referrals.filter((r) => r.status !== "pending").length ?? 0;
+
   return (
     <div className="relative overflow-hidden rounded-2xl border border-border bg-card p-5">
       <div className="pointer-events-none absolute -right-10 -top-10 size-40 rounded-full bg-gradient-to-br from-neon-orange/30 to-violet/30 blur-3xl" />
       <div className="relative">
         <div className="mb-2 inline-flex items-center gap-1.5 rounded-full bg-neon-orange/15 px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-wider text-neon-orange">
-          <Gift className="size-3" /> Referral
+          <Gift className="size-3" /> Referral wallet
         </div>
         <h3 className="font-display text-lg font-bold">Give 10%, get 10%</h3>
         <p className="mt-1 text-xs text-muted-foreground">
-          Share your link. Every friend who orders unlocks a credit for you both.
+          Every friend who orders unlocks a credit for you both. Applies as a discount on your next order.
         </p>
+
+        <div className="mt-3 grid grid-cols-3 gap-2">
+          <div className="rounded-lg border border-emerald/30 bg-emerald/5 p-2 text-center">
+            <div className="font-mono text-[9px] uppercase tracking-wider text-emerald/80">Balance</div>
+            <div className="mt-0.5 font-display text-sm font-bold text-emerald">${balance.toFixed(2)}</div>
+          </div>
+          <div className="rounded-lg border border-border bg-background p-2 text-center">
+            <div className="font-mono text-[9px] uppercase tracking-wider text-muted-foreground">Earned</div>
+            <div className="mt-0.5 font-display text-sm font-bold">${earned.toFixed(2)}</div>
+          </div>
+          <div className="rounded-lg border border-border bg-background p-2 text-center">
+            <div className="font-mono text-[9px] uppercase tracking-wider text-muted-foreground">Signups</div>
+            <div className="mt-0.5 font-display text-sm font-bold">{data?.referrals.length ?? 0}</div>
+          </div>
+        </div>
+
+        {balance > 0 && (
+          <p className="mt-3 rounded-lg bg-emerald/10 px-3 py-2 text-[11px] text-emerald">
+            <strong>Use it:</strong> tick "Apply my referral credit" at checkout — it's deducted automatically, no code needed.
+          </p>
+        )}
+        {pending > 0 && (
+          <p className="mt-2 text-[11px] text-muted-foreground">
+            ${pending.toFixed(2)} more will unlock once {qualified === 0 ? "your first referred friend pays" : "more referred friends pay"}.
+          </p>
+        )}
+
         <div className="mt-3 flex items-center gap-2 rounded-xl border border-border bg-background px-3 py-2">
           <span className="truncate font-mono text-xs">{link}</span>
           <button
@@ -929,11 +969,14 @@ function ReferralCard({ email }: { email?: string | null }) {
               setCopied(true);
               setTimeout(() => setCopied(false), 1500);
             }}
-            className="ml-auto inline-flex items-center gap-1 rounded-md bg-violet px-2 py-1 text-[11px] font-semibold text-white"
+            className="ml-auto inline-flex shrink-0 items-center gap-1 rounded-md bg-violet px-2 py-1 text-[11px] font-semibold text-white"
           >
             <Copy className="size-3" />
             {copied ? "Copied" : "Copy"}
           </button>
+        </div>
+        <div className="mt-2 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+          Your code: <span className="text-violet">{code}</span>
         </div>
       </div>
     </div>

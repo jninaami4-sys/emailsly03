@@ -174,7 +174,14 @@ function PaymentSuccessPage() {
   );
 
 
-  if (loading) return <InvoiceSkeleton />;
+  if (loading)
+    return (
+      <Loader713Panel
+        title="Confirming your payment"
+        subtitle="We're finalizing your order and preparing your invoice. This only takes a moment."
+        label="LOADING"
+      />
+    );
 
   return (
     <div className="relative min-h-[calc(100vh-4rem)] overflow-hidden bg-background px-3 py-10 sm:px-4 sm:py-12 md:py-20">

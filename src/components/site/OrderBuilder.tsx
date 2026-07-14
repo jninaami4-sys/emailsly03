@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState, type MouseEvent } from "react";
 import { Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { validatePromo, type PromoResult } from "@/lib/promos.functions";
+import { usePricingOverrides } from "@/hooks/use-pricing-overrides";
 
 import {
   ShieldCheck,
@@ -81,9 +82,18 @@ function formatCompact(n: number) {
 }
 
 export function OrderBuilder() {
+  const overrides = usePricingOverrides();
+  const services = useMemo<Service[]>(
+    () =>
+      SERVICES.map((s) => {
+        const o = overrides.get(s.id);
+        return o ? { ...s, rate: o.rate, minQty: o.minQty, minOrder: o.minOrder, helper: o.helper ?? s.helper } : s;
+      }),
+    [overrides],
+  );
   const [step, setStep] = useState(1);
   const [serviceId, setServiceId] = useState("apollo");
-  const service = SERVICES.find((s) => s.id === serviceId)!;
+  const service = services.find((s) => s.id === serviceId)!;
   const [mobileGroup, setMobileGroup] = useState<"data" | "growth" | "design">(service.group);
   const [quantity, setQuantity] = useState(service.minQty);
   const [extraUrls, setExtraUrls] = useState(1);

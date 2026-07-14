@@ -36,6 +36,7 @@ export const Route = createFileRoute("/payment-success")({
     tip: typeof s.tip === "string" ? s.tip : undefined,
     promo: typeof s.promo === "string" ? s.promo : undefined,
     discount: typeof s.discount === "string" ? s.discount : undefined,
+    credit: typeof s.credit === "string" ? s.credit : undefined,
   }),
   head: () => ({
     meta: [
@@ -164,6 +165,19 @@ function PaymentSuccessPage() {
     });
   }
 
+  const creditNum = Number(search.credit ?? 0);
+  const creditApplied = Number.isFinite(creditNum) && creditNum > 0 ? creditNum : 0;
+  if (creditApplied > 0) {
+    lineItems.push({
+      title: "Referral credit applied",
+      note: "From your referral wallet",
+      qty: 1,
+      unit: "credit",
+      unitPrice: -creditApplied,
+      amount: -creditApplied,
+    });
+  }
+
   // Persist this order into the user's dashboard once (idempotent by payment_ref)
   useEffect(() => {
     if (!user || recordedRef.current) return;
@@ -180,11 +194,12 @@ function PaymentSuccessPage() {
         total_cents: Math.round(total * 100),
         currency: "USD",
         payment_provider: "stripe",
+        credit_applied_cents: Math.round(creditApplied * 100),
       },
     }).catch(() => {
       recordedRef.current = false;
     });
-  }, [user, orderId, service, qty, subtotal, discount, total, search.promo, recordFn]);
+  }, [user, orderId, service, qty, subtotal, discount, total, creditApplied, search.promo, recordFn]);
 
 
 

@@ -85,40 +85,40 @@ function DashboardPage() {
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0,var(--background)_75%)]" />
         </div>
 
-        <main className="mx-auto max-w-7xl px-4 pb-24 pt-10 sm:px-6 lg:px-8">
+        <main className="mx-auto max-w-7xl px-4 pb-24 pt-6 sm:px-6 sm:pt-10 lg:px-8">
           {/* Greeting header */}
-          <section className="mb-8 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-center gap-4">
-              <div className="relative">
-                <div className="grid size-14 place-items-center rounded-2xl bg-gradient-to-br from-violet to-neon-orange font-display text-xl font-bold text-white shadow-lg shadow-violet/30">
+          <section className="mb-6 flex flex-col gap-5 sm:mb-8 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex min-w-0 items-center gap-3 sm:gap-4">
+              <div className="relative shrink-0">
+                <div className="grid size-12 place-items-center rounded-2xl bg-gradient-to-br from-violet to-neon-orange font-display text-lg font-bold text-white shadow-lg shadow-violet/30 sm:size-14 sm:text-xl">
                   {first}
                 </div>
                 <span className="absolute -bottom-1 -right-1 grid size-5 place-items-center rounded-full border-2 border-background bg-emerald">
                   <CheckCircle2 className="size-3 text-white" />
                 </span>
               </div>
-              <div>
+              <div className="min-w-0">
                 <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-violet">
                   Member workspace
                 </span>
-                <h1 className="mt-0.5 font-display text-3xl font-bold sm:text-4xl">
+                <h1 className="mt-0.5 truncate font-display text-2xl font-bold sm:text-3xl lg:text-4xl">
                   Welcome back, {displayName}
                 </h1>
-                <p className="mt-1 text-sm text-muted-foreground">
+                <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
                   Track orders, grab deliveries, and reorder in one click.
                 </p>
               </div>
             </div>
-            <div className="flex flex-wrap gap-2">
+            <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
               <button
                 onClick={openOrderDrawer}
-                className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-violet to-indigo px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet/25 transition-transform hover:scale-[1.02]"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet to-indigo px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet/25 transition-transform hover:scale-[1.02]"
               >
                 <Sparkles className="size-4" /> New order
               </button>
               <Link
                 to="/store"
-                className="inline-flex items-center gap-2 rounded-xl border border-border bg-card px-4 py-2.5 text-sm font-semibold text-foreground transition-colors hover:border-violet/40 hover:bg-secondary"
+                className="inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-card px-4 py-2.5 text-sm font-semibold text-foreground transition-colors hover:border-violet/40 hover:bg-secondary"
               >
                 <ShoppingBag className="size-4" /> Browse store
               </Link>

@@ -110,7 +110,7 @@ export const requestRevision = createServerFn({ method: "POST" })
 export const recordMyOrder = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d) =>
-    _z
+    z
       .object({
         payment_ref: z.string().min(1),
         service_label: z.string().min(1),

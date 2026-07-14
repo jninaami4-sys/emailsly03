@@ -24,6 +24,47 @@ export function TawkChat() {
   const [visible, setVisible] = useState(true);
   const [hovered, setHovered] = useState(false);
 
+  // Inject a global CSS block that fully hides Tawk.to's default launcher /
+  // branding bubble (their "tawk.to" logo pill) regardless of what
+  // hideWidget() does. The maximized chat panel itself is opted back in.
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    const STYLE_ID = "tawk-brand-hide";
+    if (document.getElementById(STYLE_ID)) return;
+    const style = document.createElement("style");
+    style.id = STYLE_ID;
+    style.textContent = `
+      /* Kill every Tawk.to iframe/container by default (launcher, brand pill, greetings) */
+      iframe[src*="tawk.to"],
+      iframe[title*="tawk" i],
+      iframe[id*="tawk" i],
+      div[id*="tawk" i],
+      div[class*="tawk" i],
+      #tawkchat-container,
+      #tawkchat-minified-wrapper,
+      #tawkchat-minified-iframe-element,
+      .tawk-min-container,
+      .tawk-branding,
+      [class*="tawk-branding"] {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+      }
+      /* Re-enable ONLY the maximized chat window when the user opens it */
+      html.tawk-open iframe[title*="chat" i],
+      html.tawk-open iframe[id*="tawkchat-iframe" i],
+      html.tawk-open #tawkchat-container.tawk-max-container,
+      html.tawk-open div[class*="tawk-max"] {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+      }
+    `;
+    document.head.appendChild(style);
+  }, []);
+
   // Inject the Tawk.to script once
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -44,10 +85,15 @@ export function TawkChat() {
         /* noop */
       }
     };
+    window.Tawk_API.onChatMaximized = function () {
+      document.documentElement.classList.add("tawk-open");
+    };
     window.Tawk_API.onChatMinimized = function () {
+      document.documentElement.classList.remove("tawk-open");
       setVisible(true);
     };
     window.Tawk_API.onChatHidden = function () {
+      document.documentElement.classList.remove("tawk-open");
       setVisible(true);
     };
 
@@ -64,6 +110,7 @@ export function TawkChat() {
     const api = window.Tawk_API;
     if (!api) return;
     try {
+      document.documentElement.classList.add("tawk-open");
       api.showWidget?.();
       api.maximize?.();
       setVisible(false);

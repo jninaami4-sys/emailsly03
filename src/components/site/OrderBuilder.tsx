@@ -596,8 +596,9 @@ export function OrderBuilder() {
 
             </div>
 
-            {/* Nav — sticky on mobile so Continue stays reachable while form scrolls */}
-            <div className="fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-3 border-t border-border bg-background/95 px-4 py-3 pb-[calc(env(safe-area-inset-bottom)+12px)] backdrop-blur-md lg:hidden">
+            {/* Nav — sticky within the drawer scroll area so Continue stays reachable */}
+            <div className="sticky bottom-0 z-40 -mx-4 mt-6 flex items-center justify-between gap-3 border-t border-border bg-background/95 px-4 py-3 pb-[calc(env(safe-area-inset-bottom)+12px)] backdrop-blur-md lg:hidden">
+
               <button
                 type="button"
                 onClick={goPrev}

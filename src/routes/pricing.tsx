@@ -91,14 +91,6 @@ const DATA_TIERS: Tier[] = [
   },
 ];
 
-const ADD_ONS = [
-  { id: "mobile", name: "Apollo Mobiles", icon: Smartphone, price: "$0.35/record", desc: "Mobile number enrichment for existing lists." },
-  { id: "pixel", name: "Facebook Pixel", icon: MousePointerClick, price: "$100 flat", desc: "Expert Pixel & CAPI setup for conversion tracking." },
-  { id: "ads", name: "Google Ads Setup", icon: LineChart, price: "$100 flat", desc: "High-ROAS campaign structure with tracking." },
-  { id: "tracking", name: "Server-Side Tracking", icon: Server, price: "$150 flat", desc: "Bypass ad blockers with Stape.io & GTM Server." },
-  { id: "logo", name: "Logo Design", icon: PenTool, price: "$50 flat", desc: "Professional brand identity design." },
-  { id: "webdesign", name: "AI Website Design", icon: Globe2, price: "starting at $200", desc: "Modern, conversion-focused websites in days.", link: "/website-design" as const },
-];
 
 function Pricing() {
   return (

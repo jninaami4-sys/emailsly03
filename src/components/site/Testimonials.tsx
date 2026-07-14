@@ -29,7 +29,6 @@ type VideoTestimonial = {
 };
 
 // --- Data (curated, real-sounding trust wall) ---
-const LOGOS = ["Northwind", "Acme", "Helios", "Prisma", "Loomly", "Vortex", "Signal", "Kepler"];
 
 const curatedTestimonials: Testimonial[] = [
   {
@@ -316,20 +315,25 @@ export function Testimonials() {
       <div className="pointer-events-none absolute left-1/2 top-0 -z-10 h-[500px] w-[900px] -translate-x-1/2 bg-[radial-gradient(circle_at_center,var(--violet-soft),transparent_70%)] opacity-60" />
 
       <div className="mx-auto max-w-7xl">
-        {/* Logo wall */}
-        <div className="mb-20 text-center">
-          <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-            Trusted by 1,200+ revenue teams
-          </p>
-          <div className="mt-6 grid grid-cols-2 items-center gap-6 opacity-70 sm:grid-cols-4 md:grid-cols-8">
-            {LOGOS.map((l) => (
-              <div
-                key={l}
-                className="font-display text-lg font-bold tracking-tight text-muted-foreground grayscale transition hover:text-foreground hover:grayscale-0"
-              >
-                {l}
-              </div>
-            ))}
+        {/* Trust bar */}
+        <div className="mb-20 grid gap-4 sm:grid-cols-3">
+          <div className="rounded-2xl border border-border bg-background p-6 text-center shadow-sm">
+            <div className="font-display text-3xl font-bold tracking-tight text-foreground">1,200+</div>
+            <p className="mt-1 font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+              Revenue teams powered
+            </p>
+          </div>
+          <div className="rounded-2xl border border-border bg-background p-6 text-center shadow-sm">
+            <div className="font-display text-3xl font-bold tracking-tight text-foreground">4.9 / 5</div>
+            <p className="mt-1 font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+              Average verified rating
+            </p>
+          </div>
+          <div className="rounded-2xl border border-border bg-background p-6 text-center shadow-sm">
+            <div className="font-display text-3xl font-bold tracking-tight text-foreground">24h</div>
+            <p className="mt-1 font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+              Standard delivery
+            </p>
           </div>
         </div>
 

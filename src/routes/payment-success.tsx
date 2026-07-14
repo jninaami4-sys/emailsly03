@@ -145,6 +145,19 @@ function PaymentSuccessPage() {
       amount: tip,
     });
   }
+  const discountNum = Number(search.discount ?? 0);
+  const discount = Number.isFinite(discountNum) && discountNum > 0 ? discountNum : 0;
+  if (discount > 0) {
+    lineItems.push({
+      title: `Promo code${search.promo ? ` · ${search.promo}` : ""}`,
+      note: "Server-validated discount",
+      qty: 1,
+      unit: "discount",
+      unitPrice: -discount,
+      amount: -discount,
+    });
+  }
+
 
   const dateStr = now.toLocaleDateString("en-US", {
     year: "numeric",

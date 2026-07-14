@@ -608,6 +608,8 @@ export type Database = {
           imported_from: string | null
           notes: string | null
           phone: string | null
+          referral_code: string | null
+          referred_by_user_id: string | null
           updated_at: string
           user_id: string
         }
@@ -620,6 +622,8 @@ export type Database = {
           imported_from?: string | null
           notes?: string | null
           phone?: string | null
+          referral_code?: string | null
+          referred_by_user_id?: string | null
           updated_at?: string
           user_id: string
         }
@@ -632,10 +636,74 @@ export type Database = {
           imported_from?: string | null
           notes?: string | null
           phone?: string | null
+          referral_code?: string | null
+          referred_by_user_id?: string | null
           updated_at?: string
           user_id?: string
         }
         Relationships: []
+      }
+      referrals: {
+        Row: {
+          created_at: string
+          currency: string
+          id: string
+          notes: string | null
+          order_id: string | null
+          paid_out_at: string | null
+          payout_method:
+            | Database["public"]["Enums"]["referral_payout_method"]
+            | null
+          referred_user_id: string
+          referrer_id: string
+          reward_referred_cents: number
+          reward_referrer_cents: number
+          status: Database["public"]["Enums"]["referral_status"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          currency?: string
+          id?: string
+          notes?: string | null
+          order_id?: string | null
+          paid_out_at?: string | null
+          payout_method?:
+            | Database["public"]["Enums"]["referral_payout_method"]
+            | null
+          referred_user_id: string
+          referrer_id: string
+          reward_referred_cents?: number
+          reward_referrer_cents?: number
+          status?: Database["public"]["Enums"]["referral_status"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          currency?: string
+          id?: string
+          notes?: string | null
+          order_id?: string | null
+          paid_out_at?: string | null
+          payout_method?:
+            | Database["public"]["Enums"]["referral_payout_method"]
+            | null
+          referred_user_id?: string
+          referrer_id?: string
+          reward_referred_cents?: number
+          reward_referrer_cents?: number
+          status?: Database["public"]["Enums"]["referral_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referrals_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       reviews: {
         Row: {
@@ -840,6 +908,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      generate_referral_code: { Args: never; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -858,6 +927,13 @@ export type Database = {
         | "refunded"
         | "revision_requested"
       payment_status: "unpaid" | "paid" | "refunded" | "failed" | "pending"
+      referral_payout_method: "credit" | "cash"
+      referral_status:
+        | "pending"
+        | "qualified"
+        | "rewarded"
+        | "paid_out"
+        | "cancelled"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -995,6 +1071,14 @@ export const Constants = {
         "revision_requested",
       ],
       payment_status: ["unpaid", "paid", "refunded", "failed", "pending"],
+      referral_payout_method: ["credit", "cash"],
+      referral_status: [
+        "pending",
+        "qualified",
+        "rewarded",
+        "paid_out",
+        "cancelled",
+      ],
     },
   },
 } as const

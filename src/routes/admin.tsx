@@ -15,6 +15,7 @@ import { ProductDetailsAdmin } from "@/components/admin/ProductDetailsAdmin";
 import { ChatbotAdmin } from "@/components/admin/ChatbotAdmin";
 import { ReviewsAdmin } from "@/components/admin/ReviewsAdmin";
 import { OrdersAdmin } from "@/components/admin/OrdersAdmin";
+import { ReferralsAdmin } from "@/components/admin/ReferralsAdmin";
 import { ImportExportAdmin } from "@/components/admin/ImportExportAdmin";
 import { PricingAdmin } from "@/components/admin/PricingAdmin";
 import { whoAmIAdmin } from "@/lib/announcements.functions";
@@ -163,6 +164,7 @@ function AdminPage() {
 
         <div className="mb-10 space-y-6">
           <OrdersAdmin />
+          <ReferralsAdmin />
           <PricingAdmin />
           <ImportExportAdmin />
           <AnnouncementsAdmin />

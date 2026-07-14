@@ -239,8 +239,27 @@
 
 html { scroll-behavior: smooth; }
 
+/* In-page section reveal */
+.section-reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  filter: blur(6px);
+  transition:
+    opacity 700ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 800ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 600ms ease;
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform, filter;
+}
+.section-reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .route-transition {
+  .route-transition,
+  .section-reveal {
     transition: none !important;
     opacity: 1 !important;
     transform: none !important;

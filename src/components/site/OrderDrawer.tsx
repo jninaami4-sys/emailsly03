@@ -62,7 +62,7 @@ export function OrderDrawer() {
         role="dialog"
         aria-modal="true"
         aria-label="Build your order"
-        className={`fixed inset-y-0 right-0 z-[90] flex w-full max-w-[1280px] flex-col bg-background text-foreground shadow-[0_0_80px_-10px_rgba(0,0,0,0.5)] transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] lg:w-[92vw] ${
+        className={`fixed top-0 right-0 z-[90] flex h-[100dvh] max-h-[100dvh] w-full max-w-[1280px] flex-col bg-background text-foreground shadow-[0_0_80px_-10px_rgba(0,0,0,0.5)] transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] lg:w-[92vw] ${
           open ? "translate-x-0" : "translate-x-full"
         }`}
       >

@@ -318,9 +318,9 @@ export function Testimonials() {
         {/* Trust bar */}
         <div className="mb-20 grid gap-4 sm:grid-cols-3">
           <div className="rounded-2xl border border-border bg-background p-6 text-center shadow-sm">
-            <div className="font-display text-3xl font-bold tracking-tight text-foreground">1,200+</div>
+            <div className="font-display text-3xl font-bold tracking-tight text-foreground">500+</div>
             <p className="mt-1 font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-              Revenue teams powered
+              Clients served
             </p>
           </div>
           <div className="rounded-2xl border border-border bg-background p-6 text-center shadow-sm">

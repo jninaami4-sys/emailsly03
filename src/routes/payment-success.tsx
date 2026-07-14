@@ -64,6 +64,9 @@ function PaymentSuccessPage() {
     const t = window.setTimeout(() => setLoading(false), 700);
     return () => window.clearTimeout(t);
   }, []);
+  const { user } = useAuth();
+  const recordFn = useServerFn(recordMyOrder);
+  const recordedRef = useRef(false);
   const orderId = useMemo(() => search.order || genOrderId(), [search.order]);
   const invoiceNo = useMemo(
     () => `INV-${orderId.replace(/^LD-/, "")}`,

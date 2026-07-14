@@ -779,44 +779,75 @@ function InvoicesTab({ orders }: { orders: any[] }) {
       </div>
     );
   return (
-    <div className="overflow-hidden rounded-2xl border border-border bg-card">
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="border-b border-border bg-secondary/40 text-left font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-            <th className="px-4 py-3">Invoice</th>
-            <th className="px-4 py-3">Date</th>
-            <th className="px-4 py-3">Service</th>
-            <th className="px-4 py-3 text-right">Amount</th>
-            <th className="px-4 py-3" />
-          </tr>
-        </thead>
-        <tbody>
-          {orders.map((o) => (
-            <tr key={o.id} className="border-b border-border last:border-0 hover:bg-secondary/30">
-              <td className="px-4 py-3 font-mono text-xs">#{String(o.id).slice(0, 8)}</td>
-              <td className="px-4 py-3 text-xs text-muted-foreground">
-                {new Date(o.created_at).toLocaleDateString()}
-              </td>
-              <td className="px-4 py-3">
-                <div className="truncate font-medium">{o.service_label}</div>
-              </td>
-              <td className="px-4 py-3 text-right font-mono font-semibold">
-                {money(o.total_cents, o.currency)}
-              </td>
-              <td className="px-4 py-3 text-right">
-                <Link
-                  to="/invoice/$orderId"
-                  params={{ orderId: o.id }}
-                  className="inline-flex items-center gap-1 rounded-lg border border-border px-2.5 py-1 text-xs font-semibold hover:bg-secondary"
-                >
-                  View <ArrowUpRight className="size-3" />
-                </Link>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <>
+      {/* Mobile: card list */}
+      <div className="grid gap-2 sm:hidden">
+        {orders.map((o) => (
+          <Link
+            key={o.id}
+            to="/invoice/$orderId"
+            params={{ orderId: o.id }}
+            className="flex items-center justify-between gap-3 rounded-2xl border border-border bg-card p-3 transition-colors hover:border-violet/40"
+          >
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-[11px] text-muted-foreground">#{String(o.id).slice(0, 8)}</span>
+                <span className="text-[10px] text-muted-foreground">·</span>
+                <span className="text-[11px] text-muted-foreground">{new Date(o.created_at).toLocaleDateString()}</span>
+              </div>
+              <div className="mt-1 truncate text-sm font-medium">{o.service_label}</div>
+            </div>
+            <div className="flex shrink-0 flex-col items-end gap-1">
+              <span className="font-mono text-sm font-semibold">{money(o.total_cents, o.currency)}</span>
+              <span className="inline-flex items-center gap-1 rounded-lg border border-border px-2 py-0.5 text-[10px] font-semibold text-muted-foreground">
+                View <ArrowUpRight className="size-3" />
+              </span>
+            </div>
+          </Link>
+        ))}
+      </div>
+      {/* Desktop: table */}
+      <div className="hidden overflow-hidden rounded-2xl border border-border bg-card sm:block">
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-border bg-secondary/40 text-left font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+                <th className="px-4 py-3">Invoice</th>
+                <th className="px-4 py-3">Date</th>
+                <th className="px-4 py-3">Service</th>
+                <th className="px-4 py-3 text-right">Amount</th>
+                <th className="px-4 py-3" />
+              </tr>
+            </thead>
+            <tbody>
+              {orders.map((o) => (
+                <tr key={o.id} className="border-b border-border last:border-0 hover:bg-secondary/30">
+                  <td className="px-4 py-3 font-mono text-xs">#{String(o.id).slice(0, 8)}</td>
+                  <td className="px-4 py-3 text-xs text-muted-foreground">
+                    {new Date(o.created_at).toLocaleDateString()}
+                  </td>
+                  <td className="px-4 py-3">
+                    <div className="truncate font-medium">{o.service_label}</div>
+                  </td>
+                  <td className="px-4 py-3 text-right font-mono font-semibold">
+                    {money(o.total_cents, o.currency)}
+                  </td>
+                  <td className="px-4 py-3 text-right">
+                    <Link
+                      to="/invoice/$orderId"
+                      params={{ orderId: o.id }}
+                      className="inline-flex items-center gap-1 rounded-lg border border-border px-2.5 py-1 text-xs font-semibold hover:bg-secondary"
+                    >
+                      View <ArrowUpRight className="size-3" />
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </>
   );
 }
 

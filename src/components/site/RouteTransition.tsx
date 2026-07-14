@@ -1,23 +1,40 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { useRouterState } from "@tanstack/react-router";
+import { useRouterState } from "tanstack/router";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 
 /**
  * Wraps route content with a smooth fade+lift transition on pathname change.
- * Also scrolls to top smoothly and shows a subtle top progress bar during navigation.
+ * Also scrolls to top smoothly, shows a subtle top progress bar during navigation,
+ * and moves focus to the route container after navigation so screen-reader and
+ * keyboard users land on the new page content.
  */
 export function RouteTransition({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isLoading = useRouterState({ select: (s) => s.isLoading || s.isTransitioning });
+  const reducedMotion = useReducedMotion();
 
   const [displayed, setDisplayed] = useState(children);
   const [phase, setPhase] = useState<"in" | "out">("in");
   const prevPath = useRef(pathname);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const initialMount = useRef(true);
 
   useEffect(() => {
     if (prevPath.current === pathname) {
       setDisplayed(children);
       return;
     }
+
+    if (reducedMotion) {
+      // Respect reduced motion: swap immediately, reset scroll without animation,
+      // then move focus so the new content is announced.
+      setDisplayed(children);
+      prevPath.current = pathname;
+      window.scrollTo({ top: 0, behavior: "auto" });
+      contentRef.current?.focus({ preventScroll: true });
+      return;
+    }
+
     // Start fade-out
     setPhase("out");
     const swap = window.setTimeout(() => {
@@ -30,14 +47,33 @@ export function RouteTransition({ children }: { children: ReactNode }) {
         requestAnimationFrame(() => setPhase("in"));
       });
     }, 180);
+
     return () => window.clearTimeout(swap);
-  }, [pathname, children]);
+  }, [pathname, children, reducedMotion]);
+
+  useEffect(() => {
+    if (initialMount.current) {
+      initialMount.current = false;
+      return;
+    }
+    if (phase === "in" && contentRef.current) {
+      // Move focus to the route container for screen-reader/keyboard users.
+      // preventScroll avoids fighting the smooth scroll to top.
+      contentRef.current.focus({ preventScroll: true });
+    }
+  }, [phase]);
 
   return (
     <>
       <TopProgressBar active={isLoading || phase === "out"} />
       <div
-        className={`route-transition ${phase === "in" ? "route-transition-in" : "route-transition-out"}`}
+        id="route-content"
+        ref={contentRef}
+        tabIndex={-1}
+        aria-busy={phase === "out" || isLoading}
+        className={`route-transition focus:outline-none ${
+          phase === "in" ? "route-transition-in" : "route-transition-out"
+        }`}
       >
         {displayed}
       </div>

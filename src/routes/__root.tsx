@@ -143,6 +143,7 @@ function RootComponent() {
           <RouteTransition>
             <Outlet />
           </RouteTransition>
+          <SectionReveal />
           <CartDrawer />
           <AnnouncementModal />
           <TrackingScripts />

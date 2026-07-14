@@ -967,7 +967,7 @@ function ProfileTab() {
                 onChange={(e) => {
                   const f = e.target.files?.[0];
                   e.currentTarget.value = "";
-                  if (f) handleFile(f);
+                  if (f) setPendingFile(f);
                 }}
               />
             </label>

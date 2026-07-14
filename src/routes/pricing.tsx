@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteShell } from "@/components/site/SiteShell";
+import { PricingCalculator } from "@/components/site/PricingCalculator";
 import {
+  Zap,
   Crown,
   Phone,
   Linkedin,
@@ -8,7 +10,6 @@ import {
   ArrowRight,
   Sparkles,
   CheckCircle2,
-  type LucideIcon,
 } from "lucide-react";
 import { AddOns } from "@/components/site/AddOns";
 
@@ -38,7 +39,7 @@ type Tier = {
   per: string;
   min: string;
   desc?: string;
-  icon: LucideIcon;
+  icon: typeof Zap;
   popular?: boolean;
   features: string[];
   disclaimer?: string;
@@ -124,17 +125,17 @@ function Pricing() {
             </p>
             <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
               <a
-                href="#tiers"
+                href="#calculator"
                 className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-violet px-8 py-4 text-base font-semibold text-white shadow-lg shadow-violet/25 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-violet/40 sm:w-auto"
               >
-                Compare Plans <ArrowRight className="size-4" />
+                Calculate Your Price <ArrowRight className="size-4" />
               </a>
-              <Link
-                to="/contact"
+              <a
+                href="#tiers"
                 className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-border bg-card px-8 py-4 text-base font-semibold text-foreground transition-colors hover:bg-secondary md:border-[oklch(0.18_0.02_260/0.15)] md:bg-white/80 md:text-[oklch(0.18_0.02_260)] md:backdrop-blur md:hover:bg-white sm:w-auto"
               >
-                Talk to Sales
-              </Link>
+                Compare Plans
+              </a>
             </div>
           </div>
         </div>
@@ -143,7 +144,7 @@ function Pricing() {
         <div className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-40 bg-gradient-to-b from-transparent to-background md:h-56" />
       </section>
 
-      {/* Data tiers — premium bento-style service grid */}
+      {/* Data tiers — editorial cards */}
       <section id="tiers" className="px-6 py-24 md:pt-8">
         <div className="mx-auto max-w-7xl">
           <div className="mx-auto mb-16 max-w-2xl text-center">
@@ -151,108 +152,112 @@ function Pricing() {
               Data Services
             </span>
             <h2 className="mt-3 font-display text-4xl font-bold tracking-tight md:text-5xl">
-              Premium data sources, priced per lead.
+              Pick your source. Pay per lead.
             </h2>
             <p className="mt-4 text-muted-foreground">
-              Four verified channels. Mix and match to build your perfect prospecting stack.
+              Four core data services. All verified, all delivered as ready-to-import CSV.
             </p>
           </div>
 
-          <div className="grid gap-6 lg:grid-cols-2">
-            {/* Featured tier — Apollo */}
-            {(() => {
-              const t = DATA_TIERS.find((x) => x.id === "apollo")!;
-              return (
-                <div className="group relative row-span-2 flex flex-col justify-between overflow-hidden rounded-3xl border border-violet/20 bg-card p-8 shadow-xl shadow-violet/10 ring-1 ring-violet/10 transition-all hover:-translate-y-1 hover:shadow-2xl hover:shadow-violet/15 lg:p-10">
-                  <div className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-violet-soft/60 blur-3xl transition-opacity group-hover:opacity-80" />
-                  <span className="absolute right-6 top-6 rounded-full bg-violet px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-white shadow-md shadow-violet/25">
-                    Most popular
-                  </span>
-                  <div className="relative">
-                    <div className="mb-8 inline-grid size-14 place-items-center rounded-2xl bg-violet text-white shadow-lg shadow-violet/25">
-                      <t.icon className="size-7" />
-                    </div>
-                    <h3 className="font-display text-3xl font-bold">{t.name}</h3>
-                    <p className="mt-3 max-w-sm text-muted-foreground">{t.desc}</p>
-                    <div className="mt-8 flex items-baseline gap-2">
-                      <span className="font-display text-5xl font-bold tracking-tight">{t.price}</span>
-                      <span className="text-lg text-muted-foreground">{t.per}</span>
-                    </div>
-                    <p className="mt-2 font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
-                      {t.min}
-                    </p>
-                  </div>
-                  <div className="relative mt-10">
-                    <ul className="grid gap-3 sm:grid-cols-2">
-                      {t.features.map((f) => (
-                        <li key={f} className="flex items-start gap-2.5 text-sm">
-                          <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-emerald" />
-                          <span className="text-foreground">{f}</span>
-                        </li>
-                      ))}
-                    </ul>
-                    {t.disclaimer && (
-                      <p className="mt-5 font-mono text-[11px] italic text-muted-foreground">
-                        {t.disclaimer}
-                      </p>
-                    )}
-                    <a
-                      href="#addons"
-                      className="mt-8 inline-flex w-full items-center justify-center rounded-xl bg-violet py-3.5 text-sm font-semibold text-white shadow-md shadow-violet/20 transition-colors hover:bg-violet/90"
-                    >
-                      Get started with Apollo
-                    </a>
-                  </div>
-                </div>
-              );
-            })()}
-
-            {/* Secondary tiers */}
-            {DATA_TIERS.filter((t) => t.id !== "apollo").map((t) => (
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            {DATA_TIERS.map((t) => (
               <div
                 key={t.id}
-                className="group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-border bg-secondary/30 p-8 transition-all hover:-translate-y-1 hover:border-violet/20 hover:bg-card hover:shadow-xl lg:p-10"
+                className={`relative flex flex-col rounded-2xl border p-7 transition-all hover:-translate-y-0.5 ${
+                  t.popular
+                    ? "border-violet/30 bg-card shadow-xl shadow-violet/10 ring-1 ring-violet/20"
+                    : "border-border bg-secondary/30 hover:border-violet/20 hover:bg-card"
+                }`}
               >
-                <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-violet-soft/40 blur-3xl opacity-0 transition-opacity group-hover:opacity-100" />
-                <div className="relative">
-                  <div className="mb-6 inline-grid size-12 place-items-center rounded-xl bg-violet-soft text-violet">
-                    <t.icon className="size-6" />
-                  </div>
-                  <h3 className="font-display text-xl font-bold">{t.name}</h3>
-                  <div className="mt-4 flex items-baseline gap-1.5">
+                {t.popular && (
+                  <span className="absolute -top-3 left-6 rounded-full bg-violet px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-white shadow-md shadow-violet/25">
+                    Most popular
+                  </span>
+                )}
+                <div className="mb-6 inline-grid size-12 place-items-center rounded-xl bg-violet-soft text-violet">
+                  <t.icon className="size-6" />
+                </div>
+                <h3 className="font-display text-xl font-bold">{t.name}</h3>
+                <div className="mt-4">
+                  <div className="flex items-baseline gap-1.5">
                     <span className="font-display text-4xl font-bold tracking-tight">{t.price}</span>
                     <span className="text-sm text-muted-foreground">{t.per}</span>
                   </div>
                   <p className="mt-2 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
                     {t.min}
                   </p>
-                  {t.desc && (
-                    <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{t.desc}</p>
-                  )}
                 </div>
-                <div className="relative mt-8">
-                  <ul className="space-y-2.5 text-sm">
-                    {t.features.map((f) => (
-                      <li key={f} className="flex items-start gap-2">
-                        <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-emerald" />
-                        <span className="text-foreground">{f}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  {t.disclaimer && (
-                    <p className="mt-4 font-mono text-[10px] italic text-muted-foreground">
-                      {t.disclaimer}
-                    </p>
-                  )}
-                  <a
-                    href="#addons"
-                    className="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-ink py-3 text-sm font-semibold text-white transition-colors hover:bg-violet"
-                  >
-                    Get started
-                  </a>
-                </div>
+                {t.desc && (
+                  <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{t.desc}</p>
+                )}
+                <ul className="mt-6 flex-1 space-y-2.5 text-sm">
+                  {t.features.map((f) => (
+                    <li key={f} className="flex items-start gap-2">
+                      <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-emerald" />
+                      <span className="text-foreground">{f}</span>
+                    </li>
+                  ))}
+                </ul>
+                {t.disclaimer && (
+                  <p className="mt-4 font-mono text-[10px] italic text-muted-foreground">{t.disclaimer}</p>
+                )}
+                <a
+                  href="#calculator"
+                  className={`mt-6 inline-flex w-full items-center justify-center rounded-xl py-3 text-sm font-semibold transition-colors ${
+                    t.popular
+                      ? "bg-violet text-white shadow-md shadow-violet/20 hover:bg-violet/90"
+                      : "bg-ink text-white hover:bg-violet"
+                  }`}
+                >
+                  Get started
+                </a>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Calculator — matches homepage editorial framing */}
+      <section
+        id="calculator"
+        className="relative overflow-hidden border-t border-border bg-card px-6 py-32"
+      >
+        <div className="pointer-events-none absolute left-1/2 top-0 -z-10 h-[500px] w-[900px] -translate-x-1/2 bg-[radial-gradient(circle_at_center,var(--violet-soft),transparent_70%)] opacity-60" />
+        <div className="mx-auto max-w-6xl">
+          <div className="grid gap-16 lg:grid-cols-[1fr_1.15fr] lg:items-center">
+            <div>
+              <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-violet">
+                Instant Quote
+              </span>
+              <h2 className="mt-3 font-display text-4xl font-bold tracking-tight md:text-5xl">
+                Calculate your price
+                <br />
+                in seconds.
+              </h2>
+              <p className="mt-6 max-w-md text-lg leading-relaxed text-muted-foreground">
+                Pick a service, drag the slider, and see the price update live. No sales calls, no fine print.
+              </p>
+              <ul className="mt-8 space-y-3 text-sm">
+                {[
+                  "Live pricing — no waiting for a quote",
+                  "Volume discounts baked in",
+                  "Minimum order clearly stated upfront",
+                  "Checkout the moment you're ready",
+                ].map((line) => (
+                  <li key={line} className="flex items-center gap-3">
+                    <CheckCircle2 className="size-5 shrink-0 text-emerald" />
+                    <span className="text-foreground">{line}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="relative">
+              <div className="pointer-events-none absolute -inset-4 -z-10 rounded-[2.5rem] bg-violet-soft/60 blur-3xl" />
+              <div className="rounded-2xl border border-border bg-background p-2 shadow-2xl">
+                <PricingCalculator compact />
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -312,10 +317,10 @@ function Pricing() {
           </p>
           <div className="mt-10 flex flex-wrap justify-center gap-3">
             <a
-              href="#tiers"
+              href="#calculator"
               className="inline-flex items-center gap-2 rounded-full bg-white px-8 py-4 text-base font-bold text-violet shadow-xl transition-transform hover:-translate-y-0.5"
             >
-              View Data Services <ArrowRight className="size-4" />
+              Calculate Now <ArrowRight className="size-4" />
             </a>
             <Link
               to="/contact"

@@ -66,7 +66,7 @@ export const ADD_ONS: AddOn[] = [
 
 export function AddOns() {
   return (
-    <section id="addons" className="border-t border-border px-6 py-24">
+    <section className="border-t border-border px-6 py-24">
       <div className="mx-auto max-w-7xl">
         <div className="mx-auto mb-12 max-w-2xl text-center">
           <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-violet">

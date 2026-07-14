@@ -157,7 +157,7 @@ export function TawkChat() {
             onClick={openChat}
             disabled={!ready}
             aria-label="Open live chat"
-            className="group relative grid size-14 place-items-center overflow-hidden rounded-full text-white shadow-[0_10px_40px_-8px_rgba(124,58,237,0.55)] transition-transform hover:scale-[1.06] focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70 disabled:cursor-progress"
+            className="group relative grid size-10 place-items-center overflow-hidden rounded-full text-white shadow-[0_10px_40px_-8px_rgba(124,58,237,0.55)] transition-transform hover:scale-[1.06] focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70 disabled:cursor-progress md:size-14"
             style={{
               background:
                 "conic-gradient(from 220deg at 50% 50%, #7C3AED, #4F46E5, #FF6B4A, #7C3AED)",

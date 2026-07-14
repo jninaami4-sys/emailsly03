@@ -395,6 +395,7 @@
   .iso-social-card .iso-pro:hover a > .iso-svg,
   .iso-social-card .iso-pro:hover .iso-text,
   .iso-social-card .iso-pro:hover span { transition: none !important; transform: none !important; }
+}
 
 html { scroll-behavior: smooth; }
 

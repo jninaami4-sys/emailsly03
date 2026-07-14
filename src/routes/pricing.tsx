@@ -38,7 +38,7 @@ type Tier = {
   price: string;
   per: string;
   min: string;
-  desc: string;
+  desc?: string;
   icon: typeof Zap;
   popular?: boolean;
   features: string[];
@@ -64,7 +64,6 @@ const DATA_TIERS: Tier[] = [
     price: "$20",
     per: "/ 1k leads",
     min: "$0.02 per lead · min 1,000",
-    desc: "Premium HQ phone numbers and verified contact data for outbound.",
     icon: Phone,
     features: ["HQ phone numbers", "Real-Time Data", "Current Job Titles"],
   },
@@ -188,7 +187,9 @@ function Pricing() {
                     {t.min}
                   </p>
                 </div>
-                <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{t.desc}</p>
+                {t.desc && (
+                  <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{t.desc}</p>
+                )}
                 <ul className="mt-6 flex-1 space-y-2.5 text-sm">
                   {t.features.map((f) => (
                     <li key={f} className="flex items-start gap-2">

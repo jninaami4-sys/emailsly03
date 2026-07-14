@@ -486,10 +486,10 @@ function OrderRow({ order: o, onOpen }: { order: any; onOpen: () => void }) {
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-3 sm:justify-end">
+        <div className="flex items-center justify-between gap-3 sm:justify-end">
           <StatusPill value={o.status} />
-          <div className="font-mono text-sm font-semibold">{money(o.total_cents, o.currency)}</div>
-          <ChevronRight className="size-4 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
+          <div className="ml-auto font-mono text-sm font-semibold sm:ml-0">{money(o.total_cents, o.currency)}</div>
+          <ChevronRight className="size-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
         </div>
       </div>
       {o.delivery_url && (

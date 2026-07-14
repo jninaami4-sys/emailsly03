@@ -4,12 +4,14 @@
  * for WhatsApp, Email, Instagram, Telegram.
  */
 
+import type { ReactNode } from "react";
+
 type Social = {
   name: string;
   href: string;
   label: string;
   color: string; // brand color (used for icon, hover ring, tooltip)
-  icon: JSX.Element;
+  icon: ReactNode;
 };
 
 const SOCIALS: Social[] = [

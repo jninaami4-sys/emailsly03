@@ -1,7 +1,8 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { SiteShell } from "@/components/site/SiteShell";
 import { TrackOrderSkeleton } from "@/components/site/TrackOrderSkeleton";
+import { TrackResultSkeleton } from "@/components/site/TrackResultSkeleton";
 import { useHydrated } from "@/hooks/use-hydrated";
 import {
   Search,
@@ -79,8 +80,19 @@ function TrackOrderPage() {
   const [query, setQuery] = useState("");
   const [submitted, setSubmitted] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  const result = useMemo(() => (submitted ? mockLookup(submitted) : null), [submitted]);
+  const result = useMemo(
+    () => (submitted && !loading ? mockLookup(submitted) : null),
+    [submitted, loading],
+  );
+
+  useEffect(() => {
+    if (!submitted) return;
+    setLoading(true);
+    const t = window.setTimeout(() => setLoading(false), 850);
+    return () => window.clearTimeout(t);
+  }, [submitted]);
 
   const detectKind = (q: string): "order" | "invoice" | "email" | "unknown" => {
     if (q.includes("@")) return /\S+@\S+\.\S+/.test(q) ? "email" : "unknown";
@@ -205,6 +217,8 @@ function TrackOrderPage() {
             </div>
           )}
 
+          {/* Loading state */}
+          {loading && <TrackResultSkeleton />}
 
           {/* Result */}
           {result && (

@@ -333,6 +333,18 @@ export function ServicesCarousel() {
       </div>
 
       <style>{`
+        .services-swiper {
+          -webkit-overflow-scrolling: touch;
+          overscroll-behavior-x: contain;
+        }
+        .services-swiper .swiper-wrapper {
+          transition-timing-function: cubic-bezier(0.22, 0.61, 0.36, 1);
+          will-change: transform;
+        }
+        .services-swiper .swiper-slide {
+          touch-action: pan-y;
+          transform: translate3d(0, 0, 0);
+        }
         .services-swiper-wrapper .swiper-pagination-bullet {
           background: rgba(255,255,255,0.35);
           opacity: 1;

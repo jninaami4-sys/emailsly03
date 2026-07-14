@@ -403,7 +403,7 @@ function Invoice(props: {
   total: number;
 }) {
   const {
-    orderId: _orderId,
+    orderId,
     invoiceNo,
     dateStr,
     timeStr,
@@ -415,7 +415,6 @@ function Invoice(props: {
     tax,
     total,
   } = props;
-  void _orderId;
 
   const ref = useRef<HTMLDivElement>(null);
 

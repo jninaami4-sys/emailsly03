@@ -181,7 +181,7 @@ export function TawkChat() {
             {/* Icon (chat-bubble made of two orbiting sparks) */}
             <svg
               viewBox="0 0 32 32"
-              className="relative z-10 size-6"
+              className="relative z-10 size-4 md:size-6"
               fill="none"
               aria-hidden
             >

@@ -49,7 +49,7 @@ function TopProgressBar({ active }: { active: boolean }) {
   return (
     <div
       aria-hidden="true"
-      className={`pointer-events-none fixed inset-x-0 top-0 z-[95] h-[2px] overflow-hidden transition-opacity duration-200 ${
+      className={`pointer-events-none fixed inset-x-0 top-0 z-[95] h-[2px] overflow-hidden transition-opacity duration-150 ${
         active ? "opacity-100" : "opacity-0"
       }`}
     >

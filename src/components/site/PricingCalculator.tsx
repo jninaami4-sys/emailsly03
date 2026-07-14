@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
+import { usePricingOverrides } from "@/hooks/use-pricing-overrides";
 
 export type PriceService = {
   id: string;
@@ -26,8 +27,17 @@ export const SERVICES: PriceService[] = [
 ];
 
 export function PricingCalculator({ compact = false, defaultId }: { compact?: boolean; defaultId?: string }) {
+  const overrides = usePricingOverrides();
+  const services = useMemo<PriceService[]>(
+    () =>
+      SERVICES.map((s) => {
+        const o = overrides.get(s.id);
+        return o ? { ...s, rate: o.rate, minQty: o.minQty, minOrder: o.minOrder, helper: o.helper ?? s.helper } : s;
+      }),
+    [overrides],
+  );
   const [sourceId, setSourceId] = useState(defaultId ?? "apollo");
-  const source = SERVICES.find((s) => s.id === sourceId)!;
+  const source = services.find((s) => s.id === sourceId)!;
   const [quantity, setQuantity] = useState(source.minQty);
 
   const total = useMemo(() => {
@@ -36,8 +46,8 @@ export function PricingCalculator({ compact = false, defaultId }: { compact?: bo
     return Math.max(q * source.rate, source.minOrder);
   }, [source, quantity]);
 
-  const dataServices = SERVICES.filter((s) => !s.fixed);
-  const fixedServices = SERVICES.filter((s) => s.fixed);
+  const dataServices = services.filter((s) => !s.fixed);
+  const fixedServices = services.filter((s) => s.fixed);
 
   return (
     <div className={`rounded-2xl border border-border bg-card p-6 shadow-sm md:p-8 ${compact ? "" : "shadow-lg"}`}>

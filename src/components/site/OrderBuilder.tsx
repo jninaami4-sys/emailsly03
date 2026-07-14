@@ -1,5 +1,8 @@
 import { useEffect, useMemo, useState, type MouseEvent } from "react";
 import { Link } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
+import { validatePromo, type PromoResult } from "@/lib/promos.functions";
+
 import {
   ShieldCheck,
   Clock,

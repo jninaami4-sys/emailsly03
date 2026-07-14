@@ -281,7 +281,7 @@ function ReferralEditor({
         <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">Payout method</span>
         <select
           value={method}
-          onChange={(e) => setMethod(e.target.value as any)}
+          onChange={(e) => setMethod(e.target.value as "credit" | "cash" | "")}
           className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
         >
           <option value="">— none —</option>

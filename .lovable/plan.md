@@ -1,101 +1,74 @@
+# Referrals: Stripe-verified rewards + anti-abuse + admin tracking
 
-## Goal
+## 1. Stripe webhook (real payment gate)
 
-Build a portable client + order system so that when you redeploy the site (or move it), every client's login and every order stays intact. Admin can run the business end-to-end (view/cancel/refund/deliver via GDrive). Clients get a real dashboard (orders, timeline, downloads, invoices, reorder/revision, profile).
+Since you already have Stripe elsewhere, I'll add a signed webhook. Rewards will only fire when Stripe confirms.
 
-## Data model (Lovable Cloud / Supabase)
+- New public route `src/routes/api/public/webhooks/stripe.ts`
+  - Verifies `stripe-signature` with HMAC-SHA256 using `STRIPE_WEBHOOK_SECRET` (I'll request it via `add_secret`).
+  - Handles `checkout.session.completed` and `payment_intent.succeeded`.
+  - Idempotent by Stripe event id (new table `stripe_events`).
+  - Marks the order `payment_status='paid'`, stores `payment_ref` (Stripe session/PI id), which trips the existing `orders_qualify_referral` trigger.
+- Order creation moves from "instantly paid" to `payment_status='pending'`; only the webhook flips it to `paid`. The `/payment-success` page just polls the order until it flips (no client-driven crediting).
+- Referral trigger updated: only qualify when `payment_provider='stripe'` AND payment_ref starts with `cs_`/`pi_` AND order passes anti-abuse checks (below).
 
-New tables in one migration, with GRANTs + RLS:
+## 2. Referral link capture
 
-- **`profiles`** — one row per `auth.users`, keyed by `user_id`. Fields: `email`, `full_name`, `company`, `phone`, `country`, `notes`, `imported_from` (text tag like `"old-site-A"`), `created_at`.
-- **`orders`** — the source of truth for every sale (past and future). Fields:
-  - `user_id` (nullable — imported orders may not yet have a login), `email` (always set, used to link on first sign-in)
-  - `service_id`, `service_label`, `quantity`, `subtotal_cents`, `discount_cents`, `promo_code`, `total_cents`, `currency`
-  - `status`: `pending | in_progress | delivered | cancelled | refunded | revision_requested`
-  - `payment_status`, `payment_provider`, `payment_ref` (Stripe session/PI id)
-  - `delivery_url` (GDrive), `delivery_notes`, `delivered_at`, `delivered_by`
-  - `cancel_reason`, `cancelled_at`
-  - `imported_from`, `external_id` (unique per `imported_from`) so re-imports are idempotent
-  - `created_at`, `updated_at`
-- **`order_events`** — append-only status timeline (status change, delivery, cancel, revision, note). Powers client's "order timeline" and admin audit.
-- **`order_messages`** — optional; used for revision requests / admin replies per order.
+- New `src/lib/referral-capture.ts` client util. On any page load with `?ref=CODE`, store `{ code, ts, landing_url }` in `localStorage.lyra_ref` (30-day TTL) and drop a first-party cookie `lyra_ref`.
+- On `SIGNED_IN` (root `onAuthStateChange`), call existing `attachReferrer({ code })`. Ignored if the profile already has one, or on self-referral.
+- Stripe checkout session gets `client_reference_id = user_id` and `metadata.ref_code` for defense-in-depth.
 
-RLS:
-- Client can `SELECT` own `profiles` / `orders` / `order_events` (`user_id = auth.uid()` OR `email = auth.jwt() ->> 'email'` so imported-but-not-yet-signed-up orders auto-appear on first login).
-- Client can `UPDATE` own profile and `INSERT` a revision request event on own order.
-- Admin (existing `has_role(auth.uid(),'admin')`) can do everything on all rows.
-- `service_role` full access for imports/webhooks.
+## 3. Anti-abuse (all four)
 
-## Data portability (this is the whole point)
+New columns on `referrals`: `signup_ip inet`, `signup_ua_hash text`, `flag_reasons text[]`, `admin_review_state text default 'auto'` (`auto|flagged|approved|rejected`), `qualified_order_min_cents int`.
 
-- **JSON import** (`admin.tsx` → new "Import" tab): paste or upload a JSON array of `{clients: [...], orders: [...]}`. Server function `importClients` + `importOrders` (admin-only, service-role):
-  - Upserts profiles by `imported_from + external_id`.
-  - Upserts orders same way — safe to re-run, no duplicates.
-  - Creates auth users with `supabaseAdmin.auth.admin.createUser({ email, email_confirm: true })` and emails a **magic link** (passwords from other systems can't be moved; hashes differ). If the user already exists, we skip creation and just relink.
-- **JSON export**: one-click download of `{clients, orders, order_events}` as a versioned JSON file to `/mnt/documents/`, so you can migrate off the site the same way — nothing is trapped.
-- Because every table has `imported_from` + `external_id`, importing from multiple old sites is safe and traceable.
+- **Same email/domain**: `attachReferrer` reads referrer's email; blocks if identical. If both are on the same *corporate* domain (not in a public-email allowlist: gmail/outlook/yahoo/proton/icloud/hotmail/live/aol/…), status set to `flagged` with reason `same_domain` — admin must approve.
+- **Same IP/device**: `attachReferrer` records `signup_ip` (from `getRequestIP`) and a SHA-256 of user-agent + accept-language. If either matches the referrer's stored signup fingerprint → `flagged` with reason `same_device` / `same_ip`.
+- **One reward per referred user, ever**: `referrals` already has `unique(referred_user_id)`; the trigger already stops after status leaves `pending`. I'll add an explicit assertion and test.
+- **Min order + monthly cap**: constants in `pricing_settings` (`referral_min_order_cents` default 2000, `referral_monthly_cap_cents` default 50000). Trigger will:
+  - Skip qualification if order `total_cents - discount_cents < min`.
+  - Compute referrer's rewards issued in the current calendar month; if adding this reward exceeds cap → set `admin_review_state='flagged'` with reason `monthly_cap` (credits NOT issued until admin approves).
 
-## Admin panel (`/admin` new tab: "Orders")
+Credits are issued by trigger ONLY when `admin_review_state='auto'` OR `'approved'`. Flagged referrals sit in a review queue.
 
-- Stats header: **Revenue (all-time / this month)**, **Orders count by status**, **Refunded total**, **Avg order value**. All from a single server fn that runs SUM/COUNT queries.
-- Orders table with filters (status, date range, email search, service).
-- Row actions:
-  - **Deliver** → modal for GDrive URL + notes → sets status `delivered`, records `delivered_at`, writes `order_events`, sends email to client with the link.
-  - **Cancel / Refund** → modal for reason → sets status + reason + timestamp, writes event.
-  - **Mark in_progress** → simple status bump.
-  - **View client** → drawer with client profile + all their orders.
-- Everything is a server function with `requireSupabaseAuth` + admin-role check.
+## 4. Admin — Referrals view enhancements
 
-## Client dashboard (`/_authenticated/dashboard`)
+`src/components/admin/ReferralsAdmin.tsx` gains:
 
-Sits under the managed `_authenticated` gate. Tabs:
+- **Funnel header** (last 30d / all-time toggle): ref link clicks → signups → paid conversions → total credits issued/redeemed/outstanding. Click tracking via a lightweight `referral_clicks` table pinged from the capture util (fire-and-forget public endpoint, dedup by `code+visitor_id/day`).
+- **Leaderboard**: top 10 referrers by paid conversions + credits earned.
+- **Full-chain expandable row**: referrer → each referred user → their paid orders (id, total, Stripe ref, status) → credits earned & redeemed per order.
+- **Fraud flags column** with reason chips; row-level Approve / Reject buttons that call new admin server fns (`approveReferral`, `rejectReferral`) which flip `admin_review_state` and let the trigger issue/withhold credits.
+- **Payout controls**: mark credits as `paid_out` (new column on `referral_credits`: `payout_batch_id`, `paid_out_at`). "Export owed CSV" button (server-side, admin-only) grouped by referrer with totals owed.
 
-1. **Orders** — list with status pill, amount, service, ordered date. Click row → drawer:
-   - Status timeline (from `order_events`).
-   - Delivery card: if `delivery_url` present, big "Open in Google Drive" button + notes.
-   - Invoice: "View / Download" (renders a printable receipt page at `/invoice/$orderId`; PDF via browser print).
-   - Actions: **Request revision** (writes event + message), **Reorder this service** (opens Order drawer prefilled).
-2. **Downloads** — flat list of every delivered order with GDrive links, newest first.
-3. **Profile** — edit name/company/phone/country; email is read-only (change via auth).
+## 5. Technical details
 
-Header adds an avatar menu with Dashboard / Sign out when signed in (replaces the static Sign in link based on session).
+**DB migration (single file):**
+- ALTER `referrals`: add `signup_ip`, `signup_ua_hash`, `flag_reasons text[]`, `admin_review_state text default 'auto'` (check constraint).
+- ALTER `referral_credits`: add `payout_batch_id uuid`, `paid_out_at timestamptz`.
+- ALTER `pricing_settings`: add `referral_min_order_cents int default 2000`, `referral_monthly_cap_cents int default 50000`.
+- New `referral_clicks(id, code, visitor_hash, landing_url, ua_hash, ip inet, created_at)` + narrow anon INSERT policy (rate-limited by unique `(code, visitor_hash, date)`).
+- New `stripe_events(id text primary key, type text, received_at)` — service-role only, powers webhook idempotency.
+- Rewrite `orders_qualify_referral()` and `referrals_issue_credits()` per rules above (SECURITY DEFINER, `SET search_path=public`).
+- GRANTs + RLS for every new table/column.
 
-## Login flow for imported clients
+**Server fns / routes:**
+- `src/routes/api/public/webhooks/stripe.ts` (raw-body HMAC verify → admin client insert).
+- `src/routes/api/public/referral-click.ts` (rate-limited insert).
+- `src/lib/referrals.functions.ts`: extend `attachReferrer` with IP/UA + email checks; add `getReferralFunnelStats`, `getReferralLeaderboard`.
+- `src/lib/admin-referrals.functions.ts`: `listReferralsWithChain`, `approveReferral`, `rejectReferral`, `markCreditsPaidOut`, `exportOwedCsv` (admin-gated via `has_role`).
 
-- Import creates the auth user with `email_confirm: true` and no password.
-- We send a Supabase magic link (`signInWithOtp` at import time, or "Send login link" button in admin per client).
-- User clicks link → lands on `/auth/callback` → session set → dashboard shows all their historical orders automatically because RLS also matches by email.
-- They can then set a password from Profile if they want.
+**Client:**
+- `src/routes/__root.tsx`: mount capture util; call `attachReferrer` in the `SIGNED_IN` handler (already filtered).
+- `src/routes/payment-success.tsx`: replace client-side `recordMyOrder` with a poll on order `payment_status`; UI stays but no reward can be forged by opening the URL directly.
+- Admin UI rewrite for the four sections above.
 
-## Files
+**Secrets:**
+- Ask you to add `STRIPE_WEBHOOK_SECRET` via `add_secret` before Step 1 goes live. Public routes give a stable URL you'll paste into Stripe Dashboard → Webhooks; I'll surface it after the route exists.
 
-Migration:
-- `supabase/migrations/*_clients_orders.sql` — the three tables + RLS + GRANTs + updated_at trigger + a `has_role`-based admin policy.
+## Rollout order
 
-Server (client-safe `.functions.ts`, service-role loaded inside handlers):
-- `src/lib/orders.functions.ts` — `listMyOrders`, `getMyOrder`, `requestRevision`, `updateMyProfile`.
-- `src/lib/admin-orders.functions.ts` — `adminListOrders`, `adminOrderStats`, `adminDeliverOrder`, `adminCancelOrder`, `adminSetStatus`, `adminSendMagicLink`.
-- `src/lib/data-portability.functions.ts` — `importClientsAndOrders`, `exportAll`.
-- Stripe success webhook / existing `payment-success.tsx` writes a row into `orders` with `payment_status='paid'` so real revenue tracking works from day one.
-
-Routes / UI:
-- `src/routes/_authenticated/dashboard.tsx` (+ tabs as subroutes or in-page tabs).
-- `src/routes/_authenticated/invoice.$orderId.tsx` — printable invoice.
-- `src/components/admin/OrdersAdmin.tsx`, `RevenueStats.tsx`, `DeliverOrderDialog.tsx`, `CancelOrderDialog.tsx`, `ImportExportAdmin.tsx`.
-- `src/components/site/Header.tsx` — session-aware account menu.
-
-## Technical notes
-
-- No password migration — magic-link on first sign-in only.
-- All admin mutations verify `has_role(userId,'admin')` server-side; client role checks are UI-only.
-- Imports and exports run through admin-only server fns using `supabaseAdmin` inside the handler (never at module scope, per import-graph rules).
-- Every table has `imported_from` + `external_id` unique key → idempotent re-imports.
-- Revenue = `SUM(total_cents)` over `status IN ('delivered','in_progress','pending') AND payment_status='paid'`; refunded tracked separately.
-- GDrive URL is stored as plain text — we do not proxy files; the link goes straight to your Drive.
-
-## What you'll do after I ship this
-
-1. Open `/admin` → **Import** tab → paste your JSON from the other site → run.
-2. Clients get magic-link emails; they sign in and see all their history.
-3. Every new order flows in automatically; you deliver via GDrive link from admin.
-4. Anytime, hit **Export** to snapshot everything as JSON — that file plus this codebase = full portability.
+1. Migration + `STRIPE_WEBHOOK_SECRET` request.
+2. Webhook route + order pending/paid flow + payment-success poll.
+3. Capture util + attachReferrer hardening.
+4. Admin UI: funnel, leaderboard, chain, flags, payouts, CSV.

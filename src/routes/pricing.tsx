@@ -1,8 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteShell } from "@/components/site/SiteShell";
-import { PricingCalculator } from "@/components/site/PricingCalculator";
 import {
-  Zap,
   Crown,
   Phone,
   Linkedin,

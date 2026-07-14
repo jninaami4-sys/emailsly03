@@ -128,21 +128,56 @@ export function OrderBuilder() {
 
   const effectiveQty = service.fixed ? 1 : Math.max(quantity, service.minQty);
 
-  const { base, extras, rushFee, subtotal, stripeFee, total, savings, comparePriceApollo, comparePriceLinkedIn } =
+  const { base, extras, rushFee, preDiscountSubtotal, discount, subtotal, stripeFee, total, savings, comparePriceApollo, comparePriceLinkedIn } =
     useMemo(() => {
       const base = service.fixed ? service.minOrder : Math.max(effectiveQty * service.rate, service.minOrder);
       const extraUrlCost = Math.max(0, extraUrls - 1) * 5;
       const verifierCost = verifier && !service.fixed ? effectiveQty * 0.002 : 0;
       const extras = extraUrlCost + verifierCost + tip;
       const rushFee = rush ? (base + extras) * 0.25 : 0;
-      const subtotal = base + extras + rushFee;
-      const stripeFee = subtotal * 0.029 + 0.3;
+      const preDiscountSubtotal = base + extras + rushFee;
+      // Discount comes from the SERVER (validatePromo). We only re-cap it here
+      // as a display safety net — never invent or inflate it client-side.
+      const serverDiscount = promoApplied && promoApplied.ok ? promoApplied.amountOff : 0;
+      const discount = Math.min(Math.max(0, serverDiscount), preDiscountSubtotal);
+      const subtotal = Math.max(0, preDiscountSubtotal - discount);
+      const stripeFee = subtotal > 0 ? subtotal * 0.029 + 0.3 : 0;
       const total = subtotal + stripeFee;
       const comparePriceApollo = effectiveQty * 0.2;
       const comparePriceLinkedIn = effectiveQty * 0.1;
       const savings = Math.max(0, comparePriceApollo - base);
-      return { base, extras, rushFee, subtotal, stripeFee, total, savings, comparePriceApollo, comparePriceLinkedIn };
-    }, [service, effectiveQty, extraUrls, verifier, rush, tip]);
+      return { base, extras, rushFee, preDiscountSubtotal, discount, subtotal, stripeFee, total, savings, comparePriceApollo, comparePriceLinkedIn };
+    }, [service, effectiveQty, extraUrls, verifier, rush, tip, promoApplied]);
+
+  // If the order changes after a promo was applied, invalidate it so the
+  // server re-validates against the new subtotal (prevents stale discounts
+  // from being carried into checkout).
+  useEffect(() => {
+    if (promoApplied?.ok) setPromoApplied(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [service.id, effectiveQty, extraUrls, verifier, rush, tip]);
+
+  const applyPromo = async () => {
+    const code = promo.trim().toUpperCase();
+    if (!code) return;
+    setPromoBusy(true);
+    try {
+      const result = await validatePromoFn({
+        data: { code, subtotal: preDiscountSubtotal },
+      });
+      setPromoApplied(result);
+    } catch {
+      setPromoApplied({ ok: false, reason: "Could not validate code" });
+    } finally {
+      setPromoBusy(false);
+    }
+  };
+
+  const clearPromo = () => {
+    setPromo("");
+    setPromoApplied(null);
+  };
+
 
   const dataServices = SERVICES.filter((s) => s.group === "data");
   const growthServices = SERVICES.filter((s) => s.group === "growth");

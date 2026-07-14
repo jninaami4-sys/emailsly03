@@ -12,7 +12,7 @@ export function MobileBottomNav() {
   return (
     <div
       className="fixed inset-x-0 bottom-4 z-40 flex justify-center px-4 md:hidden"
-      style={{ ["--primary" as never]: "var(--neon-orange)" }}
+      style={{ ["--primary" as never]: "var(--neon-blue)" }}
     >
       <LimelightNav
         items={items}

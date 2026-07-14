@@ -32,10 +32,6 @@ export type ServicePageProps = {
   process?: { step: string; title: string; desc: string }[];
   testimonials?: { quote: string; author: string; role: string; initials: string }[];
   faqs?: { q: string; a: string }[];
-  /** Whether to show the PricingCalculator section. Default true. */
-  showCalculator?: boolean;
-  /** Optional service id to preselect in the calculator. */
-  calculatorServiceId?: string;
 };
 
 const DEFAULT_BENEFITS: NonNullable<ServicePageProps["benefits"]> = [

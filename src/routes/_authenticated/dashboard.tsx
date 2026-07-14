@@ -920,6 +920,7 @@ function ProfileTab() {
           : "Upload photo";
 
   return (
+    <>
     <div className="rounded-2xl border border-border bg-card p-6">
       <div className="mb-5 flex items-center gap-4">
         <div className="relative">

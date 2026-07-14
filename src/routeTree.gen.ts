@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as ZoominfoLeadsRouteImport } from './routes/zoominfo-leads'
 import { Route as WebsiteDesignRouteImport } from './routes/website-design'
 import { Route as TrackOrderRouteImport } from './routes/track-order'
+import { Route as TestLoaderRouteImport } from './routes/test-loader'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as StoreRouteImport } from './routes/store'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
@@ -58,6 +59,11 @@ const WebsiteDesignRoute = WebsiteDesignRouteImport.update({
 const TrackOrderRoute = TrackOrderRouteImport.update({
   id: '/track-order',
   path: '/track-order',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TestLoaderRoute = TestLoaderRouteImport.update({
+  id: '/test-loader',
+  path: '/test-loader',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TermsRoute = TermsRouteImport.update({
@@ -247,6 +253,7 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/store': typeof StoreRoute
   '/terms': typeof TermsRoute
+  '/test-loader': typeof TestLoaderRoute
   '/track-order': typeof TrackOrderRoute
   '/website-design': typeof WebsiteDesignRoute
   '/zoominfo-leads': typeof ZoominfoLeadsRoute
@@ -283,6 +290,7 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/store': typeof StoreRoute
   '/terms': typeof TermsRoute
+  '/test-loader': typeof TestLoaderRoute
   '/track-order': typeof TrackOrderRoute
   '/website-design': typeof WebsiteDesignRoute
   '/zoominfo-leads': typeof ZoominfoLeadsRoute
@@ -321,6 +329,7 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/store': typeof StoreRoute
   '/terms': typeof TermsRoute
+  '/test-loader': typeof TestLoaderRoute
   '/track-order': typeof TrackOrderRoute
   '/website-design': typeof WebsiteDesignRoute
   '/zoominfo-leads': typeof ZoominfoLeadsRoute
@@ -359,6 +368,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/store'
     | '/terms'
+    | '/test-loader'
     | '/track-order'
     | '/website-design'
     | '/zoominfo-leads'
@@ -395,6 +405,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/store'
     | '/terms'
+    | '/test-loader'
     | '/track-order'
     | '/website-design'
     | '/zoominfo-leads'
@@ -432,6 +443,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/store'
     | '/terms'
+    | '/test-loader'
     | '/track-order'
     | '/website-design'
     | '/zoominfo-leads'
@@ -470,6 +482,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   StoreRoute: typeof StoreRoute
   TermsRoute: typeof TermsRoute
+  TestLoaderRoute: typeof TestLoaderRoute
   TrackOrderRoute: typeof TrackOrderRoute
   WebsiteDesignRoute: typeof WebsiteDesignRoute
   ZoominfoLeadsRoute: typeof ZoominfoLeadsRoute
@@ -504,6 +517,13 @@ declare module '@tanstack/react-router' {
       path: '/track-order'
       fullPath: '/track-order'
       preLoaderRoute: typeof TrackOrderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/test-loader': {
+      id: '/test-loader'
+      path: '/test-loader'
+      fullPath: '/test-loader'
+      preLoaderRoute: typeof TestLoaderRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/terms': {
@@ -778,6 +798,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   StoreRoute: StoreRoute,
   TermsRoute: TermsRoute,
+  TestLoaderRoute: TestLoaderRoute,
   TrackOrderRoute: TrackOrderRoute,
   WebsiteDesignRoute: WebsiteDesignRoute,
   ZoominfoLeadsRoute: ZoominfoLeadsRoute,

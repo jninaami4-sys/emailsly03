@@ -1,6 +1,11 @@
+import { createFileRoute } from "@tanstack/react-router";
 import { Loader713Panel } from "@/components/site/Loader713";
 
-export default function TestLoader() {
+export const Route = createFileRoute("/test-loader")({
+  component: TestLoader,
+});
+
+function TestLoader() {
   return (
     <div className="relative min-h-[80vh] overflow-hidden bg-gradient-to-b from-background via-background to-violet-soft/25">
       <div aria-hidden className="pointer-events-none absolute inset-0">

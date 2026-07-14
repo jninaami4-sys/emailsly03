@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, EffectCoverflow, Pagination } from "swiper/modules";
 import "swiper/css";
@@ -147,6 +148,14 @@ const services: Service[] = [
 ];
 
 export function ServicesCarousel() {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 640px)");
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
   return (
     <section className="relative overflow-hidden border-t border-white/10 px-4 py-24 sm:px-6">
       {/* Ambient glow */}
@@ -176,17 +185,23 @@ export function ServicesCarousel() {
 
         <div className="services-swiper-wrapper">
           <Swiper
-            effect="coverflow"
+            key={isMobile ? "mobile" : "desktop"}
+            effect={isMobile ? "slide" : "coverflow"}
             grabCursor
             centeredSlides
             loop
             slidesPerView="auto"
-            autoplay={{ delay: 2800, disableOnInteraction: false, pauseOnMouseEnter: true }}
+            spaceBetween={isMobile ? 16 : 0}
+            speed={isMobile ? 450 : 600}
+            resistanceRatio={0.85}
+            touchReleaseOnEdges
+            autoplay={{ delay: 3200, disableOnInteraction: false, pauseOnMouseEnter: true }}
             coverflowEffect={{ rotate: 28, stretch: 0, depth: 180, modifier: 1.4, slideShadows: false }}
             pagination={{ clickable: true }}
             modules={[EffectCoverflow, Autoplay, Pagination]}
             className="!pb-16"
           >
+
             {services.map((s) => (
               <SwiperSlide key={s.serviceId} className="!w-[280px] !h-auto sm:!w-[360px] md:!w-[420px]">
                 <button

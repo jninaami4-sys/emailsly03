@@ -295,31 +295,12 @@ function SuccessMark() {
       <span className="absolute inset-0 rounded-full bg-emerald/20 blur-2xl" />
       {/* Core */}
       <span className="relative flex size-20 items-center justify-center rounded-full bg-gradient-to-br from-emerald to-[oklch(0.68_0.18_155)] shadow-[0_20px_60px_-15px_oklch(0.6_0.15_155/0.6)] animate-scale-in">
-        <svg viewBox="0 0 52 52" className="size-12">
-          <circle
-            cx="26"
-            cy="26"
-            r="24"
-            fill="none"
-            stroke="white"
-            strokeOpacity="0.35"
-            strokeWidth="2"
-          />
-          <path
-            d="M14 27 L23 36 L39 18"
-            fill="none"
-            stroke="white"
-            strokeWidth="3.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            style={{
-              strokeDasharray: 60,
-              strokeDashoffset: 60,
-              animation: "drawCheck 700ms cubic-bezier(.65,0,.35,1) 250ms forwards",
-            }}
-          />
-        </svg>
+        <CheckCircle2
+          className="size-12 text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.25)]"
+          strokeWidth={2.25}
+        />
       </span>
+
       {/* Confetti */}
       <Confetti />
       <style>{`

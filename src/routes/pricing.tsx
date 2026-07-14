@@ -38,7 +38,7 @@ type Tier = {
   per: string;
   min: string;
   desc?: string;
-  icon: typeof Zap;
+  icon: LucideIcon;
   popular?: boolean;
   features: string[];
   disclaimer?: string;

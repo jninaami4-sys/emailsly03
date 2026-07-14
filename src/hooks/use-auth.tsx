@@ -54,8 +54,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, s) => {
+    const { data: sub } = supabase.auth.onAuthStateChange((event, s) => {
       setSession(s);
+      if (event === "SIGNED_IN" && s?.user) {
+        // Fire-and-forget: idempotently ensure a user_roles row exists.
+        void ensureUserRole().catch((e) => {
+          console.warn("ensureUserRole failed", e);
+        });
+      }
     });
     supabase.auth.getSession().then(({ data }) => {
       setSession(data.session);

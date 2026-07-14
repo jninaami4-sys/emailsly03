@@ -43,6 +43,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { compressImage } from "@/lib/image-compress";
+import { AvatarCropDialog } from "@/components/site/AvatarCropDialog";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
@@ -829,6 +830,7 @@ function ProfileTab() {
     country: "",
   });
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [pendingFile, setPendingFile] = useState<File | null>(null);
   const [uploadState, setUploadState] = useState<{
     status: "idle" | "compressing" | "uploading" | "error";
     error?: string;
@@ -918,6 +920,7 @@ function ProfileTab() {
           : "Upload photo";
 
   return (
+    <>
     <div className="rounded-2xl border border-border bg-card p-6">
       <div className="mb-5 flex items-center gap-4">
         <div className="relative">
@@ -946,7 +949,7 @@ function ProfileTab() {
               onChange={(e) => {
                 const f = e.target.files?.[0];
                 e.currentTarget.value = "";
-                if (f) handleFile(f);
+                if (f) setPendingFile(f);
               }}
             />
           </label>
@@ -965,7 +968,7 @@ function ProfileTab() {
                 onChange={(e) => {
                   const f = e.target.files?.[0];
                   e.currentTarget.value = "";
-                  if (f) handleFile(f);
+                  if (f) setPendingFile(f);
                 }}
               />
             </label>
@@ -1031,6 +1034,16 @@ function ProfileTab() {
         {save.isSuccess && <p className="text-xs text-emerald">Saved.</p>}
       </div>
     </div>
+      <AvatarCropDialog
+        file={pendingFile}
+        open={!!pendingFile}
+        onCancel={() => setPendingFile(null)}
+        onApply={(cropped) => {
+          setPendingFile(null);
+          handleFile(cropped);
+        }}
+      />
+    </>
   );
 }
 

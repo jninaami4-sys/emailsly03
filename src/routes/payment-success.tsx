@@ -230,10 +230,7 @@ function PaymentSuccessPage() {
           timeStr={timeStr}
           name={name}
           email={email}
-          service={service}
-          qty={qty}
-          unit={unit}
-          unitPrice={unitPrice}
+          lineItems={lineItems}
           subtotal={subtotal}
           fee={fee}
           tax={tax}

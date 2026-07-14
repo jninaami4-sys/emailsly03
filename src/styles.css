@@ -62,6 +62,8 @@
 
   --color-neon-orange: var(--neon-orange);
   --color-neon-orange-soft: var(--neon-orange-soft);
+  --color-neon-blue: var(--neon-blue);
+  --color-neon-blue-soft: var(--neon-blue-soft);
 }
 
 :root {
@@ -116,6 +118,10 @@
   /* Neon Orange Peel */
   --neon-orange: oklch(0.78 0.2 55);           /* vivid #FF9F1C-ish */
   --neon-orange-soft: oklch(0.78 0.2 55 / 0.18);
+
+  /* Neon Blue */
+  --neon-blue: oklch(0.72 0.22 250);           /* vivid electric blue */
+  --neon-blue-soft: oklch(0.72 0.22 250 / 0.18);
 }
 
 

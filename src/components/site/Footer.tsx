@@ -72,16 +72,22 @@ export function Footer() {
         </div>
 
         {/* Social row */}
-        <div className="flex flex-col items-start gap-5 border-b border-white/10 py-10 md:flex-row md:items-center md:justify-between">
-          <div>
-            <div className="font-mono text-[10px] font-bold uppercase tracking-widest text-white/80">
-              Say hello
+        <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur-sm sm:p-8">
+          <div className="pointer-events-none absolute -right-10 -top-10 size-40 rounded-full bg-violet/10 blur-[60px]" />
+          <div className="relative flex flex-col items-center gap-6 text-center md:flex-row md:items-center md:justify-between md:text-left">
+            <div>
+              <div className="font-mono text-[10px] font-bold uppercase tracking-widest text-violet">
+                Say hello
+              </div>
+              <h4 className="mt-1 font-display text-xl font-semibold tracking-tight text-white sm:text-2xl">
+                We reply in hours, not days.
+              </h4>
+              <p className="mt-1 max-w-xs text-sm text-white/50">
+                Reach out on your favorite channel.
+              </p>
             </div>
-            <p className="mt-1 text-sm text-white/50">
-              We reply in hours, not days.
-            </p>
+            <SocialIcons />
           </div>
-          <SocialIcons />
         </div>
 
         {/* Link columns */}

@@ -786,6 +786,28 @@ export function OrderBuilder() {
                   )}
                 </div>
 
+                {user && creditBalanceCents > 0 && (
+                  <label className="relative mt-4 flex cursor-pointer items-start gap-3 rounded-xl border border-emerald/30 bg-emerald/5 p-3 text-left transition-colors hover:bg-emerald/10">
+                    <input
+                      type="checkbox"
+                      checked={useCredit}
+                      onChange={(e) => setUseCredit(e.target.checked)}
+                      className="mt-0.5 size-4 accent-emerald"
+                    />
+                    <span className="flex-1 text-xs text-white">
+                      <span className="flex items-center gap-1.5 font-semibold text-emerald">
+                        <Gift className="size-3.5" /> Apply my referral credit
+                      </span>
+                      <span className="mt-0.5 block text-white/60">
+                        You have <span className="font-mono text-emerald">{formatUSD(creditBalanceCents / 100)}</span> available
+                        {useCredit && creditApplied > 0 && (
+                          <> · using <span className="font-mono">{formatUSD(creditApplied)}</span> on this order</>
+                        )}
+                      </span>
+                    </span>
+                  </label>
+                )}
+
                 <div className="relative mt-6 space-y-2 border-t border-white/10 pt-5 text-sm">
                   <div className="flex items-center justify-between text-white/70">
                     <span>Order subtotal</span>
@@ -795,6 +817,12 @@ export function OrderBuilder() {
                     <div className="flex items-center justify-between text-emerald">
                       <span>Discount ({promoApplied?.ok ? promoApplied.code : ""})</span>
                       <span className="font-mono">−{formatUSD(discount)}</span>
+                    </div>
+                  )}
+                  {creditApplied > 0 && (
+                    <div className="flex items-center justify-between text-emerald">
+                      <span>Referral credit</span>
+                      <span className="font-mono">−{formatUSD(creditApplied)}</span>
                     </div>
                   )}
                   <div className="flex items-center justify-between text-white/70">
@@ -834,6 +862,7 @@ export function OrderBuilder() {
                     tip: tip.toFixed(2),
                     promo: promoApplied?.ok ? promoApplied.code : undefined,
                     discount: promoApplied?.ok ? discount.toFixed(2) : undefined,
+                    credit: creditApplied > 0 ? creditApplied.toFixed(2) : undefined,
                   }}
                   aria-disabled={!agree || name.trim().length < 2 || !/\S+@\S+\.\S+/.test(email)}
                   onClick={(e: MouseEvent<HTMLAnchorElement>) => {

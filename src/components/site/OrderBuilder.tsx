@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState, type MouseEvent } from "react";
 import { Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { validatePromo, type PromoResult } from "@/lib/promos.functions";
+import { usePricingOverrides } from "@/hooks/use-pricing-overrides";
 
 import {
   ShieldCheck,
@@ -81,9 +82,18 @@ function formatCompact(n: number) {
 }
 
 export function OrderBuilder() {
+  const overrides = usePricingOverrides();
+  const services = useMemo<Service[]>(
+    () =>
+      SERVICES.map((s) => {
+        const o = overrides.get(s.id);
+        return o ? { ...s, rate: o.rate, minQty: o.minQty, minOrder: o.minOrder, helper: o.helper ?? s.helper } : s;
+      }),
+    [overrides],
+  );
   const [step, setStep] = useState(1);
   const [serviceId, setServiceId] = useState("apollo");
-  const service = SERVICES.find((s) => s.id === serviceId)!;
+  const service = services.find((s) => s.id === serviceId)!;
   const [mobileGroup, setMobileGroup] = useState<"data" | "growth" | "design">(service.group);
   const [quantity, setQuantity] = useState(service.minQty);
   const [extraUrls, setExtraUrls] = useState(1);
@@ -114,7 +124,7 @@ export function OrderBuilder() {
       const detail = (e as CustomEvent<{ serviceId?: string }>).detail;
       const id = detail?.serviceId;
       if (!id) return;
-      const svc = SERVICES.find((s) => s.id === id);
+      const svc = services.find((s) => s.id === id);
       if (!svc) return;
       setServiceId(svc.id);
       setMobileGroup(svc.group);
@@ -179,9 +189,9 @@ export function OrderBuilder() {
   };
 
 
-  const dataServices = SERVICES.filter((s) => s.group === "data");
-  const growthServices = SERVICES.filter((s) => s.group === "growth");
-  const designServices = SERVICES.filter((s) => s.group === "design");
+  const dataServices = services.filter((s) => s.group === "data");
+  const growthServices = services.filter((s) => s.group === "growth");
+  const designServices = services.filter((s) => s.group === "design");
 
   const canNext =
     step === 1 ? !!serviceId :
@@ -325,7 +335,7 @@ export function OrderBuilder() {
                 <div className="mt-4 block lg:hidden">
                   <CategoryTabs active={mobileGroup} onChange={setMobileGroup} />
                   <div className="mt-3 space-y-2">
-                    {SERVICES.filter((s) => s.group === mobileGroup).map((s) => (
+                    {services.filter((s) => s.group === mobileGroup).map((s) => (
                       <ServiceChip
                         key={s.id}
                         service={s}

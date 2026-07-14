@@ -804,6 +804,8 @@ export function OrderBuilder() {
                     rush: rush ? "1" : "0",
                     rushFee: rushFee.toFixed(2),
                     tip: tip.toFixed(2),
+                    promo: promoApplied?.ok ? promoApplied.code : undefined,
+                    discount: promoApplied?.ok ? discount.toFixed(2) : undefined,
                   }}
                   aria-disabled={!agree || name.trim().length < 2 || !/\S+@\S+\.\S+/.test(email)}
                   onClick={(e: MouseEvent<HTMLAnchorElement>) => {

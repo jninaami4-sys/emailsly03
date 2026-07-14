@@ -66,7 +66,7 @@ export function SocialIcons() {
     <div className="iso-social-card">
       <ul>
         {SOCIALS.map((s) => (
-          <li key={s.name} className="iso-pro">
+          <li key={s.name} className="iso-pro" style={{ color: s.color }}>
             <span />
             <span />
             <span />

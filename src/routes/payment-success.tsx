@@ -624,11 +624,11 @@ function Invoice(props: {
               </li>
               <li className="flex gap-2">
                 <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-emerald" />
-                Verification & enrichment (~2–6 hours).
+                Data collection, verification & enrichment in progress.
               </li>
               <li className="flex gap-2">
                 <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-emerald" />
-                Final CSV emailed within 24 hours.
+                Final CSV delivered straight to your inbox.
               </li>
             </ol>
           </div>

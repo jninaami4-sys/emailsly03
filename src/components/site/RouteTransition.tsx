@@ -25,9 +25,11 @@ export function RouteTransition({ children }: { children: ReactNode }) {
       prevPath.current = pathname;
       // Smooth scroll to top for the new page
       window.scrollTo({ top: 0, behavior: "smooth" });
-      // Fade back in on next frame
-      requestAnimationFrame(() => setPhase("in"));
-    }, 220);
+      // Fade back in on next frame after paint
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => setPhase("in"));
+      });
+    }, 180);
     return () => window.clearTimeout(swap);
   }, [pathname, children]);
 

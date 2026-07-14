@@ -110,6 +110,7 @@ export function TawkChat() {
     const api = window.Tawk_API;
     if (!api) return;
     try {
+      document.documentElement.classList.add("tawk-open");
       api.showWidget?.();
       api.maximize?.();
       setVisible(false);

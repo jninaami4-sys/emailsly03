@@ -67,7 +67,7 @@ const DATA_TIERS: Tier[] = [
     price: "$20",
     per: "/ 1k leads",
     min: "$0.02 per lead · min 1,000",
-    desc: "Premium direct dials and HQ numbers for cold calling.",
+    desc: "Premium HQ phone numbers and verified contact data for outbound.",
     icon: Phone,
     features: ["HQ phone numbers", "Real-Time Data", "Current Job Titles"],
   },

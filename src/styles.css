@@ -265,6 +265,9 @@ html { scroll-behavior: smooth; }
     transform: none !important;
     filter: none !important;
   }
+  .route-progress-bar {
+    animation: none !important;
+  }
   html { scroll-behavior: auto; }
 }
 

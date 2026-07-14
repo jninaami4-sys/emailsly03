@@ -38,7 +38,7 @@ type Tier = {
   price: string;
   per: string;
   min: string;
-  desc: string;
+  desc?: string;
   icon: typeof Zap;
   popular?: boolean;
   features: string[];

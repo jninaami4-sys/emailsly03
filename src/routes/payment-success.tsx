@@ -31,6 +31,8 @@ export const Route = createFileRoute("/payment-success")({
     rush: typeof s.rush === "string" ? s.rush : undefined,
     rushFee: typeof s.rushFee === "string" ? s.rushFee : undefined,
     tip: typeof s.tip === "string" ? s.tip : undefined,
+    promo: typeof s.promo === "string" ? s.promo : undefined,
+    discount: typeof s.discount === "string" ? s.discount : undefined,
   }),
   head: () => ({
     meta: [

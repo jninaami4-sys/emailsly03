@@ -11,7 +11,7 @@ import {
   Clock,
 } from "lucide-react";
 import { PremiumLogoMark } from "@/components/site/PremiumIcons";
-import { InvoiceSkeleton } from "@/components/site/InvoiceSkeleton";
+import { Loader713Panel } from "@/components/site/Loader713";
 
 export const Route = createFileRoute("/payment-success")({
   component: PaymentSuccessPage,

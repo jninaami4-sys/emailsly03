@@ -12,6 +12,9 @@ import {
 } from "lucide-react";
 import { PremiumLogoMark } from "@/components/site/PremiumIcons";
 import { Loader713Panel } from "@/components/site/Loader713";
+import { useServerFn } from "@tanstack/react-start";
+import { recordMyOrder } from "@/lib/orders.functions";
+import { useAuth } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/payment-success")({
   component: PaymentSuccessPage,

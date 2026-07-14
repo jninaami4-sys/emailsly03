@@ -731,9 +731,20 @@ export function OrderBuilder() {
                       e.preventDefault();
                     }
                   }}
-                  className="relative mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-violet px-6 py-4 text-sm font-bold text-white shadow-lg shadow-violet/30 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-violet/40 aria-disabled:cursor-not-allowed aria-disabled:opacity-50 aria-disabled:hover:translate-y-0"
+                  className="slide-btn mt-6 w-full aria-disabled:cursor-not-allowed"
                 >
-                  Checkout (demo — bypasses Stripe) <ArrowRight className="size-4" />
+                  <span className="slide-btn-decor" aria-hidden />
+                  <span className="slide-btn-content justify-between">
+                    <span className="slide-btn-icon">
+                      <Lock className="size-4" />
+                    </span>
+                    <span className="slide-btn-text flex-1 justify-center">
+                      Checkout · Secure demo
+                    </span>
+                    <span className="slide-btn-icon" style={{ background: "color-mix(in oklab, var(--violet) 88%, black)" }}>
+                      <ArrowRight className="size-4" />
+                    </span>
+                  </span>
                 </Link>
                 <p className="relative mt-3 flex items-center justify-center gap-1.5 font-mono text-[10px] font-bold uppercase tracking-widest text-white/40">
                   <Lock className="size-3" /> 256-bit SSL encrypted

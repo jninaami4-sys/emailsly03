@@ -85,40 +85,40 @@ function DashboardPage() {
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0,var(--background)_75%)]" />
         </div>
 
-        <main className="mx-auto max-w-7xl px-4 pb-24 pt-10 sm:px-6 lg:px-8">
+        <main className="mx-auto max-w-7xl px-4 pb-24 pt-6 sm:px-6 sm:pt-10 lg:px-8">
           {/* Greeting header */}
-          <section className="mb-8 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-center gap-4">
-              <div className="relative">
-                <div className="grid size-14 place-items-center rounded-2xl bg-gradient-to-br from-violet to-neon-orange font-display text-xl font-bold text-white shadow-lg shadow-violet/30">
+          <section className="mb-6 flex flex-col gap-5 sm:mb-8 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex min-w-0 items-center gap-3 sm:gap-4">
+              <div className="relative shrink-0">
+                <div className="grid size-12 place-items-center rounded-2xl bg-gradient-to-br from-violet to-neon-orange font-display text-lg font-bold text-white shadow-lg shadow-violet/30 sm:size-14 sm:text-xl">
                   {first}
                 </div>
                 <span className="absolute -bottom-1 -right-1 grid size-5 place-items-center rounded-full border-2 border-background bg-emerald">
                   <CheckCircle2 className="size-3 text-white" />
                 </span>
               </div>
-              <div>
+              <div className="min-w-0">
                 <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-violet">
                   Member workspace
                 </span>
-                <h1 className="mt-0.5 font-display text-3xl font-bold sm:text-4xl">
+                <h1 className="mt-0.5 truncate font-display text-2xl font-bold sm:text-3xl lg:text-4xl">
                   Welcome back, {displayName}
                 </h1>
-                <p className="mt-1 text-sm text-muted-foreground">
+                <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
                   Track orders, grab deliveries, and reorder in one click.
                 </p>
               </div>
             </div>
-            <div className="flex flex-wrap gap-2">
+            <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
               <button
                 onClick={openOrderDrawer}
-                className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-violet to-indigo px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet/25 transition-transform hover:scale-[1.02]"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet to-indigo px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet/25 transition-transform hover:scale-[1.02]"
               >
                 <Sparkles className="size-4" /> New order
               </button>
               <Link
                 to="/store"
-                className="inline-flex items-center gap-2 rounded-xl border border-border bg-card px-4 py-2.5 text-sm font-semibold text-foreground transition-colors hover:border-violet/40 hover:bg-secondary"
+                className="inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-card px-4 py-2.5 text-sm font-semibold text-foreground transition-colors hover:border-violet/40 hover:bg-secondary"
               >
                 <ShoppingBag className="size-4" /> Browse store
               </Link>
@@ -198,24 +198,26 @@ function DashboardPage() {
           <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
             <div>
               {/* Tabs */}
-              <div className="mb-4 grid grid-cols-2 gap-1 rounded-2xl border border-border bg-card p-1 sm:grid-cols-4">
-                <TabBtn active={tab === "orders"} onClick={() => setTab("orders")} icon={<Package className="size-4" />}>
-                  Orders
-                </TabBtn>
-                <TabBtn
-                  active={tab === "downloads"}
-                  onClick={() => setTab("downloads")}
-                  icon={<Download className="size-4" />}
-                  count={stats.delivered}
-                >
-                  Downloads
-                </TabBtn>
-                <TabBtn active={tab === "invoices"} onClick={() => setTab("invoices")} icon={<Receipt className="size-4" />}>
-                  Invoices
-                </TabBtn>
-                <TabBtn active={tab === "profile"} onClick={() => setTab("profile")} icon={<UserIcon className="size-4" />}>
-                  Profile
-                </TabBtn>
+              <div className="mb-4 -mx-4 overflow-x-auto px-4 sm:mx-0 sm:overflow-visible sm:px-0 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                <div className="flex min-w-max gap-1 rounded-2xl border border-border bg-card p-1 sm:grid sm:min-w-0 sm:grid-cols-4">
+                  <TabBtn active={tab === "orders"} onClick={() => setTab("orders")} icon={<Package className="size-4" />}>
+                    Orders
+                  </TabBtn>
+                  <TabBtn
+                    active={tab === "downloads"}
+                    onClick={() => setTab("downloads")}
+                    icon={<Download className="size-4" />}
+                    count={stats.delivered}
+                  >
+                    Downloads
+                  </TabBtn>
+                  <TabBtn active={tab === "invoices"} onClick={() => setTab("invoices")} icon={<Receipt className="size-4" />}>
+                    Invoices
+                  </TabBtn>
+                  <TabBtn active={tab === "profile"} onClick={() => setTab("profile")} icon={<UserIcon className="size-4" />}>
+                    Profile
+                  </TabBtn>
+                </div>
               </div>
 
               {tab === "orders" && <OrdersTab orders={data} loading={orders.isLoading} />}
@@ -413,7 +415,7 @@ function OrdersTab({ orders, loading }: { orders: any[]; loading: boolean }) {
   return (
     <>
       <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <div className="relative flex-1 sm:max-w-xs">
+        <div className="relative w-full sm:max-w-xs">
           <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           <input
             value={query}
@@ -422,18 +424,20 @@ function OrdersTab({ orders, loading }: { orders: any[]; loading: boolean }) {
             className="w-full rounded-xl border border-border bg-card py-2 pl-9 pr-3 text-sm focus:border-violet focus:outline-none"
           />
         </div>
-        <div className="flex gap-1 overflow-x-auto rounded-xl border border-border bg-card p-1">
-          {(["all", "pending", "in_progress", "delivered", "revision_requested"] as const).map((s) => (
-            <button
-              key={s}
-              onClick={() => setFilter(s)}
-              className={`whitespace-nowrap rounded-lg px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-wider transition-colors ${
-                filter === s ? "bg-violet text-white" : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              {s.replace("_", " ")}
-            </button>
-          ))}
+        <div className="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <div className="flex min-w-max gap-1 rounded-xl border border-border bg-card p-1">
+            {(["all", "pending", "in_progress", "delivered", "revision_requested"] as const).map((s) => (
+              <button
+                key={s}
+                onClick={() => setFilter(s)}
+                className={`whitespace-nowrap rounded-lg px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-wider transition-colors ${
+                  filter === s ? "bg-violet text-white" : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {s.replace("_", " ")}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -484,10 +488,10 @@ function OrderRow({ order: o, onOpen }: { order: any; onOpen: () => void }) {
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-3 sm:justify-end">
+        <div className="flex items-center justify-between gap-3 sm:justify-end">
           <StatusPill value={o.status} />
-          <div className="font-mono text-sm font-semibold">{money(o.total_cents, o.currency)}</div>
-          <ChevronRight className="size-4 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
+          <div className="ml-auto font-mono text-sm font-semibold sm:ml-0">{money(o.total_cents, o.currency)}</div>
+          <ChevronRight className="size-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
         </div>
       </div>
       {o.delivery_url && (
@@ -582,7 +586,7 @@ function OrderDrawer({ id, onClose }: { id: string; onClose: () => void }) {
       onClick={onClose}
     >
       <div
-        className="theme-midnight h-full w-full max-w-xl overflow-y-auto border-l border-border bg-background p-6 shadow-2xl"
+        className="theme-midnight max-h-[92vh] w-full max-w-xl overflow-y-auto rounded-t-3xl border border-border bg-background p-5 shadow-2xl sm:h-full sm:max-h-none sm:rounded-none sm:border-l sm:p-6"
         onClick={(e) => e.stopPropagation()}
       >
         <button
@@ -777,44 +781,75 @@ function InvoicesTab({ orders }: { orders: any[] }) {
       </div>
     );
   return (
-    <div className="overflow-hidden rounded-2xl border border-border bg-card">
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="border-b border-border bg-secondary/40 text-left font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-            <th className="px-4 py-3">Invoice</th>
-            <th className="px-4 py-3">Date</th>
-            <th className="px-4 py-3">Service</th>
-            <th className="px-4 py-3 text-right">Amount</th>
-            <th className="px-4 py-3" />
-          </tr>
-        </thead>
-        <tbody>
-          {orders.map((o) => (
-            <tr key={o.id} className="border-b border-border last:border-0 hover:bg-secondary/30">
-              <td className="px-4 py-3 font-mono text-xs">#{String(o.id).slice(0, 8)}</td>
-              <td className="px-4 py-3 text-xs text-muted-foreground">
-                {new Date(o.created_at).toLocaleDateString()}
-              </td>
-              <td className="px-4 py-3">
-                <div className="truncate font-medium">{o.service_label}</div>
-              </td>
-              <td className="px-4 py-3 text-right font-mono font-semibold">
-                {money(o.total_cents, o.currency)}
-              </td>
-              <td className="px-4 py-3 text-right">
-                <Link
-                  to="/invoice/$orderId"
-                  params={{ orderId: o.id }}
-                  className="inline-flex items-center gap-1 rounded-lg border border-border px-2.5 py-1 text-xs font-semibold hover:bg-secondary"
-                >
-                  View <ArrowUpRight className="size-3" />
-                </Link>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <>
+      {/* Mobile: card list */}
+      <div className="grid gap-2 sm:hidden">
+        {orders.map((o) => (
+          <Link
+            key={o.id}
+            to="/invoice/$orderId"
+            params={{ orderId: o.id }}
+            className="flex items-center justify-between gap-3 rounded-2xl border border-border bg-card p-3 transition-colors hover:border-violet/40"
+          >
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-[11px] text-muted-foreground">#{String(o.id).slice(0, 8)}</span>
+                <span className="text-[10px] text-muted-foreground">·</span>
+                <span className="text-[11px] text-muted-foreground">{new Date(o.created_at).toLocaleDateString()}</span>
+              </div>
+              <div className="mt-1 truncate text-sm font-medium">{o.service_label}</div>
+            </div>
+            <div className="flex shrink-0 flex-col items-end gap-1">
+              <span className="font-mono text-sm font-semibold">{money(o.total_cents, o.currency)}</span>
+              <span className="inline-flex items-center gap-1 rounded-lg border border-border px-2 py-0.5 text-[10px] font-semibold text-muted-foreground">
+                View <ArrowUpRight className="size-3" />
+              </span>
+            </div>
+          </Link>
+        ))}
+      </div>
+      {/* Desktop: table */}
+      <div className="hidden overflow-hidden rounded-2xl border border-border bg-card sm:block">
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-border bg-secondary/40 text-left font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+                <th className="px-4 py-3">Invoice</th>
+                <th className="px-4 py-3">Date</th>
+                <th className="px-4 py-3">Service</th>
+                <th className="px-4 py-3 text-right">Amount</th>
+                <th className="px-4 py-3" />
+              </tr>
+            </thead>
+            <tbody>
+              {orders.map((o) => (
+                <tr key={o.id} className="border-b border-border last:border-0 hover:bg-secondary/30">
+                  <td className="px-4 py-3 font-mono text-xs">#{String(o.id).slice(0, 8)}</td>
+                  <td className="px-4 py-3 text-xs text-muted-foreground">
+                    {new Date(o.created_at).toLocaleDateString()}
+                  </td>
+                  <td className="px-4 py-3">
+                    <div className="truncate font-medium">{o.service_label}</div>
+                  </td>
+                  <td className="px-4 py-3 text-right font-mono font-semibold">
+                    {money(o.total_cents, o.currency)}
+                  </td>
+                  <td className="px-4 py-3 text-right">
+                    <Link
+                      to="/invoice/$orderId"
+                      params={{ orderId: o.id }}
+                      className="inline-flex items-center gap-1 rounded-lg border border-border px-2.5 py-1 text-xs font-semibold hover:bg-secondary"
+                    >
+                      View <ArrowUpRight className="size-3" />
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </>
   );
 }
 

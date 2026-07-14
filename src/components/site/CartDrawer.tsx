@@ -1,4 +1,4 @@
-import { X, Minus, Plus, ShoppingBag } from "lucide-react";
+import { X, Minus, Plus, ShoppingBag, Lock, ArrowRight } from "lucide-react";
 import { useCart } from "@/lib/cart";
 import { useEffect } from "react";
 

@@ -13,6 +13,7 @@ import { DebugModeAdmin } from "@/components/admin/DebugModeAdmin";
 import { ServerTrackingAdmin } from "@/components/admin/ServerTrackingAdmin";
 import { ProductDetailsAdmin } from "@/components/admin/ProductDetailsAdmin";
 import { ChatbotAdmin } from "@/components/admin/ChatbotAdmin";
+import { ReviewsAdmin } from "@/components/admin/ReviewsAdmin";
 import { whoAmIAdmin } from "@/lib/announcements.functions";
 import { useAuth } from "@/hooks/use-auth";
 import { Upload, X, Search, ShieldAlert, Lock } from "lucide-react";
@@ -165,6 +166,7 @@ function AdminPage() {
           <ServerTrackingAdmin />
           <DebugModeAdmin />
           <ChatbotAdmin />
+          <ReviewsAdmin />
         </div>
 
         <h2 className="mb-4 font-display text-xl font-bold">Product cover editor</h2>

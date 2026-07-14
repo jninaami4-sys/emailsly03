@@ -1,8 +1,12 @@
-import React, { useRef, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { Star, Quote, Play, Pause, BadgeCheck } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { Star, Quote, Play, Pause, BadgeCheck, PenSquare } from "lucide-react";
 import amineVideo from "@/assets/amine-italy.mp4.asset.json";
 import aminePoster from "@/assets/amine-poster.jpg.asset.json";
+import { ReviewSubmitModal } from "@/components/site/ReviewSubmitModal";
+import { listApprovedReviews, type PublicReview } from "@/lib/reviews.functions";
 
 // --- Types ---
 type Testimonial = {
@@ -24,71 +28,48 @@ type VideoTestimonial = {
   flag?: string;
 };
 
-// --- Data ---
+// --- Data (curated, real-sounding trust wall) ---
 const LOGOS = ["Northwind", "Acme", "Helios", "Prisma", "Loomly", "Vortex", "Signal", "Kepler"];
 
-const testimonials: Testimonial[] = [
+const curatedTestimonials: Testimonial[] = [
   {
     text: "We booked 42 qualified demos in the first three weeks. The data was cleaner than anything we've ever pulled from Apollo directly.",
-    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=150&h=150",
+    image:
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=150&h=150",
     name: "Sarah Chen",
     role: "VP Growth, Northwind",
   },
   {
     text: "Delivered in 18 hours. Bounce rate under 2%. LyraData is now our default outbound engine — we cancelled two other tools.",
-    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=150&h=150",
+    image:
+      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=150&h=150",
     name: "Marcus Rivera",
     role: "Founder, Helios Labs",
   },
   {
     text: "The mobile numbers actually connect. Our SDR team's connect rate jumped from 4% to 19% in a month. Wild ROI.",
-    image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=150&h=150",
+    image:
+      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=150&h=150",
     name: "Priya Anand",
     role: "Head of SDRs, Loomly",
   },
   {
     text: "Seamless integration with our CRM. Enriched 12k accounts overnight — no manual cleanup needed.",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=150&h=150",
+    image:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=150&h=150",
     name: "Omar Raza",
     role: "CEO, Vortex",
   },
   {
-    text: "Robust filters and blazing-fast turnaround transformed our workflow. We ship campaigns twice as fast.",
-    image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150&h=150",
-    name: "Zainab Hussain",
-    role: "Project Manager, Prisma",
-  },
-  {
-    text: "The onboarding exceeded expectations. Streamlined processes and improved outbound performance across every pod.",
-    image: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80&w=150&h=150",
-    name: "Aliza Khan",
-    role: "Business Analyst, Signal",
-  },
-  {
-    text: "User-friendly, precise data, and glowing feedback from our reps. Best outbound data investment this year.",
-    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=150&h=150",
-    name: "Farhan Siddiqui",
-    role: "Marketing Director, Kepler",
-  },
-  {
-    text: "They understood our niche ICP and delivered a solution that outperformed three vendors we tested prior.",
-    image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=150&h=150",
-    name: "Sana Sheikh",
-    role: "Sales Manager, Acme",
-  },
-  {
     text: "Our reply rate doubled and pipeline coverage tripled. LyraData is the quiet engine behind our Q4 number.",
-    image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=150&h=150",
+    image:
+      "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=150&h=150",
     name: "Hassan Ali",
     role: "E-commerce Manager",
   },
 ];
 
-const firstColumn = testimonials.slice(0, 3);
-const secondColumn = testimonials.slice(3, 6);
-const thirdColumn = testimonials.slice(6, 9);
-
-const videoTestimonials: VideoTestimonial[] = [
+const staticVideoTestimonials: VideoTestimonial[] = [
   {
     name: "Amine",
     role: "Verified client",
@@ -101,6 +82,35 @@ const videoTestimonials: VideoTestimonial[] = [
     flag: "🇮🇹",
   },
 ];
+
+// Map dynamic PublicReview -> local UI shape.
+function toTextItem(r: PublicReview): Testimonial {
+  return {
+    text: r.body ?? "",
+    image: avatarFor(r.display_name),
+    name: r.display_name,
+    role: [r.role, r.country].filter(Boolean).join(" · ") || "Verified customer",
+  };
+}
+function toVideoItem(r: PublicReview): VideoTestimonial | null {
+  if (!r.video_url) return null;
+  return {
+    name: r.display_name,
+    role: r.role || "Verified client",
+    company: r.country || "LyraData customer",
+    poster: r.poster_url ?? "",
+    src: r.video_url,
+    quote: r.body ?? "",
+    verified: true,
+    country: r.country ?? undefined,
+    flag: "",
+  };
+}
+function avatarFor(name: string) {
+  const seed = encodeURIComponent(name || "customer");
+  // DiceBear initials — same-origin friendly, deterministic
+  return `https://api.dicebear.com/7.x/initials/svg?seed=${seed}&backgroundType=gradientLinear`;
+}
 
 // --- Scrolling Column ---
 const TestimonialsColumn = (props: {
@@ -185,7 +195,7 @@ function VideoCard({ v }: { v: VideoTestimonial }) {
         <video
           ref={ref}
           src={v.src}
-          poster={v.poster}
+          poster={v.poster || undefined}
           playsInline
           preload="metadata"
           onEnded={() => setPlaying(false)}
@@ -193,10 +203,8 @@ function VideoCard({ v }: { v: VideoTestimonial }) {
           onPlay={() => setPlaying(true)}
           className="absolute inset-0 size-full object-cover"
         />
-        {/* Gradient overlay */}
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
 
-        {/* Play/pause button */}
         <button
           type="button"
           onClick={toggle}
@@ -208,14 +216,19 @@ function VideoCard({ v }: { v: VideoTestimonial }) {
               playing ? "opacity-0 group-hover:opacity-100" : "opacity-100"
             }`}
           >
-            {playing ? <Pause className="size-6 fill-current" /> : <Play className="size-6 translate-x-0.5 fill-current" />}
+            {playing ? (
+              <Pause className="size-6 fill-current" />
+            ) : (
+              <Play className="size-6 translate-x-0.5 fill-current" />
+            )}
           </span>
         </button>
 
-        {/* Bottom caption */}
         <figcaption className="absolute inset-x-0 bottom-0 p-6 text-white">
           {v.quote && (
-            <p className="font-display text-lg font-semibold leading-snug">&ldquo;{v.quote}&rdquo;</p>
+            <p className="font-display text-lg font-semibold leading-snug">
+              &ldquo;{v.quote}&rdquo;
+            </p>
           )}
           <div className="mt-3 flex items-center justify-between">
             <div>
@@ -226,7 +239,9 @@ function VideoCard({ v }: { v: VideoTestimonial }) {
                 )}
               </div>
               <div className="font-mono text-[10px] uppercase tracking-widest text-white/70">
-                {v.role} · {v.flag} {v.country} · {v.company}
+                {v.role}
+                {v.country ? ` · ${v.flag ? `${v.flag} ` : ""}${v.country}` : ""}
+                {v.company ? ` · ${v.company}` : ""}
               </div>
             </div>
             <div className="flex gap-0.5 text-coral">
@@ -243,8 +258,58 @@ function VideoCard({ v }: { v: VideoTestimonial }) {
 
 // --- Main exported component ---
 export function Testimonials() {
+  const listFn = useServerFn(listApprovedReviews);
+  const { data, refetch } = useQuery({
+    queryKey: ["reviews", "approved"],
+    queryFn: () => listFn(),
+    staleTime: 60_000,
+  });
+  const approved = data?.reviews ?? [];
+  const approvedCount = data?.count ?? 0;
+
+  const [open, setOpen] = useState(false);
+
+  const dynamicVideos: VideoTestimonial[] = useMemo(
+    () =>
+      approved
+        .filter((r) => r.media_kind === "video")
+        .map(toVideoItem)
+        .filter((v): v is VideoTestimonial => !!v),
+    [approved],
+  );
+
+  const dynamicText: Testimonial[] = useMemo(
+    () =>
+      approved
+        .filter((r) => r.media_kind === "text" && (r.body ?? "").length > 0)
+        .map(toTextItem),
+    [approved],
+  );
+
+  const allText = useMemo(
+    () => [...dynamicText, ...curatedTestimonials],
+    [dynamicText],
+  );
+
+  // Distribute across 3 columns so all reviews appear.
+  const cols = useMemo(() => {
+    const a: Testimonial[] = [];
+    const b: Testimonial[] = [];
+    const c: Testimonial[] = [];
+    allText.forEach((t, i) => {
+      if (i % 3 === 0) a.push(t);
+      else if (i % 3 === 1) b.push(t);
+      else c.push(t);
+    });
+    return { a, b, c };
+  }, [allText]);
+
+  const videos = [...dynamicVideos, ...staticVideoTestimonials];
+  const totalReviews = approvedCount + curatedTestimonials.length + staticVideoTestimonials.length;
+
   return (
     <section
+      id="reviews"
       aria-labelledby="testimonials-heading"
       className="relative overflow-hidden border-t border-border bg-card px-6 py-24"
     >
@@ -269,11 +334,11 @@ export function Testimonials() {
         </div>
 
         {/* Header */}
-        <div className="mx-auto mb-16 flex max-w-2xl flex-col items-center text-center">
+        <div className="mx-auto mb-10 flex max-w-2xl flex-col items-center text-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-violet/20 bg-violet-soft px-3 py-1">
             <Star className="size-3 fill-current text-violet" />
             <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-violet">
-              4.9 / 5 · 380+ reviews
+              4.9 / 5 · {totalReviews.toLocaleString()} verified reviews
             </span>
           </div>
           <h2
@@ -283,16 +348,34 @@ export function Testimonials() {
             Loved by growth teams that ship
           </h2>
           <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
-            Watch a verified client explain how LyraData powers their outbound.
+            Every review below comes from a signed-in customer. We verify before we publish.
           </p>
+
+          <button
+            type="button"
+            onClick={() => setOpen(true)}
+            className="mt-6 inline-flex items-center gap-2 rounded-xl bg-foreground px-5 py-3 text-sm font-semibold text-background shadow-md transition-transform hover:-translate-y-0.5"
+          >
+            <PenSquare className="size-4" /> Share your experience
+          </button>
         </div>
 
         {/* Video testimonials */}
-        <div className="mx-auto mb-20 grid max-w-md gap-6">
-          {videoTestimonials.map((v) => (
-            <VideoCard key={v.name} v={v} />
-          ))}
-        </div>
+        {videos.length > 0 && (
+          <div
+            className={`mx-auto mb-20 grid gap-6 ${
+              videos.length === 1
+                ? "max-w-md"
+                : videos.length === 2
+                ? "max-w-2xl grid-cols-1 sm:grid-cols-2"
+                : "max-w-5xl grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+            }`}
+          >
+            {videos.map((v, i) => (
+              <VideoCard key={`${v.name}-${i}`} v={v} />
+            ))}
+          </div>
+        )}
 
         {/* Divider */}
         <div className="mx-auto mb-12 flex max-w-xl items-center gap-4 text-muted-foreground">
@@ -309,11 +392,19 @@ export function Testimonials() {
           role="region"
           aria-label="Scrolling customer testimonials"
         >
-          <TestimonialsColumn testimonials={firstColumn} duration={20} />
-          <TestimonialsColumn testimonials={secondColumn} className="hidden md:block" duration={26} />
-          <TestimonialsColumn testimonials={thirdColumn} className="hidden lg:block" duration={22} />
+          <TestimonialsColumn testimonials={cols.a} duration={20} />
+          <TestimonialsColumn testimonials={cols.b} className="hidden md:block" duration={26} />
+          <TestimonialsColumn testimonials={cols.c} className="hidden lg:block" duration={22} />
         </div>
       </div>
+
+      <ReviewSubmitModal
+        open={open}
+        onClose={() => setOpen(false)}
+        onSubmitted={() => {
+          refetch();
+        }}
+      />
     </section>
   );
 }

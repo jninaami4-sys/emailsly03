@@ -104,7 +104,7 @@ export const requestRevision = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
-import { z as _z } from "zod";
+
 
 /** Record a completed order from the payment-success page (idempotent by payment_ref). */
 export const recordMyOrder = createServerFn({ method: "POST" })
@@ -112,16 +112,16 @@ export const recordMyOrder = createServerFn({ method: "POST" })
   .inputValidator((d) =>
     _z
       .object({
-        payment_ref: _z.string().min(1),
-        service_label: _z.string().min(1),
-        service_id: _z.string().optional().nullable(),
-        quantity: _z.number().int().min(1).default(1),
-        subtotal_cents: _z.number().int().min(0),
-        discount_cents: _z.number().int().min(0).default(0),
-        promo_code: _z.string().optional().nullable(),
-        total_cents: _z.number().int().min(0),
-        currency: _z.string().default("USD"),
-        payment_provider: _z.string().default("stripe"),
+        payment_ref: z.string().min(1),
+        service_label: z.string().min(1),
+        service_id: z.string().optional().nullable(),
+        quantity: z.number().int().min(1).default(1),
+        subtotal_cents: z.number().int().min(0),
+        discount_cents: z.number().int().min(0).default(0),
+        promo_code: z.string().optional().nullable(),
+        total_cents: z.number().int().min(0),
+        currency: z.string().default("USD"),
+        payment_provider: z.string().default("stripe"),
       })
       .parse(d),
   )

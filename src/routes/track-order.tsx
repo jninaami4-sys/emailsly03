@@ -217,6 +217,8 @@ function TrackOrderPage() {
             </div>
           )}
 
+          {/* Loading state */}
+          {loading && <TrackResultSkeleton />}
 
           {/* Result */}
           {result && (

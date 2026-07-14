@@ -21,6 +21,7 @@ import { CookieConsent } from "@/components/site/CookieConsent";
 import { ChatbotWidget } from "@/components/site/ChatbotWidget";
 import { RouteTransition } from "@/components/site/RouteTransition";
 import { SectionReveal } from "@/components/site/SectionReveal";
+import { CacheJanitor } from "@/components/site/CacheJanitor";
 
 function NotFoundComponent() {
   return (

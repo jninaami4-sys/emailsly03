@@ -148,6 +148,14 @@ const services: Service[] = [
 ];
 
 export function ServicesCarousel() {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 640px)");
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
   return (
     <section className="relative overflow-hidden border-t border-white/10 px-4 py-24 sm:px-6">
       {/* Ambient glow */}

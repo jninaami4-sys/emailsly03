@@ -9,6 +9,7 @@ import {
   updateMyProfile,
   requestRevision,
 } from "@/lib/orders.functions";
+import { getMyReferralSummary, type ReferralSummary } from "@/lib/referrals.functions";
 import { SiteShell } from "@/components/site/SiteShell";
 import { useAuth } from "@/hooks/use-auth";
 import { openOrderDrawer } from "@/components/site/OrderDrawer";
@@ -921,7 +922,7 @@ function ReferralCard() {
   const balance = (data?.balance_cents ?? 0) / 100;
   const earned = (data?.totals.earned_cents ?? 0) / 100;
   const pending = (data?.totals.pending_cents ?? 0) / 100;
-  const qualified = data?.referrals.filter((r) => r.status !== "pending").length ?? 0;
+  const qualified = data?.referrals.filter((r: ReferralSummary["referrals"][number]) => r.status !== "pending").length ?? 0;
 
   return (
     <div className="relative overflow-hidden rounded-2xl border border-border bg-card p-5">

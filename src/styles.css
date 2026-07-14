@@ -298,6 +298,105 @@
   .loader-713-load { width: 100%; transform: none; }
 }
 
+/* ---------- Iso-pro social card (Uiverse.io / jolprince_5263 — themed) ---------- */
+.iso-social-card {
+  max-width: fit-content;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  justify-content: center;
+  gap: 1rem;
+  backdrop-filter: blur(15px);
+  box-shadow:
+    inset 0 0 20px rgba(255, 255, 255, 0.19),
+    inset 0 0 5px rgba(255, 255, 255, 0.27),
+    0 5px 5px rgba(0, 0, 0, 0.16);
+  transition: 0.5s;
+}
+.iso-social-card:hover { background: rgba(173, 173, 173, 0.05); }
+.iso-social-card ul {
+  padding: 1rem;
+  display: flex;
+  list-style: none;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  flex-direction: row;
+  margin: 0;
+}
+.iso-social-card ul li { cursor: pointer; position: relative; }
+.iso-social-card .iso-svg {
+  transition: all 0.3s;
+  padding: 0.85rem;
+  height: 52px;
+  width: 52px;
+  border-radius: 100%;
+  color: currentColor;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    inset 0 0 20px rgba(255, 255, 255, 0.3),
+    inset 0 0 5px rgba(255, 255, 255, 0.5),
+    0 5px 5px rgba(0, 0, 0, 0.16);
+}
+.iso-social-card .iso-svg svg { width: 100%; height: 100%; fill: currentColor; }
+.iso-social-card .iso-text {
+  opacity: 0;
+  border-radius: 5px;
+  padding: 4px 8px;
+  transition: all 0.3s;
+  background-color: rgba(255, 255, 255, 0.3);
+  position: absolute;
+  z-index: 20;
+  top: 0; left: 0;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border: 1px solid currentColor;
+  box-shadow:
+    inset 0 0 20px rgba(255, 255, 255, 0.3),
+    inset 0 0 5px rgba(255, 255, 255, 0.5),
+    0 5px 5px rgba(0, 0, 0, 0.08);
+}
+.iso-social-card .iso-pro { transition: 0.5s; position: relative; }
+.iso-social-card .iso-pro a { display: inline-block; position: relative; }
+.iso-social-card .iso-pro:hover a > .iso-svg {
+  transform: translate(15px, -15px);
+  border-radius: 100%;
+}
+.iso-social-card .iso-pro:hover .iso-text {
+  opacity: 1;
+  transform: translate(30px, -6px) skew(-5deg);
+}
+.iso-social-card .iso-pro > span {
+  opacity: 0;
+  position: absolute;
+  top: 0; left: 0;
+  border: 1px solid currentColor;
+  color: inherit;
+  box-shadow:
+    inset 0 0 20px rgba(255, 255, 255, 0.3),
+    inset 0 0 5px rgba(255, 255, 255, 0.5),
+    0 5px 5px rgba(0, 0, 0, 0.16);
+  border-radius: 50%;
+  transition: all 0.3s;
+  height: 52px;
+  width: 52px;
+  pointer-events: none;
+}
+.iso-social-card .iso-pro:hover span:nth-child(1) { opacity: 0.2; }
+.iso-social-card .iso-pro:hover span:nth-child(2) { opacity: 0.4; transform: translate(5px, -5px); }
+.iso-social-card .iso-pro:hover span:nth-child(3) { opacity: 0.6; transform: translate(10px, -10px); }
+@media (prefers-reduced-motion: reduce) {
+  .iso-social-card .iso-pro,
+  .iso-social-card .iso-pro:hover a > .iso-svg,
+  .iso-social-card .iso-pro:hover .iso-text,
+  .iso-social-card .iso-pro:hover span { transition: none !important; transform: none !important; }
+}
+
 html { scroll-behavior: smooth; }
 
 /* In-page section reveal */

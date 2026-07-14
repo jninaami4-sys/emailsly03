@@ -707,10 +707,7 @@ function buildReceiptHtml(r: {
   timeStr: string;
   name: string;
   email: string;
-  service: string;
-  qty: number;
-  unit: string;
-  unitPrice: number;
+  lineItems: LineItem[];
   subtotal: number;
   fee: number;
   tax: number;
@@ -721,6 +718,20 @@ function buildReceiptHtml(r: {
       ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c] as string),
     );
   const money = (n: number) => `$${n.toFixed(2)}`;
+  const itemsHtml = r.lineItems
+    .map(
+      (it) => `
+          <tr>
+            <td>
+              <div style="font-weight:600;">${esc(it.title)}</div>
+              ${it.note ? `<div style="color:#6b7280; font-size:12px;">${esc(it.note)}</div>` : ""}
+            </td>
+            <td class="num">${it.qty.toLocaleString()}</td>
+            <td class="num" style="color:#6b7280;">$${it.unitPrice.toFixed(it.unitPrice < 1 ? 4 : 2)}/${esc(it.unit)}</td>
+            <td class="num">${money(it.amount)}</td>
+          </tr>`,
+    )
+    .join("");
   return `<!doctype html>
 <html lang="en">
 <head>

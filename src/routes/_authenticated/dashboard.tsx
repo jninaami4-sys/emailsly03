@@ -11,6 +11,7 @@ import {
 } from "@/lib/orders.functions";
 import { getMyReferralSummary, type ReferralSummary } from "@/lib/referrals.functions";
 import { SiteShell } from "@/components/site/SiteShell";
+import { ReferralErrorBoundary } from "@/components/site/ReferralErrorBoundary";
 import { useAuth } from "@/hooks/use-auth";
 import { openOrderDrawer } from "@/components/site/OrderDrawer";
 import {
@@ -221,7 +222,9 @@ function DashboardPage() {
 
             {/* Sidebar */}
             <aside className="space-y-4">
-              <ReferralCard />
+              <ReferralErrorBoundary>
+                <ReferralCard />
+              </ReferralErrorBoundary>
               <RecommendedCard />
               <SupportCard />
             </aside>
@@ -914,6 +917,7 @@ function ReferralCard() {
     queryKey: ["my-referral-summary"],
     queryFn: () => summaryFn(),
     staleTime: 30_000,
+    retry: false,
   });
   const code = data?.referral_code ?? "…";
   const link = typeof window !== "undefined"

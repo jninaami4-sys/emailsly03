@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { validatePromo, type PromoResult } from "@/lib/promos.functions";
 import { getMyReferralBalance } from "@/lib/referrals.functions";
 import { useAuth } from "@/hooks/use-auth";
+import { ReferralErrorBoundary } from "@/components/site/ReferralErrorBoundary";
 import { usePricingOverrides } from "@/hooks/use-pricing-overrides";
 import { Gift } from "lucide-react";
 
@@ -794,25 +795,27 @@ export function OrderBuilder() {
                 </div>
 
                 {user && creditBalanceCents > 0 && (
-                  <label className="relative mt-4 flex cursor-pointer items-start gap-3 rounded-xl border border-emerald/30 bg-emerald/5 p-3 text-left transition-colors hover:bg-emerald/10">
-                    <input
-                      type="checkbox"
-                      checked={useCredit}
-                      onChange={(e) => setUseCredit(e.target.checked)}
-                      className="mt-0.5 size-4 accent-emerald"
-                    />
-                    <span className="flex-1 text-xs text-white">
-                      <span className="flex items-center gap-1.5 font-semibold text-emerald">
-                        <Gift className="size-3.5" /> Apply my referral credit
+                  <ReferralErrorBoundary label="credit" fallback={null}>
+                    <label className="relative mt-4 flex cursor-pointer items-start gap-3 rounded-xl border border-emerald/30 bg-emerald/5 p-3 text-left transition-colors hover:bg-emerald/10">
+                      <input
+                        type="checkbox"
+                        checked={useCredit}
+                        onChange={(e) => setUseCredit(e.target.checked)}
+                        className="mt-0.5 size-4 accent-emerald"
+                      />
+                      <span className="flex-1 text-xs text-white">
+                        <span className="flex items-center gap-1.5 font-semibold text-emerald">
+                          <Gift className="size-3.5" /> Apply my referral credit
+                        </span>
+                        <span className="mt-0.5 block text-white/60">
+                          You have <span className="font-mono text-emerald">{formatUSD(creditBalanceCents / 100)}</span> available
+                          {useCredit && creditApplied > 0 && (
+                            <> · using <span className="font-mono">{formatUSD(creditApplied)}</span> on this order</>
+                          )}
+                        </span>
                       </span>
-                      <span className="mt-0.5 block text-white/60">
-                        You have <span className="font-mono text-emerald">{formatUSD(creditBalanceCents / 100)}</span> available
-                        {useCredit && creditApplied > 0 && (
-                          <> · using <span className="font-mono">{formatUSD(creditApplied)}</span> on this order</>
-                        )}
-                      </span>
-                    </span>
-                  </label>
+                    </label>
+                  </ReferralErrorBoundary>
                 )}
 
                 <div className="relative mt-6 space-y-2 border-t border-white/10 pt-5 text-sm">

@@ -10,7 +10,7 @@ import { MobileBottomNav } from "./MobileBottomNav";
 
 export function SiteShell({ children }: { children: ReactNode }) {
   return (
-    <div className="theme-midnight flex min-h-screen flex-col bg-background text-foreground">
+    <div className="theme-midnight flex min-h-screen flex-col bg-background text-foreground pb-[calc(6rem+env(safe-area-inset-bottom))] md:pb-0">
       <Preloader />
       <MouseGlow />
       <Header />

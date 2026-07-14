@@ -52,7 +52,7 @@ const SERVICES: Service[] = [
   { id: "zoominfo", name: "ZoomInfo Data", rate: 0.02, minQty: 1000, minOrder: 20, unit: "lead", icon: Building2, group: "data" },
   { id: "linkedin", name: "LinkedIn Lead Lists", rate: 0.01, minQty: 5000, minOrder: 50, unit: "lead", helper: "~70% include verified emails", icon: Linkedin, group: "data" },
   { id: "manual", name: "Hand-Picked Leads", rate: 0.35, minQty: 100, minOrder: 35, unit: "lead", helper: "Min 100 leads · enter any quantity", icon: UserSearch, group: "data" },
-  { id: "mobile", name: "Mobile Number Lookup", rate: 0.35, minQty: 100, minOrder: 35, unit: "record", helper: "Min 100 numbers · enter any quantity", icon: Phone, group: "data" },
+  { id: "mobile", name: "Mobile Number Lookup", rate: 0.25, minQty: 100, minOrder: 25, unit: "record", helper: "Min 100 numbers · enter any quantity", icon: Phone, group: "data" },
   { id: "pixel", name: "Facebook Pixel", rate: 100, minQty: 1, minOrder: 100, unit: "setup", fixed: true, icon: MousePointerClick, group: "growth" },
   { id: "ads", name: "Google Ads Launch", rate: 100, minQty: 1, minOrder: 100, unit: "setup", fixed: true, icon: LineChart, group: "growth" },
   { id: "tracking", name: "Server-Side Tracking", rate: 150, minQty: 1, minOrder: 150, unit: "setup", fixed: true, icon: ServerCog, group: "growth" },

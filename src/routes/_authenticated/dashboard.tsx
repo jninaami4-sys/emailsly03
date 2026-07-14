@@ -11,6 +11,7 @@ import {
 } from "@/lib/orders.functions";
 import { getMyReferralSummary, type ReferralSummary } from "@/lib/referrals.functions";
 import { SiteShell } from "@/components/site/SiteShell";
+import { ReferralErrorBoundary } from "@/components/site/ReferralErrorBoundary";
 import { useAuth } from "@/hooks/use-auth";
 import { openOrderDrawer } from "@/components/site/OrderDrawer";
 import {

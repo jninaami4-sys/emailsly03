@@ -11,6 +11,7 @@ import {
   Clock,
 } from "lucide-react";
 import { PremiumLogoMark } from "@/components/site/PremiumIcons";
+import { InvoiceSkeleton } from "@/components/site/InvoiceSkeleton";
 
 export const Route = createFileRoute("/payment-success")({
   component: PaymentSuccessPage,
@@ -47,6 +48,11 @@ function genOrderId() {
 function PaymentSuccessPage() {
   const search = Route.useSearch();
   const [now] = useState(() => new Date());
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const t = window.setTimeout(() => setLoading(false), 700);
+    return () => window.clearTimeout(t);
+  }, []);
   const orderId = useMemo(() => search.order || genOrderId(), [search.order]);
   const invoiceNo = useMemo(
     () => `INV-${orderId.replace(/^LD-/, "")}`,
@@ -99,6 +105,8 @@ function PaymentSuccessPage() {
       ),
     [orderId, invoiceNo, dateStr, timeStr, name, email, service, qty, unit, unitPrice, subtotal, fee, tax, total],
   );
+
+  if (loading) return <InvoiceSkeleton />;
 
   return (
     <div className="relative min-h-[calc(100vh-4rem)] overflow-hidden bg-background px-4 py-12 md:py-20">

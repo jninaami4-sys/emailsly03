@@ -474,31 +474,44 @@ function Invoice(props: {
             </div>
           </div>
 
-          {/* Mobile: stacked line item card */}
-          <div className="mt-6 rounded-2xl border border-neutral-200 p-4 sm:hidden">
-            <div className="font-medium text-neutral-900">{service}</div>
-            <div className="mt-1 text-xs text-neutral-500">
-              Verified contacts · CSV delivery · 24h SLA
-            </div>
-            <dl className="mt-4 grid grid-cols-2 gap-2 text-sm">
-              <dt className="text-neutral-500">Qty</dt>
-              <dd className="text-right tabular-nums">{qty.toLocaleString()}</dd>
-              <dt className="text-neutral-500">Unit</dt>
-              <dd className="text-right tabular-nums text-neutral-500">
-                ${unitPrice.toFixed(4)}/{unit}
-              </dd>
-              <dt className="text-neutral-500">Subtotal</dt>
-              <dd className="text-right tabular-nums">${subtotal.toFixed(2)}</dd>
-              <dt className="text-neutral-500">Processing fee</dt>
-              <dd className="text-right tabular-nums">${fee.toFixed(2)}</dd>
-              <dt className="text-neutral-500">Tax</dt>
-              <dd className="text-right tabular-nums">${tax.toFixed(2)}</dd>
-            </dl>
-            <div className="mt-3 flex items-center justify-between border-t border-neutral-200 pt-3">
-              <span className="font-semibold">Total paid</span>
-              <span className="font-display text-lg font-bold tabular-nums">
-                ${total.toFixed(2)} USD
-              </span>
+          {/* Mobile: stacked line items */}
+          <div className="mt-6 space-y-3 sm:hidden">
+            {lineItems.map((item, i) => (
+              <div key={i} className="rounded-2xl border border-neutral-200 p-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <div className="font-medium text-neutral-900">{item.title}</div>
+                    {item.note && (
+                      <div className="mt-1 text-xs text-neutral-500">{item.note}</div>
+                    )}
+                  </div>
+                  <div className="text-right font-semibold tabular-nums">
+                    ${item.amount.toFixed(2)}
+                  </div>
+                </div>
+                <div className="mt-3 flex items-center justify-between text-xs text-neutral-500">
+                  <span>Qty {item.qty.toLocaleString()}</span>
+                  <span className="tabular-nums">
+                    ${item.unitPrice.toFixed(item.unitPrice < 1 ? 4 : 2)}/{item.unit}
+                  </span>
+                </div>
+              </div>
+            ))}
+            <div className="rounded-2xl border border-neutral-200 p-4">
+              <dl className="grid grid-cols-2 gap-2 text-sm">
+                <dt className="text-neutral-500">Subtotal</dt>
+                <dd className="text-right tabular-nums">${subtotal.toFixed(2)}</dd>
+                <dt className="text-neutral-500">Stripe processing fee (2.9% + $0.30)</dt>
+                <dd className="text-right tabular-nums">${fee.toFixed(2)}</dd>
+                <dt className="text-neutral-500">Tax</dt>
+                <dd className="text-right tabular-nums">${tax.toFixed(2)}</dd>
+              </dl>
+              <div className="mt-3 flex items-center justify-between border-t border-neutral-200 pt-3">
+                <span className="font-semibold">Total paid</span>
+                <span className="font-display text-lg font-bold tabular-nums">
+                  ${total.toFixed(2)} USD
+                </span>
+              </div>
             </div>
           </div>
 
@@ -522,19 +535,25 @@ function Invoice(props: {
                 </tr>
               </thead>
               <tbody>
-                <tr className="border-t border-neutral-200">
-                  <td className="px-4 py-4">
-                    <div className="font-medium text-neutral-900">{service}</div>
-                    <div className="text-xs text-neutral-500">
-                      Verified contacts · CSV delivery · 24h SLA
-                    </div>
-                  </td>
-                  <td className="px-4 py-4 text-right tabular-nums">{qty.toLocaleString()}</td>
-                  <td className="px-4 py-4 text-right tabular-nums text-neutral-500">
-                    ${unitPrice.toFixed(4)}/{unit}
-                  </td>
-                  <td className="px-4 py-4 text-right tabular-nums">${subtotal.toFixed(2)}</td>
-                </tr>
+                {lineItems.map((item, i) => (
+                  <tr key={i} className="border-t border-neutral-200 align-top">
+                    <td className="px-4 py-4">
+                      <div className="font-medium text-neutral-900">{item.title}</div>
+                      {item.note && (
+                        <div className="text-xs text-neutral-500">{item.note}</div>
+                      )}
+                    </td>
+                    <td className="px-4 py-4 text-right tabular-nums">
+                      {item.qty.toLocaleString()}
+                    </td>
+                    <td className="px-4 py-4 text-right tabular-nums text-neutral-500">
+                      ${item.unitPrice.toFixed(item.unitPrice < 1 ? 4 : 2)}/{item.unit}
+                    </td>
+                    <td className="px-4 py-4 text-right tabular-nums">
+                      ${item.amount.toFixed(2)}
+                    </td>
+                  </tr>
+                ))}
               </tbody>
               <tfoot>
                 <tr className="border-t border-neutral-200 text-sm">
@@ -544,7 +563,9 @@ function Invoice(props: {
                 </tr>
                 <tr className="text-sm">
                   <td className="px-4 py-2" colSpan={2} />
-                  <td className="px-4 py-2 text-right text-neutral-500">Processing fee</td>
+                  <td className="px-4 py-2 text-right text-neutral-500">
+                    Stripe processing fee (2.9% + $0.30)
+                  </td>
                   <td className="px-4 py-2 text-right tabular-nums">${fee.toFixed(2)}</td>
                 </tr>
                 <tr className="text-sm">
@@ -562,6 +583,7 @@ function Invoice(props: {
               </tfoot>
             </table>
           </div>
+
 
           <p className="mt-6 text-xs text-neutral-500">
             Thank you for your business. If you have questions about this receipt, reply to your

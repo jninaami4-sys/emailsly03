@@ -220,7 +220,7 @@ function DashboardPage() {
 
             {/* Sidebar */}
             <aside className="space-y-4">
-              <ReferralCard email={user?.email} />
+              <ReferralCard />
               <RecommendedCard />
               <SupportCard />
             </aside>

@@ -59,7 +59,7 @@ const DATA_TIERS: Tier[] = [
     icon: Zap,
     popular: true,
     features: ["Work & Personal Emails", "Fast CSV Delivery", "Real-Time Data", "Current Job Titles"],
-    disclaimer: "$35 for 10K+ leads. Contact us for 50K+.",
+    disclaimer: "Price changes to $35 from 10,000 leads. Contact us for 50K+.",
   },
   {
     id: "zoominfo",

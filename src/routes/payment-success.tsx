@@ -547,11 +547,11 @@ function Invoice(props: {
       {/* Perforated footer */}
       <div className="relative">
         <div className="absolute inset-x-0 -top-2 h-4 bg-[radial-gradient(circle_at_8px_8px,white_6px,transparent_7px)] [background-size:16px_16px]" />
-        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-dashed border-neutral-200 px-8 py-5 text-[11px] text-neutral-500 md:px-12">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-t border-dashed border-neutral-200 px-5 py-4 text-[11px] text-neutral-500 sm:px-8 sm:py-5 md:px-12">
           <span className="font-mono uppercase tracking-widest">
             Lyra Data · lyradata.com
           </span>
-          <span className="font-mono">{orderId}</span>
+          <span className="truncate font-mono">{orderId}</span>
         </div>
       </div>
     </div>

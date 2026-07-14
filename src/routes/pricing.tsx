@@ -57,7 +57,7 @@ const DATA_TIERS: Tier[] = [
     per: "/ 5k leads",
     min: "$0.0035 per lead · min 5,000",
     desc: "Standard bulk export directly from your Apollo search filters.",
-    icon: Zap,
+    icon: Crown,
     popular: true,
     features: ["Work & Personal Emails", "Fast CSV Delivery", "Real-Time Data", "Current Job Titles"],
     disclaimer: "Price changes to $35 from 10,000 leads. Contact us for 50K+.",

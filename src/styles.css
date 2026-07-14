@@ -222,15 +222,6 @@
 }
 
 
-@keyframes route-progress {
-  0%   { transform: translateX(-100%); }
-  60%  { transform: translateX(20%); }
-  100% { transform: translateX(100%); }
-}
-.route-progress-bar {
-  animation: route-progress 1.1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-}
-
 /* ---------- Premium loader (orb + orbit ring) ---------- */
 @property --border-angle {
   syntax: "<angle>";

@@ -222,7 +222,9 @@ function DashboardPage() {
 
             {/* Sidebar */}
             <aside className="space-y-4">
-              <ReferralCard />
+              <ReferralErrorBoundary>
+                <ReferralCard />
+              </ReferralErrorBoundary>
               <RecommendedCard />
               <SupportCard />
             </aside>

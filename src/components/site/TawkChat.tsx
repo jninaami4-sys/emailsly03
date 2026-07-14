@@ -177,7 +177,7 @@ export function TawkChat() {
             onClick={openChat}
             disabled={!ready}
             aria-label="Open live chat"
-            className="group relative grid size-11 place-items-center overflow-hidden rounded-full text-white shadow-[0_10px_40px_-8px_rgba(124,58,237,0.55)] transition-transform hover:scale-[1.06] focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70 disabled:cursor-progress sm:size-12 md:size-13 lg:size-14"
+            className="group relative grid size-10 place-items-center overflow-hidden rounded-full text-white shadow-[0_10px_40px_-8px_rgba(124,58,237,0.55)] transition-transform hover:scale-[1.06] focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70 disabled:cursor-progress sm:size-11 md:size-12 lg:size-14"
             style={{
               background:
                 "conic-gradient(from 220deg at 50% 50%, #7C3AED, #4F46E5, #FF6B4A, #7C3AED)",
@@ -201,7 +201,7 @@ export function TawkChat() {
             {/* Icon (chat-bubble made of two orbiting sparks) */}
             <svg
               viewBox="0 0 32 32"
-              className="relative z-10 size-5 sm:size-5.5 md:size-6 lg:size-6.5"
+              className="relative z-10 size-4 sm:size-5 md:size-5 lg:size-6"
               fill="none"
               aria-hidden
             >

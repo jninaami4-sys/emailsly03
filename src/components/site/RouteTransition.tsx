@@ -65,35 +65,20 @@ function TopProgressBar({ active }: { active: boolean }) {
   );
 }
 
-function SkeletonBlock({ className = "" }: { className?: string }) {
-  return (
-    <div
-      className={`animate-pulse rounded-xl bg-muted/60 ${className}`}
-      aria-hidden="true"
-    />
-  );
-}
-
 function PageSkeleton() {
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:py-14">
-      <div className="space-y-4">
-        <SkeletonBlock className="h-4 w-32" />
-        <SkeletonBlock className="h-10 w-3/4 sm:h-12" />
-        <SkeletonBlock className="h-4 w-2/3" />
+    <div className="relative flex min-h-[60vh] items-center justify-center overflow-hidden px-4 py-16">
+      <div aria-hidden className="pointer-events-none absolute inset-0">
+        <div className="absolute left-1/2 top-1/2 size-[420px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet/10 blur-3xl animate-aurora-slow" />
+        <div className="absolute inset-0 bg-[radial-gradient(oklch(0.6_0.12_280/0.05)_1px,transparent_1px)] [background-size:22px_22px] opacity-60" />
       </div>
-
-      <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {Array.from({ length: 6 }).map((_, i) => (
-          <div
-            key={i}
-            className="rounded-2xl border border-border bg-card/50 p-5"
-          >
-            <SkeletonBlock className="mb-4 h-40 w-full" />
-            <SkeletonBlock className="mb-2 h-4 w-3/4" />
-            <SkeletonBlock className="h-4 w-1/2" />
-          </div>
-        ))}
+      <div className="relative flex flex-col items-center text-center">
+        <div className="rounded-2xl border border-violet/15 bg-card/70 px-5 py-4 shadow-[0_20px_60px_-25px_oklch(0.52_0.24_293/0.35)] backdrop-blur">
+          <Loader713 label="LOADING" />
+        </div>
+        <p className="mt-5 font-mono text-[10px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">
+          Preparing your page
+        </p>
       </div>
     </div>
   );

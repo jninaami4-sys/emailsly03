@@ -109,7 +109,7 @@ function PaymentSuccessPage() {
   if (loading) return <InvoiceSkeleton />;
 
   return (
-    <div className="relative min-h-[calc(100vh-4rem)] overflow-hidden bg-background px-4 py-12 md:py-20">
+    <div className="relative min-h-[calc(100vh-4rem)] overflow-hidden bg-background px-3 py-10 sm:px-4 sm:py-12 md:py-20">
       <BackdropFx />
       <div className="relative mx-auto max-w-4xl">
         {/* Success hero */}
@@ -118,7 +118,7 @@ function PaymentSuccessPage() {
           <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-emerald/20 bg-emerald/10 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-emerald animate-fade-in">
             <Sparkles className="size-3" /> Payment confirmed
           </div>
-          <h1 className="mt-4 font-display text-4xl font-bold tracking-tight md:text-6xl animate-fade-in">
+          <h1 className="mt-4 font-display text-3xl font-bold tracking-tight sm:text-4xl md:text-6xl animate-fade-in">
             Thank you,{" "}
             <span className="relative inline-block">
               <span className="relative z-10 italic text-violet">{name.split(" ")[0]}</span>
@@ -365,19 +365,19 @@ function Invoice(props: {
   return (
     <div
       ref={ref}
-      className="relative mx-auto overflow-hidden rounded-3xl bg-white text-neutral-900 shadow-[0_30px_80px_-30px_rgba(15,15,40,0.35)] ring-1 ring-black/5 print:shadow-none print:ring-0"
+      className="relative mx-auto overflow-hidden rounded-2xl bg-white text-neutral-900 shadow-[0_30px_80px_-30px_rgba(15,15,40,0.35)] ring-1 ring-black/5 sm:rounded-3xl print:shadow-none print:ring-0"
     >
       {/* Top ribbon */}
       <div className="h-2 w-full bg-gradient-to-r from-violet via-coral to-emerald" />
 
-      <div className="grid gap-8 p-8 md:grid-cols-[1.4fr_1fr] md:p-12">
+      <div className="grid gap-6 p-5 sm:gap-8 sm:p-8 md:grid-cols-[1.4fr_1fr] md:p-12">
         {/* Left: brand + billing */}
-        <div>
+        <div className="min-w-0">
           <div className="flex items-center gap-3">
-            <div className="flex size-11 items-center justify-center rounded-xl bg-gradient-to-br from-violet to-indigo text-white shadow-md">
+            <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-violet to-indigo text-white shadow-md">
               <PremiumLogoMark className="size-6" />
             </div>
-            <div>
+            <div className="min-w-0">
               <div className="font-display text-lg font-bold leading-none">LyraData</div>
               <div className="text-[11px] uppercase tracking-widest text-neutral-500">
                 Official Receipt
@@ -385,15 +385,15 @@ function Invoice(props: {
             </div>
           </div>
 
-          <div className="mt-10 grid grid-cols-2 gap-6 text-sm">
-            <div>
+          <div className="mt-8 grid grid-cols-1 gap-5 text-sm sm:grid-cols-2 sm:gap-6 sm:mt-10">
+            <div className="min-w-0">
               <div className="mb-1 font-mono text-[10px] font-semibold uppercase tracking-widest text-neutral-400">
                 Billed to
               </div>
-              <div className="font-semibold">{name}</div>
-              <div className="text-neutral-600">{email}</div>
+              <div className="truncate font-semibold">{name}</div>
+              <div className="truncate text-neutral-600">{email}</div>
             </div>
-            <div>
+            <div className="min-w-0">
               <div className="mb-1 font-mono text-[10px] font-semibold uppercase tracking-widest text-neutral-400">
                 From
               </div>
@@ -406,8 +406,37 @@ function Invoice(props: {
             </div>
           </div>
 
-          <div className="mt-8 overflow-hidden rounded-2xl border border-neutral-200">
-            <table className="w-full text-sm">
+          {/* Mobile: stacked line item card */}
+          <div className="mt-6 rounded-2xl border border-neutral-200 p-4 sm:hidden">
+            <div className="font-medium text-neutral-900">{service}</div>
+            <div className="mt-1 text-xs text-neutral-500">
+              Verified contacts · CSV delivery · 24h SLA
+            </div>
+            <dl className="mt-4 grid grid-cols-2 gap-2 text-sm">
+              <dt className="text-neutral-500">Qty</dt>
+              <dd className="text-right tabular-nums">{qty.toLocaleString()}</dd>
+              <dt className="text-neutral-500">Unit</dt>
+              <dd className="text-right tabular-nums text-neutral-500">
+                ${unitPrice.toFixed(4)}/{unit}
+              </dd>
+              <dt className="text-neutral-500">Subtotal</dt>
+              <dd className="text-right tabular-nums">${subtotal.toFixed(2)}</dd>
+              <dt className="text-neutral-500">Processing fee</dt>
+              <dd className="text-right tabular-nums">${fee.toFixed(2)}</dd>
+              <dt className="text-neutral-500">Tax</dt>
+              <dd className="text-right tabular-nums">${tax.toFixed(2)}</dd>
+            </dl>
+            <div className="mt-3 flex items-center justify-between border-t border-neutral-200 pt-3">
+              <span className="font-semibold">Total paid</span>
+              <span className="font-display text-lg font-bold tabular-nums">
+                ${total.toFixed(2)} USD
+              </span>
+            </div>
+          </div>
+
+          {/* Desktop table */}
+          <div className="mt-8 hidden overflow-x-auto rounded-2xl border border-neutral-200 sm:block">
+            <table className="w-full min-w-[520px] text-sm">
               <thead className="bg-neutral-50 text-neutral-500">
                 <tr>
                   <th className="px-4 py-3 text-left font-mono text-[10px] font-semibold uppercase tracking-widest">
@@ -518,11 +547,11 @@ function Invoice(props: {
       {/* Perforated footer */}
       <div className="relative">
         <div className="absolute inset-x-0 -top-2 h-4 bg-[radial-gradient(circle_at_8px_8px,white_6px,transparent_7px)] [background-size:16px_16px]" />
-        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-dashed border-neutral-200 px-8 py-5 text-[11px] text-neutral-500 md:px-12">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-t border-dashed border-neutral-200 px-5 py-4 text-[11px] text-neutral-500 sm:px-8 sm:py-5 md:px-12">
           <span className="font-mono uppercase tracking-widest">
             Lyra Data · lyradata.com
           </span>
-          <span className="font-mono">{orderId}</span>
+          <span className="truncate font-mono">{orderId}</span>
         </div>
       </div>
     </div>

@@ -122,6 +122,7 @@ export const recordMyOrder = createServerFn({ method: "POST" })
         total_cents: z.number().int().min(0),
         currency: z.string().default("USD"),
         payment_provider: z.string().default("stripe"),
+        credit_applied_cents: z.number().int().min(0).default(0),
       })
       .parse(d),
   )
@@ -135,7 +136,7 @@ export const recordMyOrder = createServerFn({ method: "POST" })
       .select("id")
       .eq("payment_ref", data.payment_ref)
       .maybeSingle();
-    if (existing) return { ok: true, id: existing.id, duplicate: true };
+    if (existing) return { ok: true, id: existing.id, duplicate: true, credit_spent_cents: 0 };
     const { data: row, error } = await sb
       .from("orders")
       .insert({
@@ -164,5 +165,18 @@ export const recordMyOrder = createServerFn({ method: "POST" })
       event_type: "payment_received",
       message: "Payment received",
     });
-    return { ok: true, id: row.id, duplicate: false };
+
+    // Atomically spend referral credit against this order (user-scoped RPC)
+    let creditSpent = 0;
+    if (data.credit_applied_cents > 0) {
+      const userSb = context.supabase as any;
+      const { data: spent } = await userSb.rpc("redeem_referral_credit", {
+        _order_id: row.id,
+        _requested_cents: data.credit_applied_cents,
+        _subtotal_cents: data.subtotal_cents,
+      });
+      creditSpent = typeof spent === "number" ? spent : 0;
+    }
+
+    return { ok: true, id: row.id, duplicate: false, credit_spent_cents: creditSpent };
   });

@@ -1,8 +1,12 @@
 import { useEffect, useMemo, useState, type MouseEvent } from "react";
 import { Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
+import { useQuery } from "@tanstack/react-query";
 import { validatePromo, type PromoResult } from "@/lib/promos.functions";
+import { getMyReferralBalance } from "@/lib/referrals.functions";
+import { useAuth } from "@/hooks/use-auth";
 import { usePricingOverrides } from "@/hooks/use-pricing-overrides";
+import { Gift } from "lucide-react";
 
 import {
   ShieldCheck,
@@ -108,6 +112,16 @@ export function OrderBuilder() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [isDesktop, setIsDesktop] = useState(false);
+  const [useCredit, setUseCredit] = useState(false);
+  const { user } = useAuth();
+  const balanceFn = useServerFn(getMyReferralBalance);
+  const balanceQuery = useQuery({
+    queryKey: ["my-referral-balance", user?.id],
+    queryFn: () => balanceFn(),
+    enabled: !!user,
+    staleTime: 30_000,
+  });
+  const creditBalanceCents = balanceQuery.data?.balance_cents ?? 0;
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -138,7 +152,7 @@ export function OrderBuilder() {
 
   const effectiveQty = service.fixed ? 1 : Math.max(quantity, service.minQty);
 
-  const { base, extras, rushFee, preDiscountSubtotal, discount, subtotal, stripeFee, total, savings, comparePriceApollo, comparePriceLinkedIn } =
+  const { base, extras, rushFee, preDiscountSubtotal, discount, creditApplied, subtotal, stripeFee, total, savings, comparePriceApollo, comparePriceLinkedIn } =
     useMemo(() => {
       const base = service.fixed ? service.minOrder : Math.max(effectiveQty * service.rate, service.minOrder);
       const extraUrlCost = Math.max(0, extraUrls - 1) * 5;
@@ -150,14 +164,18 @@ export function OrderBuilder() {
       // as a display safety net — never invent or inflate it client-side.
       const serverDiscount = promoApplied && promoApplied.ok ? promoApplied.amountOff : 0;
       const discount = Math.min(Math.max(0, serverDiscount), preDiscountSubtotal);
-      const subtotal = Math.max(0, preDiscountSubtotal - discount);
+      const afterPromo = Math.max(0, preDiscountSubtotal - discount);
+      // Referral credit stacks after promo, capped by remaining subtotal and available balance.
+      const creditAvailable = Math.max(0, creditBalanceCents) / 100;
+      const creditApplied = useCredit ? Math.min(creditAvailable, afterPromo) : 0;
+      const subtotal = Math.max(0, afterPromo - creditApplied);
       const stripeFee = subtotal > 0 ? subtotal * 0.029 + 0.3 : 0;
       const total = subtotal + stripeFee;
       const comparePriceApollo = effectiveQty * 0.2;
       const comparePriceLinkedIn = effectiveQty * 0.1;
       const savings = Math.max(0, comparePriceApollo - base);
-      return { base, extras, rushFee, preDiscountSubtotal, discount, subtotal, stripeFee, total, savings, comparePriceApollo, comparePriceLinkedIn };
-    }, [service, effectiveQty, extraUrls, verifier, rush, tip, promoApplied]);
+      return { base, extras, rushFee, preDiscountSubtotal, discount, creditApplied, subtotal, stripeFee, total, savings, comparePriceApollo, comparePriceLinkedIn };
+    }, [service, effectiveQty, extraUrls, verifier, rush, tip, promoApplied, useCredit, creditBalanceCents]);
 
   // If the order changes after a promo was applied, invalidate it so the
   // server re-validates against the new subtotal (prevents stale discounts
@@ -768,6 +786,28 @@ export function OrderBuilder() {
                   )}
                 </div>
 
+                {user && creditBalanceCents > 0 && (
+                  <label className="relative mt-4 flex cursor-pointer items-start gap-3 rounded-xl border border-emerald/30 bg-emerald/5 p-3 text-left transition-colors hover:bg-emerald/10">
+                    <input
+                      type="checkbox"
+                      checked={useCredit}
+                      onChange={(e) => setUseCredit(e.target.checked)}
+                      className="mt-0.5 size-4 accent-emerald"
+                    />
+                    <span className="flex-1 text-xs text-white">
+                      <span className="flex items-center gap-1.5 font-semibold text-emerald">
+                        <Gift className="size-3.5" /> Apply my referral credit
+                      </span>
+                      <span className="mt-0.5 block text-white/60">
+                        You have <span className="font-mono text-emerald">{formatUSD(creditBalanceCents / 100)}</span> available
+                        {useCredit && creditApplied > 0 && (
+                          <> · using <span className="font-mono">{formatUSD(creditApplied)}</span> on this order</>
+                        )}
+                      </span>
+                    </span>
+                  </label>
+                )}
+
                 <div className="relative mt-6 space-y-2 border-t border-white/10 pt-5 text-sm">
                   <div className="flex items-center justify-between text-white/70">
                     <span>Order subtotal</span>
@@ -777,6 +817,12 @@ export function OrderBuilder() {
                     <div className="flex items-center justify-between text-emerald">
                       <span>Discount ({promoApplied?.ok ? promoApplied.code : ""})</span>
                       <span className="font-mono">−{formatUSD(discount)}</span>
+                    </div>
+                  )}
+                  {creditApplied > 0 && (
+                    <div className="flex items-center justify-between text-emerald">
+                      <span>Referral credit</span>
+                      <span className="font-mono">−{formatUSD(creditApplied)}</span>
                     </div>
                   )}
                   <div className="flex items-center justify-between text-white/70">
@@ -816,6 +862,7 @@ export function OrderBuilder() {
                     tip: tip.toFixed(2),
                     promo: promoApplied?.ok ? promoApplied.code : undefined,
                     discount: promoApplied?.ok ? discount.toFixed(2) : undefined,
+                    credit: creditApplied > 0 ? creditApplied.toFixed(2) : undefined,
                   }}
                   aria-disabled={!agree || name.trim().length < 2 || !/\S+@\S+\.\S+/.test(email)}
                   onClick={(e: MouseEvent<HTMLAnchorElement>) => {

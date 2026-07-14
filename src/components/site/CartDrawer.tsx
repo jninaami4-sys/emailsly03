@@ -1,4 +1,4 @@
-import { X, Minus, Plus, ShoppingBag } from "lucide-react";
+import { X, Minus, Plus, ShoppingBag, Lock, ArrowRight } from "lucide-react";
 import { useCart } from "@/lib/cart";
 import { useEffect } from "react";
 
@@ -127,10 +127,21 @@ export function CartDrawer() {
               </div>
               <button
                 disabled
-                className="mt-4 w-full rounded-xl bg-ink py-3.5 font-semibold text-white opacity-60"
+                className="slide-btn mt-4 w-full"
                 title="Payments not yet enabled"
               >
-                Checkout (Stripe — coming next)
+                <span className="slide-btn-decor" aria-hidden />
+                <span className="slide-btn-content justify-between">
+                  <span className="slide-btn-icon">
+                    <Lock className="size-4" />
+                  </span>
+                  <span className="slide-btn-text flex-1 justify-center">
+                    Checkout · Stripe coming soon
+                  </span>
+                  <span className="slide-btn-icon" style={{ background: "color-mix(in oklab, var(--violet) 88%, black)" }}>
+                    <ArrowRight className="size-4" />
+                  </span>
+                </span>
               </button>
               <button
                 onClick={clear}

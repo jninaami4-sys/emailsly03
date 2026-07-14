@@ -517,6 +517,48 @@ export type Database = {
         }
         Relationships: []
       }
+      pricing_settings: {
+        Row: {
+          created_at: string
+          fixed: boolean
+          helper: string | null
+          min_order: number
+          min_qty: number
+          name: string
+          rate: number
+          service_id: string
+          sort_order: number
+          unit: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          fixed?: boolean
+          helper?: string | null
+          min_order?: number
+          min_qty?: number
+          name: string
+          rate: number
+          service_id: string
+          sort_order?: number
+          unit: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          fixed?: boolean
+          helper?: string | null
+          min_order?: number
+          min_qty?: number
+          name?: string
+          rate?: number
+          service_id?: string
+          sort_order?: number
+          unit?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       product_details: {
         Row: {
           created_at: string

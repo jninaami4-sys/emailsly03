@@ -25,9 +25,11 @@ export function RouteTransition({ children }: { children: ReactNode }) {
       prevPath.current = pathname;
       // Smooth scroll to top for the new page
       window.scrollTo({ top: 0, behavior: "smooth" });
-      // Fade back in on next frame
-      requestAnimationFrame(() => setPhase("in"));
-    }, 220);
+      // Fade back in on next frame after paint
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => setPhase("in"));
+      });
+    }, 180);
     return () => window.clearTimeout(swap);
   }, [pathname, children]);
 
@@ -47,7 +49,7 @@ function TopProgressBar({ active }: { active: boolean }) {
   return (
     <div
       aria-hidden="true"
-      className={`pointer-events-none fixed inset-x-0 top-0 z-[95] h-[2px] overflow-hidden transition-opacity duration-200 ${
+      className={`pointer-events-none fixed inset-x-0 top-0 z-[95] h-[2px] overflow-hidden transition-opacity duration-150 ${
         active ? "opacity-100" : "opacity-0"
       }`}
     >

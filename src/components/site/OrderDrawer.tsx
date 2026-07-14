@@ -20,6 +20,11 @@ export function openOrderDrawer(serviceId?: unknown) {
 
 export function OrderDrawer() {
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const onOpen = () => setOpen(true);
@@ -40,10 +45,10 @@ export function OrderDrawer() {
     };
   }, [open]);
 
-  if (typeof document === "undefined") return null;
+  if (!mounted || typeof document === "undefined") return null;
 
   return createPortal(
-    <>
+    <div className="theme-midnight">
       {/* Backdrop */}
       <div
         aria-hidden={!open}
@@ -57,7 +62,7 @@ export function OrderDrawer() {
         role="dialog"
         aria-modal="true"
         aria-label="Build your order"
-        className={`fixed inset-y-0 right-0 z-[90] flex w-full max-w-[1280px] flex-col bg-background shadow-[0_0_80px_-10px_rgba(0,0,0,0.5)] transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] lg:w-[92vw] ${
+        className={`fixed inset-y-0 right-0 z-[90] flex w-full max-w-[1280px] flex-col bg-background text-foreground shadow-[0_0_80px_-10px_rgba(0,0,0,0.5)] transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] lg:w-[92vw] ${
           open ? "translate-x-0" : "translate-x-full"
         }`}
       >
@@ -76,11 +81,11 @@ export function OrderDrawer() {
             <X className="size-4" />
           </button>
         </div>
-        <div className="flex-1 overflow-y-auto overscroll-contain">
+        <div className="order-drawer-scroll flex-1 overflow-y-auto overscroll-contain pb-[calc(env(safe-area-inset-bottom)+96px)] lg:pb-0">
           <OrderBuilder />
         </div>
       </aside>
-    </>,
+    </div>,
     document.body,
   );
 }

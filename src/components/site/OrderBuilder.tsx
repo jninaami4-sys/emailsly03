@@ -91,6 +91,9 @@ export function OrderBuilder() {
   const [rush, setRush] = useState(false);
   const [tip, setTip] = useState(0);
   const [promo, setPromo] = useState("");
+  const [promoApplied, setPromoApplied] = useState<PromoResult | null>(null);
+  const [promoBusy, setPromoBusy] = useState(false);
+  const validatePromoFn = useServerFn(validatePromo);
   const [agree, setAgree] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");

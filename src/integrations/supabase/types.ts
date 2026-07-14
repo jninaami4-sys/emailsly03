@@ -611,6 +611,8 @@ export type Database = {
           phone: string | null
           referral_code: string | null
           referred_by_user_id: string | null
+          signup_ip: unknown
+          signup_ua_hash: string | null
           updated_at: string
           user_id: string
         }
@@ -626,6 +628,8 @@ export type Database = {
           phone?: string | null
           referral_code?: string | null
           referred_by_user_id?: string | null
+          signup_ip?: unknown
+          signup_ua_hash?: string | null
           updated_at?: string
           user_id: string
         }
@@ -641,8 +645,46 @@ export type Database = {
           phone?: string | null
           referral_code?: string | null
           referred_by_user_id?: string | null
+          signup_ip?: unknown
+          signup_ua_hash?: string | null
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      referral_clicks: {
+        Row: {
+          click_day: string
+          code: string
+          created_at: string
+          id: string
+          ip: unknown
+          landing_url: string | null
+          referer: string | null
+          ua_hash: string | null
+          visitor_hash: string
+        }
+        Insert: {
+          click_day?: string
+          code: string
+          created_at?: string
+          id?: string
+          ip?: unknown
+          landing_url?: string | null
+          referer?: string | null
+          ua_hash?: string | null
+          visitor_hash: string
+        }
+        Update: {
+          click_day?: string
+          code?: string
+          created_at?: string
+          id?: string
+          ip?: unknown
+          landing_url?: string | null
+          referer?: string | null
+          ua_hash?: string | null
+          visitor_hash?: string
         }
         Relationships: []
       }
@@ -654,6 +696,8 @@ export type Database = {
           id: string
           notes: string | null
           order_id: string | null
+          paid_out_at: string | null
+          payout_batch_id: string | null
           referral_id: string | null
           source: string
           user_id: string
@@ -665,6 +709,8 @@ export type Database = {
           id?: string
           notes?: string | null
           order_id?: string | null
+          paid_out_at?: string | null
+          payout_batch_id?: string | null
           referral_id?: string | null
           source: string
           user_id: string
@@ -676,6 +722,8 @@ export type Database = {
           id?: string
           notes?: string | null
           order_id?: string | null
+          paid_out_at?: string | null
+          payout_batch_id?: string | null
           referral_id?: string | null
           source?: string
           user_id?: string
@@ -697,10 +745,63 @@ export type Database = {
           },
         ]
       }
-      referrals: {
+      referral_payout_batches: {
         Row: {
           created_at: string
+          created_by: string | null
           currency: string
+          id: string
+          notes: string | null
+          total_cents: number
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          id?: string
+          notes?: string | null
+          total_cents?: number
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          id?: string
+          notes?: string | null
+          total_cents?: number
+        }
+        Relationships: []
+      }
+      referral_settings: {
+        Row: {
+          id: boolean
+          min_order_cents: number
+          monthly_cap_cents: number
+          reward_percent: number
+          updated_at: string
+        }
+        Insert: {
+          id?: boolean
+          min_order_cents?: number
+          monthly_cap_cents?: number
+          reward_percent?: number
+          updated_at?: string
+        }
+        Update: {
+          id?: boolean
+          min_order_cents?: number
+          monthly_cap_cents?: number
+          reward_percent?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      referrals: {
+        Row: {
+          admin_review_state: string
+          created_at: string
+          currency: string
+          flag_reasons: string[]
           id: string
           notes: string | null
           order_id: string | null
@@ -712,12 +813,16 @@ export type Database = {
           referrer_id: string
           reward_referred_cents: number
           reward_referrer_cents: number
+          signup_ip: unknown
+          signup_ua_hash: string | null
           status: Database["public"]["Enums"]["referral_status"]
           updated_at: string
         }
         Insert: {
+          admin_review_state?: string
           created_at?: string
           currency?: string
+          flag_reasons?: string[]
           id?: string
           notes?: string | null
           order_id?: string | null
@@ -729,12 +834,16 @@ export type Database = {
           referrer_id: string
           reward_referred_cents?: number
           reward_referrer_cents?: number
+          signup_ip?: unknown
+          signup_ua_hash?: string | null
           status?: Database["public"]["Enums"]["referral_status"]
           updated_at?: string
         }
         Update: {
+          admin_review_state?: string
           created_at?: string
           currency?: string
+          flag_reasons?: string[]
           id?: string
           notes?: string | null
           order_id?: string | null
@@ -746,6 +855,8 @@ export type Database = {
           referrer_id?: string
           reward_referred_cents?: number
           reward_referrer_cents?: number
+          signup_ip?: unknown
+          signup_ua_hash?: string | null
           status?: Database["public"]["Enums"]["referral_status"]
           updated_at?: string
         }
@@ -933,6 +1044,27 @@ export type Database = {
           id?: boolean
           tiktok_pixel_id?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      stripe_events: {
+        Row: {
+          id: string
+          payload: Json | null
+          received_at: string
+          type: string
+        }
+        Insert: {
+          id: string
+          payload?: Json | null
+          received_at?: string
+          type: string
+        }
+        Update: {
+          id?: string
+          payload?: Json | null
+          received_at?: string
+          type?: string
         }
         Relationships: []
       }

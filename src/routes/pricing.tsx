@@ -312,10 +312,10 @@ function Pricing() {
           </p>
           <div className="mt-10 flex flex-wrap justify-center gap-3">
             <a
-              href="#calculator"
+              href="#tiers"
               className="inline-flex items-center gap-2 rounded-full bg-white px-8 py-4 text-base font-bold text-violet shadow-xl transition-transform hover:-translate-y-0.5"
             >
-              Calculate Now <ArrowRight className="size-4" />
+              View Data Services <ArrowRight className="size-4" />
             </a>
             <Link
               to="/contact"

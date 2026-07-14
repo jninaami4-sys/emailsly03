@@ -31,10 +31,13 @@ import { Route as BlogRouteImport } from './routes/blog'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ApolloLeadsExportRouteImport } from './routes/apollo-leads-export'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
+import { Route as AuthenticatedInvoiceOrderIdRouteImport } from './routes/_authenticated/invoice.$orderId'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 import { Route as ApiPublicTelegramWebhookRouteImport } from './routes/api/public/telegram/webhook'
@@ -151,6 +154,10 @@ const AdminRoute = AdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -160,6 +167,11 @@ const BlogSlugRoute = BlogSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
   getParentRoute: () => BlogRoute,
+} as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const Char91DotwellKnownChar93OauthProtectedResourceRoute =
   Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
@@ -172,6 +184,12 @@ const Char91DotmcpChar93ListToolsRoute =
     id: '/.mcp/list-tools',
     path: '/.mcp/list-tools',
     getParentRoute: () => rootRouteImport,
+  } as any)
+const AuthenticatedInvoiceOrderIdRoute =
+  AuthenticatedInvoiceOrderIdRouteImport.update({
+    id: '/invoice/$orderId',
+    path: '/invoice/$orderId',
+    getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const Char91DotmcpChar93InvokeToolToolRoute =
   Char91DotmcpChar93InvokeToolToolRouteImport.update({
@@ -222,9 +240,11 @@ export interface FileRoutesByFullPath {
   '/zoominfo-leads': typeof ZoominfoLeadsRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
+  '/invoice/$orderId': typeof AuthenticatedInvoiceOrderIdRoute
   '/api/public/hooks/kb-sync': typeof ApiPublicHooksKbSyncRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
 }
@@ -254,15 +274,18 @@ export interface FileRoutesByTo {
   '/zoominfo-leads': typeof ZoominfoLeadsRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
+  '/invoice/$orderId': typeof AuthenticatedInvoiceOrderIdRoute
   '/api/public/hooks/kb-sync': typeof ApiPublicHooksKbSyncRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/admin': typeof AdminRoute
   '/apollo-leads-export': typeof ApolloLeadsExportRoute
   '/auth': typeof AuthRoute
@@ -287,9 +310,11 @@ export interface FileRoutesById {
   '/zoominfo-leads': typeof ZoominfoLeadsRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
+  '/_authenticated/invoice/$orderId': typeof AuthenticatedInvoiceOrderIdRoute
   '/api/public/hooks/kb-sync': typeof ApiPublicHooksKbSyncRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
 }
@@ -321,9 +346,11 @@ export interface FileRouteTypes {
     | '/zoominfo-leads'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
+    | '/dashboard'
     | '/blog/$slug'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
+    | '/invoice/$orderId'
     | '/api/public/hooks/kb-sync'
     | '/api/public/telegram/webhook'
   fileRoutesByTo: FileRoutesByTo
@@ -353,14 +380,17 @@ export interface FileRouteTypes {
     | '/zoominfo-leads'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
+    | '/dashboard'
     | '/blog/$slug'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
+    | '/invoice/$orderId'
     | '/api/public/hooks/kb-sync'
     | '/api/public/telegram/webhook'
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
     | '/admin'
     | '/apollo-leads-export'
     | '/auth'
@@ -385,15 +415,18 @@ export interface FileRouteTypes {
     | '/zoominfo-leads'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
+    | '/_authenticated/dashboard'
     | '/blog/$slug'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
+    | '/_authenticated/invoice/$orderId'
     | '/api/public/hooks/kb-sync'
     | '/api/public/telegram/webhook'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AdminRoute: typeof AdminRoute
   ApolloLeadsExportRoute: typeof ApolloLeadsExportRoute
   AuthRoute: typeof AuthRoute
@@ -580,6 +613,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -594,6 +634,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogSlugRouteImport
       parentRoute: typeof BlogRoute
     }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/.well-known/oauth-protected-resource': {
       id: '/.well-known/oauth-protected-resource'
       path: '/.well-known/oauth-protected-resource'
@@ -607,6 +654,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/.mcp/list-tools'
       preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/invoice/$orderId': {
+      id: '/_authenticated/invoice/$orderId'
+      path: '/invoice/$orderId'
+      fullPath: '/invoice/$orderId'
+      preLoaderRoute: typeof AuthenticatedInvoiceOrderIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/.mcp/invoke-tool/$tool': {
       id: '/.mcp/invoke-tool/$tool'
@@ -639,6 +693,19 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedInvoiceOrderIdRoute: typeof AuthenticatedInvoiceOrderIdRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedInvoiceOrderIdRoute: AuthenticatedInvoiceOrderIdRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 interface BlogRouteChildren {
   BlogSlugRoute: typeof BlogSlugRoute
 }
@@ -651,6 +718,7 @@ const BlogRouteWithChildren = BlogRoute._addFileChildren(BlogRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AdminRoute: AdminRoute,
   ApolloLeadsExportRoute: ApolloLeadsExportRoute,
   AuthRoute: AuthRoute,

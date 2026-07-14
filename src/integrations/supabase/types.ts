@@ -354,6 +354,169 @@ export type Database = {
         }
         Relationships: []
       }
+      order_events: {
+        Row: {
+          actor_id: string | null
+          actor_role: string
+          created_at: string
+          event_type: string
+          id: string
+          message: string | null
+          metadata: Json
+          order_id: string
+        }
+        Insert: {
+          actor_id?: string | null
+          actor_role?: string
+          created_at?: string
+          event_type: string
+          id?: string
+          message?: string | null
+          metadata?: Json
+          order_id: string
+        }
+        Update: {
+          actor_id?: string | null
+          actor_role?: string
+          created_at?: string
+          event_type?: string
+          id?: string
+          message?: string | null
+          metadata?: Json
+          order_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_events_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      order_messages: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          order_id: string
+          sender_id: string | null
+          sender_role: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          id?: string
+          order_id: string
+          sender_id?: string | null
+          sender_role?: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          order_id?: string
+          sender_id?: string | null
+          sender_role?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_messages_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          cancel_reason: string | null
+          cancelled_at: string | null
+          created_at: string
+          currency: string
+          delivered_at: string | null
+          delivered_by: string | null
+          delivery_notes: string | null
+          delivery_url: string | null
+          discount_cents: number
+          email: string
+          external_id: string | null
+          id: string
+          imported_from: string | null
+          metadata: Json
+          payment_provider: string | null
+          payment_ref: string | null
+          payment_status: Database["public"]["Enums"]["payment_status"]
+          promo_code: string | null
+          quantity: number
+          service_id: string | null
+          service_label: string
+          status: Database["public"]["Enums"]["order_status"]
+          subtotal_cents: number
+          total_cents: number
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          cancel_reason?: string | null
+          cancelled_at?: string | null
+          created_at?: string
+          currency?: string
+          delivered_at?: string | null
+          delivered_by?: string | null
+          delivery_notes?: string | null
+          delivery_url?: string | null
+          discount_cents?: number
+          email: string
+          external_id?: string | null
+          id?: string
+          imported_from?: string | null
+          metadata?: Json
+          payment_provider?: string | null
+          payment_ref?: string | null
+          payment_status?: Database["public"]["Enums"]["payment_status"]
+          promo_code?: string | null
+          quantity?: number
+          service_id?: string | null
+          service_label: string
+          status?: Database["public"]["Enums"]["order_status"]
+          subtotal_cents?: number
+          total_cents?: number
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          cancel_reason?: string | null
+          cancelled_at?: string | null
+          created_at?: string
+          currency?: string
+          delivered_at?: string | null
+          delivered_by?: string | null
+          delivery_notes?: string | null
+          delivery_url?: string | null
+          discount_cents?: number
+          email?: string
+          external_id?: string | null
+          id?: string
+          imported_from?: string | null
+          metadata?: Json
+          payment_provider?: string | null
+          payment_ref?: string | null
+          payment_status?: Database["public"]["Enums"]["payment_status"]
+          promo_code?: string | null
+          quantity?: number
+          service_id?: string | null
+          service_label?: string
+          status?: Database["public"]["Enums"]["order_status"]
+          subtotal_cents?: number
+          total_cents?: number
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       product_details: {
         Row: {
           created_at: string
@@ -390,6 +553,45 @@ export type Database = {
           long_description?: string
           slug?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          company: string | null
+          country: string | null
+          created_at: string
+          email: string
+          full_name: string | null
+          imported_from: string | null
+          notes: string | null
+          phone: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          company?: string | null
+          country?: string | null
+          created_at?: string
+          email: string
+          full_name?: string | null
+          imported_from?: string | null
+          notes?: string | null
+          phone?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          company?: string | null
+          country?: string | null
+          created_at?: string
+          email?: string
+          full_name?: string | null
+          imported_from?: string | null
+          notes?: string | null
+          phone?: string | null
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -606,6 +808,14 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
+      order_status:
+        | "pending"
+        | "in_progress"
+        | "delivered"
+        | "cancelled"
+        | "refunded"
+        | "revision_requested"
+      payment_status: "unpaid" | "paid" | "refunded" | "failed" | "pending"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -734,6 +944,15 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "moderator", "user"],
+      order_status: [
+        "pending",
+        "in_progress",
+        "delivered",
+        "cancelled",
+        "refunded",
+        "revision_requested",
+      ],
+      payment_status: ["unpaid", "paid", "refunded", "failed", "pending"],
     },
   },
 } as const

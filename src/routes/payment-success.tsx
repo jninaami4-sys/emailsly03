@@ -12,6 +12,9 @@ import {
 } from "lucide-react";
 import { PremiumLogoMark } from "@/components/site/PremiumIcons";
 import { Loader713Panel } from "@/components/site/Loader713";
+import { useServerFn } from "@tanstack/react-start";
+import { recordMyOrder } from "@/lib/orders.functions";
+import { useAuth } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/payment-success")({
   component: PaymentSuccessPage,
@@ -61,6 +64,9 @@ function PaymentSuccessPage() {
     const t = window.setTimeout(() => setLoading(false), 700);
     return () => window.clearTimeout(t);
   }, []);
+  const { user } = useAuth();
+  const recordFn = useServerFn(recordMyOrder);
+  const recordedRef = useRef(false);
   const orderId = useMemo(() => search.order || genOrderId(), [search.order]);
   const invoiceNo = useMemo(
     () => `INV-${orderId.replace(/^LD-/, "")}`,
@@ -157,6 +163,29 @@ function PaymentSuccessPage() {
       amount: -discount,
     });
   }
+
+  // Persist this order into the user's dashboard once (idempotent by payment_ref)
+  useEffect(() => {
+    if (!user || recordedRef.current) return;
+    recordedRef.current = true;
+    recordFn({
+      data: {
+        payment_ref: orderId,
+        service_label: service,
+        service_id: null,
+        quantity: Math.max(1, Math.round(qty || 1)),
+        subtotal_cents: Math.round(subtotal * 100),
+        discount_cents: Math.round(discount * 100),
+        promo_code: search.promo ?? null,
+        total_cents: Math.round(total * 100),
+        currency: "USD",
+        payment_provider: "stripe",
+      },
+    }).catch(() => {
+      recordedRef.current = false;
+    });
+  }, [user, orderId, service, qty, subtotal, discount, total, search.promo, recordFn]);
+
 
 
   const dateStr = now.toLocaleDateString("en-US", {

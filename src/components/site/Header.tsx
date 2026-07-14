@@ -132,15 +132,14 @@ export function Header() {
               </button>
               {user ? (
                 <>
-                  <span className="hidden items-center gap-1.5 rounded-lg bg-secondary px-3 py-2 text-xs font-semibold lg:inline-flex">
+                  <Link
+                    to="/dashboard"
+                    className={`hidden items-center gap-1.5 rounded-lg bg-secondary px-3 py-2 text-xs font-semibold hover:bg-violet/10 hover:text-violet lg:inline-flex ${focusRing}`}
+                    aria-label="Open your dashboard"
+                  >
                     <PremiumUser className="size-3.5 text-violet" aria-hidden="true" />
-                    <span
-                      className="max-w-[140px] truncate"
-                      aria-label={`Signed in as ${user.email}`}
-                    >
-                      {user.email}
-                    </span>
-                  </span>
+                    <span className="max-w-[140px] truncate">Dashboard</span>
+                  </Link>
                   <button
                     type="button"
                     onClick={handleSignOut}

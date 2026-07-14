@@ -1,5 +1,8 @@
 import { useEffect, useMemo, useState, type MouseEvent } from "react";
 import { Link } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
+import { validatePromo, type PromoResult } from "@/lib/promos.functions";
+
 import {
   ShieldCheck,
   Clock,
@@ -88,6 +91,9 @@ export function OrderBuilder() {
   const [rush, setRush] = useState(false);
   const [tip, setTip] = useState(0);
   const [promo, setPromo] = useState("");
+  const [promoApplied, setPromoApplied] = useState<PromoResult | null>(null);
+  const [promoBusy, setPromoBusy] = useState(false);
+  const validatePromoFn = useServerFn(validatePromo);
   const [agree, setAgree] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -122,21 +128,56 @@ export function OrderBuilder() {
 
   const effectiveQty = service.fixed ? 1 : Math.max(quantity, service.minQty);
 
-  const { base, extras, rushFee, subtotal, stripeFee, total, savings, comparePriceApollo, comparePriceLinkedIn } =
+  const { base, extras, rushFee, preDiscountSubtotal, discount, subtotal, stripeFee, total, savings, comparePriceApollo, comparePriceLinkedIn } =
     useMemo(() => {
       const base = service.fixed ? service.minOrder : Math.max(effectiveQty * service.rate, service.minOrder);
       const extraUrlCost = Math.max(0, extraUrls - 1) * 5;
       const verifierCost = verifier && !service.fixed ? effectiveQty * 0.002 : 0;
       const extras = extraUrlCost + verifierCost + tip;
       const rushFee = rush ? (base + extras) * 0.25 : 0;
-      const subtotal = base + extras + rushFee;
-      const stripeFee = subtotal * 0.029 + 0.3;
+      const preDiscountSubtotal = base + extras + rushFee;
+      // Discount comes from the SERVER (validatePromo). We only re-cap it here
+      // as a display safety net — never invent or inflate it client-side.
+      const serverDiscount = promoApplied && promoApplied.ok ? promoApplied.amountOff : 0;
+      const discount = Math.min(Math.max(0, serverDiscount), preDiscountSubtotal);
+      const subtotal = Math.max(0, preDiscountSubtotal - discount);
+      const stripeFee = subtotal > 0 ? subtotal * 0.029 + 0.3 : 0;
       const total = subtotal + stripeFee;
       const comparePriceApollo = effectiveQty * 0.2;
       const comparePriceLinkedIn = effectiveQty * 0.1;
       const savings = Math.max(0, comparePriceApollo - base);
-      return { base, extras, rushFee, subtotal, stripeFee, total, savings, comparePriceApollo, comparePriceLinkedIn };
-    }, [service, effectiveQty, extraUrls, verifier, rush, tip]);
+      return { base, extras, rushFee, preDiscountSubtotal, discount, subtotal, stripeFee, total, savings, comparePriceApollo, comparePriceLinkedIn };
+    }, [service, effectiveQty, extraUrls, verifier, rush, tip, promoApplied]);
+
+  // If the order changes after a promo was applied, invalidate it so the
+  // server re-validates against the new subtotal (prevents stale discounts
+  // from being carried into checkout).
+  useEffect(() => {
+    if (promoApplied?.ok) setPromoApplied(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [service.id, effectiveQty, extraUrls, verifier, rush, tip]);
+
+  const applyPromo = async () => {
+    const code = promo.trim().toUpperCase();
+    if (!code) return;
+    setPromoBusy(true);
+    try {
+      const result = await validatePromoFn({
+        data: { code, subtotal: preDiscountSubtotal },
+      });
+      setPromoApplied(result);
+    } catch {
+      setPromoApplied({ ok: false, reason: "Could not validate code" });
+    } finally {
+      setPromoBusy(false);
+    }
+  };
+
+  const clearPromo = () => {
+    setPromo("");
+    setPromoApplied(null);
+  };
+
 
   const dataServices = SERVICES.filter((s) => s.group === "data");
   const growthServices = SERVICES.filter((s) => s.group === "growth");
@@ -667,34 +708,73 @@ export function OrderBuilder() {
 
                 <div className="relative mt-3">
                   <label className="block font-mono text-[10px] font-bold uppercase tracking-widest text-white/50">
-                    Promo code
+                    Promo code <span className="text-white/30">· server-verified</span>
                   </label>
                   <div className="mt-2 flex gap-2">
                     <input
                       value={promo}
-                      onChange={(e) => setPromo(e.target.value.toUpperCase())}
+                      onChange={(e) => {
+                        setPromo(e.target.value.toUpperCase());
+                        if (promoApplied) setPromoApplied(null);
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          if (!promoApplied?.ok) applyPromo();
+                        }
+                      }}
+                      readOnly={promoApplied?.ok === true}
                       placeholder="ENTER CODE"
-                      className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 font-mono text-xs uppercase tracking-widest outline-none placeholder:text-white/30 focus:border-white/30"
+                      className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 font-mono text-xs uppercase tracking-widest outline-none placeholder:text-white/30 focus:border-white/30 read-only:opacity-70"
                     />
-                    <button
-                      type="button"
-                      className="rounded-lg bg-white/10 px-4 text-xs font-bold uppercase tracking-widest text-white/80 transition-colors hover:bg-white/15"
-                    >
-                      Apply
-                    </button>
+                    {promoApplied?.ok ? (
+                      <button
+                        type="button"
+                        onClick={clearPromo}
+                        className="rounded-lg bg-white/10 px-4 text-xs font-bold uppercase tracking-widest text-white/80 transition-colors hover:bg-white/15"
+                      >
+                        Remove
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={applyPromo}
+                        disabled={promoBusy || !promo.trim()}
+                        className="rounded-lg bg-white/10 px-4 text-xs font-bold uppercase tracking-widest text-white/80 transition-colors hover:bg-white/15 disabled:opacity-40"
+                      >
+                        {promoBusy ? "…" : "Apply"}
+                      </button>
+                    )}
                   </div>
+                  {promoApplied?.ok === false && (
+                    <p className="mt-2 font-mono text-[10px] uppercase tracking-widest text-coral">
+                      {promoApplied.reason}
+                    </p>
+                  )}
+                  {promoApplied?.ok && (
+                    <p className="mt-2 font-mono text-[10px] uppercase tracking-widest text-emerald">
+                      {promoApplied.code} applied · {promoApplied.label}
+                    </p>
+                  )}
                 </div>
 
                 <div className="relative mt-6 space-y-2 border-t border-white/10 pt-5 text-sm">
                   <div className="flex items-center justify-between text-white/70">
                     <span>Order subtotal</span>
-                    <span className="font-mono">{formatUSD(subtotal)}</span>
+                    <span className="font-mono">{formatUSD(preDiscountSubtotal)}</span>
                   </div>
+                  {discount > 0 && (
+                    <div className="flex items-center justify-between text-emerald">
+                      <span>Discount ({promoApplied?.ok ? promoApplied.code : ""})</span>
+                      <span className="font-mono">−{formatUSD(discount)}</span>
+                    </div>
+                  )}
                   <div className="flex items-center justify-between text-white/70">
                     <span>Stripe processing fee</span>
                     <span className="font-mono">+{formatUSD(stripeFee)}</span>
                   </div>
                 </div>
+
 
                 <div className="relative mt-5 flex items-end justify-between">
                   <div>
@@ -724,6 +804,8 @@ export function OrderBuilder() {
                     rush: rush ? "1" : "0",
                     rushFee: rushFee.toFixed(2),
                     tip: tip.toFixed(2),
+                    promo: promoApplied?.ok ? promoApplied.code : undefined,
+                    discount: promoApplied?.ok ? discount.toFixed(2) : undefined,
                   }}
                   aria-disabled={!agree || name.trim().length < 2 || !/\S+@\S+\.\S+/.test(email)}
                   onClick={(e: MouseEvent<HTMLAnchorElement>) => {

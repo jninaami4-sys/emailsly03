@@ -31,6 +31,8 @@ export const Route = createFileRoute("/payment-success")({
     rush: typeof s.rush === "string" ? s.rush : undefined,
     rushFee: typeof s.rushFee === "string" ? s.rushFee : undefined,
     tip: typeof s.tip === "string" ? s.tip : undefined,
+    promo: typeof s.promo === "string" ? s.promo : undefined,
+    discount: typeof s.discount === "string" ? s.discount : undefined,
   }),
   head: () => ({
     meta: [
@@ -143,6 +145,19 @@ function PaymentSuccessPage() {
       amount: tip,
     });
   }
+  const discountNum = Number(search.discount ?? 0);
+  const discount = Number.isFinite(discountNum) && discountNum > 0 ? discountNum : 0;
+  if (discount > 0) {
+    lineItems.push({
+      title: `Promo code${search.promo ? ` · ${search.promo}` : ""}`,
+      note: "Server-validated discount",
+      qty: 1,
+      unit: "discount",
+      unitPrice: -discount,
+      amount: -discount,
+    });
+  }
+
 
   const dateStr = now.toLocaleDateString("en-US", {
     year: "numeric",

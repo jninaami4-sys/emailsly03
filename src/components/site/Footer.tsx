@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { PaymentLogos } from "./PaymentLogos";
 import { PremiumSparkles, PremiumShieldCheck, PremiumArrowRight } from "./PremiumIcons";
+import { SocialIcons } from "./SocialIcons";
 import { openConsentPreferences } from "@/lib/consent";
 
 const productLinks = [
@@ -68,6 +69,19 @@ export function Footer() {
               Subscribe <PremiumArrowRight className="size-4" />
             </button>
           </form>
+        </div>
+
+        {/* Social row */}
+        <div className="flex flex-col items-start gap-5 border-b border-white/10 py-10 md:flex-row md:items-center md:justify-between">
+          <div>
+            <div className="font-mono text-[10px] font-bold uppercase tracking-widest text-white/80">
+              Say hello
+            </div>
+            <p className="mt-1 text-sm text-white/50">
+              We reply in hours, not days.
+            </p>
+          </div>
+          <SocialIcons />
         </div>
 
         {/* Link columns */}

@@ -177,17 +177,23 @@ export function ServicesCarousel() {
 
         <div className="services-swiper-wrapper">
           <Swiper
-            effect="coverflow"
+            key={isMobile ? "mobile" : "desktop"}
+            effect={isMobile ? "slide" : "coverflow"}
             grabCursor
             centeredSlides
             loop
             slidesPerView="auto"
-            autoplay={{ delay: 2800, disableOnInteraction: false, pauseOnMouseEnter: true }}
+            spaceBetween={isMobile ? 16 : 0}
+            speed={isMobile ? 450 : 600}
+            resistanceRatio={0.85}
+            touchReleaseOnEdges
+            autoplay={{ delay: 3200, disableOnInteraction: false, pauseOnMouseEnter: true }}
             coverflowEffect={{ rotate: 28, stretch: 0, depth: 180, modifier: 1.4, slideShadows: false }}
             pagination={{ clickable: true }}
             modules={[EffectCoverflow, Autoplay, Pagination]}
             className="!pb-16"
           >
+
             {services.map((s) => (
               <SwiperSlide key={s.serviceId} className="!w-[280px] !h-auto sm:!w-[360px] md:!w-[420px]">
                 <button

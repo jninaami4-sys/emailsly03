@@ -38,7 +38,11 @@ import {
   Headphones,
   ChevronRight,
   Search,
+  Camera,
+  Trash2,
 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { compressImage } from "@/lib/image-compress";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({

@@ -20,6 +20,7 @@ import { TrackingDebugPanel } from "@/components/site/TrackingDebugPanel";
 import { CookieConsent } from "@/components/site/CookieConsent";
 import { ChatbotWidget } from "@/components/site/ChatbotWidget";
 import { RouteTransition } from "@/components/site/RouteTransition";
+import { SectionReveal } from "@/components/site/SectionReveal";
 
 function NotFoundComponent() {
   return (

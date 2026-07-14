@@ -1033,6 +1033,16 @@ function ProfileTab() {
         {save.isSuccess && <p className="text-xs text-emerald">Saved.</p>}
       </div>
     </div>
+      <AvatarCropDialog
+        file={pendingFile}
+        open={!!pendingFile}
+        onCancel={() => setPendingFile(null)}
+        onApply={(cropped) => {
+          setPendingFile(null);
+          handleFile(cropped);
+        }}
+      />
+    </>
   );
 }
 

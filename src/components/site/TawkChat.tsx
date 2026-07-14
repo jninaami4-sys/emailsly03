@@ -177,7 +177,7 @@ export function TawkChat() {
             onClick={openChat}
             disabled={!ready}
             aria-label="Open live chat"
-            className="group relative grid size-10 place-items-center overflow-hidden rounded-full text-white shadow-[0_10px_40px_-8px_rgba(124,58,237,0.55)] transition-transform hover:scale-[1.06] focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70 disabled:cursor-progress md:size-14"
+            className="group relative grid size-10 place-items-center overflow-hidden rounded-full text-white shadow-[0_10px_40px_-8px_rgba(124,58,237,0.55)] transition-transform hover:scale-[1.06] focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70 disabled:cursor-progress sm:size-11 md:size-12 lg:size-14"
             style={{
               background:
                 "conic-gradient(from 220deg at 50% 50%, #7C3AED, #4F46E5, #FF6B4A, #7C3AED)",
@@ -201,7 +201,7 @@ export function TawkChat() {
             {/* Icon (chat-bubble made of two orbiting sparks) */}
             <svg
               viewBox="0 0 32 32"
-              className="relative z-10 size-4 md:size-6"
+              className="relative z-10 size-4 sm:size-5 md:size-5 lg:size-6"
               fill="none"
               aria-hidden
             >
@@ -221,15 +221,15 @@ export function TawkChat() {
             </svg>
 
             {/* Live "online" dot */}
-            <span className="absolute right-1 top-1 z-20 grid size-3.5 place-items-center rounded-full bg-background">
-              <span className="relative grid size-2.5 place-items-center rounded-full bg-emerald">
+            <span className="absolute right-1 top-1 z-20 grid size-3 place-items-center rounded-full bg-background sm:size-3.5">
+              <span className="relative grid size-2 place-items-center rounded-full bg-emerald sm:size-2.5">
                 <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald opacity-70" />
               </span>
             </span>
 
             {/* Sparkle accent */}
             <Sparkles
-              className="absolute -bottom-0.5 -left-0.5 z-20 size-3 text-neon-orange drop-shadow"
+              className="absolute -bottom-0.5 -left-0.5 z-20 size-2.5 text-neon-orange drop-shadow sm:size-3"
               aria-hidden
             />
           </button>

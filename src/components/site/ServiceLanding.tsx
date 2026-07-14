@@ -92,7 +92,6 @@ export function ServiceLanding(p: ServicePageProps) {
   const process = p.process ?? DEFAULT_PROCESS;
   const testimonials = p.testimonials ?? DEFAULT_TESTIMONIALS;
   const faqs = p.faqs ?? DEFAULT_FAQS;
-  const showCalculator = p.showCalculator ?? true;
 
   return (
     <SiteShell>

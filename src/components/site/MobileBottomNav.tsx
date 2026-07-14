@@ -31,7 +31,7 @@ export function MobileBottomNav() {
         items={items}
         defaultActiveIndex={activeIndex}
         key={activeIndex}
-        className="border-white/10 bg-ink/90 shadow-lg backdrop-blur-xl"
+        className="bg-ink border-white/10"
         iconClassName="text-foreground"
       />
     </div>

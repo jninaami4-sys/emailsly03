@@ -134,7 +134,7 @@ export function Header() {
                 <>
                   <Link
                     to="/dashboard"
-                    className={`hidden items-center gap-1.5 rounded-lg bg-secondary px-3 py-2 text-xs font-semibold hover:bg-violet/10 hover:text-violet lg:inline-flex ${focusRing}`}
+                    className={`hidden items-center gap-1.5 rounded-lg bg-secondary px-3 py-2 text-xs font-semibold text-ink transition-colors hover:bg-violet/10 hover:text-violet lg:inline-flex ${focusRing}`}
                     aria-label="Open your dashboard"
                   >
                     <PremiumUser className="size-3.5 text-violet" aria-hidden="true" />
@@ -214,7 +214,40 @@ export function Header() {
                 </li>
               ))}
             </ul>
-          </div>
+            {user ? (
+              <div className="relative z-10 flex flex-col gap-1 border-t border-black/10 px-3 py-3">
+                <Link
+                  to="/dashboard"
+                  onClick={() => setMobileOpen(false)}
+                  className={`flex items-center gap-2 rounded-md bg-secondary px-3 py-2 text-sm font-semibold text-ink transition-colors hover:bg-violet/10 hover:text-violet ${focusRing}`}
+                >
+                  <PremiumUser className="size-4 text-violet" aria-hidden="true" />
+                  Dashboard
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileOpen(false);
+                    handleSignOut();
+                  }}
+                  className={`flex items-center gap-2 rounded-md bg-ink px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-violet ${focusRing}`}
+                >
+                  <PremiumLogOut className="size-4" aria-hidden="true" />
+                  Sign out
+                </button>
+              </div>
+            ) : (
+              <div className="relative z-10 flex flex-col gap-1 border-t border-black/10 px-3 py-3">
+                <Link
+                  to="/auth"
+                  onClick={() => setMobileOpen(false)}
+                  className={`flex items-center gap-2 rounded-md bg-secondary px-3 py-2 text-sm font-semibold text-ink transition-colors hover:bg-violet/10 hover:text-violet ${focusRing}`}
+                >
+                  <PremiumUser className="size-4 text-violet" aria-hidden="true" />
+                  Sign in
+                </Link>
+              </div>
+            )}
         )}
       </div>
     </>

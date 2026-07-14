@@ -187,7 +187,9 @@ function Pricing() {
                     {t.min}
                   </p>
                 </div>
-                <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{t.desc}</p>
+                {t.desc && (
+                  <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{t.desc}</p>
+                )}
                 <ul className="mt-6 flex-1 space-y-2.5 text-sm">
                   {t.features.map((f) => (
                     <li key={f} className="flex items-start gap-2">

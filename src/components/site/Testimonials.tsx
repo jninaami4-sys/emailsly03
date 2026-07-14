@@ -29,7 +29,6 @@ type VideoTestimonial = {
 };
 
 // --- Data (curated, real-sounding trust wall) ---
-const LOGOS = ["Northwind", "Acme", "Helios", "Prisma", "Loomly", "Vortex", "Signal", "Kepler"];
 
 const curatedTestimonials: Testimonial[] = [
   {

@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { SiteShell } from "./SiteShell";
-import { PricingCalculator } from "./PricingCalculator";
+import { AddOns } from "./AddOns";
 import {
   ArrowRight,
   CheckCircle2,
@@ -9,6 +9,10 @@ import {
   ShieldCheck,
   Zap,
   Database,
+  Rocket,
+  Headphones,
+  Lock,
+  TrendingUp,
 } from "lucide-react";
 import type { ComponentType, SVGProps } from "react";
 

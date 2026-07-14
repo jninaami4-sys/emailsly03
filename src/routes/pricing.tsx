@@ -8,6 +8,7 @@ import {
   ArrowRight,
   Sparkles,
   CheckCircle2,
+  type LucideIcon,
 } from "lucide-react";
 import { AddOns } from "@/components/site/AddOns";
 

@@ -127,6 +127,7 @@ function RootComponent() {
           <TrackingScripts />
           <TrackingDebugPanel />
           <CookieConsent />
+          <TawkChat />
           <ReferralCapture />
         </CartProvider>
       </AuthProvider>

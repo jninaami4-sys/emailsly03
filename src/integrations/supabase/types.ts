@@ -643,6 +643,57 @@ export type Database = {
         }
         Relationships: []
       }
+      referral_credits: {
+        Row: {
+          created_at: string
+          currency: string
+          delta_cents: number
+          id: string
+          notes: string | null
+          order_id: string | null
+          referral_id: string | null
+          source: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          currency?: string
+          delta_cents: number
+          id?: string
+          notes?: string | null
+          order_id?: string | null
+          referral_id?: string | null
+          source: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          currency?: string
+          delta_cents?: number
+          id?: string
+          notes?: string | null
+          order_id?: string | null
+          referral_id?: string | null
+          source?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referral_credits_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "referral_credits_referral_id_fkey"
+            columns: ["referral_id"]
+            isOneToOne: false
+            referencedRelation: "referrals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       referrals: {
         Row: {
           created_at: string
@@ -909,12 +960,21 @@ export type Database = {
     }
     Functions: {
       generate_referral_code: { Args: never; Returns: string }
+      get_referral_balance: { Args: { _user_id: string }; Returns: number }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
         Returns: boolean
+      }
+      redeem_referral_credit: {
+        Args: {
+          _order_id: string
+          _requested_cents: number
+          _subtotal_cents: number
+        }
+        Returns: number
       }
     }
     Enums: {

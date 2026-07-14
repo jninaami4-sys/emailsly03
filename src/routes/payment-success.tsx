@@ -109,7 +109,7 @@ function PaymentSuccessPage() {
   if (loading) return <InvoiceSkeleton />;
 
   return (
-    <div className="relative min-h-[calc(100vh-4rem)] overflow-hidden bg-background px-4 py-12 md:py-20">
+    <div className="relative min-h-[calc(100vh-4rem)] overflow-hidden bg-background px-3 py-10 sm:px-4 sm:py-12 md:py-20">
       <BackdropFx />
       <div className="relative mx-auto max-w-4xl">
         {/* Success hero */}

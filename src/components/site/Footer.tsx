@@ -28,7 +28,7 @@ const legalLinks = [
 
 export function Footer() {
   return (
-    <footer className="relative overflow-hidden bg-ink text-white/70">
+    <footer data-site-footer className="relative overflow-hidden bg-ink text-white/70">
       {/* soft violet glow, matches homepage editorial system */}
       <div className="pointer-events-none absolute -left-32 top-0 size-96 rounded-full bg-violet/15 blur-[120px]" />
       <div className="pointer-events-none absolute -right-32 bottom-0 size-96 rounded-full bg-coral/10 blur-[120px]" />

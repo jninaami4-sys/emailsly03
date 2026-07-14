@@ -393,6 +393,63 @@ export type Database = {
         }
         Relationships: []
       }
+      reviews: {
+        Row: {
+          approved_at: string | null
+          body: string | null
+          country: string | null
+          created_at: string
+          display_name: string
+          duration_sec: number | null
+          id: string
+          media_kind: string
+          rating: number
+          reject_reason: string | null
+          role: string | null
+          status: string
+          updated_at: string
+          user_id: string
+          video_path: string | null
+          video_poster_path: string | null
+        }
+        Insert: {
+          approved_at?: string | null
+          body?: string | null
+          country?: string | null
+          created_at?: string
+          display_name: string
+          duration_sec?: number | null
+          id?: string
+          media_kind: string
+          rating: number
+          reject_reason?: string | null
+          role?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+          video_path?: string | null
+          video_poster_path?: string | null
+        }
+        Update: {
+          approved_at?: string | null
+          body?: string | null
+          country?: string | null
+          created_at?: string
+          display_name?: string
+          duration_sec?: number | null
+          id?: string
+          media_kind?: string
+          rating?: number
+          reject_reason?: string | null
+          role?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+          video_path?: string | null
+          video_poster_path?: string | null
+        }
+        Relationships: []
+      }
       server_event_log: {
         Row: {
           created_at: string

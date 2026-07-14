@@ -167,16 +167,61 @@ export const recordMyOrder = createServerFn({ method: "POST" })
       message: "Payment received",
     });
 
-    // Atomically spend referral credit against this order (user-scoped RPC)
+    // Atomically spend referral credit against this order (user-scoped RPC).
+    // The RPC also writes a negative ledger row, so this log covers both the
+    // redeem call and the ledger write it triggers.
     let creditSpent = 0;
     if (data.credit_applied_cents > 0) {
       const userSb = context.supabase as any;
-      const { data: spent } = await userSb.rpc("redeem_referral_credit", {
+      const startedRedeem = Date.now();
+      logReferral({
+        event: "referral.credit.redeem",
+        status: "start",
+        user_id: context.userId,
+        order_id: row.id,
+        requested_cents: data.credit_applied_cents,
+        subtotal_cents: data.subtotal_cents,
+      });
+      const { data: spent, error: redeemErr } = await userSb.rpc("redeem_referral_credit", {
         _order_id: row.id,
         _requested_cents: data.credit_applied_cents,
         _subtotal_cents: data.subtotal_cents,
       });
-      creditSpent = typeof spent === "number" ? spent : 0;
+      if (redeemErr) {
+        const c = classifyReferralError(redeemErr);
+        logReferral({
+          event: "referral.credit.redeem",
+          status: "error",
+          user_id: context.userId,
+          order_id: row.id,
+          requested_cents: data.credit_applied_cents,
+          subtotal_cents: data.subtotal_cents,
+          duration_ms: Date.now() - startedRedeem,
+          error_code: c.code,
+          error_message: c.message,
+          rls_hint: c.rls_hint,
+        });
+      } else {
+        creditSpent = typeof spent === "number" ? spent : 0;
+        logReferral({
+          event: "referral.credit.redeem",
+          status: "ok",
+          user_id: context.userId,
+          order_id: row.id,
+          requested_cents: data.credit_applied_cents,
+          subtotal_cents: data.subtotal_cents,
+          spent_cents: creditSpent,
+          duration_ms: Date.now() - startedRedeem,
+        });
+        logReferral({
+          event: "referral.credit.ledger_write",
+          status: "ok",
+          user_id: context.userId,
+          order_id: row.id,
+          delta_cents: -creditSpent,
+          source: "referral_redeemed",
+        });
+      }
     }
 
     return { ok: true, id: row.id, duplicate: false, credit_spent_cents: creditSpent };

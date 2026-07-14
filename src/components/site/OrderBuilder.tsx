@@ -117,9 +117,16 @@ export function OrderBuilder() {
   const balanceFn = useServerFn(getMyReferralBalance);
   const balanceQuery = useQuery({
     queryKey: ["my-referral-balance", user?.id],
-    queryFn: () => balanceFn(),
+    queryFn: async () => {
+      try {
+        return await balanceFn();
+      } catch {
+        return { balance_cents: 0, currency: "USD" };
+      }
+    },
     enabled: !!user,
     staleTime: 30_000,
+    retry: false,
   });
   const creditBalanceCents = balanceQuery.data?.balance_cents ?? 0;
 

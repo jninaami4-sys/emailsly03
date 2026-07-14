@@ -528,7 +528,7 @@ function FunnelCard({ icon: Icon, label, value, tint }: { icon: any; label: stri
   );
 }
 
-function ReferrerChainPanel({ referrerId, chainFn }: { referrerId: string; chainFn: ReturnType<typeof useServerFn<typeof adminReferrerChain>> }) {
+function ReferrerChainPanel({ referrerId, chainFn }: { referrerId: string; chainFn: (args: { data: { referrer_id: string } }) => Promise<Awaited<ReturnType<typeof adminReferrerChain>>> }) {
   const chain = useQuery({
     queryKey: ["admin-referrer-chain", referrerId],
     queryFn: () => chainFn({ data: { referrer_id: referrerId } }),

@@ -140,6 +140,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <CartProvider>
+          <SkipLink />
           <RouteTransition>
             <Outlet />
           </RouteTransition>

@@ -63,6 +63,7 @@ export const updateMyProfile = createServerFn({ method: "POST" })
         company: z.string().trim().max(160).optional().nullable(),
         phone: z.string().trim().max(40).optional().nullable(),
         country: z.string().trim().max(80).optional().nullable(),
+        avatar_url: z.string().trim().max(2048).url().optional().nullable(),
       })
       .parse(d),
   )

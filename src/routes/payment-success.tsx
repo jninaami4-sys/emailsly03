@@ -78,7 +78,71 @@ function PaymentSuccessPage() {
   const subtotal = Number.isFinite(subtotalNum) ? subtotalNum : Math.max(0, amount - fee);
   const tax = 0;
   const total = amount;
-  const unitPrice = qty > 0 ? subtotal / qty : subtotal;
+
+  const baseNum = Number(search.base ?? NaN);
+  const base = Number.isFinite(baseNum) ? baseNum : subtotal;
+  const extraUrls = Number(search.extraUrls ?? 1);
+  const extraUrlsCost = Math.max(0, extraUrls - 1) * 5;
+  const verifierOn = search.verifier === "1";
+  const verifierCost = verifierOn ? qty * 0.002 : 0;
+  const rushOn = search.rush === "1";
+  const rushFeeNum = Number(search.rushFee ?? NaN);
+  const rushFee = Number.isFinite(rushFeeNum) ? rushFeeNum : 0;
+  const tipNum = Number(search.tip ?? 0);
+  const tip = Number.isFinite(tipNum) ? tipNum : 0;
+
+  const unitPrice = qty > 0 ? base / qty : base;
+
+  const lineItems: LineItem[] = [
+    {
+      title: service,
+      note: `Verified contacts · CSV delivery · 24h SLA`,
+      qty,
+      unit,
+      unitPrice,
+      amount: base,
+    },
+  ];
+  if (extraUrlsCost > 0) {
+    lineItems.push({
+      title: "Additional URLs / sources",
+      note: `${extraUrls} URLs (first included, $5 per extra)`,
+      qty: extraUrls - 1,
+      unit: "url",
+      unitPrice: 5,
+      amount: extraUrlsCost,
+    });
+  }
+  if (verifierCost > 0) {
+    lineItems.push({
+      title: "MillionVerifier email verification",
+      note: "Deliverability check on every email",
+      qty,
+      unit: "email",
+      unitPrice: 0.002,
+      amount: verifierCost,
+    });
+  }
+  if (rushFee > 0 || rushOn) {
+    lineItems.push({
+      title: "Rush order (+25%)",
+      note: "Priority queue · fastest turnaround",
+      qty: 1,
+      unit: "rush",
+      unitPrice: rushFee,
+      amount: rushFee,
+    });
+  }
+  if (tip > 0) {
+    lineItems.push({
+      title: "Tip",
+      note: "Thanks for the love ❤️",
+      qty: 1,
+      unit: "tip",
+      unitPrice: tip,
+      amount: tip,
+    });
+  }
 
   const dateStr = now.toLocaleDateString("en-US", {
     year: "numeric",
@@ -99,18 +163,16 @@ function PaymentSuccessPage() {
           timeStr,
           name,
           email,
-          service,
-          qty,
-          unit,
-          unitPrice,
+          lineItems,
           subtotal,
           fee,
           tax,
           total,
         }),
       ),
-    [orderId, invoiceNo, dateStr, timeStr, name, email, service, qty, unit, unitPrice, subtotal, fee, tax, total],
+    [orderId, invoiceNo, dateStr, timeStr, name, email, lineItems, subtotal, fee, tax, total],
   );
+
 
   if (loading) return <InvoiceSkeleton />;
 

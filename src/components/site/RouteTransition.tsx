@@ -9,6 +9,7 @@ import { useReducedMotion } from "@/hooks/use-reduced-motion";
  * keyboard users land on the new page content.
  */
 export function RouteTransition({ children }: { children: ReactNode }) {
+  console.log("[RouteTransition] render");
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isLoading = useRouterState({ select: (s) => s.isLoading || s.isTransitioning });
   const reducedMotion = useReducedMotion();

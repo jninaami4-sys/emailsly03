@@ -1,82 +1,48 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useRouterState } from "@tanstack/react-router";
-import { useReducedMotion } from "@/hooks/use-reduced-motion";
 
 /**
- * Wraps route content with a smooth fade+lift transition on pathname change.
- * Also scrolls to top smoothly, shows a subtle top progress bar during navigation,
- * and moves focus to the route container after navigation so screen-reader and
- * keyboard users land on the new page content.
+ * Route wrapper: no page-wipe animation. During in-flight navigation we
+ * show a lightweight skeleton in place of the outgoing page so the switch
+ * feels instant and doesn't flash. A slim top progress bar covers very
+ * fast transitions.
  */
 export function RouteTransition({ children }: { children: ReactNode }) {
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const isLoading = useRouterState({ select: (s) => s.isLoading || s.isTransitioning });
-  const reducedMotion = useReducedMotion();
+  const isLoading = useRouterState((s) => s.isLoading || s.isTransitioning);
+  const pathname = useRouterState((s) => s.location.pathname);
 
-  const [displayed, setDisplayed] = useState(children);
-  const [phase, setPhase] = useState<"in" | "out">("in");
+  // Only show the skeleton if navigation takes more than ~120ms — avoids
+  // a flicker on cached/instant routes.
+  const [showSkeleton, setShowSkeleton] = useState(false);
+  const timerRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (isLoading) {
+      if (timerRef.current) window.clearTimeout(timerRef.current);
+      timerRef.current = window.setTimeout(() => setShowSkeleton(true), 120);
+    } else {
+      if (timerRef.current) window.clearTimeout(timerRef.current);
+      setShowSkeleton(false);
+    }
+    return () => {
+      if (timerRef.current) window.clearTimeout(timerRef.current);
+    };
+  }, [isLoading]);
+
+  // Reset scroll on committed route change.
   const prevPath = useRef(pathname);
-  const contentRef = useRef<HTMLDivElement>(null);
-  const initialMount = useRef(true);
-
   useEffect(() => {
-    if (prevPath.current === pathname) {
-      setDisplayed(children);
-      return;
-    }
-
-    if (reducedMotion) {
-      // Respect reduced motion: swap immediately, reset scroll without animation,
-      // then move focus so the new content is announced.
-      setDisplayed(children);
+    if (prevPath.current !== pathname) {
       prevPath.current = pathname;
       window.scrollTo({ top: 0, behavior: "auto" });
-      contentRef.current?.focus({ preventScroll: true });
-      return;
     }
-
-    // Start fade-out
-    setPhase("out");
-    const swap = window.setTimeout(() => {
-      setDisplayed(children);
-      prevPath.current = pathname;
-      // Jump to top without smooth-scroll animation (avoids the "sliding" feel)
-      window.scrollTo({ top: 0, behavior: "auto" });
-      // Fade back in on next frame after paint
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => setPhase("in"));
-      });
-    }, 120);
-
-    return () => window.clearTimeout(swap);
-  }, [pathname, children, reducedMotion]);
-
-  useEffect(() => {
-    if (initialMount.current) {
-      initialMount.current = false;
-      return;
-    }
-    if (phase === "in" && contentRef.current) {
-      // Move focus to the route container for screen-reader/keyboard users.
-      // preventScroll avoids fighting the smooth scroll to top.
-      contentRef.current.focus({ preventScroll: true });
-    }
-  }, [phase]);
+  }, [pathname]);
 
   return (
     <>
-      <TopProgressBar active={isLoading || phase === "out"} />
-      <div
-        id="route-content"
-        ref={contentRef}
-        tabIndex={-1}
-        aria-label="Page content"
-        aria-busy={phase === "out" || isLoading}
-        className={`route-transition focus:outline-none ${
-          phase === "in" ? "route-transition-in" : "route-transition-out"
-        }`}
-      >
-        {displayed}
+      <TopProgressBar active={isLoading} />
+      <div id="route-content" aria-busy={isLoading}>
+        {showSkeleton ? <PageSkeleton /> : children}
       </div>
     </>
   );
@@ -95,6 +61,40 @@ function TopProgressBar({ active }: { active: boolean }) {
           active ? "route-progress-bar" : ""
         }`}
       />
+    </div>
+  );
+}
+
+function SkeletonBlock({ className = "" }: { className?: string }) {
+  return (
+    <div
+      className={`animate-pulse rounded-xl bg-muted/60 ${className}`}
+      aria-hidden="true"
+    />
+  );
+}
+
+function PageSkeleton() {
+  return (
+    <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:py-14">
+      <div className="space-y-4">
+        <SkeletonBlock className="h-4 w-32" />
+        <SkeletonBlock className="h-10 w-3/4 sm:h-12" />
+        <SkeletonBlock className="h-4 w-2/3" />
+      </div>
+
+      <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <div
+            key={i}
+            className="rounded-2xl border border-border bg-card/50 p-5"
+          >
+            <SkeletonBlock className="mb-4 h-40 w-full" />
+            <SkeletonBlock className="mb-2 h-4 w-3/4" />
+            <SkeletonBlock className="h-4 w-1/2" />
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

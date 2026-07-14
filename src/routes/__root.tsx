@@ -146,6 +146,8 @@ function RootComponent() {
           </RouteTransition>
           <SectionReveal />
           <CartDrawer />
+          <CacheJanitor />
+
           <AnnouncementModal />
           <TrackingScripts />
           <TrackingDebugPanel />

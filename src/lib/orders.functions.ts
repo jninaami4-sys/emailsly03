@@ -103,3 +103,66 @@ export const requestRevision = createServerFn({ method: "POST" })
     if (e2) throw new Error(e2.message);
     return { ok: true };
   });
+
+import { z as _z } from "zod";
+
+/** Record a completed order from the payment-success page (idempotent by payment_ref). */
+export const recordMyOrder = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d) =>
+    _z
+      .object({
+        payment_ref: _z.string().min(1),
+        service_label: _z.string().min(1),
+        service_id: _z.string().optional().nullable(),
+        quantity: _z.number().int().min(1).default(1),
+        subtotal_cents: _z.number().int().min(0),
+        discount_cents: _z.number().int().min(0).default(0),
+        promo_code: _z.string().optional().nullable(),
+        total_cents: _z.number().int().min(0),
+        currency: _z.string().default("USD"),
+        payment_provider: _z.string().default("stripe"),
+      })
+      .parse(d),
+  )
+  .handler(async ({ context, data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const sb = supabaseAdmin as any;
+    const email = (context.claims as { email?: string }).email ?? "";
+    // idempotency: payment_ref
+    const { data: existing } = await sb
+      .from("orders")
+      .select("id")
+      .eq("payment_ref", data.payment_ref)
+      .maybeSingle();
+    if (existing) return { ok: true, id: existing.id, duplicate: true };
+    const { data: row, error } = await sb
+      .from("orders")
+      .insert({
+        user_id: context.userId,
+        email,
+        service_id: data.service_id ?? null,
+        service_label: data.service_label,
+        quantity: data.quantity,
+        subtotal_cents: data.subtotal_cents,
+        discount_cents: data.discount_cents,
+        promo_code: data.promo_code ?? null,
+        total_cents: data.total_cents,
+        currency: data.currency,
+        status: "pending",
+        payment_status: "paid",
+        payment_provider: data.payment_provider,
+        payment_ref: data.payment_ref,
+      })
+      .select("id")
+      .single();
+    if (error) throw new Error(error.message);
+    await sb.from("order_events").insert({
+      order_id: row.id,
+      actor_id: context.userId,
+      actor_role: "system",
+      event_type: "payment_received",
+      message: "Payment received",
+    });
+    return { ok: true, id: row.id, duplicate: false };
+  });

@@ -828,21 +828,70 @@ function ProfileTab() {
     phone: "",
     country: "",
   });
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [uploadState, setUploadState] = useState<{
+    status: "idle" | "compressing" | "uploading" | "error";
+    error?: string;
+    savedKB?: number;
+  }>({ status: "idle" });
 
   useEffect(() => {
-    if (data)
+    if (data) {
       setForm({
         full_name: data.full_name ?? "",
         company: data.company ?? "",
         phone: data.phone ?? "",
         country: data.country ?? "",
       });
+      setAvatarUrl(data.avatar_url ?? null);
+    }
   }, [data]);
 
   const save = useMutation({
-    mutationFn: () => updateFn({ data: form }),
+    mutationFn: () => updateFn({ data: { ...form, avatar_url: avatarUrl ?? null } }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["my-profile"] }),
   });
+
+  async function handleFile(file: File) {
+    if (!data) return;
+    const originalKB = Math.round(file.size / 1024);
+    setUploadState({ status: "compressing" });
+    try {
+      const compressed = await compressImage(file, { maxDimension: 512, quality: 0.9 });
+      setUploadState({ status: "uploading" });
+      const path = `${data.user_id}/avatar-${Date.now()}.${compressed.ext}`;
+      const contentType = compressed.ext === "webp" ? "image/webp" : "image/jpeg";
+      const { error: upErr } = await supabase.storage
+        .from("avatars")
+        .upload(path, compressed.blob, { contentType, upsert: true, cacheControl: "31536000" });
+      if (upErr) throw upErr;
+      // Long-lived signed URL (1 year) — bucket is private but signed URLs
+      // bypass RLS, so we can serve the avatar to anyone who has the profile.
+      const { data: signed, error: signErr } = await supabase.storage
+        .from("avatars")
+        .createSignedUrl(path, 60 * 60 * 24 * 365);
+      if (signErr || !signed?.signedUrl) throw signErr ?? new Error("Failed to create URL");
+      setAvatarUrl(signed.signedUrl);
+      // Persist immediately so the header/other places see the new avatar.
+      await updateFn({ data: { ...form, avatar_url: signed.signedUrl } });
+      qc.invalidateQueries({ queryKey: ["my-profile"] });
+      const compressedKB = Math.round(compressed.bytes / 1024);
+      setUploadState({ status: "idle", savedKB: Math.max(0, originalKB - compressedKB) });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Upload failed";
+      setUploadState({ status: "error", error: message });
+    }
+  }
+
+  async function handleRemove() {
+    setAvatarUrl(null);
+    try {
+      await updateFn({ data: { ...form, avatar_url: null } });
+      qc.invalidateQueries({ queryKey: ["my-profile"] });
+    } catch {
+      /* ignore — UI already reflects removal */
+    }
+  }
 
   if (isLoading || !data)
     return (
@@ -858,17 +907,90 @@ function ProfileTab() {
     { key: "country", label: "Country", placeholder: "United States" },
   ];
 
+  const uploading = uploadState.status === "compressing" || uploadState.status === "uploading";
+  const uploadLabel =
+    uploadState.status === "compressing"
+      ? "Optimizing…"
+      : uploadState.status === "uploading"
+        ? "Uploading…"
+        : avatarUrl
+          ? "Change photo"
+          : "Upload photo";
+
   return (
     <div className="rounded-2xl border border-border bg-card p-6">
       <div className="mb-5 flex items-center gap-4">
-        <div className="grid size-12 place-items-center rounded-2xl bg-gradient-to-br from-violet to-indigo font-display text-lg font-bold text-white">
-          {data.email?.[0]?.toUpperCase() ?? "L"}
+        <div className="relative">
+          {avatarUrl ? (
+            <img
+              src={avatarUrl}
+              alt={data.full_name || data.email}
+              loading="lazy"
+              decoding="async"
+              width={64}
+              height={64}
+              className="size-16 rounded-2xl object-cover ring-2 ring-violet/40"
+            />
+          ) : (
+            <div className="grid size-16 place-items-center rounded-2xl bg-gradient-to-br from-violet to-indigo font-display text-xl font-bold text-white">
+              {data.email?.[0]?.toUpperCase() ?? "L"}
+            </div>
+          )}
+          <label className="absolute -bottom-1 -right-1 grid size-7 cursor-pointer place-items-center rounded-full border border-border bg-background text-muted-foreground shadow-sm transition-colors hover:text-violet">
+            {uploading ? <Loader2 className="size-3.5 animate-spin" /> : <Camera className="size-3.5" />}
+            <input
+              type="file"
+              accept="image/png,image/jpeg,image/webp,image/gif"
+              className="sr-only"
+              disabled={uploading}
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                e.currentTarget.value = "";
+                if (f) handleFile(f);
+              }}
+            />
+          </label>
         </div>
-        <div>
-          <div className="font-semibold">{data.full_name || data.email}</div>
-          <div className="text-xs text-muted-foreground">{data.email}</div>
+        <div className="min-w-0 flex-1">
+          <div className="truncate font-semibold">{data.full_name || data.email}</div>
+          <div className="truncate text-xs text-muted-foreground">{data.email}</div>
+          <div className="mt-1 flex flex-wrap items-center gap-2 text-[11px]">
+            <label className="cursor-pointer font-mono uppercase tracking-widest text-violet hover:underline">
+              {uploadLabel}
+              <input
+                type="file"
+                accept="image/png,image/jpeg,image/webp,image/gif"
+                className="sr-only"
+                disabled={uploading}
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  e.currentTarget.value = "";
+                  if (f) handleFile(f);
+                }}
+              />
+            </label>
+            {avatarUrl && !uploading && (
+              <button
+                type="button"
+                onClick={handleRemove}
+                className="inline-flex items-center gap-1 font-mono uppercase tracking-widest text-muted-foreground hover:text-destructive"
+              >
+                <Trash2 className="size-3" /> Remove
+              </button>
+            )}
+            {uploadState.status === "error" && (
+              <span className="text-destructive">{uploadState.error}</span>
+            )}
+            {uploadState.status === "idle" && typeof uploadState.savedKB === "number" && uploadState.savedKB > 0 && (
+              <span className="text-emerald">Saved {uploadState.savedKB} KB after compression</span>
+            )}
+          </div>
         </div>
       </div>
+
+      <p className="mb-4 text-[11px] text-muted-foreground">
+        Photos are resized to 512px and re-encoded as WebP for fast loading — original quality preserved for faces at typical avatar sizes.
+      </p>
 
       <div className="mb-4">
         <label className="mb-1 block font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
@@ -911,6 +1033,7 @@ function ProfileTab() {
     </div>
   );
 }
+
 
 /* ------------------------------ sidebar cards ------------------------------ */
 

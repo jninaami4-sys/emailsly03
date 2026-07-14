@@ -61,6 +61,26 @@ export function TawkChat() {
         opacity: 1 !important;
         pointer-events: auto !important;
       }
+      /* On mobile keep the chat panel compact so it doesn't cover the whole screen */
+      @media (max-width: 640px) {
+        html.tawk-open iframe[title*="chat" i],
+        html.tawk-open iframe[id*="tawkchat-iframe" i],
+        html.tawk-open #tawkchat-container.tawk-max-container,
+        html.tawk-open div[class*="tawk-max"] {
+          position: fixed !important;
+          width: calc(100vw - 1.5rem) !important;
+          max-width: calc(100vw - 1.5rem) !important;
+          height: 70vh !important;
+          max-height: 70vh !important;
+          right: 0.75rem !important;
+          bottom: 0.75rem !important;
+          left: auto !important;
+          top: auto !important;
+          border-radius: 1rem !important;
+          overflow: hidden !important;
+          box-shadow: 0 20px 60px -12px rgba(0, 0, 0, 0.45) !important;
+        }
+      }
     `;
     document.head.appendChild(style);
   }, []);

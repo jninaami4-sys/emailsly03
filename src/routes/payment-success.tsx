@@ -177,8 +177,15 @@ function PaymentSuccessPage() {
   if (loading)
     return (
       <Loader713Panel
+        chip="Secure Checkout"
         title="Confirming your payment"
-        subtitle="We're finalizing your order and preparing your invoice. This only takes a moment."
+        subtitle="Sit tight — we're locking in your order."
+        steps={[
+          "Authorizing transaction",
+          "Reserving your leads",
+          "Preparing your invoice",
+        ]}
+        systemLabel="LYRADATA · PCI-DSS"
         label="LOADING"
       />
     );

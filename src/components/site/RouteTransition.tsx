@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useRouterState } from "@tanstack/react-router";
-import { Loader713 } from "@/components/site/Loader713";
+import { Loader713Panel } from "@/components/site/Loader713";
 
 /**
  * Route wrapper: no page-wipe animation. During in-flight navigation we
@@ -68,19 +68,15 @@ function TopProgressBar({ active }: { active: boolean }) {
 
 function PageSkeleton() {
   return (
-    <div className="relative flex min-h-[60vh] items-center justify-center overflow-hidden px-4 py-16">
-      <div aria-hidden className="pointer-events-none absolute inset-0">
-        <div className="absolute left-1/2 top-1/2 size-[420px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet/10 blur-3xl animate-aurora-slow" />
-        <div className="absolute inset-0 bg-[radial-gradient(oklch(0.6_0.12_280/0.05)_1px,transparent_1px)] [background-size:22px_22px] opacity-60" />
-      </div>
-      <div className="relative flex flex-col items-center text-center">
-        <div className="rounded-2xl border border-violet/15 bg-card/70 px-5 py-4 shadow-[0_20px_60px_-25px_oklch(0.52_0.24_293/0.35)] backdrop-blur">
-          <Loader713 label="LOADING" />
-        </div>
-        <p className="mt-5 font-mono text-[10px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">
-          Preparing your page
-        </p>
-      </div>
-    </div>
+    <Loader713Panel
+      chip="Routing"
+      title="Preparing your page"
+      subtitle="One breath while we line things up."
+      steps={[
+        "Warming the cache",
+        "Fetching fresh data",
+        "Rendering components",
+      ]}
+    />
   );
 }

@@ -70,6 +70,7 @@ export function RouteTransition({ children }: { children: ReactNode }) {
         id="route-content"
         ref={contentRef}
         tabIndex={-1}
+        aria-label="Page content"
         aria-busy={phase === "out" || isLoading}
         className={`route-transition focus:outline-none ${
           phase === "in" ? "route-transition-in" : "route-transition-out"

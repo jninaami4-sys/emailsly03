@@ -53,6 +53,7 @@ export function RouteTransition({ children }: { children: ReactNode }) {
   }, [pathname, children, reducedMotion]);
 
   useEffect(() => {
+    console.log("[RouteTransition] phase effect", phase, "initialMount", initialMount.current);
     if (initialMount.current) {
       initialMount.current = false;
       return;

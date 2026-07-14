@@ -68,15 +68,36 @@ function TopProgressBar({ active }: { active: boolean }) {
 
 function PageSkeleton() {
   return (
-    <Loader713Panel
-      chip="Routing"
-      title="Preparing your page"
-      subtitle="One breath while we line things up."
-      steps={[
-        "Warming the cache",
-        "Fetching fresh data",
-        "Rendering components",
-      ]}
-    />
+    <div className="relative min-h-[80vh] overflow-hidden bg-gradient-to-b from-background via-background to-violet-soft/30">
+      {/* Aurora backdrop matching site palette */}
+      <div aria-hidden className="pointer-events-none absolute inset-0">
+        <div className="absolute -left-32 top-10 size-[420px] rounded-full bg-violet/25 blur-[120px] animate-aurora-slow" />
+        <div className="absolute right-[-10%] top-1/3 size-[380px] rounded-full bg-neon-orange/20 blur-[120px] animate-aurora-med" />
+        <div className="absolute bottom-[-20%] left-1/3 size-[460px] rounded-full bg-emerald/15 blur-[140px] animate-aurora-fast" />
+        {/* subtle grid */}
+        <div
+          className="absolute inset-0 opacity-[0.05]"
+          style={{
+            backgroundImage:
+              "linear-gradient(var(--foreground) 1px, transparent 1px), linear-gradient(90deg, var(--foreground) 1px, transparent 1px)",
+            backgroundSize: "40px 40px",
+            maskImage:
+              "radial-gradient(ellipse at center, black 40%, transparent 75%)",
+          }}
+        />
+      </div>
+      <div className="relative">
+        <Loader713Panel
+          chip="Routing"
+          title="Preparing your page"
+          subtitle="One breath while we line things up."
+          steps={[
+            "Warming the cache",
+            "Fetching fresh data",
+            "Rendering components",
+          ]}
+        />
+      </div>
+    </div>
   );
 }

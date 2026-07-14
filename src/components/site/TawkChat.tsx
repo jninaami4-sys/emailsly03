@@ -128,7 +128,7 @@ export function TawkChat() {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.6, y: 20 }}
           transition={{ type: "spring", stiffness: 260, damping: 22 }}
-          className="fixed bottom-5 right-5 z-[70] md:bottom-6 md:right-6"
+          className="fixed bottom-3 right-3 z-[70] md:bottom-6 md:right-6"
           onHoverStart={() => setHovered(true)}
           onHoverEnd={() => setHovered(false)}
         >

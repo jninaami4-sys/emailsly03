@@ -231,6 +231,7 @@ function DashboardPage() {
               <ReferralErrorBoundary>
                 <ReferralCard />
               </ReferralErrorBoundary>
+              <ShareExperienceCTA variant="dashboard" />
               <RecommendedCard />
               <SupportCard />
             </aside>

@@ -37,9 +37,11 @@ import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
+import { Route as ApiPublicReferralClickRouteImport } from './routes/api/public/referral-click'
 import { Route as AuthenticatedInvoiceOrderIdRouteImport } from './routes/_authenticated/invoice.$orderId'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
+import { Route as ApiPublicWebhooksStripeRouteImport } from './routes/api/public/webhooks/stripe'
 import { Route as ApiPublicTelegramWebhookRouteImport } from './routes/api/public/telegram/webhook'
 import { Route as ApiPublicHooksKbSyncRouteImport } from './routes/api/public/hooks/kb-sync'
 
@@ -185,6 +187,11 @@ const Char91DotmcpChar93ListToolsRoute =
     path: '/.mcp/list-tools',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicReferralClickRoute = ApiPublicReferralClickRouteImport.update({
+  id: '/api/public/referral-click',
+  path: '/api/public/referral-click',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedInvoiceOrderIdRoute =
   AuthenticatedInvoiceOrderIdRouteImport.update({
     id: '/invoice/$orderId',
@@ -200,6 +207,11 @@ const Char91DotmcpChar93InvokeToolToolRoute =
 const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
   id: '/.lovable/oauth/consent',
   path: '/.lovable/oauth/consent',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicWebhooksStripeRoute = ApiPublicWebhooksStripeRouteImport.update({
+  id: '/api/public/webhooks/stripe',
+  path: '/api/public/webhooks/stripe',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicTelegramWebhookRoute =
@@ -245,8 +257,10 @@ export interface FileRoutesByFullPath {
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/invoice/$orderId': typeof AuthenticatedInvoiceOrderIdRoute
+  '/api/public/referral-click': typeof ApiPublicReferralClickRoute
   '/api/public/hooks/kb-sync': typeof ApiPublicHooksKbSyncRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
+  '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -279,8 +293,10 @@ export interface FileRoutesByTo {
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/invoice/$orderId': typeof AuthenticatedInvoiceOrderIdRoute
+  '/api/public/referral-click': typeof ApiPublicReferralClickRoute
   '/api/public/hooks/kb-sync': typeof ApiPublicHooksKbSyncRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
+  '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -315,8 +331,10 @@ export interface FileRoutesById {
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/_authenticated/invoice/$orderId': typeof AuthenticatedInvoiceOrderIdRoute
+  '/api/public/referral-click': typeof ApiPublicReferralClickRoute
   '/api/public/hooks/kb-sync': typeof ApiPublicHooksKbSyncRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
+  '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -351,8 +369,10 @@ export interface FileRouteTypes {
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/invoice/$orderId'
+    | '/api/public/referral-click'
     | '/api/public/hooks/kb-sync'
     | '/api/public/telegram/webhook'
+    | '/api/public/webhooks/stripe'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -385,8 +405,10 @@ export interface FileRouteTypes {
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/invoice/$orderId'
+    | '/api/public/referral-click'
     | '/api/public/hooks/kb-sync'
     | '/api/public/telegram/webhook'
+    | '/api/public/webhooks/stripe'
   id:
     | '__root__'
     | '/'
@@ -420,8 +442,10 @@ export interface FileRouteTypes {
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/_authenticated/invoice/$orderId'
+    | '/api/public/referral-click'
     | '/api/public/hooks/kb-sync'
     | '/api/public/telegram/webhook'
+    | '/api/public/webhooks/stripe'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -453,8 +477,10 @@ export interface RootRouteChildren {
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
+  ApiPublicReferralClickRoute: typeof ApiPublicReferralClickRoute
   ApiPublicHooksKbSyncRoute: typeof ApiPublicHooksKbSyncRoute
   ApiPublicTelegramWebhookRoute: typeof ApiPublicTelegramWebhookRoute
+  ApiPublicWebhooksStripeRoute: typeof ApiPublicWebhooksStripeRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -655,6 +681,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/referral-click': {
+      id: '/api/public/referral-click'
+      path: '/api/public/referral-click'
+      fullPath: '/api/public/referral-click'
+      preLoaderRoute: typeof ApiPublicReferralClickRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/invoice/$orderId': {
       id: '/_authenticated/invoice/$orderId'
       path: '/invoice/$orderId'
@@ -674,6 +707,13 @@ declare module '@tanstack/react-router' {
       path: '/.lovable/oauth/consent'
       fullPath: '/.lovable/oauth/consent'
       preLoaderRoute: typeof DotlovableOauthConsentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/webhooks/stripe': {
+      id: '/api/public/webhooks/stripe'
+      path: '/api/public/webhooks/stripe'
+      fullPath: '/api/public/webhooks/stripe'
+      preLoaderRoute: typeof ApiPublicWebhooksStripeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/telegram/webhook': {
@@ -746,8 +786,10 @@ const rootRouteChildren: RootRouteChildren = {
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
+  ApiPublicReferralClickRoute: ApiPublicReferralClickRoute,
   ApiPublicHooksKbSyncRoute: ApiPublicHooksKbSyncRoute,
   ApiPublicTelegramWebhookRoute: ApiPublicTelegramWebhookRoute,
+  ApiPublicWebhooksStripeRoute: ApiPublicWebhooksStripeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

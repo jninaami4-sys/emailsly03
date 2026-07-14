@@ -22,6 +22,7 @@ import { Route as RefundPolicyRouteImport } from './routes/refund-policy'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as PaymentSuccessRouteImport } from './routes/payment-success'
+import { Route as PaymentFailedRouteImport } from './routes/payment-failed'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as ManualLeadResearchRouteImport } from './routes/manual-lead-research'
 import { Route as LinkedinSalesNavigatorLeadsRouteImport } from './routes/linkedin-sales-navigator-leads'
@@ -102,6 +103,11 @@ const PricingRoute = PricingRouteImport.update({
 const PaymentSuccessRoute = PaymentSuccessRouteImport.update({
   id: '/payment-success',
   path: '/payment-success',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PaymentFailedRoute = PaymentFailedRouteImport.update({
+  id: '/payment-failed',
+  path: '/payment-failed',
   getParentRoute: () => rootRouteImport,
 } as any)
 const McpRoute = McpRouteImport.update({
@@ -200,6 +206,7 @@ export interface FileRoutesByFullPath {
   '/linkedin-sales-navigator-leads': typeof LinkedinSalesNavigatorLeadsRoute
   '/manual-lead-research': typeof ManualLeadResearchRoute
   '/mcp': typeof McpRoute
+  '/payment-failed': typeof PaymentFailedRoute
   '/payment-success': typeof PaymentSuccessRoute
   '/pricing': typeof PricingRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
@@ -231,6 +238,7 @@ export interface FileRoutesByTo {
   '/linkedin-sales-navigator-leads': typeof LinkedinSalesNavigatorLeadsRoute
   '/manual-lead-research': typeof ManualLeadResearchRoute
   '/mcp': typeof McpRoute
+  '/payment-failed': typeof PaymentFailedRoute
   '/payment-success': typeof PaymentSuccessRoute
   '/pricing': typeof PricingRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
@@ -263,6 +271,7 @@ export interface FileRoutesById {
   '/linkedin-sales-navigator-leads': typeof LinkedinSalesNavigatorLeadsRoute
   '/manual-lead-research': typeof ManualLeadResearchRoute
   '/mcp': typeof McpRoute
+  '/payment-failed': typeof PaymentFailedRoute
   '/payment-success': typeof PaymentSuccessRoute
   '/pricing': typeof PricingRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
@@ -296,6 +305,7 @@ export interface FileRouteTypes {
     | '/linkedin-sales-navigator-leads'
     | '/manual-lead-research'
     | '/mcp'
+    | '/payment-failed'
     | '/payment-success'
     | '/pricing'
     | '/privacy-policy'
@@ -327,6 +337,7 @@ export interface FileRouteTypes {
     | '/linkedin-sales-navigator-leads'
     | '/manual-lead-research'
     | '/mcp'
+    | '/payment-failed'
     | '/payment-success'
     | '/pricing'
     | '/privacy-policy'
@@ -358,6 +369,7 @@ export interface FileRouteTypes {
     | '/linkedin-sales-navigator-leads'
     | '/manual-lead-research'
     | '/mcp'
+    | '/payment-failed'
     | '/payment-success'
     | '/pricing'
     | '/privacy-policy'
@@ -390,6 +402,7 @@ export interface RootRouteChildren {
   LinkedinSalesNavigatorLeadsRoute: typeof LinkedinSalesNavigatorLeadsRoute
   ManualLeadResearchRoute: typeof ManualLeadResearchRoute
   McpRoute: typeof McpRoute
+  PaymentFailedRoute: typeof PaymentFailedRoute
   PaymentSuccessRoute: typeof PaymentSuccessRoute
   PricingRoute: typeof PricingRoute
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
@@ -502,6 +515,13 @@ declare module '@tanstack/react-router' {
       path: '/payment-success'
       fullPath: '/payment-success'
       preLoaderRoute: typeof PaymentSuccessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/payment-failed': {
+      id: '/payment-failed'
+      path: '/payment-failed'
+      fullPath: '/payment-failed'
+      preLoaderRoute: typeof PaymentFailedRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/mcp': {
@@ -639,6 +659,7 @@ const rootRouteChildren: RootRouteChildren = {
   LinkedinSalesNavigatorLeadsRoute: LinkedinSalesNavigatorLeadsRoute,
   ManualLeadResearchRoute: ManualLeadResearchRoute,
   McpRoute: McpRoute,
+  PaymentFailedRoute: PaymentFailedRoute,
   PaymentSuccessRoute: PaymentSuccessRoute,
   PricingRoute: PricingRoute,
   PrivacyPolicyRoute: PrivacyPolicyRoute,

@@ -708,6 +708,7 @@ export function OrderBuilder() {
                 <Link
                   to="/payment-success"
                   search={{
+                    order: undefined,
                     amount: total.toFixed(2),
                     subtotal: subtotal.toFixed(2),
                     fee: stripeFee.toFixed(2),

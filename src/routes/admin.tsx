@@ -16,6 +16,7 @@ import { ChatbotAdmin } from "@/components/admin/ChatbotAdmin";
 import { ReviewsAdmin } from "@/components/admin/ReviewsAdmin";
 import { OrdersAdmin } from "@/components/admin/OrdersAdmin";
 import { ImportExportAdmin } from "@/components/admin/ImportExportAdmin";
+import { PricingAdmin } from "@/components/admin/PricingAdmin";
 import { whoAmIAdmin } from "@/lib/announcements.functions";
 import { useAuth } from "@/hooks/use-auth";
 import { Upload, X, Search, ShieldAlert, Lock } from "lucide-react";
@@ -162,6 +163,7 @@ function AdminPage() {
 
         <div className="mb-10 space-y-6">
           <OrdersAdmin />
+          <PricingAdmin />
           <ImportExportAdmin />
           <AnnouncementsAdmin />
           <ProductDetailsAdmin />

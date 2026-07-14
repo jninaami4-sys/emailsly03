@@ -23,6 +23,7 @@ import { RouteTransition } from "@/components/site/RouteTransition";
 import { SectionReveal } from "@/components/site/SectionReveal";
 import { CacheJanitor } from "@/components/site/CacheJanitor";
 import { TvNotFound } from "@/components/site/TvNotFound";
+import { ReferralCapture } from "@/components/site/ReferralCapture";
 
 function NotFoundComponent() {
   return (
@@ -126,6 +127,7 @@ function RootComponent() {
           <TrackingDebugPanel />
           <CookieConsent />
           <TawkChat />
+          <ReferralCapture />
         </CartProvider>
       </AuthProvider>
     </QueryClientProvider>

@@ -380,6 +380,15 @@ function BackdropFx() {
 }
 
 /* --------------------------------- Invoice --------------------------------- */
+type LineItem = {
+  title: string;
+  note?: string;
+  qty: number;
+  unit: string;
+  unitPrice: number;
+  amount: number;
+};
+
 function Invoice(props: {
   orderId: string;
   invoiceNo: string;
@@ -387,31 +396,26 @@ function Invoice(props: {
   timeStr: string;
   name: string;
   email: string;
-  service: string;
-  qty: number;
-  unit: string;
-  unitPrice: number;
+  lineItems: LineItem[];
   subtotal: number;
   fee: number;
   tax: number;
   total: number;
 }) {
   const {
-    orderId,
+    orderId: _orderId,
     invoiceNo,
     dateStr,
     timeStr,
     name,
     email,
-    service,
-    qty,
-    unit,
-    unitPrice,
+    lineItems,
     subtotal,
     fee,
     tax,
     total,
   } = props;
+  void _orderId;
 
   const ref = useRef<HTMLDivElement>(null);
 

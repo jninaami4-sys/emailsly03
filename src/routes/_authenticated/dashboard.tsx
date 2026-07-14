@@ -917,6 +917,7 @@ function ReferralCard() {
     queryKey: ["my-referral-summary"],
     queryFn: () => summaryFn(),
     staleTime: 30_000,
+    retry: false,
   });
   const code = data?.referral_code ?? "…";
   const link = typeof window !== "undefined"

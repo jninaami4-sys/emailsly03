@@ -257,7 +257,7 @@ function ReferralEditor({
   submitting: boolean;
 }) {
   const [status, setStatus] = useState<any>(row.status);
-  const [method, setMethod] = useState<"credit" | "cash" | "">(row.payout_method ?? "");
+  const [method, setMethod] = useState<"credit" | "cash" | "">((row.payout_method as "credit" | "cash" | null) ?? "");
   const [notes, setNotes] = useState(row.notes ?? "");
 
   return (

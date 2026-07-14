@@ -52,7 +52,6 @@ export function RouteTransition({ children }: { children: ReactNode }) {
   }, [pathname, children, reducedMotion]);
 
   useEffect(() => {
-    console.log("[RouteTransition] phase effect", phase, "initialMount", initialMount.current);
     if (initialMount.current) {
       initialMount.current = false;
       return;
@@ -60,7 +59,6 @@ export function RouteTransition({ children }: { children: ReactNode }) {
     if (phase === "in" && contentRef.current) {
       // Move focus to the route container for screen-reader/keyboard users.
       // preventScroll avoids fighting the smooth scroll to top.
-      console.log("[RouteTransition] focusing route-content", contentRef.current);
       contentRef.current.focus({ preventScroll: true });
     }
   }, [phase]);

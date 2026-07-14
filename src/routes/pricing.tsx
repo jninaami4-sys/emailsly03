@@ -6,16 +6,12 @@ import {
   Crown,
   Phone,
   Linkedin,
-  Smartphone,
-  MousePointerClick,
-  LineChart,
-  Server,
   PenTool,
-  Globe2,
   ArrowRight,
   Sparkles,
   CheckCircle2,
 } from "lucide-react";
+import { AddOns } from "@/components/site/AddOns";
 
 export const Route = createFileRoute("/pricing")({
   head: () => ({

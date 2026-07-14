@@ -124,7 +124,7 @@ export function OrderBuilder() {
       const detail = (e as CustomEvent<{ serviceId?: string }>).detail;
       const id = detail?.serviceId;
       if (!id) return;
-      const svc = SERVICES.find((s) => s.id === id);
+      const svc = services.find((s) => s.id === id);
       if (!svc) return;
       setServiceId(svc.id);
       setMobileGroup(svc.group);
@@ -189,9 +189,9 @@ export function OrderBuilder() {
   };
 
 
-  const dataServices = SERVICES.filter((s) => s.group === "data");
-  const growthServices = SERVICES.filter((s) => s.group === "growth");
-  const designServices = SERVICES.filter((s) => s.group === "design");
+  const dataServices = services.filter((s) => s.group === "data");
+  const growthServices = services.filter((s) => s.group === "growth");
+  const designServices = services.filter((s) => s.group === "design");
 
   const canNext =
     step === 1 ? !!serviceId :
@@ -335,7 +335,7 @@ export function OrderBuilder() {
                 <div className="mt-4 block lg:hidden">
                   <CategoryTabs active={mobileGroup} onChange={setMobileGroup} />
                   <div className="mt-3 space-y-2">
-                    {SERVICES.filter((s) => s.group === mobileGroup).map((s) => (
+                    {services.filter((s) => s.group === mobileGroup).map((s) => (
                       <ServiceChip
                         key={s.id}
                         service={s}

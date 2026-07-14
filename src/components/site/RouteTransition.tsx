@@ -8,8 +8,8 @@ import { useRouterState } from "@tanstack/react-router";
  * fast transitions.
  */
 export function RouteTransition({ children }: { children: ReactNode }) {
-  const isLoading = useRouterState((s) => s.isLoading || s.isTransitioning);
-  const pathname = useRouterState((s) => s.location.pathname);
+  const isLoading = useRouterState({ select: (s) => s.isLoading || s.isTransitioning });
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   // Only show the skeleton if navigation takes more than ~120ms — avoids
   // a flicker on cached/instant routes.

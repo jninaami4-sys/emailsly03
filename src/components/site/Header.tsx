@@ -205,9 +205,9 @@ export function Header() {
                 <li key={item.to}>
                   <Link
                     to={item.to}
-                    activeProps={{ "aria-current": "page", className: "bg-secondary text-ink" }}
+                    activeProps={{ "aria-current": "page", className: "bg-violet/10 text-violet" }}
                     onClick={() => setMobileOpen(false)}
-                    className={`block rounded-md px-3 py-2 transition-colors hover:bg-secondary hover:text-ink ${focusRing}`}
+                    className={`block rounded-md px-3 py-2 text-ink transition-colors [-webkit-tap-highlight-color:transparent] hover:bg-violet/10 hover:text-violet active:bg-violet/10 active:text-violet ${focusRing}`}
                   >
                     {item.label}
                   </Link>

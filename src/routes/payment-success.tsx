@@ -118,7 +118,7 @@ function PaymentSuccessPage() {
           <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-emerald/20 bg-emerald/10 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-emerald animate-fade-in">
             <Sparkles className="size-3" /> Payment confirmed
           </div>
-          <h1 className="mt-4 font-display text-4xl font-bold tracking-tight md:text-6xl animate-fade-in">
+          <h1 className="mt-4 font-display text-3xl font-bold tracking-tight sm:text-4xl md:text-6xl animate-fade-in">
             Thank you,{" "}
             <span className="relative inline-block">
               <span className="relative z-10 italic text-violet">{name.split(" ")[0]}</span>

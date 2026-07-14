@@ -830,6 +830,7 @@ function ProfileTab() {
     country: "",
   });
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [pendingFile, setPendingFile] = useState<File | null>(null);
   const [uploadState, setUploadState] = useState<{
     status: "idle" | "compressing" | "uploading" | "error";
     error?: string;

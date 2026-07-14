@@ -164,6 +164,29 @@ function PaymentSuccessPage() {
     });
   }
 
+  // Persist this order into the user's dashboard once (idempotent by payment_ref)
+  useEffect(() => {
+    if (!user || recordedRef.current) return;
+    recordedRef.current = true;
+    recordFn({
+      data: {
+        payment_ref: orderId,
+        service_label: service,
+        service_id: null,
+        quantity: Math.max(1, Math.round(qty || 1)),
+        subtotal_cents: Math.round(subtotal * 100),
+        discount_cents: Math.round(discount * 100),
+        promo_code: search.promo ?? null,
+        total_cents: Math.round(total * 100),
+        currency: "USD",
+        payment_provider: "stripe",
+      },
+    }).catch(() => {
+      recordedRef.current = false;
+    });
+  }, [user, orderId, service, qty, subtotal, discount, total, search.promo, recordFn]);
+
+
 
   const dateStr = now.toLocaleDateString("en-US", {
     year: "numeric",

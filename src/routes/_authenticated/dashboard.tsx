@@ -198,24 +198,26 @@ function DashboardPage() {
           <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
             <div>
               {/* Tabs */}
-              <div className="mb-4 grid grid-cols-2 gap-1 rounded-2xl border border-border bg-card p-1 sm:grid-cols-4">
-                <TabBtn active={tab === "orders"} onClick={() => setTab("orders")} icon={<Package className="size-4" />}>
-                  Orders
-                </TabBtn>
-                <TabBtn
-                  active={tab === "downloads"}
-                  onClick={() => setTab("downloads")}
-                  icon={<Download className="size-4" />}
-                  count={stats.delivered}
-                >
-                  Downloads
-                </TabBtn>
-                <TabBtn active={tab === "invoices"} onClick={() => setTab("invoices")} icon={<Receipt className="size-4" />}>
-                  Invoices
-                </TabBtn>
-                <TabBtn active={tab === "profile"} onClick={() => setTab("profile")} icon={<UserIcon className="size-4" />}>
-                  Profile
-                </TabBtn>
+              <div className="mb-4 -mx-4 overflow-x-auto px-4 sm:mx-0 sm:overflow-visible sm:px-0 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                <div className="flex min-w-max gap-1 rounded-2xl border border-border bg-card p-1 sm:grid sm:min-w-0 sm:grid-cols-4">
+                  <TabBtn active={tab === "orders"} onClick={() => setTab("orders")} icon={<Package className="size-4" />}>
+                    Orders
+                  </TabBtn>
+                  <TabBtn
+                    active={tab === "downloads"}
+                    onClick={() => setTab("downloads")}
+                    icon={<Download className="size-4" />}
+                    count={stats.delivered}
+                  >
+                    Downloads
+                  </TabBtn>
+                  <TabBtn active={tab === "invoices"} onClick={() => setTab("invoices")} icon={<Receipt className="size-4" />}>
+                    Invoices
+                  </TabBtn>
+                  <TabBtn active={tab === "profile"} onClick={() => setTab("profile")} icon={<UserIcon className="size-4" />}>
+                    Profile
+                  </TabBtn>
+                </div>
               </div>
 
               {tab === "orders" && <OrdersTab orders={data} loading={orders.isLoading} />}

@@ -59,6 +59,7 @@ export function RouteTransition({ children }: { children: ReactNode }) {
     if (phase === "in" && contentRef.current) {
       // Move focus to the route container for screen-reader/keyboard users.
       // preventScroll avoids fighting the smooth scroll to top.
+      console.log("[RouteTransition] focusing route-content", contentRef.current);
       contentRef.current.focus({ preventScroll: true });
     }
   }, [phase]);

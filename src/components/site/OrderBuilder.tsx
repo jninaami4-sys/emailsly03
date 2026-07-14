@@ -1,8 +1,12 @@
 import { useEffect, useMemo, useState, type MouseEvent } from "react";
 import { Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
+import { useQuery } from "@tanstack/react-query";
 import { validatePromo, type PromoResult } from "@/lib/promos.functions";
+import { getMyReferralBalance } from "@/lib/referrals.functions";
+import { useAuth } from "@/hooks/use-auth";
 import { usePricingOverrides } from "@/hooks/use-pricing-overrides";
+import { Gift } from "lucide-react";
 
 import {
   ShieldCheck,
@@ -108,6 +112,16 @@ export function OrderBuilder() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [isDesktop, setIsDesktop] = useState(false);
+  const [useCredit, setUseCredit] = useState(false);
+  const { user } = useAuth();
+  const balanceFn = useServerFn(getMyReferralBalance);
+  const balanceQuery = useQuery({
+    queryKey: ["my-referral-balance", user?.id],
+    queryFn: () => balanceFn(),
+    enabled: !!user,
+    staleTime: 30_000,
+  });
+  const creditBalanceCents = balanceQuery.data?.balance_cents ?? 0;
 
   useEffect(() => {
     if (typeof window === "undefined") return;

@@ -9,7 +9,7 @@ export function FloatingOrderButton() {
         type="button"
         onClick={openOrderDrawer}
         aria-label="Get started — order your leads"
-        className="lyra-floating-order group fixed right-0 top-1/2 z-[70] -translate-y-1/2 translate-x-[calc(100%-3.25rem)] hover:translate-x-0 transition-transform duration-500 ease-out inline-flex items-center gap-3 rounded-l-2xl border border-white/15 border-r-0 bg-gradient-to-br from-indigo to-[oklch(0.42_0.22_275)] py-4 pl-4 pr-5 text-sm font-semibold text-white shadow-[0_20px_60px_-10px_rgba(79,70,229,0.7)]"
+        className="lyra-floating-order group fixed right-0 top-1/2 z-[70] hidden -translate-y-1/2 translate-x-[calc(100%-3.25rem)] hover:translate-x-0 transition-transform duration-500 ease-out md:inline-flex items-center gap-3 rounded-l-2xl border border-white/15 border-r-0 bg-gradient-to-br from-indigo to-[oklch(0.42_0.22_275)] py-4 pl-4 pr-5 text-sm font-semibold text-white shadow-[0_20px_60px_-10px_rgba(79,70,229,0.7)]"
       >
         <span className="relative grid size-9 place-items-center rounded-xl bg-white/15 backdrop-blur">
           <Rocket className="size-5 text-white" />

@@ -1,5 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
+import { getRequestHeader, getRequestIP } from "@tanstack/react-start/server";
 import { z } from "zod";
+import { createHash } from "crypto";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { logReferral, classifyReferralError } from "@/lib/referral-log.server";
 
@@ -29,6 +31,28 @@ export type ReferralSummary = {
   }>;
 };
 
+const PUBLIC_EMAIL_DOMAINS = new Set([
+  "gmail.com",
+  "googlemail.com",
+  "outlook.com",
+  "hotmail.com",
+  "live.com",
+  "msn.com",
+  "yahoo.com",
+  "ymail.com",
+  "aol.com",
+  "icloud.com",
+  "me.com",
+  "mac.com",
+  "proton.me",
+  "protonmail.com",
+  "pm.me",
+  "tutanota.com",
+  "gmx.com",
+  "zoho.com",
+  "mail.com",
+]);
+
 export const getMyReferralSummary = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }): Promise<ReferralSummary> => {
@@ -54,7 +78,6 @@ export const getMyReferralSummary = createServerFn({ method: "GET" })
       sb.rpc("get_referral_balance", { _user_id: context.userId }),
     ]);
 
-    // Surface per-query errors — a silent RLS/GRANT denial otherwise reads as "empty".
     const partErrors: Array<{ part: string; err: unknown }> = [];
     if (profileRes.error) partErrors.push({ part: "profiles", err: profileRes.error });
     if (ledgerRes.error) partErrors.push({ part: "referral_credits", err: ledgerRes.error });
@@ -84,7 +107,7 @@ export const getMyReferralSummary = createServerFn({ method: "GET" })
 
     const referralRows = (refs ?? []) as any[];
     const referredIds = referralRows.map((r) => r.referred_user_id).filter(Boolean);
-    let emailMap = new Map<string, string>();
+    const emailMap = new Map<string, string>();
     if (referredIds.length > 0) {
       const { data: profs } = await sb
         .from("profiles")
@@ -154,17 +177,33 @@ export const getMyReferralBalance = createServerFn({ method: "GET" })
     return { balance_cents, currency: "USD" };
   });
 
+/**
+ * Attach a referral code to the signed-in user.
+ * Runs anti-abuse checks and records signup fingerprint (IP + UA hash) on the profile and on the resulting referrals row.
+ *
+ * Anti-abuse rules applied here:
+ *   - hard block: attempting to use own code
+ *   - hard block: profile already attributed
+ *   - flag `same_email`     — same email as referrer (should be impossible but guarded)
+ *   - flag `same_domain`    — same non-public corporate domain
+ *   - flag `same_ip`        — signup IP matches referrer's signup IP
+ *   - flag `same_device`    — signup UA-hash matches referrer's UA-hash
+ *
+ * Flagged referrals still create the pending referral row but with admin_review_state='flagged';
+ * the orders_qualify_referral trigger will NOT auto-issue credits until an admin approves.
+ */
 export const attachReferrer = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d) => z.object({ code: z.string().min(4).max(24) }).parse(d))
   .handler(async ({ context, data }) => {
     const sb = context.supabase as any;
     const code = data.code.trim().toUpperCase();
+    const myEmail = ((context.claims as { email?: string }).email ?? "").toLowerCase().trim();
     logReferral({ event: "referral.attach", status: "start", user_id: context.userId, code });
 
     const { data: current } = await sb
       .from("profiles")
-      .select("referred_by_user_id,referral_code")
+      .select("referred_by_user_id,referral_code,signup_ip,signup_ua_hash")
       .eq("user_id", context.userId)
       .maybeSingle();
     if (current?.referred_by_user_id) {
@@ -180,7 +219,7 @@ export const attachReferrer = createServerFn({ method: "POST" })
     const admin = supabaseAdmin as any;
     const { data: refProfile } = await admin
       .from("profiles")
-      .select("user_id")
+      .select("user_id,email,signup_ip,signup_ua_hash")
       .eq("referral_code", code)
       .maybeSingle();
     if (!refProfile) {
@@ -192,9 +231,43 @@ export const attachReferrer = createServerFn({ method: "POST" })
       return { ok: false, reason: "Cannot use your own code" };
     }
 
+    // Capture request fingerprint
+    const ip = safeGetIp();
+    const uaHash = safeUaHash();
+
+    // Compute flags
+    const flags: string[] = [];
+    const refEmail = ((refProfile.email as string | null) ?? "").toLowerCase().trim();
+    if (myEmail && refEmail && myEmail === refEmail) {
+      // Hard block — same address is unambiguous self-referral
+      logReferral({ event: "referral.attach", status: "ok", user_id: context.userId, code, reason: "same_email", applied: false });
+      return { ok: false, reason: "Cannot use a code for your own email" };
+    }
+    const myDomain = myEmail.split("@")[1] ?? "";
+    const refDomain = refEmail.split("@")[1] ?? "";
+    if (
+      myDomain &&
+      refDomain &&
+      myDomain === refDomain &&
+      !PUBLIC_EMAIL_DOMAINS.has(myDomain)
+    ) {
+      flags.push("same_domain");
+    }
+    if (ip && refProfile.signup_ip && ip === String(refProfile.signup_ip)) {
+      flags.push("same_ip");
+    }
+    if (uaHash && refProfile.signup_ua_hash && uaHash === refProfile.signup_ua_hash) {
+      flags.push("same_device");
+    }
+
+    // Persist signup fingerprint on profile (only if not already set)
+    const profilePatch: Record<string, unknown> = { referred_by_user_id: refProfile.user_id };
+    if (!current?.signup_ip && ip) profilePatch.signup_ip = ip;
+    if (!current?.signup_ua_hash && uaHash) profilePatch.signup_ua_hash = uaHash;
+
     const { error } = await admin
       .from("profiles")
-      .update({ referred_by_user_id: refProfile.user_id })
+      .update(profilePatch)
       .eq("user_id", context.userId);
     if (error) {
       const c = classifyReferralError(error);
@@ -209,6 +282,61 @@ export const attachReferrer = createServerFn({ method: "POST" })
       });
       throw new Error(error.message);
     }
-    logReferral({ event: "referral.attach", status: "ok", user_id: context.userId, code, applied: true, referrer_id: refProfile.user_id });
-    return { ok: true };
+
+    // The profiles_create_pending_referral trigger has now created (or ensured) a referrals row for us.
+    // Update it with fingerprint + flag_reasons.
+    const nextState = flags.length > 0 ? "flagged" : "auto";
+    const { error: refErr } = await admin
+      .from("referrals")
+      .update({
+        signup_ip: ip,
+        signup_ua_hash: uaHash,
+        flag_reasons: flags,
+        admin_review_state: nextState,
+      })
+      .eq("referred_user_id", context.userId);
+    if (refErr) {
+      const c = classifyReferralError(refErr);
+      logReferral({
+        event: "referral.attach",
+        status: "error",
+        user_id: context.userId,
+        code,
+        step: "update_referral_flags",
+        error_code: c.code,
+        error_message: c.message,
+        rls_hint: c.rls_hint,
+      });
+    }
+
+    logReferral({
+      event: "referral.attach",
+      status: "ok",
+      user_id: context.userId,
+      code,
+      applied: true,
+      referrer_id: refProfile.user_id,
+      flags,
+      review_state: nextState,
+    });
+    return { ok: true, flags, review_state: nextState };
   });
+
+function safeGetIp(): string | null {
+  try {
+    return getRequestIP({ xForwardedFor: true }) ?? null;
+  } catch {
+    return null;
+  }
+}
+
+function safeUaHash(): string | null {
+  try {
+    const ua = getRequestHeader("user-agent") ?? "";
+    const al = getRequestHeader("accept-language") ?? "";
+    if (!ua) return null;
+    return createHash("sha256").update(`${ua}|${al}`).digest("hex");
+  } catch {
+    return null;
+  }
+}

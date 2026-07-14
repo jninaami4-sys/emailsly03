@@ -36,7 +36,7 @@ export function Preloader() {
 
   return (
     <div
-      className={`fixed inset-0 z-[100] grid place-items-center bg-background transition-opacity duration-500 ${
+      className={`theme-midnight fixed inset-0 z-[100] grid place-items-center bg-midnight transition-opacity duration-500 ${
         fade ? "opacity-0" : "opacity-100"
       }`}
       aria-hidden="true"
@@ -67,17 +67,48 @@ export function Preloader() {
 
 function FallbackMark() {
   return (
-    <div className="flex flex-col items-center">
-      <div className="relative grid size-16 place-items-center">
-        <span className="absolute inset-0 rounded-2xl border border-primary/20" />
-        <span className="grid size-9 place-items-center rounded-xl bg-primary shadow-lg shadow-primary/20">
-          <span className="size-2 rounded-full bg-primary-foreground" />
+    <div className="relative flex flex-col items-center">
+      {/* Soft ambient glow behind mark */}
+      <span
+        aria-hidden
+        className="absolute -top-10 left-1/2 size-40 -translate-x-1/2 rounded-full bg-violet/12 blur-[70px] animate-pulse-slow"
+      />
+
+      <div className="relative grid size-20 place-items-center">
+        {/* Outer orbit ring */}
+        <span
+          aria-hidden
+          className="absolute inset-0 rounded-full border border-violet/20"
+          style={{
+            background:
+              "conic-gradient(from 0deg, transparent 0%, var(--violet) 25%, var(--neon-blue) 55%, transparent 70%)",
+            WebkitMask:
+              "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
+            WebkitMaskComposite: "xor",
+            maskComposite: "exclude",
+            padding: "2px",
+            animation: "loader-orbit 3s linear infinite",
+          }}
+        />
+        {/* Inner glow shell */}
+        <span
+          aria-hidden
+          className="absolute inset-[3px] rounded-full bg-gradient-to-br from-violet/25 via-indigo/20 to-midnight-elev backdrop-blur-sm"
+        />
+        {/* Core orb */}
+        <span className="relative z-10 grid size-10 place-items-center rounded-full bg-gradient-to-br from-violet to-indigo shadow-[0_0_40px_-8px_var(--violet)] animate-orb-pulse">
+          <span className="size-2.5 rounded-full bg-white/90" />
         </span>
       </div>
-      <div className="mt-5 font-display text-xl font-bold tracking-tight text-foreground">
+
+      <div className="mt-6 font-display text-2xl font-bold tracking-tight text-foreground">
         LYRA<span className="text-muted-foreground">DATA</span>
       </div>
-      <div className="mt-3 text-xs font-medium tracking-wide text-muted-foreground">
+      <div className="mt-2.5 flex items-center gap-2 text-xs font-medium tracking-wide text-muted-foreground">
+        <span className="relative flex h-1.5 w-1.5">
+          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald/70" />
+          <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald" />
+        </span>
         Loading verified data
       </div>
     </div>

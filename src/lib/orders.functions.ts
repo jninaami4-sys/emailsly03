@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { logReferral, classifyReferralError } from "@/lib/referral-log.server";
 
 /** List all orders the signed-in client owns (by user_id or by email). */
 export const listMyOrders = createServerFn({ method: "GET" })

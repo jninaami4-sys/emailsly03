@@ -152,7 +152,7 @@ export function OrderBuilder() {
 
   const effectiveQty = service.fixed ? 1 : Math.max(quantity, service.minQty);
 
-  const { base, extras, rushFee, preDiscountSubtotal, discount, subtotal, stripeFee, total, savings, comparePriceApollo, comparePriceLinkedIn } =
+  const { base, extras, rushFee, preDiscountSubtotal, discount, creditApplied, subtotal, stripeFee, total, savings, comparePriceApollo, comparePriceLinkedIn } =
     useMemo(() => {
       const base = service.fixed ? service.minOrder : Math.max(effectiveQty * service.rate, service.minOrder);
       const extraUrlCost = Math.max(0, extraUrls - 1) * 5;
@@ -164,14 +164,18 @@ export function OrderBuilder() {
       // as a display safety net — never invent or inflate it client-side.
       const serverDiscount = promoApplied && promoApplied.ok ? promoApplied.amountOff : 0;
       const discount = Math.min(Math.max(0, serverDiscount), preDiscountSubtotal);
-      const subtotal = Math.max(0, preDiscountSubtotal - discount);
+      const afterPromo = Math.max(0, preDiscountSubtotal - discount);
+      // Referral credit stacks after promo, capped by remaining subtotal and available balance.
+      const creditAvailable = Math.max(0, creditBalanceCents) / 100;
+      const creditApplied = useCredit ? Math.min(creditAvailable, afterPromo) : 0;
+      const subtotal = Math.max(0, afterPromo - creditApplied);
       const stripeFee = subtotal > 0 ? subtotal * 0.029 + 0.3 : 0;
       const total = subtotal + stripeFee;
       const comparePriceApollo = effectiveQty * 0.2;
       const comparePriceLinkedIn = effectiveQty * 0.1;
       const savings = Math.max(0, comparePriceApollo - base);
-      return { base, extras, rushFee, preDiscountSubtotal, discount, subtotal, stripeFee, total, savings, comparePriceApollo, comparePriceLinkedIn };
-    }, [service, effectiveQty, extraUrls, verifier, rush, tip, promoApplied]);
+      return { base, extras, rushFee, preDiscountSubtotal, discount, creditApplied, subtotal, stripeFee, total, savings, comparePriceApollo, comparePriceLinkedIn };
+    }, [service, effectiveQty, extraUrls, verifier, rush, tip, promoApplied, useCredit, creditBalanceCents]);
 
   // If the order changes after a promo was applied, invalidate it so the
   // server re-validates against the new subtotal (prevents stale discounts

@@ -231,6 +231,73 @@
   animation: route-progress 1.1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
+/* ---------- Loader 713 (Uiverse.io / alexruix — themed) ---------- */
+.loader-713 {
+  width: 80px;
+  height: 50px;
+  position: relative;
+}
+.loader-713-text {
+  position: absolute;
+  top: 0;
+  padding: 0;
+  margin: 0;
+  color: var(--violet);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.72rem;
+  letter-spacing: 1px;
+  animation: loader713-text 3.5s ease both infinite;
+}
+.loader-713-load {
+  background-color: var(--violet);
+  border-radius: 50px;
+  display: block;
+  height: 16px;
+  width: 16px;
+  bottom: 0;
+  position: absolute;
+  transform: translateX(64px);
+  box-shadow: 0 6px 22px -6px color-mix(in oklab, var(--violet) 55%, transparent);
+  animation: loader713-load 3.5s ease both infinite;
+}
+.loader-713-load::before {
+  position: absolute;
+  content: "";
+  width: 100%;
+  height: 100%;
+  background-color: color-mix(in oklab, var(--violet) 55%, white);
+  border-radius: inherit;
+  animation: loader713-load2 3.5s ease both infinite;
+}
+@keyframes loader713-text {
+  0%   { letter-spacing: 1px; transform: translateX(0px); }
+  40%  { letter-spacing: 2px; transform: translateX(26px); }
+  80%  { letter-spacing: 1px; transform: translateX(32px); }
+  90%  { letter-spacing: 2px; transform: translateX(0px); }
+  100% { letter-spacing: 1px; transform: translateX(0px); }
+}
+@keyframes loader713-load {
+  0%   { width: 16px;  transform: translateX(0px); }
+  40%  { width: 100%;  transform: translateX(0px); }
+  80%  { width: 16px;  transform: translateX(64px); }
+  90%  { width: 100%;  transform: translateX(0px); }
+  100% { width: 16px;  transform: translateX(0px); }
+}
+@keyframes loader713-load2 {
+  0%   { transform: translateX(0px);  width: 16px; }
+  40%  { transform: translateX(0%);   width: 80%; }
+  80%  { width: 100%; transform: translateX(0px); }
+  90%  { width: 80%;  transform: translateX(15px); }
+  100% { transform: translateX(0px);  width: 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .loader-713-text,
+  .loader-713-load,
+  .loader-713-load::before { animation: none !important; }
+  .loader-713-load { width: 100%; transform: none; }
+}
+
 html { scroll-behavior: smooth; }
 
 /* In-page section reveal */

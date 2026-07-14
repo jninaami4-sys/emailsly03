@@ -44,6 +44,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { compressImage } from "@/lib/image-compress";
 import { AvatarCropDialog } from "@/components/site/AvatarCropDialog";
+import { ShareExperienceCTA } from "@/components/site/ShareExperienceCTA";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
@@ -230,6 +231,7 @@ function DashboardPage() {
               <ReferralErrorBoundary>
                 <ReferralCard />
               </ReferralErrorBoundary>
+              <ShareExperienceCTA variant="dashboard" />
               <RecommendedCard />
               <SupportCard />
             </aside>

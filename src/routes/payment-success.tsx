@@ -243,8 +243,8 @@ function PaymentSuccessPage() {
         <div className="mt-8 grid gap-3 sm:grid-cols-3 print:hidden">
           <Perk
             icon={<Clock className="size-4" />}
-            title="Delivery within 24h"
-            body="Standard turnaround for verified datasets."
+            title="Hand-crafted delivery"
+            body="Your dataset is being prepared by a specialist and you'll be notified the moment it's ready."
           />
           <Perk
             icon={<Mail className="size-4" />}

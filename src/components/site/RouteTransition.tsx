@@ -40,13 +40,13 @@ export function RouteTransition({ children }: { children: ReactNode }) {
     const swap = window.setTimeout(() => {
       setDisplayed(children);
       prevPath.current = pathname;
-      // Smooth scroll to top for the new page
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      // Jump to top without smooth-scroll animation (avoids the "sliding" feel)
+      window.scrollTo({ top: 0, behavior: "auto" });
       // Fade back in on next frame after paint
       requestAnimationFrame(() => {
         requestAnimationFrame(() => setPhase("in"));
       });
-    }, 180);
+    }, 120);
 
     return () => window.clearTimeout(swap);
   }, [pathname, children, reducedMotion]);

@@ -25,6 +25,12 @@ export const Route = createFileRoute("/payment-success")({
     service: typeof s.service === "string" ? s.service : undefined,
     qty: typeof s.qty === "string" ? s.qty : undefined,
     unit: typeof s.unit === "string" ? s.unit : undefined,
+    base: typeof s.base === "string" ? s.base : undefined,
+    extraUrls: typeof s.extraUrls === "string" ? s.extraUrls : undefined,
+    verifier: typeof s.verifier === "string" ? s.verifier : undefined,
+    rush: typeof s.rush === "string" ? s.rush : undefined,
+    rushFee: typeof s.rushFee === "string" ? s.rushFee : undefined,
+    tip: typeof s.tip === "string" ? s.tip : undefined,
   }),
   head: () => ({
     meta: [
@@ -72,7 +78,71 @@ function PaymentSuccessPage() {
   const subtotal = Number.isFinite(subtotalNum) ? subtotalNum : Math.max(0, amount - fee);
   const tax = 0;
   const total = amount;
-  const unitPrice = qty > 0 ? subtotal / qty : subtotal;
+
+  const baseNum = Number(search.base ?? NaN);
+  const base = Number.isFinite(baseNum) ? baseNum : subtotal;
+  const extraUrls = Number(search.extraUrls ?? 1);
+  const extraUrlsCost = Math.max(0, extraUrls - 1) * 5;
+  const verifierOn = search.verifier === "1";
+  const verifierCost = verifierOn ? qty * 0.002 : 0;
+  const rushOn = search.rush === "1";
+  const rushFeeNum = Number(search.rushFee ?? NaN);
+  const rushFee = Number.isFinite(rushFeeNum) ? rushFeeNum : 0;
+  const tipNum = Number(search.tip ?? 0);
+  const tip = Number.isFinite(tipNum) ? tipNum : 0;
+
+  const unitPrice = qty > 0 ? base / qty : base;
+
+  const lineItems: LineItem[] = [
+    {
+      title: service,
+      note: `Verified contacts · CSV delivery · 24h SLA`,
+      qty,
+      unit,
+      unitPrice,
+      amount: base,
+    },
+  ];
+  if (extraUrlsCost > 0) {
+    lineItems.push({
+      title: "Additional URLs / sources",
+      note: `${extraUrls} URLs (first included, $5 per extra)`,
+      qty: extraUrls - 1,
+      unit: "url",
+      unitPrice: 5,
+      amount: extraUrlsCost,
+    });
+  }
+  if (verifierCost > 0) {
+    lineItems.push({
+      title: "MillionVerifier email verification",
+      note: "Deliverability check on every email",
+      qty,
+      unit: "email",
+      unitPrice: 0.002,
+      amount: verifierCost,
+    });
+  }
+  if (rushFee > 0 || rushOn) {
+    lineItems.push({
+      title: "Rush order (+25%)",
+      note: "Priority queue · fastest turnaround",
+      qty: 1,
+      unit: "rush",
+      unitPrice: rushFee,
+      amount: rushFee,
+    });
+  }
+  if (tip > 0) {
+    lineItems.push({
+      title: "Tip",
+      note: "Thanks for the love ❤️",
+      qty: 1,
+      unit: "tip",
+      unitPrice: tip,
+      amount: tip,
+    });
+  }
 
   const dateStr = now.toLocaleDateString("en-US", {
     year: "numeric",
@@ -93,25 +163,24 @@ function PaymentSuccessPage() {
           timeStr,
           name,
           email,
-          service,
-          qty,
-          unit,
-          unitPrice,
+          lineItems,
           subtotal,
           fee,
           tax,
           total,
         }),
       ),
-    [orderId, invoiceNo, dateStr, timeStr, name, email, service, qty, unit, unitPrice, subtotal, fee, tax, total],
+    [orderId, invoiceNo, dateStr, timeStr, name, email, lineItems, subtotal, fee, tax, total],
   );
+
 
   if (loading) return <InvoiceSkeleton />;
 
   return (
     <div className="relative min-h-[calc(100vh-4rem)] overflow-hidden bg-background px-3 py-10 sm:px-4 sm:py-12 md:py-20">
       <BackdropFx />
-      <div className="relative mx-auto max-w-4xl">
+      <div className="relative mx-auto max-w-5xl">
+
         {/* Success hero */}
         <div className="mb-10 text-center print:hidden">
           <SuccessMark />
@@ -162,10 +231,7 @@ function PaymentSuccessPage() {
           timeStr={timeStr}
           name={name}
           email={email}
-          service={service}
-          qty={qty}
-          unit={unit}
-          unitPrice={unitPrice}
+          lineItems={lineItems}
           subtotal={subtotal}
           fee={fee}
           tax={tax}
@@ -315,6 +381,15 @@ function BackdropFx() {
 }
 
 /* --------------------------------- Invoice --------------------------------- */
+type LineItem = {
+  title: string;
+  note?: string;
+  qty: number;
+  unit: string;
+  unitPrice: number;
+  amount: number;
+};
+
 function Invoice(props: {
   orderId: string;
   invoiceNo: string;
@@ -322,10 +397,7 @@ function Invoice(props: {
   timeStr: string;
   name: string;
   email: string;
-  service: string;
-  qty: number;
-  unit: string;
-  unitPrice: number;
+  lineItems: LineItem[];
   subtotal: number;
   fee: number;
   tax: number;
@@ -338,10 +410,7 @@ function Invoice(props: {
     timeStr,
     name,
     email,
-    service,
-    qty,
-    unit,
-    unitPrice,
+    lineItems,
     subtotal,
     fee,
     tax,
@@ -406,31 +475,44 @@ function Invoice(props: {
             </div>
           </div>
 
-          {/* Mobile: stacked line item card */}
-          <div className="mt-6 rounded-2xl border border-neutral-200 p-4 sm:hidden">
-            <div className="font-medium text-neutral-900">{service}</div>
-            <div className="mt-1 text-xs text-neutral-500">
-              Verified contacts · CSV delivery · 24h SLA
-            </div>
-            <dl className="mt-4 grid grid-cols-2 gap-2 text-sm">
-              <dt className="text-neutral-500">Qty</dt>
-              <dd className="text-right tabular-nums">{qty.toLocaleString()}</dd>
-              <dt className="text-neutral-500">Unit</dt>
-              <dd className="text-right tabular-nums text-neutral-500">
-                ${unitPrice.toFixed(4)}/{unit}
-              </dd>
-              <dt className="text-neutral-500">Subtotal</dt>
-              <dd className="text-right tabular-nums">${subtotal.toFixed(2)}</dd>
-              <dt className="text-neutral-500">Processing fee</dt>
-              <dd className="text-right tabular-nums">${fee.toFixed(2)}</dd>
-              <dt className="text-neutral-500">Tax</dt>
-              <dd className="text-right tabular-nums">${tax.toFixed(2)}</dd>
-            </dl>
-            <div className="mt-3 flex items-center justify-between border-t border-neutral-200 pt-3">
-              <span className="font-semibold">Total paid</span>
-              <span className="font-display text-lg font-bold tabular-nums">
-                ${total.toFixed(2)} USD
-              </span>
+          {/* Mobile: stacked line items */}
+          <div className="mt-6 space-y-3 sm:hidden">
+            {lineItems.map((item, i) => (
+              <div key={i} className="rounded-2xl border border-neutral-200 p-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <div className="font-medium text-neutral-900">{item.title}</div>
+                    {item.note && (
+                      <div className="mt-1 text-xs text-neutral-500">{item.note}</div>
+                    )}
+                  </div>
+                  <div className="text-right font-semibold tabular-nums">
+                    ${item.amount.toFixed(2)}
+                  </div>
+                </div>
+                <div className="mt-3 flex items-center justify-between text-xs text-neutral-500">
+                  <span>Qty {item.qty.toLocaleString()}</span>
+                  <span className="tabular-nums">
+                    ${item.unitPrice.toFixed(item.unitPrice < 1 ? 4 : 2)}/{item.unit}
+                  </span>
+                </div>
+              </div>
+            ))}
+            <div className="rounded-2xl border border-neutral-200 p-4">
+              <dl className="grid grid-cols-2 gap-2 text-sm">
+                <dt className="text-neutral-500">Subtotal</dt>
+                <dd className="text-right tabular-nums">${subtotal.toFixed(2)}</dd>
+                <dt className="text-neutral-500">Stripe processing fee (2.9% + $0.30)</dt>
+                <dd className="text-right tabular-nums">${fee.toFixed(2)}</dd>
+                <dt className="text-neutral-500">Tax</dt>
+                <dd className="text-right tabular-nums">${tax.toFixed(2)}</dd>
+              </dl>
+              <div className="mt-3 flex items-center justify-between border-t border-neutral-200 pt-3">
+                <span className="font-semibold">Total paid</span>
+                <span className="font-display text-lg font-bold tabular-nums">
+                  ${total.toFixed(2)} USD
+                </span>
+              </div>
             </div>
           </div>
 
@@ -454,19 +536,25 @@ function Invoice(props: {
                 </tr>
               </thead>
               <tbody>
-                <tr className="border-t border-neutral-200">
-                  <td className="px-4 py-4">
-                    <div className="font-medium text-neutral-900">{service}</div>
-                    <div className="text-xs text-neutral-500">
-                      Verified contacts · CSV delivery · 24h SLA
-                    </div>
-                  </td>
-                  <td className="px-4 py-4 text-right tabular-nums">{qty.toLocaleString()}</td>
-                  <td className="px-4 py-4 text-right tabular-nums text-neutral-500">
-                    ${unitPrice.toFixed(4)}/{unit}
-                  </td>
-                  <td className="px-4 py-4 text-right tabular-nums">${subtotal.toFixed(2)}</td>
-                </tr>
+                {lineItems.map((item, i) => (
+                  <tr key={i} className="border-t border-neutral-200 align-top">
+                    <td className="px-4 py-4">
+                      <div className="font-medium text-neutral-900">{item.title}</div>
+                      {item.note && (
+                        <div className="text-xs text-neutral-500">{item.note}</div>
+                      )}
+                    </td>
+                    <td className="px-4 py-4 text-right tabular-nums">
+                      {item.qty.toLocaleString()}
+                    </td>
+                    <td className="px-4 py-4 text-right tabular-nums text-neutral-500">
+                      ${item.unitPrice.toFixed(item.unitPrice < 1 ? 4 : 2)}/{item.unit}
+                    </td>
+                    <td className="px-4 py-4 text-right tabular-nums">
+                      ${item.amount.toFixed(2)}
+                    </td>
+                  </tr>
+                ))}
               </tbody>
               <tfoot>
                 <tr className="border-t border-neutral-200 text-sm">
@@ -476,7 +564,9 @@ function Invoice(props: {
                 </tr>
                 <tr className="text-sm">
                   <td className="px-4 py-2" colSpan={2} />
-                  <td className="px-4 py-2 text-right text-neutral-500">Processing fee</td>
+                  <td className="px-4 py-2 text-right text-neutral-500">
+                    Stripe processing fee (2.9% + $0.30)
+                  </td>
                   <td className="px-4 py-2 text-right tabular-nums">${fee.toFixed(2)}</td>
                 </tr>
                 <tr className="text-sm">
@@ -494,6 +584,7 @@ function Invoice(props: {
               </tfoot>
             </table>
           </div>
+
 
           <p className="mt-6 text-xs text-neutral-500">
             Thank you for your business. If you have questions about this receipt, reply to your
@@ -617,10 +708,7 @@ function buildReceiptHtml(r: {
   timeStr: string;
   name: string;
   email: string;
-  service: string;
-  qty: number;
-  unit: string;
-  unitPrice: number;
+  lineItems: LineItem[];
   subtotal: number;
   fee: number;
   tax: number;
@@ -631,6 +719,20 @@ function buildReceiptHtml(r: {
       ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c] as string),
     );
   const money = (n: number) => `$${n.toFixed(2)}`;
+  const itemsHtml = r.lineItems
+    .map(
+      (it) => `
+          <tr>
+            <td>
+              <div style="font-weight:600;">${esc(it.title)}</div>
+              ${it.note ? `<div style="color:#6b7280; font-size:12px;">${esc(it.note)}</div>` : ""}
+            </td>
+            <td class="num">${it.qty.toLocaleString()}</td>
+            <td class="num" style="color:#6b7280;">$${it.unitPrice.toFixed(it.unitPrice < 1 ? 4 : 2)}/${esc(it.unit)}</td>
+            <td class="num">${money(it.amount)}</td>
+          </tr>`,
+    )
+    .join("");
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -711,20 +813,11 @@ function buildReceiptHtml(r: {
             <th class="num">Amount</th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <td>
-              <div style="font-weight:600;">${esc(r.service)}</div>
-              <div style="color:#6b7280; font-size:12px;">Verified contacts · CSV delivery · 24h SLA</div>
-            </td>
-            <td class="num">${r.qty.toLocaleString()}</td>
-            <td class="num" style="color:#6b7280;">$${r.unitPrice.toFixed(4)}/${esc(r.unit)}</td>
-            <td class="num">${money(r.subtotal)}</td>
-          </tr>
+        <tbody>${itemsHtml}
         </tbody>
         <tfoot>
           <tr><td colspan="2"></td><td class="num" style="color:#6b7280;">Subtotal</td><td class="num">${money(r.subtotal)}</td></tr>
-          <tr><td colspan="2"></td><td class="num" style="color:#6b7280;">Processing fee</td><td class="num">${money(r.fee)}</td></tr>
+          <tr><td colspan="2"></td><td class="num" style="color:#6b7280;">Stripe processing fee (2.9% + $0.30)</td><td class="num">${money(r.fee)}</td></tr>
           <tr><td colspan="2"></td><td class="num" style="color:#6b7280;">Tax</td><td class="num">${money(r.tax)}</td></tr>
           <tr class="total"><td colspan="2"></td><td class="num">Total paid</td><td class="num">${money(r.total)} USD</td></tr>
         </tfoot>

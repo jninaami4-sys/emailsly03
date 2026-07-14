@@ -717,6 +717,12 @@ export function OrderBuilder() {
                     service: service.name,
                     qty: String(effectiveQty),
                     unit: service.unit,
+                    base: base.toFixed(2),
+                    extraUrls: String(extraUrls),
+                    verifier: verifier ? "1" : "0",
+                    rush: rush ? "1" : "0",
+                    rushFee: rushFee.toFixed(2),
+                    tip: tip.toFixed(2),
                   }}
                   aria-disabled={!agree || name.trim().length < 2 || !/\S+@\S+\.\S+/.test(email)}
                   onClick={(e: MouseEvent<HTMLAnchorElement>) => {

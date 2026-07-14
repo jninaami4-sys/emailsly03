@@ -20,6 +20,7 @@ export function RouteTransition({ children }: { children: ReactNode }) {
   const initialMount = useRef(true);
 
   useEffect(() => {
+    console.log("[RouteTransition] path effect", pathname, prevPath.current);
     if (prevPath.current === pathname) {
       setDisplayed(children);
       return;

@@ -40,7 +40,9 @@ export function OrderDrawer() {
     };
   }, [open]);
 
-  return (
+  if (typeof document === "undefined") return null;
+
+  return createPortal(
     <>
       {/* Backdrop */}
       <div
@@ -74,10 +76,11 @@ export function OrderDrawer() {
             <X className="size-4" />
           </button>
         </div>
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto overscroll-contain">
           <OrderBuilder />
         </div>
       </aside>
-    </>
+    </>,
+    document.body,
   );
 }

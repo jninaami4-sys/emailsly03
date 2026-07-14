@@ -37,7 +37,7 @@ const OrderRow = z.object({
   delivery_notes: z.string().optional().nullable(),
   delivered_at: z.string().optional().nullable(),
   created_at: z.string().optional().nullable(),
-  metadata: z.record(z.unknown()).optional(),
+  metadata: z.record(z.string(), z.unknown()).optional(),
 });
 
 export const importClientsAndOrders = createServerFn({ method: "POST" })

@@ -21,6 +21,7 @@ import { PricingAdmin } from "@/components/admin/PricingAdmin";
 import { whoAmIAdmin } from "@/lib/announcements.functions";
 import { useAuth } from "@/hooks/use-auth";
 import { Upload, X, Search, ShieldAlert, Lock } from "lucide-react";
+import { Loader713Panel } from "@/components/site/Loader713";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
@@ -45,48 +46,64 @@ function AdminGate() {
 
   if (loading || (user && isLoading)) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="theme-midnight min-h-screen bg-background text-foreground">
         <Header />
-        <div className="mx-auto max-w-md px-4 py-24 text-center text-sm text-muted-foreground">
-          Checking access…
-        </div>
+        <AuroraBackdrop>
+          <Loader713Panel
+            chip="Admin_Gate"
+            title="Checking access"
+            subtitle="Verifying your admin credentials."
+            steps={[
+              "Reading session",
+              "Matching admin role",
+              "Unlocking control panel",
+            ]}
+          />
+        </AuroraBackdrop>
       </div>
     );
   }
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="theme-midnight min-h-screen bg-background text-foreground">
         <Header />
-        <main className="mx-auto max-w-md px-4 py-24 text-center">
-          <div className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-violet/10 text-violet">
-            <Lock className="size-6" />
-          </div>
-          <h1 className="mt-4 font-display text-2xl font-bold">Admin sign-in required</h1>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Sign in with the admin email to manage site content.
-          </p>
-          <Link to="/auth" className="mt-6 inline-flex rounded-xl bg-violet px-5 py-2.5 text-sm font-semibold text-white">
-            Go to sign in
-          </Link>
-        </main>
+        <AuroraBackdrop>
+          <main className="relative mx-auto max-w-md px-4 py-24 text-center">
+            <div className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-violet/15 text-violet ring-1 ring-violet/30">
+              <Lock className="size-6" />
+            </div>
+            <h1 className="mt-4 font-display text-2xl font-bold">Admin sign-in required</h1>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Sign in with the admin email to manage site content.
+            </p>
+            <Link
+              to="/auth"
+              className="mt-6 inline-flex rounded-xl bg-violet px-5 py-2.5 text-sm font-semibold text-white shadow-[0_10px_30px_-10px_oklch(0.52_0.24_293/0.6)] transition-transform hover:-translate-y-0.5"
+            >
+              Go to sign in
+            </Link>
+          </main>
+        </AuroraBackdrop>
       </div>
     );
   }
 
   if (error || !data?.isAdmin) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="theme-midnight min-h-screen bg-background text-foreground">
         <Header />
-        <main className="mx-auto max-w-md px-4 py-24 text-center">
-          <div className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-rose-500/10 text-rose-500">
-            <ShieldAlert className="size-6" />
-          </div>
-          <h1 className="mt-4 font-display text-2xl font-bold">Not authorized</h1>
-          <p className="mt-2 text-sm text-muted-foreground">
-            {user.email} isn't the admin account. Sign in with the admin email.
-          </p>
-        </main>
+        <AuroraBackdrop>
+          <main className="relative mx-auto max-w-md px-4 py-24 text-center">
+            <div className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-rose-500/10 text-rose-400 ring-1 ring-rose-500/30">
+              <ShieldAlert className="size-6" />
+            </div>
+            <h1 className="mt-4 font-display text-2xl font-bold">Not authorized</h1>
+            <p className="mt-2 text-sm text-muted-foreground">
+              {user.email} isn't the admin account. Sign in with the admin email.
+            </p>
+          </main>
+        </AuroraBackdrop>
       </div>
     );
   }
@@ -336,6 +353,28 @@ function DropZone({ onFile }: { onFile: (file: File) => void }) {
           if (f) onFile(f);
         }}
       />
+    </div>
+  );
+}
+
+function AuroraBackdrop({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="relative min-h-[calc(100vh-4rem)] overflow-hidden">
+      <div aria-hidden className="pointer-events-none absolute inset-0">
+        <div className="absolute -left-32 top-10 size-[420px] rounded-full bg-violet/25 blur-[120px] animate-aurora-slow" />
+        <div className="absolute right-[-10%] top-1/3 size-[380px] rounded-full bg-neon-orange/20 blur-[120px] animate-aurora-med" />
+        <div className="absolute bottom-[-20%] left-1/3 size-[460px] rounded-full bg-emerald/15 blur-[140px] animate-aurora-fast" />
+        <div
+          className="absolute inset-0 opacity-[0.05]"
+          style={{
+            backgroundImage:
+              "linear-gradient(var(--foreground) 1px, transparent 1px), linear-gradient(90deg, var(--foreground) 1px, transparent 1px)",
+            backgroundSize: "40px 40px",
+            maskImage: "radial-gradient(ellipse at center, black 40%, transparent 75%)",
+          }}
+        />
+      </div>
+      <div className="relative">{children}</div>
     </div>
   );
 }

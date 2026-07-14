@@ -125,6 +125,11 @@ export function Footer() {
           </div>
         </div>
 
+        {/* Share experience CTA */}
+        <div className="pb-10">
+          <ShareExperienceCTA variant="footer" />
+        </div>
+
         {/* Payment methods */}
         <div className="flex flex-col items-start justify-between gap-6 border-y border-white/10 py-10 lg:flex-row lg:items-center">
           <div className="space-y-1">

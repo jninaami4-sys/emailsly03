@@ -109,19 +109,21 @@ export function AnnouncementsAdmin() {
     });
   };
 
-  const handleUpload = async (file: File) => {
-    if (!file) return;
-    if (file.size > 5 * 1024 * 1024) {
+  const handleUpload = async (fileOrBlob: File | Blob, filename?: string) => {
+    if (!fileOrBlob) return;
+    if (fileOrBlob.size > 5 * 1024 * 1024) {
       setStatus("Image too large (max 5MB)");
       return;
     }
     setUploading(true);
     try {
-      const ext = (file.name.split(".").pop() || "png").toLowerCase();
+      const name = filename || (fileOrBlob as File).name || "image.png";
+      const ext = (name.split(".").pop() || "png").toLowerCase();
       const path = `${crypto.randomUUID()}.${ext}`;
+      const contentType = (fileOrBlob as File).type || "image/png";
       const { error: upErr } = await supabase.storage
         .from("announcement-media")
-        .upload(path, file, { contentType: file.type, upsert: false });
+        .upload(path, fileOrBlob, { contentType, upsert: false });
       if (upErr) throw upErr;
       const { data } = supabase.storage.from("announcement-media").getPublicUrl(path);
       setDraft((d) => ({
@@ -135,6 +137,18 @@ export function AnnouncementsAdmin() {
     } finally {
       setUploading(false);
       if (fileRef.current) fileRef.current.value = "";
+    }
+  };
+
+  const cropAspect = draft.image_style === "thumbnail" ? 1 : 16 / 9;
+  const cropAspectLabel = draft.image_style === "thumbnail" ? "1:1" : "16:9";
+
+  const handleFilePicked = (f: File) => {
+    if (!f) return;
+    if (lockAspect && draft.image_style !== "none") {
+      setPendingFile(f);
+    } else {
+      handleUpload(f);
     }
   };
 

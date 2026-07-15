@@ -21,6 +21,7 @@ import {
 } from "@/components/site/PremiumIcons";
 import { Testimonials } from "@/components/site/Testimonials";
 import { ServicesCarousel } from "@/components/site/ServicesCarousel";
+import { useSiteContent } from "@/hooks/use-site-content";
 
 
 type RawData = {
@@ -44,13 +45,13 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
-const stats = [
+const defaultStats = [
   { k: "500+", v: "clients served" },
   { k: "100M+", v: "leads delivered" },
   { k: "24h", v: "avg. delivery" },
 ];
 
-const faqs = [
+const defaultFaqs = [
   { q: "How fast will I receive my data?", a: "Most orders are delivered within 24 hours. Larger or custom research orders may take 48–72 hours. You'll get an email update at every step." },
   { q: "What format will the data be in?", a: "All data is delivered as a clean, ready-to-import CSV file with verified work emails, job titles, company info, and LinkedIn URLs (where available)." },
   { q: "How accurate is the data?", a: "Data is sourced from pre-built, verified databases and cleaned/formatted for your ICP before delivery." },

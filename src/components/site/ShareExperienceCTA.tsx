@@ -77,7 +77,7 @@ export function ShareExperienceCTA({ variant = "footer", className = "" }: Props
   return (
     <>
       <div
-        className={`group/cta relative overflow-hidden rounded-[28px] border border-white/10 bg-[radial-gradient(120%_120%_at_0%_0%,rgba(139,92,246,0.18),transparent_55%),radial-gradient(120%_120%_at_100%_100%,rgba(59,130,246,0.16),transparent_55%),linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.015))] p-8 backdrop-blur-md sm:p-12 ${className}`}
+        className={`group/cta relative overflow-hidden rounded-2xl border border-white/10 bg-[radial-gradient(120%_120%_at_0%_0%,rgba(139,92,246,0.18),transparent_55%),radial-gradient(120%_120%_at_100%_100%,rgba(59,130,246,0.16),transparent_55%),linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.015))] p-5 backdrop-blur-md sm:rounded-[28px] sm:p-8 md:p-12 ${className}`}
       >
         {/* Ambient glows */}
         <div className="pointer-events-none absolute -left-24 -top-24 size-72 rounded-full bg-violet/25 blur-[110px]" />
@@ -97,7 +97,7 @@ export function ShareExperienceCTA({ variant = "footer", className = "" }: Props
           }}
         />
 
-        <div className="relative flex flex-col items-center gap-8 text-center md:flex-row md:items-stretch md:justify-between md:gap-10 md:text-left">
+        <div className="relative flex flex-col items-center gap-5 text-center sm:gap-8 md:flex-row md:items-stretch md:justify-between md:gap-10 md:text-left">
           {/* Left: story */}
           <div className="max-w-xl">
             <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.06] px-3 py-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
@@ -111,18 +111,18 @@ export function ShareExperienceCTA({ variant = "footer", className = "" }: Props
               </span>
             </div>
 
-            <h3 className="mt-5 font-display text-3xl font-bold leading-[1.05] tracking-tight text-white sm:text-4xl">
+            <h3 className="mt-3 font-display text-2xl font-bold leading-[1.05] tracking-tight text-white sm:mt-5 sm:text-4xl">
               Share your experience —{" "}
               <span className="relative inline-block bg-gradient-to-r from-violet via-neon-blue to-violet bg-[length:200%_100%] bg-clip-text text-transparent [animation:shimmer_6s_linear_infinite]">
                 get featured
               </span>
             </h3>
-            <p className="mt-3 text-[15px] leading-relaxed text-white/65 sm:text-base">
+            <p className="mt-3 hidden text-[15px] leading-relaxed text-white/65 sm:block sm:text-base">
               A 60-second text or video review helps other founders trust the process. Verified customers only — we hand-pick a few every week to spotlight.
             </p>
 
             {/* Stat pills */}
-            <div className="mt-5 flex flex-wrap items-center justify-center gap-2 md:justify-start">
+            <div className="mt-5 hidden flex-wrap items-center justify-center gap-2 sm:flex md:justify-start">
               <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5">
                 <div className="flex items-center gap-0.5 text-violet">
                   {Array.from({ length: 5 }).map((_, i) => (
@@ -157,7 +157,7 @@ export function ShareExperienceCTA({ variant = "footer", className = "" }: Props
             <button
               type="button"
               onClick={() => setOpen(true)}
-              className="group/btn relative inline-flex items-center gap-2 overflow-hidden rounded-2xl bg-gradient-to-r from-violet via-indigo to-violet bg-[length:200%_100%] px-6 py-3.5 text-sm font-semibold text-white shadow-[0_18px_40px_-12px_rgba(139,92,246,0.55)] ring-1 ring-white/10 transition-all duration-300 hover:-translate-y-0.5 hover:bg-right hover:shadow-[0_22px_50px_-12px_rgba(139,92,246,0.75)]"
+              className="group/btn relative inline-flex w-full items-center justify-center gap-2 overflow-hidden rounded-xl bg-gradient-to-r from-violet via-indigo to-violet bg-[length:200%_100%] px-5 py-3 text-sm font-semibold text-white shadow-[0_14px_32px_-10px_rgba(139,92,246,0.55)] ring-1 ring-white/10 transition-all duration-300 hover:-translate-y-0.5 hover:bg-right hover:shadow-[0_22px_50px_-12px_rgba(139,92,246,0.75)] sm:w-auto sm:rounded-2xl sm:px-6 sm:py-3.5"
             >
               {/* Sheen sweep */}
               <span className="pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 -skew-x-12 bg-gradient-to-r from-transparent via-white/25 to-transparent opacity-0 transition-all duration-700 group-hover/btn:left-full group-hover/btn:opacity-100" />

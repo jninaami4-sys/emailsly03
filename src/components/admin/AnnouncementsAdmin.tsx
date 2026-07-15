@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Megaphone, Plus, Save, Trash2, Eye, EyeOff, Loader2, Upload, ImageIcon, ImageOff, Monitor, Smartphone, Target, Users, CalendarClock, ArrowUpDown, ChevronUp, ChevronDown } from "lucide-react";
+import { Megaphone, Plus, Save, Trash2, Eye, EyeOff, Loader2, Upload, ImageIcon, ImageOff, Monitor, Smartphone, Target, Users, CalendarClock, ArrowUpDown, ChevronUp, ChevronDown, Crop as CropIcon } from "lucide-react";
 import {
   listAnnouncements,
   upsertAnnouncement,
@@ -11,6 +11,7 @@ import {
   type AnnouncementAudience,
 } from "@/lib/announcements.functions";
 import { AnnouncementPreview } from "@/components/site/AnnouncementModal";
+import { ImageCropperModal } from "@/components/admin/ImageCropperModal";
 import { supabase } from "@/integrations/supabase/client";
 
 const emptyDraft = {
@@ -84,6 +85,8 @@ export function AnnouncementsAdmin() {
   const [status, setStatus] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [device, setDevice] = useState<"desktop" | "mobile">("desktop");
+  const [pendingFile, setPendingFile] = useState<File | null>(null);
+  const [lockAspect, setLockAspect] = useState(true);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const loadEdit = (a: Announcement) => {
@@ -106,19 +109,21 @@ export function AnnouncementsAdmin() {
     });
   };
 
-  const handleUpload = async (file: File) => {
-    if (!file) return;
-    if (file.size > 5 * 1024 * 1024) {
+  const handleUpload = async (fileOrBlob: File | Blob, filename?: string) => {
+    if (!fileOrBlob) return;
+    if (fileOrBlob.size > 5 * 1024 * 1024) {
       setStatus("Image too large (max 5MB)");
       return;
     }
     setUploading(true);
     try {
-      const ext = (file.name.split(".").pop() || "png").toLowerCase();
+      const name = filename || (fileOrBlob as File).name || "image.png";
+      const ext = (name.split(".").pop() || "png").toLowerCase();
       const path = `${crypto.randomUUID()}.${ext}`;
+      const contentType = (fileOrBlob as File).type || "image/png";
       const { error: upErr } = await supabase.storage
         .from("announcement-media")
-        .upload(path, file, { contentType: file.type, upsert: false });
+        .upload(path, fileOrBlob, { contentType, upsert: false });
       if (upErr) throw upErr;
       const { data } = supabase.storage.from("announcement-media").getPublicUrl(path);
       setDraft((d) => ({
@@ -132,6 +137,18 @@ export function AnnouncementsAdmin() {
     } finally {
       setUploading(false);
       if (fileRef.current) fileRef.current.value = "";
+    }
+  };
+
+  const cropAspect = draft.image_style === "thumbnail" ? 1 : 16 / 9;
+  const cropAspectLabel = draft.image_style === "thumbnail" ? "1:1" : "16:9";
+
+  const handleFilePicked = (f: File) => {
+    if (!f) return;
+    if (lockAspect && draft.image_style !== "none") {
+      setPendingFile(f);
+    } else {
+      handleUpload(f);
     }
   };
 
@@ -626,19 +643,51 @@ export function AnnouncementsAdmin() {
                         className="hidden"
                         onChange={(e) => {
                           const f = e.target.files?.[0];
-                          if (f) handleUpload(f);
+                          if (f) handleFilePicked(f);
                         }}
                       />
-                      <button
-                        type="button"
-                        onClick={() => fileRef.current?.click()}
-                        disabled={uploading}
-                        className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-semibold hover:bg-secondary disabled:opacity-50"
-                      >
-                        {uploading ? <Loader2 className="size-3.5 animate-spin" /> : <Upload className="size-3.5" />}
-                        {uploading ? "Uploading…" : "Upload image"}
-                      </button>
-                      <p className="text-[10px] text-muted-foreground">PNG/JPG/WebP, max 5MB</p>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => fileRef.current?.click()}
+                          disabled={uploading}
+                          className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-semibold hover:bg-secondary disabled:opacity-50"
+                        >
+                          {uploading ? <Loader2 className="size-3.5 animate-spin" /> : <Upload className="size-3.5" />}
+                          {uploading ? "Uploading…" : "Upload image"}
+                        </button>
+                        {draft.image_url && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              // Re-crop existing image URL by fetching it into a File
+                              fetch(draft.image_url)
+                                .then((r) => r.blob())
+                                .then((b) => {
+                                  const ext = (b.type.split("/")[1] || "png").split("+")[0];
+                                  const file = new File([b], `image.${ext}`, { type: b.type || "image/png" });
+                                  setPendingFile(file);
+                                })
+                                .catch(() => setStatus("Could not load image for cropping"));
+                            }}
+                            className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-semibold hover:bg-secondary"
+                          >
+                            <CropIcon className="size-3.5" /> Re-crop
+                          </button>
+                        )}
+                        <label className="ml-auto inline-flex items-center gap-1.5 text-[11px] font-semibold text-muted-foreground">
+                          <input
+                            type="checkbox"
+                            checked={lockAspect}
+                            onChange={(e) => setLockAspect(e.target.checked)}
+                            className="size-3.5 accent-violet"
+                          />
+                          Lock {cropAspectLabel}
+                        </label>
+                      </div>
+                      <p className="text-[10px] text-muted-foreground">
+                        PNG/JPG/WebP, max 5MB. {lockAspect ? `Uploads open a cropper locked to ${cropAspectLabel}.` : "Aspect lock is off — uploads use the original file."}
+                      </p>
                     </div>
                   </div>
                   <input
@@ -650,6 +699,7 @@ export function AnnouncementsAdmin() {
                 </div>
               )}
             </div>
+
 
 
             {status && (
@@ -777,6 +827,19 @@ export function AnnouncementsAdmin() {
         }
         .input:focus { border-color: hsl(var(--violet)); box-shadow: 0 0 0 3px hsl(var(--violet) / 0.15); }
       `}</style>
+
+      {pendingFile && (
+        <ImageCropperModal
+          file={pendingFile}
+          aspect={cropAspect}
+          aspectLabel={cropAspectLabel}
+          onCancel={() => setPendingFile(null)}
+          onConfirm={async (blob, name) => {
+            setPendingFile(null);
+            await handleUpload(blob, name);
+          }}
+        />
+      )}
     </section>
   );
 }

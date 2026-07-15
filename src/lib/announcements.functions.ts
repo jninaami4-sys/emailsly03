@@ -21,6 +21,7 @@ export type Announcement = {
   audience: AnnouncementAudience;
   start_at: string | null;
   end_at: string | null;
+  priority: number;
   created_at: string;
   updated_at: string;
 };
@@ -59,7 +60,7 @@ export const listActiveAnnouncements = createServerFn({ method: "GET" }).handler
       .from("announcements")
       .select("*")
       .eq("enabled", true)
-      .order("updated_at", { ascending: false })
+      .order("priority", { ascending: false }).order("updated_at", { ascending: false })
       .limit(20);
     if (error) {
       console.error("listActiveAnnouncements", error);
@@ -77,7 +78,7 @@ export const getActiveAnnouncement = createServerFn({ method: "GET" }).handler(
       .from("announcements")
       .select("*")
       .eq("enabled", true)
-      .order("updated_at", { ascending: false })
+      .order("priority", { ascending: false }).order("updated_at", { ascending: false })
       .limit(1)
       .maybeSingle();
     if (error) {
@@ -97,7 +98,7 @@ export const listAnnouncements = createServerFn({ method: "GET" })
     const { data, error } = await supabaseAdmin
       .from("announcements")
       .select("*")
-      .order("updated_at", { ascending: false });
+      .order("priority", { ascending: false }).order("updated_at", { ascending: false });
     if (error) throw new Error(error.message);
     return (data ?? []) as Announcement[];
   });
@@ -117,6 +118,7 @@ type UpsertInput = {
   audience: AnnouncementAudience;
   start_at: string | null;
   end_at: string | null;
+  priority: number;
 };
 
 export const upsertAnnouncement = createServerFn({ method: "POST" })
@@ -157,6 +159,7 @@ export const upsertAnnouncement = createServerFn({ method: "POST" })
       audience,
       start_at: data.start_at && data.start_at.trim() ? new Date(data.start_at).toISOString() : null,
       end_at: data.end_at && data.end_at.trim() ? new Date(data.end_at).toISOString() : null,
+      priority: Number.isFinite(data.priority) ? Math.max(-1000, Math.min(1000, Math.trunc(data.priority))) : 0,
     };
     if (data.id) {
       const { data: row, error } = await supabaseAdmin

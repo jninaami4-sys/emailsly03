@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Megaphone, Plus, Save, Trash2, Eye, EyeOff, Loader2, Upload, ImageIcon, ImageOff, Monitor, Smartphone, Target, Users, CalendarClock } from "lucide-react";
+import { Megaphone, Plus, Save, Trash2, Eye, EyeOff, Loader2, Upload, ImageIcon, ImageOff, Monitor, Smartphone, Target, Users, CalendarClock, ArrowUpDown, ChevronUp, ChevronDown } from "lucide-react";
 import {
   listAnnouncements,
   upsertAnnouncement,
@@ -28,6 +28,7 @@ const emptyDraft = {
   audience: "all" as AnnouncementAudience,
   start_at: "" as string,
   end_at: "" as string,
+  priority: 0 as number,
 };
 
 function toDatetimeLocal(iso: string | null): string {
@@ -101,6 +102,7 @@ export function AnnouncementsAdmin() {
       audience: (a.audience || "all") as AnnouncementAudience,
       start_at: toDatetimeLocal(a.start_at),
       end_at: toDatetimeLocal(a.end_at),
+      priority: typeof a.priority === "number" ? a.priority : 0,
     });
   };
 
@@ -155,6 +157,42 @@ export function AnnouncementsAdmin() {
     },
   });
 
+  // list is sorted by priority DESC then updated_at DESC on the server.
+  const reorder = useMutation({
+    mutationFn: async ({ a, dir }: { a: Announcement; dir: "up" | "down" }) => {
+      const idx = list.findIndex((x) => x.id === a.id);
+      const neighbor = dir === "up" ? list[idx - 1] : list[idx + 1];
+      if (!neighbor) return { skipped: true as const };
+      const nextPriority =
+        dir === "up" ? (neighbor.priority ?? 0) + 1 : (neighbor.priority ?? 0) - 1;
+      await upsertFn({
+        data: {
+          id: a.id,
+          enabled: a.enabled,
+          title: a.title,
+          body: a.body,
+          cta_label: a.cta_label,
+          cta_url: a.cta_url,
+          image_url: a.image_url,
+          image_style: (a.image_style || "cover") as AnnouncementImageStyle,
+          badge: a.badge,
+          accent: a.accent || "violet",
+          path_patterns: a.path_patterns?.length ? a.path_patterns : ["*"],
+          audience: (a.audience || "all") as AnnouncementAudience,
+          start_at: a.start_at,
+          end_at: a.end_at,
+          priority: nextPriority,
+        },
+      });
+      return { skipped: false as const };
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["announcements", "admin"] });
+      qc.invalidateQueries({ queryKey: ["active-announcements"] });
+    },
+    onError: (e: Error) => setStatus(e.message),
+  });
+
   useEffect(() => {
     if (!status) return;
     const t = window.setTimeout(() => setStatus(null), 2500);
@@ -203,48 +241,77 @@ export function AnnouncementsAdmin() {
           <ul className="space-y-1.5">
             {list.map((a) => (
               <li key={a.id}>
-                <button
-                  type="button"
-                  onClick={() => loadEdit(a)}
-                  className={`flex w-full items-start gap-2 rounded-xl border p-2.5 text-left transition-colors ${
+                <div
+                  className={`flex items-start gap-2 rounded-xl border p-2.5 transition-colors ${
                     draft.id === a.id
                       ? "border-violet bg-violet/5"
                       : "border-border hover:bg-secondary/50"
                   }`}
                 >
-                  <span
-                    className={`mt-0.5 inline-flex size-5 shrink-0 items-center justify-center rounded-full ${
-                      a.enabled
-                        ? "bg-emerald/15 text-emerald"
-                        : "bg-muted text-muted-foreground"
-                    }`}
-                    aria-label={a.enabled ? "Enabled" : "Disabled"}
+                  <button
+                    type="button"
+                    onClick={() => loadEdit(a)}
+                    className="flex min-w-0 flex-1 items-start gap-2 text-left"
                   >
-                    {a.enabled ? <Eye className="size-3" /> : <EyeOff className="size-3" />}
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-semibold">{a.title || "Untitled"}</p>
-                    {(() => {
-                      const s = formatSchedule(a, new Date());
-                      const toneClass =
-                        s.tone === "live"
-                          ? "bg-emerald/10 text-emerald"
-                          : s.tone === "scheduled"
-                          ? "bg-amber-500/10 text-amber-600"
-                          : s.tone === "ended"
-                          ? "bg-rose-500/10 text-rose-500"
-                          : "bg-muted text-muted-foreground";
-                      return (
-                        <span
-                          className={`mt-1 inline-flex max-w-full items-center gap-1 truncate rounded-md px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-wider ${toneClass}`}
-                        >
-                          <CalendarClock className="size-2.5 shrink-0" />
-                          <span className="truncate">{s.label}</span>
+                    <span
+                      className={`mt-0.5 inline-flex size-5 shrink-0 items-center justify-center rounded-full ${
+                        a.enabled
+                          ? "bg-emerald/15 text-emerald"
+                          : "bg-muted text-muted-foreground"
+                      }`}
+                      aria-label={a.enabled ? "Enabled" : "Disabled"}
+                    >
+                      {a.enabled ? <Eye className="size-3" /> : <EyeOff className="size-3" />}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-1.5">
+                        <span className="rounded-md bg-violet/10 px-1.5 py-0.5 font-mono text-[9px] font-bold text-violet">
+                          #{a.priority ?? 0}
                         </span>
-                      );
-                    })()}
+                        <p className="truncate text-sm font-semibold">{a.title || "Untitled"}</p>
+                      </div>
+                      {(() => {
+                        const s = formatSchedule(a, new Date());
+                        const toneClass =
+                          s.tone === "live"
+                            ? "bg-emerald/10 text-emerald"
+                            : s.tone === "scheduled"
+                            ? "bg-amber-500/10 text-amber-600"
+                            : s.tone === "ended"
+                            ? "bg-rose-500/10 text-rose-500"
+                            : "bg-muted text-muted-foreground";
+                        return (
+                          <span
+                            className={`mt-1 inline-flex max-w-full items-center gap-1 truncate rounded-md px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-wider ${toneClass}`}
+                          >
+                            <CalendarClock className="size-2.5 shrink-0" />
+                            <span className="truncate">{s.label}</span>
+                          </span>
+                        );
+                      })()}
+                    </div>
+                  </button>
+                  <div className="flex shrink-0 flex-col gap-0.5">
+                    <button
+                      type="button"
+                      title="Move up"
+                      disabled={reorder.isPending}
+                      onClick={() => reorder.mutate({ a, dir: "up" })}
+                      className="flex size-6 items-center justify-center rounded-md border border-border bg-background text-muted-foreground hover:bg-secondary hover:text-foreground disabled:opacity-50"
+                    >
+                      <ChevronUp className="size-3.5" />
+                    </button>
+                    <button
+                      type="button"
+                      title="Move down"
+                      disabled={reorder.isPending}
+                      onClick={() => reorder.mutate({ a, dir: "down" })}
+                      className="flex size-6 items-center justify-center rounded-md border border-border bg-background text-muted-foreground hover:bg-secondary hover:text-foreground disabled:opacity-50"
+                    >
+                      <ChevronDown className="size-3.5" />
+                    </button>
                   </div>
-                </button>
+                </div>
               </li>
             ))}
           </ul>
@@ -395,6 +462,57 @@ export function AnnouncementsAdmin() {
                   </div>
                 </Field>
               </div>
+
+              <div className="mt-4 border-t border-border pt-4">
+                <div className="mb-3 flex items-center gap-2">
+                  <ArrowUpDown className="size-3.5 text-violet" />
+                  <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                    Priority
+                  </span>
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <input
+                    type="number"
+                    step={1}
+                    min={-1000}
+                    max={1000}
+                    value={draft.priority}
+                    onChange={(e) =>
+                      setDraft({ ...draft, priority: Number.parseInt(e.target.value || "0", 10) || 0 })
+                    }
+                    className="input w-28"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setDraft({ ...draft, priority: draft.priority - 1 })}
+                    className="inline-flex items-center gap-1 rounded-lg border border-border bg-background px-2.5 py-1.5 text-xs font-medium hover:bg-secondary"
+                  >
+                    <ChevronDown className="size-3.5" /> Lower
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setDraft({ ...draft, priority: draft.priority + 1 })}
+                    className="inline-flex items-center gap-1 rounded-lg border border-border bg-background px-2.5 py-1.5 text-xs font-medium hover:bg-secondary"
+                  >
+                    <ChevronUp className="size-3.5" /> Raise
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const max = list.reduce((m, a) => Math.max(m, a.priority ?? 0), 0);
+                      setDraft({ ...draft, priority: max + 1 });
+                    }}
+                    className="inline-flex items-center gap-1 rounded-lg border border-violet/30 bg-violet/5 px-2.5 py-1.5 text-xs font-semibold text-violet hover:bg-violet/10"
+                  >
+                    Bump to top
+                  </button>
+                </div>
+                <p className="mt-2 text-[10px] text-muted-foreground">
+                  Higher numbers win when several announcements match the same page and viewer. Ties break on most recently updated.
+                </p>
+              </div>
+
+
 
               <div className="mt-4 border-t border-border pt-4">
                 <div className="mb-3 flex items-center gap-2">
@@ -634,6 +752,7 @@ export function AnnouncementsAdmin() {
                     audience: draft.audience,
                     start_at: draft.start_at ? new Date(draft.start_at).toISOString() : null,
                     end_at: draft.end_at ? new Date(draft.end_at).toISOString() : null,
+                    priority: draft.priority,
                     updated_at: new Date().toISOString(),
                     created_at: new Date().toISOString(),
                   }}

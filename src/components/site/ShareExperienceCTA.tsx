@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { PenSquare, Star, Sparkles, ShieldCheck, ArrowRight } from "lucide-react";
+import { PenSquare, Star, Sparkles, ShieldCheck, ArrowRight, Gem } from "lucide-react";
 import { ReviewSubmitModal } from "@/components/site/ReviewSubmitModal";
 
 type Variant = "footer" | "dashboard";
@@ -104,7 +104,7 @@ export function ShareExperienceCTA({ variant = "footer", className = "" }: Props
                 <span className="absolute inline-flex size-full animate-ping rounded-full bg-violet opacity-75" />
                 <span className="relative inline-flex size-1.5 rounded-full bg-violet" />
               </span>
-              <Sparkles className="size-3 text-violet" />
+              <Gem className="size-3 text-violet" />
               <span className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-white">
                 Worked with us?
               </span>

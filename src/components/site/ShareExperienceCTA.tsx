@@ -157,7 +157,7 @@ export function ShareExperienceCTA({ variant = "footer", className = "" }: Props
             <button
               type="button"
               onClick={() => setOpen(true)}
-              className="group/btn relative inline-flex items-center gap-2 overflow-hidden rounded-2xl bg-gradient-to-r from-violet via-indigo to-violet bg-[length:200%_100%] px-6 py-3.5 text-sm font-semibold text-white shadow-[0_18px_40px_-12px_rgba(139,92,246,0.55)] ring-1 ring-white/10 transition-all duration-300 hover:-translate-y-0.5 hover:bg-right hover:shadow-[0_22px_50px_-12px_rgba(139,92,246,0.75)]"
+              className="group/btn relative inline-flex w-full items-center justify-center gap-2 overflow-hidden rounded-xl bg-gradient-to-r from-violet via-indigo to-violet bg-[length:200%_100%] px-5 py-3 text-sm font-semibold text-white shadow-[0_14px_32px_-10px_rgba(139,92,246,0.55)] ring-1 ring-white/10 transition-all duration-300 hover:-translate-y-0.5 hover:bg-right hover:shadow-[0_22px_50px_-12px_rgba(139,92,246,0.75)] sm:w-auto sm:rounded-2xl sm:px-6 sm:py-3.5"
             >
               {/* Sheen sweep */}
               <span className="pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 -skew-x-12 bg-gradient-to-r from-transparent via-white/25 to-transparent opacity-0 transition-all duration-700 group-hover/btn:left-full group-hover/btn:opacity-100" />

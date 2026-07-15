@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Megaphone, Plus, Save, Trash2, Eye, EyeOff, Loader2, Upload, ImageIcon, ImageOff, Monitor, Smartphone, Target, Users, CalendarClock, ArrowUpDown, ChevronUp, ChevronDown } from "lucide-react";
+import { Megaphone, Plus, Save, Trash2, Eye, EyeOff, Loader2, Upload, ImageIcon, ImageOff, Monitor, Smartphone, Target, Users, CalendarClock, ArrowUpDown, ChevronUp, ChevronDown, Crop as CropIcon } from "lucide-react";
 import {
   listAnnouncements,
   upsertAnnouncement,
@@ -11,6 +11,7 @@ import {
   type AnnouncementAudience,
 } from "@/lib/announcements.functions";
 import { AnnouncementPreview } from "@/components/site/AnnouncementModal";
+import { ImageCropperModal } from "@/components/admin/ImageCropperModal";
 import { supabase } from "@/integrations/supabase/client";
 
 const emptyDraft = {

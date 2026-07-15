@@ -28,6 +28,7 @@ import { whoAmIAdmin } from "@/lib/announcements.functions";
 import { useAuth } from "@/hooks/use-auth";
 import { Upload, X, Search, ShieldAlert, Lock } from "@/components/admin/AdminIcons";
 import { Loader713Panel } from "@/components/site/Loader713";
+import { AdminWalkthrough, ADMIN_WALKTHROUGH_STEPS } from "@/components/admin/AdminWalkthrough";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
@@ -123,6 +124,7 @@ function AdminPage() {
   const [covers, setCovers] = useState<Record<string, string | null>>({});
   const [selectedId, setSelectedId] = useState<string>(PRODUCTS[0]?.id ?? "");
   const [query, setQuery] = useState("");
+  const [tourOpen, setTourOpen] = useState(false);
 
   // Load persisted covers
   useEffect(() => {
@@ -173,43 +175,52 @@ function AdminPage() {
     <div className="min-h-screen bg-background">
       <Header />
       <main id="main-content" className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-        <header className="mb-8">
-          <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-violet">
-            Admin
-          </span>
-          <h1 className="mt-1 font-display text-3xl font-bold sm:text-4xl">
-            Site control panel
-          </h1>
-          <p className="mt-2 max-w-2xl text-muted-foreground">
-            Manage marketing announcements shown to visitors and product covers on the storefront.
-          </p>
+        <header className="mb-8 flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-violet">
+              Admin
+            </span>
+            <h1 className="mt-1 font-display text-3xl font-bold sm:text-4xl">
+              Site control panel
+            </h1>
+            <p className="mt-2 max-w-2xl text-muted-foreground">
+              Manage marketing announcements shown to visitors and product covers on the storefront.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setTourOpen(true)}
+            className="rounded-xl bg-violet px-4 py-2.5 text-sm font-semibold text-white shadow-[0_10px_30px_-10px_oklch(0.52_0.24_293/0.6)] transition-transform hover:-translate-y-0.5"
+          >
+            Start guided walkthrough
+          </button>
         </header>
 
         <div className="mb-10 space-y-6">
-          <SiteContentAdmin />
-          <SampleDatasetsAdmin />
-          <SampleDatasetAuditLog />
-          <OrdersAdmin />
-          <SupportTicketsAdmin />
-          <ReferralsAdmin />
-          <StripeEventsAdmin />
-          <PricingAdmin />
-          <ImportExportAdmin />
-          <AnnouncementsAdmin />
-          <ProductDetailsAdmin />
-          <TrackingAdmin />
-          <ConversionEventsAdmin />
-          <ServerTrackingAdmin />
-          <DebugModeAdmin />
-          <ChatbotAdmin />
-          <ReviewsAdmin />
-          <ContactLeadsAdmin />
-          <SocialLinksAdmin />
+          <div id="wt-site-content"><SiteContentAdmin /></div>
+          <div id="wt-sample-datasets"><SampleDatasetsAdmin /></div>
+          <div id="wt-sample-audit"><SampleDatasetAuditLog /></div>
+          <div id="wt-orders"><OrdersAdmin /></div>
+          <div id="wt-support"><SupportTicketsAdmin /></div>
+          <div id="wt-referrals"><ReferralsAdmin /></div>
+          <div id="wt-stripe-events"><StripeEventsAdmin /></div>
+          <div id="wt-pricing"><PricingAdmin /></div>
+          <div id="wt-import-export"><ImportExportAdmin /></div>
+          <div id="wt-announcements"><AnnouncementsAdmin /></div>
+          <div id="wt-product-details"><ProductDetailsAdmin /></div>
+          <div id="wt-tracking"><TrackingAdmin /></div>
+          <div id="wt-conversion-events"><ConversionEventsAdmin /></div>
+          <div id="wt-server-tracking"><ServerTrackingAdmin /></div>
+          <div id="wt-debug"><DebugModeAdmin /></div>
+          <div id="wt-chatbot"><ChatbotAdmin /></div>
+          <div id="wt-reviews"><ReviewsAdmin /></div>
+          <div id="wt-contact-leads"><ContactLeadsAdmin /></div>
+          <div id="wt-social-links"><SocialLinksAdmin /></div>
         </div>
 
         <h2 className="mb-4 font-display text-xl font-bold">Product cover editor</h2>
 
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
+        <div id="wt-product-covers" className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
           {/* LIST */}
           <section className="rounded-2xl border border-border bg-card">
             <div className="flex items-center gap-2 border-b border-border p-3">
@@ -326,6 +337,7 @@ function AdminPage() {
           </aside>
         </div>
       </main>
+      <AdminWalkthrough open={tourOpen} onClose={() => setTourOpen(false)} steps={ADMIN_WALKTHROUGH_STEPS} />
       <Footer />
     </div>
   );

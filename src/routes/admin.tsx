@@ -22,6 +22,7 @@ import { ReferralsAdmin } from "@/components/admin/ReferralsAdmin";
 import { StripeEventsAdmin } from "@/components/admin/StripeEventsAdmin";
 import { ImportExportAdmin } from "@/components/admin/ImportExportAdmin";
 import { PricingAdmin } from "@/components/admin/PricingAdmin";
+import { SampleDatasetsAdmin } from "@/components/admin/SampleDatasetsAdmin";
 import { whoAmIAdmin } from "@/lib/announcements.functions";
 import { useAuth } from "@/hooks/use-auth";
 import { Upload, X, Search, ShieldAlert, Lock } from "@/components/admin/AdminIcons";

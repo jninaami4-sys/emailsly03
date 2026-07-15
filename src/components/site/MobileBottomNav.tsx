@@ -1,26 +1,24 @@
-import { ShoppingBag } from "lucide-react";
-import { LimelightNav, type NavItem } from "@/components/ui/limelight-nav";
+import { ShoppingBag, Sparkles } from "lucide-react";
 import { openOrderDrawer } from "./OrderDrawer";
 
 export function MobileBottomNav() {
-  const items: NavItem[] = [
-    { id: "order", icon: <ShoppingBag />, label: "Order Now", onClick: () => openOrderDrawer() },
-  ];
-
-  const activeIndex = 0;
-
   return (
-    <div
-      className="fixed inset-x-0 bottom-4 z-40 flex justify-center px-4 md:hidden"
-      style={{ ["--primary" as never]: "var(--neon-blue)" }}
-    >
-      <LimelightNav
-        items={items}
-        defaultActiveIndex={activeIndex}
-        key={activeIndex}
-        className="bg-ink border-white/10"
-        iconClassName="text-foreground"
-      />
+    <div className="fixed inset-x-0 bottom-0 z-40 flex justify-center px-4 pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3 md:hidden">
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent" aria-hidden="true" />
+      <button
+        type="button"
+        onClick={openOrderDrawer}
+        aria-label="Order verified B2B leads now"
+        className="relative isolate flex w-full max-w-md items-center justify-center gap-2.5 overflow-hidden rounded-2xl border border-white/15 bg-ink/95 px-6 py-3.5 text-sm font-semibold text-white shadow-[0_8px_32px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.12),inset_0_-1px_0_rgba(0,0,0,0.25)] backdrop-blur-xl transition-all active:scale-[0.98] hover:bg-ink"
+      >
+        <span className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-violet/60 to-transparent" aria-hidden="true" />
+        <span className="absolute -right-6 -top-6 size-24 rounded-full bg-violet/25 blur-2xl" aria-hidden="true" />
+        <span className="absolute -left-6 -bottom-6 size-20 rounded-full bg-coral/20 blur-2xl" aria-hidden="true" />
+        <ShoppingBag className="relative z-10 size-5" aria-hidden="true" />
+        <span className="relative z-10">Order Now</span>
+        <Sparkles className="relative z-10 size-4 text-violet" aria-hidden="true" />
+      </button>
     </div>
   );
 }
+

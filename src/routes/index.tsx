@@ -161,7 +161,7 @@ function Home() {
                     <span className="relative inline-flex size-2 rounded-full bg-emerald" />
                   </span>
                   <span className="font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-foreground/60">
-                    {totalRows.toLocaleString()} live rows · 3 sources
+                    Live sample · Refreshed weekly
                   </span>
                 </div>
                 <h3 className="mt-4 font-display text-2xl font-bold leading-tight md:text-3xl">

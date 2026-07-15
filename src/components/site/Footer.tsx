@@ -101,7 +101,7 @@ export function Footer() {
               <span className="grid size-7 place-items-center rounded-md bg-violet">
                 <span className="size-2 rounded-full bg-white" />
               </span>
-              LYRA<span className="text-violet">DATA</span>
+              Emails<span className="text-violet">Ly</span>
             </Link>
             <p className="mt-5 max-w-sm text-sm leading-relaxed text-white/50">
               Verified B2B leads delivered to your CRM in 24 hours. Priced by the lead, never by the seat.

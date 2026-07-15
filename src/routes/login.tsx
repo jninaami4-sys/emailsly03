@@ -353,7 +353,7 @@ function AuthPage() {
               <span className="grid size-6 place-items-center rounded-md bg-primary">
                 <span className="size-2 rounded-full bg-primary-foreground" />
               </span>
-              LYRA<span className="text-muted-foreground">DATA</span>
+              Emails<span className="text-muted-foreground">Ly</span>
             </Link>
             <div className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-border bg-card/60 px-2.5 py-1 text-[11px] font-medium text-muted-foreground shadow-sm backdrop-blur">
               <BadgeCheck className="size-3 text-primary" aria-hidden="true" /> Free · No card required
@@ -384,7 +384,7 @@ function AuthPage() {
             <span className="grid size-6 place-items-center rounded-md bg-primary">
               <span className="size-2 rounded-full bg-primary-foreground" />
             </span>
-            LYRA<span className="text-muted-foreground">DATA</span>
+            Emails<span className="text-muted-foreground">Ly</span>
           </Link>
 
           <div className="mt-10 inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground shadow-sm">

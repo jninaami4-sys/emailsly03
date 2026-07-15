@@ -77,12 +77,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "Verified B2B lead data. Pay per lead, no subscription, 24-hour delivery, 99% accuracy.",
       },
       { property: "og:type", content: "website" },
+      { name: "theme-color", content: "#7C3AED" },
       // og:image / twitter:image are set per-leaf-route via ogImageMeta()
       // from '@/lib/og-images' so each page can pick a branded template.
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", href: "/favicon.png", type: "image/png" },
+      { rel: "icon", href: "/favicon.ico", sizes: "any" },
+      { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon-32.png" },
+      { rel: "icon", type: "image/png", sizes: "16x16", href: "/favicon-16.png" },
+      { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png" },
+      { rel: "manifest", href: "/site.webmanifest" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {

@@ -7,8 +7,10 @@ import {
   adminUpsertSampleDataset,
   adminUploadSampleCsv,
   adminPreviewSampleDataset,
+  adminListSampleDatasetAudit,
   type SampleDatasetConfig,
   type PreviewResult,
+  type AuditEntry,
 } from "@/lib/sample-datasets.functions";
 
 type Draft = {

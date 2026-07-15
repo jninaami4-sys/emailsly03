@@ -392,13 +392,19 @@ function AuthPage() {
 
         {/* Desktop hero — left column */}
         <div className="hidden lg:block">
-          <Link to="/" className="inline-flex items-center gap-2 font-display text-xl font-bold tracking-tight">
-            <span className="grid size-6 place-items-center rounded-md bg-gradient-to-br from-violet to-magenta shadow-sm shadow-violet/25">
-              <span className="size-2 rounded-full bg-white" />
-            </span>
-            <span className="bg-gradient-to-r from-violet via-magenta to-coral bg-clip-text text-transparent">
-              EmailsLy
-            </span>
+          <Link to="/" aria-label={`${siteName} home`} className="inline-flex items-center gap-2 font-display text-xl font-bold tracking-tight">
+            {logoUrl ? (
+              <img src={logoUrl} alt={`${siteName} logo`} className="h-9 w-auto object-contain" />
+            ) : (
+              <>
+                <span className="grid size-6 place-items-center rounded-md bg-gradient-to-br from-violet to-magenta shadow-sm shadow-violet/25">
+                  <span className="size-2 rounded-full bg-white" />
+                </span>
+                <span className="bg-gradient-to-r from-violet via-magenta to-coral bg-clip-text text-transparent">
+                  {siteName}
+                </span>
+              </>
+            )}
           </Link>
 
           <div className="mt-10 inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground shadow-sm">

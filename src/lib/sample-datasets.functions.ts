@@ -361,7 +361,7 @@ export type AuditEntry = {
   actor_email: string | null;
   source: string;
   action: string;
-  details: Record<string, unknown>;
+  details: JsonValue;
   ip_address: string | null;
   user_agent: string | null;
   created_at: string;

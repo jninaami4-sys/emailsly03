@@ -205,48 +205,77 @@ export function AnnouncementsAdmin() {
           <ul className="space-y-1.5">
             {list.map((a) => (
               <li key={a.id}>
-                <button
-                  type="button"
-                  onClick={() => loadEdit(a)}
-                  className={`flex w-full items-start gap-2 rounded-xl border p-2.5 text-left transition-colors ${
+                <div
+                  className={`flex items-start gap-2 rounded-xl border p-2.5 transition-colors ${
                     draft.id === a.id
                       ? "border-violet bg-violet/5"
                       : "border-border hover:bg-secondary/50"
                   }`}
                 >
-                  <span
-                    className={`mt-0.5 inline-flex size-5 shrink-0 items-center justify-center rounded-full ${
-                      a.enabled
-                        ? "bg-emerald/15 text-emerald"
-                        : "bg-muted text-muted-foreground"
-                    }`}
-                    aria-label={a.enabled ? "Enabled" : "Disabled"}
+                  <button
+                    type="button"
+                    onClick={() => loadEdit(a)}
+                    className="flex min-w-0 flex-1 items-start gap-2 text-left"
                   >
-                    {a.enabled ? <Eye className="size-3" /> : <EyeOff className="size-3" />}
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-semibold">{a.title || "Untitled"}</p>
-                    {(() => {
-                      const s = formatSchedule(a, new Date());
-                      const toneClass =
-                        s.tone === "live"
-                          ? "bg-emerald/10 text-emerald"
-                          : s.tone === "scheduled"
-                          ? "bg-amber-500/10 text-amber-600"
-                          : s.tone === "ended"
-                          ? "bg-rose-500/10 text-rose-500"
-                          : "bg-muted text-muted-foreground";
-                      return (
-                        <span
-                          className={`mt-1 inline-flex max-w-full items-center gap-1 truncate rounded-md px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-wider ${toneClass}`}
-                        >
-                          <CalendarClock className="size-2.5 shrink-0" />
-                          <span className="truncate">{s.label}</span>
+                    <span
+                      className={`mt-0.5 inline-flex size-5 shrink-0 items-center justify-center rounded-full ${
+                        a.enabled
+                          ? "bg-emerald/15 text-emerald"
+                          : "bg-muted text-muted-foreground"
+                      }`}
+                      aria-label={a.enabled ? "Enabled" : "Disabled"}
+                    >
+                      {a.enabled ? <Eye className="size-3" /> : <EyeOff className="size-3" />}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-1.5">
+                        <span className="rounded-md bg-violet/10 px-1.5 py-0.5 font-mono text-[9px] font-bold text-violet">
+                          #{a.priority ?? 0}
                         </span>
-                      );
-                    })()}
+                        <p className="truncate text-sm font-semibold">{a.title || "Untitled"}</p>
+                      </div>
+                      {(() => {
+                        const s = formatSchedule(a, new Date());
+                        const toneClass =
+                          s.tone === "live"
+                            ? "bg-emerald/10 text-emerald"
+                            : s.tone === "scheduled"
+                            ? "bg-amber-500/10 text-amber-600"
+                            : s.tone === "ended"
+                            ? "bg-rose-500/10 text-rose-500"
+                            : "bg-muted text-muted-foreground";
+                        return (
+                          <span
+                            className={`mt-1 inline-flex max-w-full items-center gap-1 truncate rounded-md px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-wider ${toneClass}`}
+                          >
+                            <CalendarClock className="size-2.5 shrink-0" />
+                            <span className="truncate">{s.label}</span>
+                          </span>
+                        );
+                      })()}
+                    </div>
+                  </button>
+                  <div className="flex shrink-0 flex-col gap-0.5">
+                    <button
+                      type="button"
+                      title="Move up"
+                      disabled={reorder.isPending}
+                      onClick={() => reorder.mutate({ a, dir: "up" })}
+                      className="flex size-6 items-center justify-center rounded-md border border-border bg-background text-muted-foreground hover:bg-secondary hover:text-foreground disabled:opacity-50"
+                    >
+                      <ChevronUp className="size-3.5" />
+                    </button>
+                    <button
+                      type="button"
+                      title="Move down"
+                      disabled={reorder.isPending}
+                      onClick={() => reorder.mutate({ a, dir: "down" })}
+                      className="flex size-6 items-center justify-center rounded-md border border-border bg-background text-muted-foreground hover:bg-secondary hover:text-foreground disabled:opacity-50"
+                    >
+                      <ChevronDown className="size-3.5" />
+                    </button>
                   </div>
-                </button>
+                </div>
               </li>
             ))}
           </ul>

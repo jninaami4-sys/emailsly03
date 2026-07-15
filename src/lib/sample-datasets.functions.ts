@@ -257,3 +257,193 @@ export const adminUploadSampleCsv = createServerFn({ method: "POST" })
     cache.clear();
     return { ok: true, storage_path: path };
   });
+
+// ------- preview -------
+
+type ExpectedField = { key: string; label: string; required: boolean; aliases: string[]; type?: "email" | "url" };
+
+const EXPECTED: Record<SourceKey, ExpectedField[]> = {
+  apollo: [
+    { key: "first_name", label: "First Name", required: true, aliases: ["first name", "firstname", "given name"] },
+    { key: "last_name", label: "Last Name", required: true, aliases: ["last name", "lastname", "surname", "family name"] },
+    { key: "email", label: "Email", required: true, aliases: ["email", "work email", "email address"], type: "email" },
+    { key: "title", label: "Title", required: false, aliases: ["title", "job title", "position"] },
+    { key: "company", label: "Company", required: true, aliases: ["company", "company name", "organization", "employer"] },
+    { key: "website", label: "Company Website", required: false, aliases: ["website", "company website", "domain", "url"], type: "url" },
+    { key: "linkedin", label: "LinkedIn URL", required: false, aliases: ["linkedin", "linkedin url", "person linkedin url"], type: "url" },
+  ],
+  linkedin: [
+    { key: "first_name", label: "First Name", required: true, aliases: ["first name", "firstname"] },
+    { key: "last_name", label: "Last Name", required: true, aliases: ["last name", "lastname"] },
+    { key: "title", label: "Title", required: true, aliases: ["title", "job title", "position"] },
+    { key: "company", label: "Company", required: true, aliases: ["company", "current company", "organization"] },
+    { key: "location", label: "Location", required: false, aliases: ["location", "geo", "city"] },
+    { key: "profile_url", label: "Profile URL", required: false, aliases: ["profile url", "linkedin url", "url"], type: "url" },
+  ],
+  zoominfo: [
+    { key: "first_name", label: "First Name", required: true, aliases: ["first name", "firstname"] },
+    { key: "last_name", label: "Last Name", required: true, aliases: ["last name", "lastname"] },
+    { key: "email", label: "Email", required: true, aliases: ["email", "email address"], type: "email" },
+    { key: "title", label: "Job Title", required: false, aliases: ["job title", "title"] },
+    { key: "company", label: "Company", required: true, aliases: ["company", "company name"] },
+    { key: "website", label: "Website", required: false, aliases: ["website", "company website", "domain"], type: "url" },
+  ],
+};
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const URL_RE = /^(https?:\/\/|www\.)[^\s]+$/i;
+
+export type FieldMapping = {
+  key: string;
+  label: string;
+  required: boolean;
+  matched_header: string | null;
+  invalid_count: number;
+  empty_count: number;
+};
+
+export type PreviewResult = {
+  headers: string[];
+  row_count: number;
+  sample_rows: Record<string, string | number | boolean>[];
+  unmapped_headers: string[];
+  mapping: FieldMapping[];
+  errors: { level: "error" | "warn"; message: string }[];
+  duplicate_email_count: number;
+  empty_row_count: number;
+};
+
+function normalizeHeader(h: string): string {
+  return h.toLowerCase().replace(/[_\-.]/g, " ").replace(/\s+/g, " ").trim();
+}
+
+function buildPreview(source: SourceKey, parsed: ParsedCsv): PreviewResult {
+  const expected = EXPECTED[source];
+  const normalizedHeaders = parsed.headers.map(normalizeHeader);
+  const usedHeaderIdx = new Set<number>();
+  const mapping: FieldMapping[] = expected.map((f) => {
+    let matchedIdx = -1;
+    for (const alias of [f.label.toLowerCase(), ...f.aliases]) {
+      const na = normalizeHeader(alias);
+      const idx = normalizedHeaders.findIndex((h, i) => h === na && !usedHeaderIdx.has(i));
+      if (idx !== -1) { matchedIdx = idx; break; }
+    }
+    if (matchedIdx === -1) {
+      // fuzzy contains
+      for (const alias of f.aliases) {
+        const na = normalizeHeader(alias);
+        const idx = normalizedHeaders.findIndex((h, i) => !usedHeaderIdx.has(i) && (h.includes(na) || na.includes(h)));
+        if (idx !== -1) { matchedIdx = idx; break; }
+      }
+    }
+    if (matchedIdx !== -1) usedHeaderIdx.add(matchedIdx);
+    const matched_header = matchedIdx === -1 ? null : parsed.headers[matchedIdx];
+    let invalid = 0;
+    let empty = 0;
+    if (matched_header) {
+      for (const row of parsed.rows) {
+        const v = String(row[matched_header] ?? "").trim();
+        if (!v) { empty++; continue; }
+        if (f.type === "email" && !EMAIL_RE.test(v)) invalid++;
+        else if (f.type === "url" && !URL_RE.test(v)) invalid++;
+      }
+    }
+    return {
+      key: f.key,
+      label: f.label,
+      required: f.required,
+      matched_header,
+      invalid_count: invalid,
+      empty_count: empty,
+    };
+  });
+
+  const unmapped_headers = parsed.headers.filter((_, i) => !usedHeaderIdx.has(i));
+
+  // Empty rows: every field blank
+  let empty_row_count = 0;
+  for (const row of parsed.rows) {
+    if (parsed.headers.every((h) => !String(row[h] ?? "").trim())) empty_row_count++;
+  }
+
+  // Duplicate emails
+  const emailField = mapping.find((m) => m.key === "email" && m.matched_header);
+  let duplicate_email_count = 0;
+  if (emailField?.matched_header) {
+    const seen = new Map<string, number>();
+    for (const row of parsed.rows) {
+      const e = String(row[emailField.matched_header] ?? "").trim().toLowerCase();
+      if (!e) continue;
+      seen.set(e, (seen.get(e) ?? 0) + 1);
+    }
+    for (const n of seen.values()) if (n > 1) duplicate_email_count += n - 1;
+  }
+
+  const errors: PreviewResult["errors"] = [];
+  if (parsed.headers.length === 0) errors.push({ level: "error", message: "No headers detected — file may not be a CSV." });
+  if (parsed.rows.length === 0) errors.push({ level: "error", message: "No data rows found." });
+  for (const m of mapping) {
+    if (m.required && !m.matched_header) {
+      errors.push({ level: "error", message: `Required field "${m.label}" is not mapped to any CSV column.` });
+    }
+    if (m.matched_header && m.required && m.empty_count > 0) {
+      errors.push({ level: "warn", message: `"${m.label}" is empty in ${m.empty_count} row(s).` });
+    }
+    if (m.matched_header && m.invalid_count > 0) {
+      errors.push({ level: "warn", message: `"${m.label}" has ${m.invalid_count} row(s) with an invalid format.` });
+    }
+  }
+  if (duplicate_email_count > 0) {
+    errors.push({ level: "warn", message: `Found ${duplicate_email_count} duplicate email row(s).` });
+  }
+  if (empty_row_count > 0) {
+    errors.push({ level: "warn", message: `${empty_row_count} completely empty row(s) will be ignored.` });
+  }
+
+  return {
+    headers: parsed.headers,
+    row_count: parsed.rows.length,
+    sample_rows: parsed.rows.slice(0, 5),
+    unmapped_headers,
+    mapping,
+    errors,
+    duplicate_email_count,
+    empty_row_count,
+  };
+}
+
+const previewSchema = z.object({
+  source: z.enum(["apollo", "linkedin", "zoominfo"]),
+  mode: z.enum(["current", "gdrive", "upload"]),
+  gdrive_url: z.string().trim().max(500).optional(),
+  contentBase64: z.string().optional(),
+});
+
+export const adminPreviewSampleDataset = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: unknown) => previewSchema.parse(data))
+  .handler(async ({ data, context }): Promise<PreviewResult> => {
+    await assertAdmin(context.supabase as unknown as ReturnType<typeof serverAnonClient>, context.userId);
+    let parsed: ParsedCsv;
+    if (data.mode === "gdrive") {
+      if (!data.gdrive_url) throw new Error("gdrive_url required");
+      parsed = await fetchAndParse(gdriveDirectUrl(data.gdrive_url));
+    } else if (data.mode === "upload") {
+      if (!data.contentBase64) throw new Error("contentBase64 required");
+      const text = Buffer.from(data.contentBase64, "base64").toString("utf8");
+      parsed = parseCsv(text);
+    } else {
+      const { data: rows, error } = await context.supabase
+        .from("sample_datasets")
+        .select("source, source_type, gdrive_url, storage_path, display_name, row_count_hint, updated_at")
+        .eq("source", data.source)
+        .maybeSingle();
+      if (error) throw new Error(error.message);
+      if (!rows) parsed = BUILTIN[data.source];
+      else {
+        const loaded = await loadForSource(rows as SampleDatasetConfig);
+        parsed = loaded.parsed;
+      }
+    }
+    return buildPreview(data.source, parsed);
+  });

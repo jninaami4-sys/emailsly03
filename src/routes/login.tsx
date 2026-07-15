@@ -353,13 +353,19 @@ function AuthPage() {
         {/* Mobile / tablet hero (hidden on lg — desktop uses left column below) */}
         <div className="lg:hidden">
           <div className="mx-auto flex max-w-md flex-col items-center text-center">
-            <Link to="/" className="inline-flex items-center gap-2 font-display text-lg font-bold tracking-tight">
-              <span className="grid size-6 place-items-center rounded-md bg-gradient-to-br from-violet to-magenta shadow-sm shadow-violet/25">
-                <span className="size-2 rounded-full bg-white" />
-              </span>
-              <span className="bg-gradient-to-r from-violet via-magenta to-coral bg-clip-text text-transparent">
-                EmailsLy
-              </span>
+            <Link to="/" aria-label={`${siteName} home`} className="inline-flex items-center gap-2 font-display text-lg font-bold tracking-tight">
+              {logoUrl ? (
+                <img src={logoUrl} alt={`${siteName} logo`} className="h-8 w-auto object-contain" />
+              ) : (
+                <>
+                  <span className="grid size-6 place-items-center rounded-md bg-gradient-to-br from-violet to-magenta shadow-sm shadow-violet/25">
+                    <span className="size-2 rounded-full bg-white" />
+                  </span>
+                  <span className="bg-gradient-to-r from-violet via-magenta to-coral bg-clip-text text-transparent">
+                    {siteName}
+                  </span>
+                </>
+              )}
             </Link>
             <div className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-border bg-card/60 px-2.5 py-1 text-[11px] font-medium text-muted-foreground shadow-sm backdrop-blur">
               <BadgeCheck className="size-3 text-primary" aria-hidden="true" /> Free · No card required

@@ -1,13 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Megaphone, Plus, Save, Trash2, Eye, EyeOff, Loader2 } from "lucide-react";
+import { Megaphone, Plus, Save, Trash2, Eye, EyeOff, Loader2, Upload, ImageIcon, ImageOff } from "lucide-react";
 import {
   listAnnouncements,
   upsertAnnouncement,
   deleteAnnouncement,
   type Announcement,
+  type AnnouncementImageStyle,
 } from "@/lib/announcements.functions";
+import { supabase } from "@/integrations/supabase/client";
 
 const emptyDraft = {
   id: null as string | null,
@@ -17,11 +19,18 @@ const emptyDraft = {
   cta_label: "",
   cta_url: "",
   image_url: "",
+  image_style: "cover" as AnnouncementImageStyle,
   badge: "",
   accent: "violet",
 };
 
 const ACCENTS = ["violet", "emerald", "amber", "rose", "sky"] as const;
+
+const STYLE_OPTIONS: { value: AnnouncementImageStyle; label: string; hint: string; Icon: typeof ImageIcon }[] = [
+  { value: "cover", label: "Cover photo", hint: "Large 16:9 hero image", Icon: ImageIcon },
+  { value: "thumbnail", label: "Thumbnail", hint: "Small product-style square", Icon: ImageIcon },
+  { value: "none", label: "No image", hint: "Text-only with accent gradient", Icon: ImageOff },
+];
 
 export function AnnouncementsAdmin() {
   const qc = useQueryClient();
@@ -37,6 +46,8 @@ export function AnnouncementsAdmin() {
 
   const [draft, setDraft] = useState(emptyDraft);
   const [status, setStatus] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   const loadEdit = (a: Announcement) => {
     setDraft({
@@ -47,10 +58,42 @@ export function AnnouncementsAdmin() {
       cta_label: a.cta_label,
       cta_url: a.cta_url,
       image_url: a.image_url,
+      image_style: (a.image_style || "cover") as AnnouncementImageStyle,
       badge: a.badge,
       accent: a.accent || "violet",
     });
   };
+
+  const handleUpload = async (file: File) => {
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      setStatus("Image too large (max 5MB)");
+      return;
+    }
+    setUploading(true);
+    try {
+      const ext = (file.name.split(".").pop() || "png").toLowerCase();
+      const path = `${crypto.randomUUID()}.${ext}`;
+      const { error: upErr } = await supabase.storage
+        .from("announcement-media")
+        .upload(path, file, { contentType: file.type, upsert: false });
+      if (upErr) throw upErr;
+      const { data } = supabase.storage.from("announcement-media").getPublicUrl(path);
+      setDraft((d) => ({
+        ...d,
+        image_url: data.publicUrl,
+        image_style: d.image_style === "none" ? "cover" : d.image_style,
+      }));
+      setStatus("Image uploaded");
+    } catch (e) {
+      setStatus((e as Error).message || "Upload failed");
+    } finally {
+      setUploading(false);
+      if (fileRef.current) fileRef.current.value = "";
+    }
+  };
+
+
 
   const save = useMutation({
     mutationFn: (input: typeof emptyDraft) => upsertFn({ data: input }),

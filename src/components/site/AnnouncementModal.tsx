@@ -80,11 +80,14 @@ export function AnnouncementModal() {
 
   const data = useMemo<Announcement | null>(() => {
     if (!list || !list.length || !viewer) return null;
+    const now = Date.now();
     return (
       list.find(
         (a) =>
           (a.path_patterns?.length ? a.path_patterns : ["*"]).some((p) => pathMatches(p, pathname)) &&
-          audienceMatches(a, viewer),
+          audienceMatches(a, viewer) &&
+          (!a.start_at || new Date(a.start_at).getTime() <= now) &&
+          (!a.end_at || new Date(a.end_at).getTime() > now),
       ) ?? null
     );
   }, [list, viewer, pathname]);

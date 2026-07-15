@@ -636,6 +636,7 @@ export function AnnouncementsAdmin() {
                     audience: draft.audience,
                     start_at: draft.start_at ? new Date(draft.start_at).toISOString() : null,
                     end_at: draft.end_at ? new Date(draft.end_at).toISOString() : null,
+                    priority: draft.priority,
                     updated_at: new Date().toISOString(),
                     created_at: new Date().toISOString(),
                   }}

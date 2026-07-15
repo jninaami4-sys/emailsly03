@@ -23,6 +23,7 @@ import { StripeEventsAdmin } from "@/components/admin/StripeEventsAdmin";
 import { ImportExportAdmin } from "@/components/admin/ImportExportAdmin";
 import { PricingAdmin } from "@/components/admin/PricingAdmin";
 import { SampleDatasetsAdmin, SampleDatasetAuditLog } from "@/components/admin/SampleDatasetsAdmin";
+import { SupportTicketsAdmin } from "@/components/admin/SupportTicketsAdmin";
 import { whoAmIAdmin } from "@/lib/announcements.functions";
 import { useAuth } from "@/hooks/use-auth";
 import { Upload, X, Search, ShieldAlert, Lock } from "@/components/admin/AdminIcons";
@@ -189,6 +190,7 @@ function AdminPage() {
           <SampleDatasetsAdmin />
           <SampleDatasetAuditLog />
           <OrdersAdmin />
+          <SupportTicketsAdmin />
           <ReferralsAdmin />
           <StripeEventsAdmin />
           <PricingAdmin />

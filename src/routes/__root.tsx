@@ -130,6 +130,7 @@ function RootComponent() {
           <CookieConsent />
           <CrispChat />
           <ReferralCapture />
+          <BrandingApplier />
         </CartProvider>
       </AuthProvider>
     </QueryClientProvider>

@@ -111,6 +111,8 @@ type UpsertInput = {
   image_style: AnnouncementImageStyle;
   badge: string;
   accent: string;
+  path_patterns: string[];
+  audience: AnnouncementAudience;
 };
 
 export const upsertAnnouncement = createServerFn({ method: "POST" })
@@ -123,6 +125,20 @@ export const upsertAnnouncement = createServerFn({ method: "POST" })
     const image_style: AnnouncementImageStyle = allowedStyles.includes(data.image_style)
       ? data.image_style
       : "cover";
+    const allowedAudiences: AnnouncementAudience[] = ["all", "guests", "authenticated", "admins"];
+    const audience: AnnouncementAudience = allowedAudiences.includes(data.audience)
+      ? data.audience
+      : "all";
+    const cleanedPatterns = Array.from(
+      new Set(
+        (Array.isArray(data.path_patterns) ? data.path_patterns : [])
+          .map((p) => String(p || "").trim())
+          .filter(Boolean)
+          .slice(0, 30)
+          .map((p) => p.slice(0, 200)),
+      ),
+    );
+    const path_patterns = cleanedPatterns.length ? cleanedPatterns : ["*"];
     const payload = {
       enabled: !!data.enabled,
       title: String(data.title || "").slice(0, 200),
@@ -133,6 +149,8 @@ export const upsertAnnouncement = createServerFn({ method: "POST" })
       image_style,
       badge: String(data.badge || "").slice(0, 40),
       accent: String(data.accent || "violet").slice(0, 40),
+      path_patterns,
+      audience,
     };
     if (data.id) {
       const { data: row, error } = await supabaseAdmin

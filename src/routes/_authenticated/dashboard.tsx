@@ -14,12 +14,14 @@ import { SiteShell } from "@/components/site/SiteShell";
 import { ReferralErrorBoundary } from "@/components/site/ReferralErrorBoundary";
 import { useAuth } from "@/hooks/use-auth";
 import { openOrderDrawer } from "@/components/site/OrderDrawer";
-import { Loader2, Download, Package, User as UserIcon, Receipt, RotateCcw, ExternalLink, ShoppingBag, PackageSearch, MessageCircle, BookOpen, Zap, TrendingUp, CheckCircle2, Clock, Wallet, ArrowUpRight, Copy, Gift, Headphones, ChevronRight, Search, Camera, Trash2 } from "lucide-react";
+import { Loader2, Download, Package, User as UserIcon, Receipt, RotateCcw, ExternalLink, ShoppingBag, PackageSearch, MessageCircle, BookOpen, Zap, TrendingUp, CheckCircle2, Clock, Wallet, ArrowUpRight, Copy, Gift, Headphones, ChevronRight, Search, Camera, Trash2, LifeBuoy } from "lucide-react";
 import { PremiumSparkles as Sparkles } from "@/components/site/PremiumIcons";
 import { supabase } from "@/integrations/supabase/client";
 import { compressImage } from "@/lib/image-compress";
 import { AvatarCropDialog } from "@/components/site/AvatarCropDialog";
 import { ShareExperienceCTA } from "@/components/site/ShareExperienceCTA";
+import { SupportTicketsPanel } from "@/components/site/SupportTicketsPanel";
+import { SupportTicketModal } from "@/components/site/SupportTicketModal";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
@@ -31,7 +33,7 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
   component: DashboardPage,
 });
 
-type Tab = "orders" | "downloads" | "invoices" | "profile";
+type Tab = "orders" | "downloads" | "invoices" | "support" | "profile";
 
 function DashboardPage() {
   const { user } = useAuth();
@@ -174,7 +176,7 @@ function DashboardPage() {
             <div>
               {/* Tabs */}
               <div className="mb-4 -mx-4 overflow-x-auto px-4 sm:mx-0 sm:overflow-visible sm:px-0 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-                <div className="flex min-w-max gap-1 rounded-2xl border border-border bg-card p-1 sm:grid sm:min-w-0 sm:grid-cols-4">
+                <div className="flex min-w-max gap-1 rounded-2xl border border-border bg-card p-1 sm:grid sm:min-w-0 sm:grid-cols-5">
                   <TabBtn active={tab === "orders"} onClick={() => setTab("orders")} icon={<Package className="size-4" />}>
                     Orders
                   </TabBtn>
@@ -189,6 +191,9 @@ function DashboardPage() {
                   <TabBtn active={tab === "invoices"} onClick={() => setTab("invoices")} icon={<Receipt className="size-4" />}>
                     Invoices
                   </TabBtn>
+                  <TabBtn active={tab === "support"} onClick={() => setTab("support")} icon={<LifeBuoy className="size-4" />}>
+                    Support
+                  </TabBtn>
                   <TabBtn active={tab === "profile"} onClick={() => setTab("profile")} icon={<UserIcon className="size-4" />}>
                     Profile
                   </TabBtn>
@@ -200,6 +205,7 @@ function DashboardPage() {
                 <DownloadsTab orders={data.filter((o: any) => o.delivery_url)} />
               )}
               {tab === "invoices" && <InvoicesTab orders={data} />}
+              {tab === "support" && <SupportTicketsPanel />}
               {tab === "profile" && <ProfileTab />}
             </div>
 
@@ -540,6 +546,7 @@ function OrderDrawer({ id, onClose }: { id: string; onClose: () => void }) {
     queryFn: () => getFn({ data: { id } }),
   });
   const [revText, setRevText] = useState("");
+  const [ticketOpen, setTicketOpen] = useState(false);
   const rev = useMutation({
     mutationFn: () => revFn({ data: { order_id: id, message: revText } }),
     onSuccess: () => {
@@ -660,6 +667,12 @@ function OrderDrawer({ id, onClose }: { id: string; onClose: () => void }) {
               >
                 <RotateCcw className="size-3" /> Reorder
               </Link>
+              <button
+                onClick={() => setTicketOpen(true)}
+                className="inline-flex items-center gap-2 rounded-lg border border-neon-orange/40 bg-neon-orange/10 px-3 py-1.5 text-xs font-semibold text-neon-orange hover:bg-neon-orange/20"
+              >
+                <LifeBuoy className="size-3" /> Report an issue
+              </button>
               <Link
                 to="/contact"
                 className="inline-flex items-center gap-2 rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-semibold hover:bg-secondary"
@@ -694,6 +707,13 @@ function OrderDrawer({ id, onClose }: { id: string; onClose: () => void }) {
           </>
         )}
       </div>
+      <SupportTicketModal
+        open={ticketOpen}
+        onClose={() => setTicketOpen(false)}
+        orderId={id}
+        orderLabel={data?.order?.service_label}
+        defaultCategory="delivery"
+      />
     </div>
   );
 }

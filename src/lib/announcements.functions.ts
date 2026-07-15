@@ -159,6 +159,7 @@ export const upsertAnnouncement = createServerFn({ method: "POST" })
       audience,
       start_at: data.start_at && data.start_at.trim() ? new Date(data.start_at).toISOString() : null,
       end_at: data.end_at && data.end_at.trim() ? new Date(data.end_at).toISOString() : null,
+      priority: Number.isFinite(data.priority) ? Math.max(-1000, Math.min(1000, Math.trunc(data.priority))) : 0,
     };
     if (data.id) {
       const { data: row, error } = await supabaseAdmin

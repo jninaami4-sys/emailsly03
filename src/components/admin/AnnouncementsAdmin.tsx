@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Megaphone, Plus, Save, Trash2, Eye, EyeOff, Loader2, Upload, ImageIcon, ImageOff, Monitor, Smartphone, Target, Users } from "lucide-react";
+import { Megaphone, Plus, Save, Trash2, Eye, EyeOff, Loader2, Upload, ImageIcon, ImageOff, Monitor, Smartphone, Target, Users, CalendarClock } from "lucide-react";
 import {
   listAnnouncements,
   upsertAnnouncement,
@@ -26,7 +26,31 @@ const emptyDraft = {
   accent: "violet",
   path_patterns: ["*"] as string[],
   audience: "all" as AnnouncementAudience,
+  start_at: "" as string,
+  end_at: "" as string,
 };
+
+function toDatetimeLocal(iso: string | null): string {
+  if (!iso) return "";
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "";
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+function formatSchedule(a: Announcement, now: Date): { label: string; tone: "live" | "scheduled" | "ended" | "always" } {
+  const start = a.start_at ? new Date(a.start_at) : null;
+  const end = a.end_at ? new Date(a.end_at) : null;
+  if (end && end < now) return { label: `Ended ${end.toLocaleString()}`, tone: "ended" };
+  if (start && start > now) return { label: `Starts ${start.toLocaleString()}`, tone: "scheduled" };
+  if (start || end) {
+    const parts: string[] = [];
+    if (start) parts.push(`from ${start.toLocaleString()}`);
+    if (end) parts.push(`until ${end.toLocaleString()}`);
+    return { label: `Live · ${parts.join(" ")}`, tone: "live" };
+  }
+  return { label: "Always on", tone: "always" };
+}
 
 const ACCENTS = ["violet", "emerald", "amber", "rose", "sky"] as const;
 
@@ -75,6 +99,8 @@ export function AnnouncementsAdmin() {
       accent: a.accent || "violet",
       path_patterns: a.path_patterns && a.path_patterns.length ? a.path_patterns : ["*"],
       audience: (a.audience || "all") as AnnouncementAudience,
+      start_at: toDatetimeLocal(a.start_at),
+      end_at: toDatetimeLocal(a.end_at),
     });
   };
 
@@ -198,9 +224,25 @@ export function AnnouncementsAdmin() {
                   </span>
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-semibold">{a.title || "Untitled"}</p>
-                    <p className="mt-0.5 truncate font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
-                      {new Date(a.updated_at).toLocaleString()}
-                    </p>
+                    {(() => {
+                      const s = formatSchedule(a, new Date());
+                      const toneClass =
+                        s.tone === "live"
+                          ? "bg-emerald/10 text-emerald"
+                          : s.tone === "scheduled"
+                          ? "bg-amber-500/10 text-amber-600"
+                          : s.tone === "ended"
+                          ? "bg-rose-500/10 text-rose-500"
+                          : "bg-muted text-muted-foreground";
+                      return (
+                        <span
+                          className={`mt-1 inline-flex max-w-full items-center gap-1 truncate rounded-md px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-wider ${toneClass}`}
+                        >
+                          <CalendarClock className="size-2.5 shrink-0" />
+                          <span className="truncate">{s.label}</span>
+                        </span>
+                      );
+                    })()}
                   </div>
                 </button>
               </li>
@@ -353,7 +395,55 @@ export function AnnouncementsAdmin() {
                   </div>
                 </Field>
               </div>
+
+              <div className="mt-4 border-t border-border pt-4">
+                <div className="mb-3 flex items-center gap-2">
+                  <CalendarClock className="size-3.5 text-violet" />
+                  <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                    Schedule (optional)
+                  </span>
+                </div>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <Field label="Start showing">
+                    <input
+                      type="datetime-local"
+                      value={draft.start_at}
+                      onChange={(e) => setDraft({ ...draft, start_at: e.target.value })}
+                      className="input"
+                    />
+                  </Field>
+                  <Field label="Stop showing">
+                    <input
+                      type="datetime-local"
+                      value={draft.end_at}
+                      onChange={(e) => setDraft({ ...draft, end_at: e.target.value })}
+                      className="input"
+                    />
+                  </Field>
+                </div>
+                {(draft.start_at || draft.end_at) && (
+                  <div className="mt-2 flex flex-wrap items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setDraft({ ...draft, start_at: "", end_at: "" })}
+                      className="font-mono text-[10px] font-bold uppercase tracking-wider text-rose-500 hover:underline"
+                    >
+                      Clear schedule
+                    </button>
+                    {draft.start_at && draft.end_at && new Date(draft.end_at) <= new Date(draft.start_at) && (
+                      <span className="rounded-md bg-rose-500/10 px-2 py-0.5 text-[10px] text-rose-500">
+                        End must be after start
+                      </span>
+                    )}
+                  </div>
+                )}
+                <p className="mt-2 text-[10px] text-muted-foreground">
+                  Leave both empty to run as soon as the toggle is on. Times use your local timezone.
+                </p>
+              </div>
             </div>
+
+
 
 
             <div className="rounded-xl border border-border bg-background/50 p-4">
@@ -542,6 +632,8 @@ export function AnnouncementsAdmin() {
                     accent: draft.accent,
                     path_patterns: draft.path_patterns,
                     audience: draft.audience,
+                    start_at: draft.start_at ? new Date(draft.start_at).toISOString() : null,
+                    end_at: draft.end_at ? new Date(draft.end_at).toISOString() : null,
                     updated_at: new Date().toISOString(),
                     created_at: new Date().toISOString(),
                   }}

@@ -19,6 +19,8 @@ export type Announcement = {
   accent: string;
   path_patterns: string[];
   audience: AnnouncementAudience;
+  start_at: string | null;
+  end_at: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -113,6 +115,8 @@ type UpsertInput = {
   accent: string;
   path_patterns: string[];
   audience: AnnouncementAudience;
+  start_at: string | null;
+  end_at: string | null;
 };
 
 export const upsertAnnouncement = createServerFn({ method: "POST" })
@@ -151,6 +155,8 @@ export const upsertAnnouncement = createServerFn({ method: "POST" })
       accent: String(data.accent || "violet").slice(0, 40),
       path_patterns,
       audience,
+      start_at: data.start_at && data.start_at.trim() ? new Date(data.start_at).toISOString() : null,
+      end_at: data.end_at && data.end_at.trim() ? new Date(data.end_at).toISOString() : null,
     };
     if (data.id) {
       const { data: row, error } = await supabaseAdmin

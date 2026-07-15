@@ -5,7 +5,15 @@ import { listSiteContent, upsertSiteContent } from "@/lib/site-content.functions
 import { SITE_CONTENT_DEFAULTS } from "@/lib/site-content-defaults";
 import { Palette, Save, Loader2, RefreshCw } from "@/components/admin/AdminIcons";
 
-type BrandingValues = typeof SITE_CONTENT_DEFAULTS.branding;
+type BrandingValues = {
+  site_name: string;
+  logo_url: string;
+  favicon_url: string;
+  tagline: string;
+  primary_color: string;
+  accent_color: string;
+  ink_color: string;
+};
 
 const HEX_RE = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i;
 

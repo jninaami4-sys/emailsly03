@@ -827,6 +827,19 @@ export function AnnouncementsAdmin() {
         }
         .input:focus { border-color: hsl(var(--violet)); box-shadow: 0 0 0 3px hsl(var(--violet) / 0.15); }
       `}</style>
+
+      {pendingFile && (
+        <ImageCropperModal
+          file={pendingFile}
+          aspect={cropAspect}
+          aspectLabel={cropAspectLabel}
+          onCancel={() => setPendingFile(null)}
+          onConfirm={async (blob, name) => {
+            setPendingFile(null);
+            await handleUpload(blob, name);
+          }}
+        />
+      )}
     </section>
   );
 }

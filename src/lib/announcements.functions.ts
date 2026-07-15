@@ -49,7 +49,25 @@ function assertAdmin(email: string | undefined | null) {
   }
 }
 
-/** Public: latest enabled announcement (or null). */
+/** Public: all currently enabled announcements (targeting applied client-side). */
+export const listActiveAnnouncements = createServerFn({ method: "GET" }).handler(
+  async (): Promise<Announcement[]> => {
+    const supabase = serverAnonClient();
+    const { data, error } = await supabase
+      .from("announcements")
+      .select("*")
+      .eq("enabled", true)
+      .order("updated_at", { ascending: false })
+      .limit(20);
+    if (error) {
+      console.error("listActiveAnnouncements", error);
+      return [];
+    }
+    return (data ?? []) as Announcement[];
+  },
+);
+
+/** @deprecated kept for compat — returns the newest enabled announcement without targeting. */
 export const getActiveAnnouncement = createServerFn({ method: "GET" }).handler(
   async (): Promise<Announcement | null> => {
     const supabase = serverAnonClient();

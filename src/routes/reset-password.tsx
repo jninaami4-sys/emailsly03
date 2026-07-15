@@ -249,11 +249,13 @@ function ResetPasswordPage() {
             </div>
 
             <div className="relative">
-              <Link to="/" className="inline-flex items-center gap-2 font-display text-xl font-bold tracking-tight text-foreground">
-                <span className="grid size-6 place-items-center rounded-md bg-primary">
-                  <span className="size-2 rounded-full bg-primary-foreground" />
+              <Link to="/" className="inline-flex items-center gap-2 font-display text-xl font-bold tracking-tight">
+                <span className="grid size-6 place-items-center rounded-md bg-gradient-to-br from-violet to-magenta shadow-sm shadow-violet/25">
+                  <span className="size-2 rounded-full bg-white" />
                 </span>
-                Emails<span className="text-muted-foreground">Ly</span>
+                <span className="bg-gradient-to-r from-violet via-magenta to-coral bg-clip-text text-transparent">
+                  EmailsLy
+                </span>
               </Link>
 
               {linkState === "checking" ? (

@@ -38,9 +38,9 @@ export type SampleDatasetsPayload = {
 };
 
 const BUILTIN: Record<SourceKey, ParsedCsv> = {
-  apollo: rawApollo as ParsedCsv,
-  linkedin: rawLinkedin as ParsedCsv,
-  zoominfo: rawZoominfo as ParsedCsv,
+  apollo: rawApollo as unknown as ParsedCsv,
+  linkedin: rawLinkedin as unknown as ParsedCsv,
+  zoominfo: rawZoominfo as unknown as ParsedCsv,
 };
 
 // ------- helpers -------

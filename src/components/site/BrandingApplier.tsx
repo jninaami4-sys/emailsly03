@@ -28,9 +28,18 @@ export function BrandingApplier() {
       parts.push(`--violet-soft: color-mix(in oklab, ${primary} 10%, transparent);`);
       parts.push(`--color-violet: ${primary};`);
       parts.push(`--color-violet-soft: color-mix(in oklab, ${primary} 10%, transparent);`);
+      // Lock shadcn primary tokens to the brand color too
+      parts.push(`--primary: ${primary};`);
+      parts.push(`--color-primary: ${primary};`);
+      parts.push(`--ring: ${primary};`);
+      parts.push(`--color-ring: ${primary};`);
     }
-    if (accent) parts.push(`--emerald: ${accent}; --color-emerald: ${accent};`);
-    if (ink) parts.push(`--ink: ${ink}; --color-ink: ${ink};`);
+    if (accent) {
+      parts.push(`--emerald: ${accent}; --color-emerald: ${accent};`);
+      parts.push(`--emerald-soft: color-mix(in oklab, ${accent} 12%, transparent);`);
+      parts.push(`--color-emerald-soft: color-mix(in oklab, ${accent} 12%, transparent);`);
+    }
+    if (ink) parts.push(`--ink: ${ink}; --color-ink: ${ink}; --foreground: ${ink}; --color-foreground: ${ink};`);
 
     let el = document.getElementById(STYLE_ID) as HTMLStyleElement | null;
     if (parts.length === 0) {

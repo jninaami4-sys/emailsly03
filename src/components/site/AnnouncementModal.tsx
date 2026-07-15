@@ -88,23 +88,35 @@ function ModalContent({ a, onClose }: { a: Announcement; onClose: () => void }) 
           <X className="size-4" />
         </button>
 
-        {a.image_url ? (
-          <div className="relative aspect-[16/9] w-full overflow-hidden bg-secondary">
-            <img
-              src={a.image_url}
-              alt=""
-              className="h-full w-full object-cover"
-              loading="eager"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-card via-card/20 to-transparent" />
-          </div>
-        ) : (
-          <div className={`relative h-32 w-full bg-gradient-to-br ${p.soft} to-transparent`}>
-            <div className="absolute inset-0 opacity-40 [background-image:radial-gradient(circle_at_1px_1px,hsl(var(--foreground)/0.15)_1px,transparent_0)] [background-size:16px_16px]" />
-          </div>
-        )}
+        {(() => {
+          const style = a.image_style || (a.image_url ? "cover" : "none");
+          if (style === "cover" && a.image_url) {
+            return (
+              <div className="relative aspect-[16/9] w-full overflow-hidden bg-secondary">
+                <img src={a.image_url} alt="" className="h-full w-full object-cover" loading="eager" />
+                <div className="absolute inset-0 bg-gradient-to-t from-card via-card/20 to-transparent" />
+              </div>
+            );
+          }
+          return (
+            <div className={`relative h-24 w-full bg-gradient-to-br ${p.soft} to-transparent`}>
+              <div className="absolute inset-0 opacity-40 [background-image:radial-gradient(circle_at_1px_1px,hsl(var(--foreground)/0.15)_1px,transparent_0)] [background-size:16px_16px]" />
+            </div>
+          );
+        })()}
 
         <div className="relative p-6 sm:p-8">
+          {(() => {
+            const style = a.image_style || (a.image_url ? "cover" : "none");
+            if (style === "thumbnail" && a.image_url) {
+              return (
+                <div className={`mb-4 inline-flex size-20 overflow-hidden rounded-2xl border ${p.ring} bg-secondary shadow-lg ${p.shadow}`}>
+                  <img src={a.image_url} alt="" className="h-full w-full object-cover" loading="eager" />
+                </div>
+              );
+            }
+            return null;
+          })()}
           {a.badge && (
             <span
               className={`inline-flex items-center gap-1.5 rounded-full border ${p.ring} ${p.soft} px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-widest ${p.text}`}

@@ -24,6 +24,7 @@ export type Database = {
           cta_url: string
           enabled: boolean
           id: string
+          image_style: string
           image_url: string
           title: string
           updated_at: string
@@ -37,6 +38,7 @@ export type Database = {
           cta_url?: string
           enabled?: boolean
           id?: string
+          image_style?: string
           image_url?: string
           title: string
           updated_at?: string
@@ -50,6 +52,7 @@ export type Database = {
           cta_url?: string
           enabled?: boolean
           id?: string
+          image_style?: string
           image_url?: string
           title?: string
           updated_at?: string

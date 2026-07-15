@@ -3,6 +3,8 @@ import { createClient } from "@supabase/supabase-js";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import type { Database } from "@/integrations/supabase/types";
 
+export type AnnouncementImageStyle = "cover" | "thumbnail" | "none";
+
 export type Announcement = {
   id: string;
   enabled: boolean;
@@ -11,6 +13,7 @@ export type Announcement = {
   cta_label: string;
   cta_url: string;
   image_url: string;
+  image_style: AnnouncementImageStyle;
   badge: string;
   accent: string;
   created_at: string;
@@ -84,6 +87,7 @@ type UpsertInput = {
   cta_label: string;
   cta_url: string;
   image_url: string;
+  image_style: AnnouncementImageStyle;
   badge: string;
   accent: string;
 };
@@ -94,13 +98,18 @@ export const upsertAnnouncement = createServerFn({ method: "POST" })
   .handler(async ({ data, context }): Promise<Announcement> => {
     assertAdmin((context.claims as { email?: string }).email);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const allowedStyles: AnnouncementImageStyle[] = ["cover", "thumbnail", "none"];
+    const image_style: AnnouncementImageStyle = allowedStyles.includes(data.image_style)
+      ? data.image_style
+      : "cover";
     const payload = {
       enabled: !!data.enabled,
       title: String(data.title || "").slice(0, 200),
       body: String(data.body || "").slice(0, 2000),
       cta_label: String(data.cta_label || "").slice(0, 80),
       cta_url: String(data.cta_url || "").slice(0, 500),
-      image_url: String(data.image_url || "").slice(0, 500),
+      image_url: image_style === "none" ? "" : String(data.image_url || "").slice(0, 500),
+      image_style,
       badge: String(data.badge || "").slice(0, 40),
       accent: String(data.accent || "violet").slice(0, 40),
     };

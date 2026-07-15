@@ -1,13 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Megaphone, Plus, Save, Trash2, Eye, EyeOff, Loader2 } from "lucide-react";
+import { Megaphone, Plus, Save, Trash2, Eye, EyeOff, Loader2, Upload, ImageIcon, ImageOff } from "lucide-react";
 import {
   listAnnouncements,
   upsertAnnouncement,
   deleteAnnouncement,
   type Announcement,
+  type AnnouncementImageStyle,
 } from "@/lib/announcements.functions";
+import { supabase } from "@/integrations/supabase/client";
 
 const emptyDraft = {
   id: null as string | null,
@@ -17,11 +19,18 @@ const emptyDraft = {
   cta_label: "",
   cta_url: "",
   image_url: "",
+  image_style: "cover" as AnnouncementImageStyle,
   badge: "",
   accent: "violet",
 };
 
 const ACCENTS = ["violet", "emerald", "amber", "rose", "sky"] as const;
+
+const STYLE_OPTIONS: { value: AnnouncementImageStyle; label: string; hint: string; Icon: typeof ImageIcon }[] = [
+  { value: "cover", label: "Cover photo", hint: "Large 16:9 hero image", Icon: ImageIcon },
+  { value: "thumbnail", label: "Thumbnail", hint: "Small product-style square", Icon: ImageIcon },
+  { value: "none", label: "No image", hint: "Text-only with accent gradient", Icon: ImageOff },
+];
 
 export function AnnouncementsAdmin() {
   const qc = useQueryClient();
@@ -37,6 +46,8 @@ export function AnnouncementsAdmin() {
 
   const [draft, setDraft] = useState(emptyDraft);
   const [status, setStatus] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   const loadEdit = (a: Announcement) => {
     setDraft({
@@ -47,10 +58,42 @@ export function AnnouncementsAdmin() {
       cta_label: a.cta_label,
       cta_url: a.cta_url,
       image_url: a.image_url,
+      image_style: (a.image_style || "cover") as AnnouncementImageStyle,
       badge: a.badge,
       accent: a.accent || "violet",
     });
   };
+
+  const handleUpload = async (file: File) => {
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      setStatus("Image too large (max 5MB)");
+      return;
+    }
+    setUploading(true);
+    try {
+      const ext = (file.name.split(".").pop() || "png").toLowerCase();
+      const path = `${crypto.randomUUID()}.${ext}`;
+      const { error: upErr } = await supabase.storage
+        .from("announcement-media")
+        .upload(path, file, { contentType: file.type, upsert: false });
+      if (upErr) throw upErr;
+      const { data } = supabase.storage.from("announcement-media").getPublicUrl(path);
+      setDraft((d) => ({
+        ...d,
+        image_url: data.publicUrl,
+        image_style: d.image_style === "none" ? "cover" : d.image_style,
+      }));
+      setStatus("Image uploaded");
+    } catch (e) {
+      setStatus((e as Error).message || "Upload failed");
+    } finally {
+      setUploading(false);
+      if (fileRef.current) fileRef.current.value = "";
+    }
+  };
+
+
 
   const save = useMutation({
     mutationFn: (input: typeof emptyDraft) => upsertFn({ data: input }),
@@ -228,14 +271,93 @@ export function AnnouncementsAdmin() {
               </Field>
             </div>
 
-            <Field label="Image URL (optional)">
-              <input
-                value={draft.image_url}
-                onChange={(e) => setDraft({ ...draft, image_url: e.target.value })}
-                placeholder="https://…"
-                className="input"
-              />
-            </Field>
+            <div className="rounded-xl border border-border bg-background/50 p-4">
+              <div className="mb-3 flex items-center justify-between gap-2">
+                <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                  Image style
+                </span>
+                {draft.image_url && draft.image_style !== "none" && (
+                  <button
+                    type="button"
+                    onClick={() => setDraft({ ...draft, image_url: "" })}
+                    className="font-mono text-[10px] font-bold uppercase tracking-wider text-rose-500 hover:underline"
+                  >
+                    Remove image
+                  </button>
+                )}
+              </div>
+              <div className="grid grid-cols-3 gap-2">
+                {STYLE_OPTIONS.map(({ value, label, hint, Icon }) => (
+                  <button
+                    key={value}
+                    type="button"
+                    onClick={() => setDraft({ ...draft, image_style: value })}
+                    className={`flex flex-col items-start gap-1 rounded-xl border p-3 text-left transition-colors ${
+                      draft.image_style === value
+                        ? "border-violet bg-violet/5"
+                        : "border-border bg-background hover:bg-secondary/50"
+                    }`}
+                  >
+                    <Icon className={`size-4 ${draft.image_style === value ? "text-violet" : "text-muted-foreground"}`} />
+                    <span className="text-xs font-semibold">{label}</span>
+                    <span className="text-[10px] text-muted-foreground">{hint}</span>
+                  </button>
+                ))}
+              </div>
+
+              {draft.image_style !== "none" && (
+                <div className="mt-4 grid gap-3">
+                  <div className="flex items-start gap-3">
+                    {draft.image_url ? (
+                      <div
+                        className={`shrink-0 overflow-hidden rounded-lg border border-border bg-secondary ${
+                          draft.image_style === "thumbnail" ? "size-16" : "h-16 w-28"
+                        }`}
+                      >
+                        <img src={draft.image_url} alt="" className="h-full w-full object-cover" />
+                      </div>
+                    ) : (
+                      <div
+                        className={`flex shrink-0 items-center justify-center rounded-lg border border-dashed border-border bg-secondary text-muted-foreground ${
+                          draft.image_style === "thumbnail" ? "size-16" : "h-16 w-28"
+                        }`}
+                      >
+                        <ImageIcon className="size-5" />
+                      </div>
+                    )}
+                    <div className="flex-1 space-y-2">
+                      <input
+                        ref={fileRef}
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => {
+                          const f = e.target.files?.[0];
+                          if (f) handleUpload(f);
+                        }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => fileRef.current?.click()}
+                        disabled={uploading}
+                        className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-semibold hover:bg-secondary disabled:opacity-50"
+                      >
+                        {uploading ? <Loader2 className="size-3.5 animate-spin" /> : <Upload className="size-3.5" />}
+                        {uploading ? "Uploading…" : "Upload image"}
+                      </button>
+                      <p className="text-[10px] text-muted-foreground">PNG/JPG/WebP, max 5MB</p>
+                    </div>
+                  </div>
+                  <input
+                    value={draft.image_url}
+                    onChange={(e) => setDraft({ ...draft, image_url: e.target.value })}
+                    placeholder="Or paste image URL: https://…"
+                    className="input"
+                  />
+                </div>
+              )}
+            </div>
+
 
             {status && (
               <p className="rounded-lg bg-secondary p-2.5 text-xs text-foreground">{status}</p>

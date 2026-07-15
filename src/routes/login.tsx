@@ -392,9 +392,11 @@ function AuthPage() {
           </div>
 
           <h1 className="mt-4 font-display text-4xl font-bold leading-[1.08] tracking-tight lg:text-5xl">
-            The revenue team's
+            <span className="bg-gradient-to-r from-violet via-magenta to-coral bg-clip-text text-transparent">
+              The revenue team's shortcut
+            </span>
             <br />
-            <span className="text-muted-foreground">shortcut</span> to pipeline.
+            <span className="text-muted-foreground">to pipeline.</span>
           </h1>
           <p className="mt-4 max-w-md text-base text-muted-foreground">
             Verified B2B leads from Apollo, ZoomInfo, and LinkedIn — delivered to your CRM within 24 hours.

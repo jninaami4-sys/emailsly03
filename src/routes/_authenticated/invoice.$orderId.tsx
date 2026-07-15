@@ -4,6 +4,16 @@ import { useServerFn } from "@tanstack/react-start";
 import { useRef, useState } from "react";
 import { getMyOrder } from "@/lib/orders.functions";
 import { Loader2, Printer, Download } from "lucide-react";
+import emailslyLogo from "@/assets/emailsly-logo-trim.png.asset.json";
+
+const BRAND = {
+  violet: "#7C3AED",
+  violetSoft: "#A78BFA",
+  ink: "#0A0A1F",
+  paper: "#FAFAFC",
+  border: "#E5E7EB",
+  muted: "#6B7280",
+} as const;
 
 export const Route = createFileRoute("/_authenticated/invoice/$orderId")({
   head: () => ({ meta: [{ title: "Invoice" }, { name: "robots", content: "noindex,nofollow" }] }),
@@ -77,7 +87,8 @@ function InvoicePage() {
           <button
             onClick={handleDownload}
             disabled={downloading}
-            className="inline-flex items-center gap-2 rounded-lg bg-violet px-4 py-2 text-sm font-semibold text-white disabled:opacity-60"
+            className="inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold text-white disabled:opacity-60"
+            style={{ backgroundColor: BRAND.violet }}
           >
             {downloading ? <Loader2 className="size-4 animate-spin" /> : <Download className="size-4" />}
             {downloading ? "Preparing…" : "Download PDF"}
@@ -89,19 +100,37 @@ function InvoicePage() {
             <Printer className="size-4" /> Print
           </button>
         </div>
-        <div ref={invoiceRef} className="rounded-2xl border border-border bg-white p-8 text-black print:border-0 print:shadow-none">
+        <div
+          ref={invoiceRef}
+          className="rounded-2xl border bg-white p-8 text-black print:border-0 print:shadow-none"
+          style={{ borderColor: BRAND.border, color: BRAND.ink }}
+        >
+          {/* Accent bar */}
+          <div
+            className="mb-6 h-1.5 w-full rounded-full"
+            style={{ background: `linear-gradient(90deg, ${BRAND.violet}, ${BRAND.violetSoft})` }}
+          />
+
           {/* Brand header */}
-          <div className="mb-6 flex items-start justify-between border-b border-neutral-200 pb-5">
+          <div
+            className="mb-6 flex items-start justify-between border-b pb-5"
+            style={{ borderColor: BRAND.border }}
+          >
             <div className="flex items-center gap-3">
-              <div className="flex size-11 items-center justify-center rounded-xl bg-gradient-to-br from-violet-600 to-fuchsia-500 font-display text-lg font-black text-white shadow-sm">
-                E
-              </div>
-              <div>
-                <div className="font-display text-xl font-bold leading-tight">EmailsLy</div>
-                <div className="text-[11px] text-neutral-500">Lead generation & outbound data</div>
+              <img
+                src={emailslyLogo.url}
+                alt="EmailsLy"
+                crossOrigin="anonymous"
+                className="h-9 w-auto"
+              />
+              <div
+                className="ml-1 hidden border-l pl-3 text-[11px] sm:block"
+                style={{ borderColor: BRAND.border, color: BRAND.muted }}
+              >
+                Lead generation &amp; outbound data
               </div>
             </div>
-            <div className="text-right text-[11px] text-neutral-600">
+            <div className="text-right text-[11px]" style={{ color: BRAND.muted }}>
               <div>hello@emailsly.com</div>
               <div>emailsly.com</div>
               <div>1007 N Orange St, 4th Floor</div>
@@ -111,10 +140,15 @@ function InvoicePage() {
 
           <div className="mb-6 flex items-start justify-between">
             <div>
-              <h1 className="font-display text-2xl font-bold">Invoice</h1>
-              <p className="text-xs text-neutral-500">#{o.id.slice(0, 8).toUpperCase()}</p>
+              <h1
+                className="font-display text-2xl font-bold"
+                style={{ color: BRAND.violet }}
+              >
+                Invoice
+              </h1>
+              <p className="text-xs" style={{ color: BRAND.muted }}>#{o.id.slice(0, 8).toUpperCase()}</p>
             </div>
-            <div className="text-right text-xs text-neutral-600">
+            <div className="text-right text-xs" style={{ color: BRAND.muted }}>
               <div>Date: {new Date(o.created_at).toLocaleDateString()}</div>
               <div>Status: {o.status}</div>
               <div>Payment: {o.payment_status}</div>
@@ -157,10 +191,19 @@ function InvoicePage() {
             </tbody>
             <tfoot>
               <tr>
-                <td colSpan={2} className="pt-3 text-right font-semibold">
+                <td
+                  colSpan={2}
+                  className="pt-3 text-right font-semibold uppercase tracking-wider"
+                  style={{ color: BRAND.violet }}
+                >
                   Total
                 </td>
-                <td className="pt-3 text-right font-mono text-lg font-bold">{money(o.total_cents, o.currency)}</td>
+                <td
+                  className="pt-3 text-right font-mono text-lg font-bold"
+                  style={{ color: BRAND.violet }}
+                >
+                  {money(o.total_cents, o.currency)}
+                </td>
               </tr>
             </tfoot>
           </table>

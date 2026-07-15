@@ -74,24 +74,32 @@ function ModalContent({ a, onClose, preview = false }: { a: Announcement; onClos
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+      className={
+        preview
+          ? "relative flex h-full w-full items-center justify-center p-4"
+          : "fixed inset-0 z-[100] flex items-center justify-center p-4"
+      }
       role="dialog"
       aria-modal="true"
       aria-labelledby="announcement-title"
     >
-      <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-        onClick={onClose}
-      />
-      <div className="relative w-full max-w-lg overflow-hidden rounded-3xl border border-border bg-card shadow-2xl animate-in fade-in zoom-in-95">
-        <button
-          type="button"
+      {!preview && (
+        <div
+          className="absolute inset-0 bg-black/60 backdrop-blur-sm"
           onClick={onClose}
-          aria-label="Close"
-          className="absolute right-3 top-3 z-10 flex size-8 items-center justify-center rounded-full border border-border bg-background/80 text-muted-foreground backdrop-blur transition-colors hover:bg-secondary hover:text-foreground"
-        >
-          <X className="size-4" />
-        </button>
+        />
+      )}
+      <div className="relative w-full max-w-lg overflow-hidden rounded-3xl border border-border bg-card shadow-2xl animate-in fade-in zoom-in-95">
+        {!preview && (
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close"
+            className="absolute right-3 top-3 z-10 flex size-8 items-center justify-center rounded-full border border-border bg-background/80 text-muted-foreground backdrop-blur transition-colors hover:bg-secondary hover:text-foreground"
+          >
+            <X className="size-4" />
+          </button>
+        )}
 
         {(() => {
           const style = a.image_style || (a.image_url ? "cover" : "none");

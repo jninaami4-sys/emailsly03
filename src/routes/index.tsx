@@ -78,6 +78,8 @@ function Home() {
             <div className="absolute left-1/2 top-[-10%] size-[900px] -translate-x-1/2 rounded-full bg-indigo/25 blur-[140px]" />
             <div className="absolute right-[-10%] top-[30%] size-[500px] rounded-full bg-coral/10 blur-[120px]" />
             <div className="absolute inset-0 opacity-[0.06] [background-image:linear-gradient(to_right,white_1px,transparent_1px),linear-gradient(to_bottom,white_1px,transparent_1px)] [background-size:56px_56px] [mask-image:radial-gradient(ellipse_at_top,black,transparent_70%)]" />
+            {/* Bottom blend into next section */}
+            <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-background via-background/70 to-transparent" />
           </div>
 
           <div className="mx-auto max-w-7xl">
@@ -135,8 +137,10 @@ function Home() {
         </section>
 
         {/* WHY LYRADATA */}
-        <section className="px-6 pb-24">
-          <div className="mx-auto max-w-7xl">
+        <section className="relative px-6 pb-24">
+          {/* Top blend from hero glow */}
+          <div className="pointer-events-none absolute inset-x-0 -top-24 h-48 bg-gradient-to-b from-indigo/15 via-violet/5 to-transparent blur-3xl" aria-hidden="true" />
+          <div className="relative mx-auto max-w-7xl">
             <div className="mb-12 flex flex-wrap items-end justify-between gap-6">
               <div>
                 <p className="font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-indigo">Why EmailsLy</p>

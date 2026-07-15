@@ -52,11 +52,15 @@ export function ImageCropperModal({ file, aspect, aspectLabel, onCancel, onConfi
   const [area, setArea] = useState<Area | null>(null);
   const [busy, setBusy] = useState(false);
 
-  // load on mount
-  useState(() => {
-    readAsDataURL(file).then(setSrc);
-    return undefined;
-  });
+  useEffect(() => {
+    let cancelled = false;
+    readAsDataURL(file).then((d) => {
+      if (!cancelled) setSrc(d);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [file]);
 
   const onCropComplete = useCallback((_: Area, pixels: Area) => {
     setArea(pixels);

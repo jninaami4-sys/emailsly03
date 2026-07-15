@@ -115,6 +115,57 @@ export function TrackingAdmin() {
               </Field>
             </div>
 
+            <div className="rounded-xl border border-border bg-background/50 p-4">
+              <div className="mb-3 flex items-center gap-2">
+                <MessageCircle className="size-4 text-emerald-500" />
+                <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                  Tawk.to live chat
+                </span>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <label className="flex items-center justify-between gap-3 rounded-lg border border-border bg-background p-3">
+                  <span className="text-sm">
+                    <span className="font-semibold">Show chat widget</span>
+                    <span className="mt-0.5 block text-[11px] text-muted-foreground">
+                      Toggle the launcher on every page
+                    </span>
+                  </span>
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={draft.tawk_enabled}
+                    onClick={() => setDraft({ ...draft, tawk_enabled: !draft.tawk_enabled })}
+                    className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors ${
+                      draft.tawk_enabled ? "bg-emerald-500" : "bg-muted-foreground/30"
+                    }`}
+                  >
+                    <span
+                      className={`inline-block size-5 transform rounded-full bg-white shadow transition-transform ${
+                        draft.tawk_enabled ? "translate-x-5" : "translate-x-0.5"
+                      }`}
+                    />
+                  </button>
+                </label>
+                <Field label="Launcher position" hint="Where the chat bubble appears on screen">
+                  <select
+                    value={draft.tawk_position}
+                    disabled={!draft.tawk_enabled}
+                    onChange={(e) =>
+                      setDraft({ ...draft, tawk_position: e.target.value as TawkPosition })
+                    }
+                    className="ts-input disabled:opacity-50"
+                  >
+                    <option value="br">Bottom right</option>
+                    <option value="bl">Bottom left</option>
+                    <option value="tr">Top right</option>
+                    <option value="tl">Top left</option>
+                  </select>
+                </Field>
+              </div>
+            </div>
+
+
+
             <Field
               label="Custom head HTML"
               hint="Advanced — pasted as-is into <head>. Only add code you trust."

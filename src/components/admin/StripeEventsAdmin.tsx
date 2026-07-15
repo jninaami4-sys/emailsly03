@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { adminListStripeEvents, type StripeEventRow } from "@/lib/admin-stripe-events.functions";
-import { CheckCircle2, RefreshCw, ShieldCheck, Webhook, XCircle } from "lucide-react";
+import { CheckCircle2, RefreshCw, ShieldCheck, Webhook, XCircle } from "@/components/admin/AdminIcons";
 
 const TYPES = [
   "all",

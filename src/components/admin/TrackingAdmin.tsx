@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { LineChart, Save, Loader2, MessageCircle } from "lucide-react";
+import { LineChart, Save, Loader2, MessageCircle } from "@/components/admin/AdminIcons";
 import { getSiteSettings, updateSiteSettings, type TawkPosition } from "@/lib/site-settings.functions";
 
 const empty = {

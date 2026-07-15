@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Bug } from "lucide-react";
+import { Bug } from "@/components/admin/AdminIcons";
 import { DEBUG_KEY, setDebugEnabled } from "@/components/site/TrackingDebugPanel";
 
 export function DebugModeAdmin() {

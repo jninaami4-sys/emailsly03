@@ -9,7 +9,7 @@ import {
   adminSetStatus,
   adminSendMagicLink,
 } from "@/lib/admin-orders.functions";
-import { Loader2, Package, DollarSign, RefreshCcw, Send, Ban, CheckCircle2, Mail } from "lucide-react";
+import { Loader2, Package, DollarSign, RefreshCcw, Send, Ban, CheckCircle2, Mail } from "@/components/admin/AdminIcons";
 
 const STATUSES = ["all", "pending", "in_progress", "delivered", "cancelled", "refunded", "revision_requested"];
 

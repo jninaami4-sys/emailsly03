@@ -10,7 +10,7 @@ import {
   MessageSquare,
   Video as VideoIcon,
   RefreshCw,
-} from "lucide-react";
+} from "@/components/admin/AdminIcons";
 import {
   adminListReviews,
   moderateReview,

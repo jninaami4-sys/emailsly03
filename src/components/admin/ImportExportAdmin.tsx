@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { importClientsAndOrders, exportAll } from "@/lib/data-portability.functions";
-import { Loader2, Upload, Download, Database } from "lucide-react";
+import { Loader2, Upload, Download, Database } from "@/components/admin/AdminIcons";
 
 const SAMPLE = JSON.stringify(
   {

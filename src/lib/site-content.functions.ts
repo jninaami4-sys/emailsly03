@@ -23,7 +23,7 @@ export const listSiteContent = createServerFn({ method: "GET" }).handler(async (
   const { data, error } = await supabase.from("site_content").select("section, data");
   if (error) throw new Error(error.message);
   const map: SiteContentMap = {};
-  for (const row of data ?? []) map[row.section] = (row.data ?? {}) as Record<string, unknown>;
+  for (const row of data ?? []) map[row.section] = (row.data ?? {}) as { [k: string]: JsonValue };
   return map;
 });
 

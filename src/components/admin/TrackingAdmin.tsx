@@ -36,6 +36,8 @@ export function TrackingAdmin() {
         fb_pixel_id: data.fb_pixel_id,
         tiktok_pixel_id: data.tiktok_pixel_id,
         custom_head_html: data.custom_head_html,
+        tawk_enabled: data.tawk_enabled ?? true,
+        tawk_position: (data.tawk_position ?? "br") as TawkPosition,
       });
     }
   }, [data]);

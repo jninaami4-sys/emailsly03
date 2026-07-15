@@ -996,6 +996,36 @@ export type Database = {
         }
         Relationships: []
       }
+      sample_datasets: {
+        Row: {
+          display_name: string
+          gdrive_url: string | null
+          row_count_hint: number | null
+          source: string
+          source_type: string
+          storage_path: string | null
+          updated_at: string
+        }
+        Insert: {
+          display_name: string
+          gdrive_url?: string | null
+          row_count_hint?: number | null
+          source: string
+          source_type?: string
+          storage_path?: string | null
+          updated_at?: string
+        }
+        Update: {
+          display_name?: string
+          gdrive_url?: string | null
+          row_count_hint?: number | null
+          source?: string
+          source_type?: string
+          storage_path?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       server_event_log: {
         Row: {
           created_at: string

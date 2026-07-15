@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { LineChart, Save, Loader2 } from "lucide-react";
-import { getSiteSettings, updateSiteSettings } from "@/lib/site-settings.functions";
+import { LineChart, Save, Loader2, MessageCircle } from "lucide-react";
+import { getSiteSettings, updateSiteSettings, type TawkPosition } from "@/lib/site-settings.functions";
 
 const empty = {
   gtm_id: "",
@@ -10,6 +10,8 @@ const empty = {
   fb_pixel_id: "",
   tiktok_pixel_id: "",
   custom_head_html: "",
+  tawk_enabled: true,
+  tawk_position: "br" as TawkPosition,
 };
 
 export function TrackingAdmin() {
@@ -34,6 +36,8 @@ export function TrackingAdmin() {
         fb_pixel_id: data.fb_pixel_id,
         tiktok_pixel_id: data.tiktok_pixel_id,
         custom_head_html: data.custom_head_html,
+        tawk_enabled: data.tawk_enabled ?? true,
+        tawk_position: (data.tawk_position ?? "br") as TawkPosition,
       });
     }
   }, [data]);
@@ -110,6 +114,57 @@ export function TrackingAdmin() {
                 />
               </Field>
             </div>
+
+            <div className="rounded-xl border border-border bg-background/50 p-4">
+              <div className="mb-3 flex items-center gap-2">
+                <MessageCircle className="size-4 text-emerald-500" />
+                <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                  Tawk.to live chat
+                </span>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <label className="flex items-center justify-between gap-3 rounded-lg border border-border bg-background p-3">
+                  <span className="text-sm">
+                    <span className="font-semibold">Show chat widget</span>
+                    <span className="mt-0.5 block text-[11px] text-muted-foreground">
+                      Toggle the launcher on every page
+                    </span>
+                  </span>
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={draft.tawk_enabled}
+                    onClick={() => setDraft({ ...draft, tawk_enabled: !draft.tawk_enabled })}
+                    className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors ${
+                      draft.tawk_enabled ? "bg-emerald-500" : "bg-muted-foreground/30"
+                    }`}
+                  >
+                    <span
+                      className={`inline-block size-5 transform rounded-full bg-white shadow transition-transform ${
+                        draft.tawk_enabled ? "translate-x-5" : "translate-x-0.5"
+                      }`}
+                    />
+                  </button>
+                </label>
+                <Field label="Launcher position" hint="Where the chat bubble appears on screen">
+                  <select
+                    value={draft.tawk_position}
+                    disabled={!draft.tawk_enabled}
+                    onChange={(e) =>
+                      setDraft({ ...draft, tawk_position: e.target.value as TawkPosition })
+                    }
+                    className="ts-input disabled:opacity-50"
+                  >
+                    <option value="br">Bottom right</option>
+                    <option value="bl">Bottom left</option>
+                    <option value="tr">Top right</option>
+                    <option value="tl">Top left</option>
+                  </select>
+                </Field>
+              </div>
+            </div>
+
+
 
             <Field
               label="Custom head HTML"

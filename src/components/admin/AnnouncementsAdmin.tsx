@@ -157,6 +157,42 @@ export function AnnouncementsAdmin() {
     },
   });
 
+  // list is sorted by priority DESC then updated_at DESC on the server.
+  const reorder = useMutation({
+    mutationFn: async ({ a, dir }: { a: Announcement; dir: "up" | "down" }) => {
+      const idx = list.findIndex((x) => x.id === a.id);
+      const neighbor = dir === "up" ? list[idx - 1] : list[idx + 1];
+      if (!neighbor) return { skipped: true as const };
+      const nextPriority =
+        dir === "up" ? (neighbor.priority ?? 0) + 1 : (neighbor.priority ?? 0) - 1;
+      await upsertFn({
+        data: {
+          id: a.id,
+          enabled: a.enabled,
+          title: a.title,
+          body: a.body,
+          cta_label: a.cta_label,
+          cta_url: a.cta_url,
+          image_url: a.image_url,
+          image_style: (a.image_style || "cover") as AnnouncementImageStyle,
+          badge: a.badge,
+          accent: a.accent || "violet",
+          path_patterns: a.path_patterns?.length ? a.path_patterns : ["*"],
+          audience: (a.audience || "all") as AnnouncementAudience,
+          start_at: a.start_at,
+          end_at: a.end_at,
+          priority: nextPriority,
+        },
+      });
+      return { skipped: false as const };
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["announcements", "admin"] });
+      qc.invalidateQueries({ queryKey: ["active-announcements"] });
+    },
+    onError: (e: Error) => setStatus(e.message),
+  });
+
   useEffect(() => {
     if (!status) return;
     const t = window.setTimeout(() => setStatus(null), 2500);

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { LineChart, Save, Loader2 } from "lucide-react";
-import { getSiteSettings, updateSiteSettings } from "@/lib/site-settings.functions";
+import { LineChart, Save, Loader2, MessageCircle } from "lucide-react";
+import { getSiteSettings, updateSiteSettings, type TawkPosition } from "@/lib/site-settings.functions";
 
 const empty = {
   gtm_id: "",
@@ -10,6 +10,8 @@ const empty = {
   fb_pixel_id: "",
   tiktok_pixel_id: "",
   custom_head_html: "",
+  tawk_enabled: true,
+  tawk_position: "br" as TawkPosition,
 };
 
 export function TrackingAdmin() {

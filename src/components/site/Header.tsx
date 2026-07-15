@@ -42,6 +42,9 @@ export function Header() {
   const queryClient = useQueryClient();
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const branding = useSiteContent("branding");
+  const siteName = branding.site_name || "EmailsLy";
+  const logoUrl = (branding.logo_url || "").trim();
 
   async function handleSignOut() {
     await queryClient.cancelQueries();

@@ -28,6 +28,7 @@ const emptyDraft = {
   audience: "all" as AnnouncementAudience,
   start_at: "" as string,
   end_at: "" as string,
+  priority: 0 as number,
 };
 
 function toDatetimeLocal(iso: string | null): string {

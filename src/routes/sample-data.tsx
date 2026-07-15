@@ -145,14 +145,31 @@ function SampleDataPage() {
               <span className="rotate-180"><PremiumArrowRight className="size-3" /></span>
               Back to home
             </Link>
-            <h1 className="mt-6 font-display text-4xl font-extrabold leading-[1.02] tracking-tight md:text-6xl">
-              Live sample data
+            <div className="mt-6 flex items-center justify-center gap-3">
+              <span className="h-px w-8 bg-indigo-500/30" />
+              <span className="inline-flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-cyan-300">
+                <span className="relative flex size-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan-400/70" />
+                  <span className="relative inline-flex size-2 rounded-full bg-cyan-400" />
+                </span>
+                CSV dataset preview
+              </span>
+              <span className="h-px w-8 bg-indigo-500/30" />
+            </div>
+            <h1 className="mt-5 font-display text-5xl font-extrabold leading-[1.05] tracking-tight md:text-7xl">
+              <span className="text-foreground">Live </span>
+              <span className="bg-gradient-to-r from-cyan-300 via-indigo-300 to-indigo-500 bg-clip-text text-transparent">
+                sample data
+              </span>
             </h1>
-            <p className="mx-auto mt-5 max-w-2xl text-lg text-foreground/70">
+            <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-foreground/70 md:text-xl">
               Real rows from our Apollo, LinkedIn Sales Navigator, and ZoomInfo feeds — streamed live from
               admin-managed Google Drive CSVs. Search anything, download the file, and see the exact
               format we deliver.
             </p>
+            <div className="mt-8 flex justify-center">
+              <div className="h-1 w-24 rounded-full bg-gradient-to-r from-transparent via-indigo-400/50 to-transparent" />
+            </div>
           </div>
         </section>
 

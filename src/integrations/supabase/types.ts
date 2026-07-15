@@ -996,6 +996,42 @@ export type Database = {
         }
         Relationships: []
       }
+      sample_dataset_audit: {
+        Row: {
+          action: string
+          actor_email: string | null
+          actor_id: string | null
+          created_at: string
+          details: Json
+          id: string
+          ip_address: string | null
+          source: string
+          user_agent: string | null
+        }
+        Insert: {
+          action: string
+          actor_email?: string | null
+          actor_id?: string | null
+          created_at?: string
+          details?: Json
+          id?: string
+          ip_address?: string | null
+          source: string
+          user_agent?: string | null
+        }
+        Update: {
+          action?: string
+          actor_email?: string | null
+          actor_id?: string | null
+          created_at?: string
+          details?: Json
+          id?: string
+          ip_address?: string | null
+          source?: string
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       sample_datasets: {
         Row: {
           display_name: string

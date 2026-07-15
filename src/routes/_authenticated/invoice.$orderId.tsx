@@ -191,10 +191,19 @@ function InvoicePage() {
             </tbody>
             <tfoot>
               <tr>
-                <td colSpan={2} className="pt-3 text-right font-semibold">
+                <td
+                  colSpan={2}
+                  className="pt-3 text-right font-semibold uppercase tracking-wider"
+                  style={{ color: BRAND.violet }}
+                >
                   Total
                 </td>
-                <td className="pt-3 text-right font-mono text-lg font-bold">{money(o.total_cents, o.currency)}</td>
+                <td
+                  className="pt-3 text-right font-mono text-lg font-bold"
+                  style={{ color: BRAND.violet }}
+                >
+                  {money(o.total_cents, o.currency)}
+                </td>
               </tr>
             </tfoot>
           </table>

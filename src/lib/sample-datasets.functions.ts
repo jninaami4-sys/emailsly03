@@ -190,6 +190,64 @@ async function assertAdmin(supabase: ReturnType<typeof serverAnonClient>, userId
   if (!data) throw new Error("Forbidden: admin only");
 }
 
+function requestMeta(): { ip: string | null; userAgent: string | null } {
+  try {
+    // Lazy import to avoid circular type issues; getRequest is available inside handlers.
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { getRequest } = require("@tanstack/react-start/server") as {
+      getRequest: () => Request;
+    };
+    const req = getRequest();
+    const h = req.headers;
+    const ip =
+      h.get("cf-connecting-ip") ??
+      h.get("x-forwarded-for")?.split(",")[0]?.trim() ??
+      h.get("x-real-ip") ??
+      null;
+    return { ip, userAgent: h.get("user-agent") };
+  } catch {
+    return { ip: null, userAgent: null };
+  }
+}
+
+type JsonValue =
+  | string | number | boolean | null
+  | { [k: string]: JsonValue }
+  | JsonValue[];
+
+async function writeAudit(params: {
+  userId: string;
+  email: string | null;
+  source: string;
+  action: string;
+  details: JsonValue;
+}) {
+  try {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const meta = requestMeta();
+    await supabaseAdmin.from("sample_dataset_audit").insert({
+      actor_id: params.userId,
+      actor_email: params.email,
+      source: params.source,
+      action: params.action,
+      details: params.details,
+      ip_address: meta.ip,
+      user_agent: meta.userAgent,
+    });
+  } catch {
+    // eslint-disable-next-line no-console
+    console.warn("[sample-datasets] audit write failed");
+  }
+}
+
+function actorEmail(claims: unknown): string | null {
+  if (claims && typeof claims === "object" && "email" in claims) {
+    const v = (claims as { email?: unknown }).email;
+    return typeof v === "string" ? v : null;
+  }
+  return null;
+}
+
 export const adminListSampleDatasets = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }): Promise<SampleDatasetConfig[]> => {
@@ -215,6 +273,14 @@ export const adminUpsertSampleDataset = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => upsertSchema.parse(data))
   .handler(async ({ data, context }) => {
     await assertAdmin(context.supabase as unknown as ReturnType<typeof serverAnonClient>, context.userId);
+
+    // capture previous state for audit diff
+    const { data: prev } = await context.supabase
+      .from("sample_datasets")
+      .select("source_type, gdrive_url, storage_path, display_name")
+      .eq("source", data.source)
+      .maybeSingle();
+
     const { error } = await context.supabase
       .from("sample_datasets")
       .update({
@@ -225,8 +291,24 @@ export const adminUpsertSampleDataset = createServerFn({ method: "POST" })
       })
       .eq("source", data.source);
     if (error) throw new Error(error.message);
-    // clear cache for the new URL & any prior
     cache.clear();
+
+    await writeAudit({
+      userId: context.userId,
+      email: actorEmail(context.claims),
+      source: data.source,
+      action: "config_updated",
+      details: {
+        previous: prev ?? null,
+        next: {
+          source_type: data.source_type,
+          gdrive_url: data.gdrive_url ?? null,
+          storage_path: data.storage_path ?? null,
+          display_name: data.display_name,
+        },
+      },
+    });
+
     return { ok: true };
   });
 
@@ -255,7 +337,47 @@ export const adminUploadSampleCsv = createServerFn({ method: "POST" })
       .eq("source", data.source);
     if (dbErr) throw new Error(dbErr.message);
     cache.clear();
+
+    await writeAudit({
+      userId: context.userId,
+      email: actorEmail(context.claims),
+      source: data.source,
+      action: "csv_uploaded",
+      details: {
+        filename: data.filename,
+        stored_as: path,
+        size_bytes: buf.byteLength,
+      },
+    });
+
     return { ok: true, storage_path: path };
+  });
+
+// ------- audit log -------
+
+export type AuditEntry = {
+  id: string;
+  actor_id: string | null;
+  actor_email: string | null;
+  source: string;
+  action: string;
+  details: JsonValue;
+  ip_address: string | null;
+  user_agent: string | null;
+  created_at: string;
+};
+
+export const adminListSampleDatasetAudit = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }): Promise<AuditEntry[]> => {
+    await assertAdmin(context.supabase as unknown as ReturnType<typeof serverAnonClient>, context.userId);
+    const { data, error } = await context.supabase
+      .from("sample_dataset_audit")
+      .select("id, actor_id, actor_email, source, action, details, ip_address, user_agent, created_at")
+      .order("created_at", { ascending: false })
+      .limit(100);
+    if (error) throw new Error(error.message);
+    return (data ?? []) as AuditEntry[];
   });
 
 // ------- preview -------

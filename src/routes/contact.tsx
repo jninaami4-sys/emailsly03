@@ -1,7 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteShell } from "@/components/site/SiteShell";
 import { useState } from "react";
-import { Mail, MessageCircle, Calendar } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
+import { Mail, MessageCircle, Calendar, Loader2 } from "lucide-react";
+import { submitContactLead } from "@/lib/contact-leads.functions";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({

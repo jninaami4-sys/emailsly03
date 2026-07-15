@@ -17,6 +17,7 @@ import { ReviewsAdmin } from "@/components/admin/ReviewsAdmin";
 import { ContactLeadsAdmin } from "@/components/admin/ContactLeadsAdmin";
 import { SocialLinksAdmin } from "@/components/admin/SocialLinksAdmin";
 import { SiteContentAdmin } from "@/components/admin/SiteContentAdmin";
+import { BrandSettingsAdmin } from "@/components/admin/BrandSettingsAdmin";
 import { OrdersAdmin } from "@/components/admin/OrdersAdmin";
 import { ReferralsAdmin } from "@/components/admin/ReferralsAdmin";
 import { StripeEventsAdmin } from "@/components/admin/StripeEventsAdmin";
@@ -197,6 +198,7 @@ function AdminPage() {
         </header>
 
         <div className="mb-10 space-y-6">
+          <div id="wt-brand-settings"><BrandSettingsAdmin /></div>
           <div id="wt-site-content"><SiteContentAdmin /></div>
           <div id="wt-sample-datasets"><SampleDatasetsAdmin /></div>
           <div id="wt-sample-audit"><SampleDatasetAuditLog /></div>

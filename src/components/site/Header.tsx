@@ -9,6 +9,7 @@ import {
 } from "./PremiumIcons";
 import { useCart } from "@/lib/cart";
 import { useAuth } from "@/hooks/use-auth";
+import { useSiteContent } from "@/hooks/use-site-content";
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { openOrderDrawer } from "./OrderDrawer";
@@ -41,6 +42,9 @@ export function Header() {
   const queryClient = useQueryClient();
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const branding = useSiteContent("branding");
+  const siteName = branding.site_name || "EmailsLy";
+  const logoUrl = (branding.logo_url || "").trim();
 
   async function handleSignOut() {
     await queryClient.cancelQueries();
@@ -68,11 +72,15 @@ export function Header() {
             <div className="z-10 flex items-center gap-8">
               <Link
                 to="/"
-                aria-label="EmailsLy home"
+                aria-label={`${siteName} home`}
                 className={`flex items-center gap-2 rounded-md font-display text-xl font-bold tracking-tight ${focusRing}`}
               >
-                <PremiumLogoMark className="size-6" aria-hidden="true" />
-                LYRA<span className="text-violet">DATA</span>
+                {logoUrl ? (
+                  <img src={logoUrl} alt={`${siteName} logo`} className="size-6 rounded-sm object-contain" />
+                ) : (
+                  <PremiumLogoMark className="size-6" aria-hidden="true" />
+                )}
+                <span>{siteName}</span>
               </Link>
               <ul className="hidden items-center gap-1 text-sm font-medium lg:flex">
                 {NAV_ITEMS.map((item) => {

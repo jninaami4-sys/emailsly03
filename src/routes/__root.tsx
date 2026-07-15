@@ -25,6 +25,7 @@ import { SectionReveal } from "@/components/site/SectionReveal";
 import { CacheJanitor } from "@/components/site/CacheJanitor";
 import { TvNotFound } from "@/components/site/TvNotFound";
 import { ReferralCapture } from "@/components/site/ReferralCapture";
+import { BrandingApplier } from "@/components/site/BrandingApplier";
 
 function NotFoundComponent() {
   return (
@@ -129,6 +130,7 @@ function RootComponent() {
           <CookieConsent />
           <CrispChat />
           <ReferralCapture />
+          <BrandingApplier />
         </CartProvider>
       </AuthProvider>
     </QueryClientProvider>

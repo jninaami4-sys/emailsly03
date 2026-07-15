@@ -336,6 +336,126 @@ export function SampleDatasetsAdmin() {
   );
 }
 
+export function SampleDatasetAuditLog() {
+  const listAuditFn = useServerFn(adminListSampleDatasetAudit);
+  const { data, isLoading, isFetching, refetch, error } = useQuery({
+    queryKey: ["admin-sample-dataset-audit"],
+    queryFn: () => listAuditFn(),
+    staleTime: 15_000,
+  });
+
+  const isForbidden = error instanceof Error && /admin only|Forbidden/i.test(error.message);
+
+  return (
+    <section className="rounded-2xl border border-border bg-card p-6">
+      <header className="mb-4 flex items-center justify-between gap-3">
+        <div>
+          <h2 className="flex items-center gap-2 font-display text-lg font-bold">
+            <Database className="size-4" /> Dataset audit log
+          </h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Every admin action on sample datasets — who, when, and what changed.
+            Visible to admins only (enforced by RLS).
+          </p>
+        </div>
+        <button
+          onClick={() => refetch()}
+          disabled={isFetching}
+          className="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs font-semibold hover:bg-muted"
+        >
+          <RefreshCw className={isFetching ? "size-3.5 animate-spin" : "size-3.5"} /> Refresh
+        </button>
+      </header>
+
+      {isForbidden ? (
+        <div className="rounded-lg border border-red-500/40 bg-red-500/10 px-3 py-2 text-xs text-red-400">
+          You don't have permission to view the audit log.
+        </div>
+      ) : isLoading ? (
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <Loader2 className="size-4 animate-spin" /> Loading…
+        </div>
+      ) : !data || data.length === 0 ? (
+        <div className="rounded-lg border border-dashed border-border px-4 py-6 text-center text-xs text-muted-foreground">
+          No admin actions recorded yet.
+        </div>
+      ) : (
+        <div className="overflow-x-auto rounded-lg border border-border">
+          <table className="w-full text-xs">
+            <thead className="bg-muted/50 text-left text-[10px] uppercase tracking-widest text-muted-foreground">
+              <tr>
+                <th className="px-3 py-2">When</th>
+                <th className="px-3 py-2">Actor</th>
+                <th className="px-3 py-2">Source</th>
+                <th className="px-3 py-2">Action</th>
+                <th className="px-3 py-2">Details</th>
+                <th className="px-3 py-2">IP</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.map((row) => (
+                <AuditRow key={row.id} row={row} />
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </section>
+  );
+}
+
+function AuditRow({ row }: { row: AuditEntry }) {
+  const [open, setOpen] = useState(false);
+  const actionLabel: Record<string, string> = {
+    config_updated: "Config updated",
+    csv_uploaded: "CSV uploaded",
+  };
+  return (
+    <>
+      <tr className="border-t border-border align-top">
+        <td className="whitespace-nowrap px-3 py-2 font-mono text-muted-foreground">
+          {new Date(row.created_at).toLocaleString()}
+        </td>
+        <td className="px-3 py-2">
+          <div className="font-semibold">{row.actor_email ?? "unknown"}</div>
+          <div className="font-mono text-[10px] text-muted-foreground">{row.actor_id ?? "—"}</div>
+        </td>
+        <td className="px-3 py-2 font-mono uppercase">{row.source}</td>
+        <td className="px-3 py-2">
+          <span className="rounded-full border border-border bg-muted/40 px-2 py-0.5 text-[10px] font-semibold">
+            {actionLabel[row.action] ?? row.action}
+          </span>
+        </td>
+        <td className="px-3 py-2">
+          <button
+            onClick={() => setOpen((v) => !v)}
+            className="text-[11px] font-semibold text-primary hover:underline"
+          >
+            {open ? "Hide" : "Show"}
+          </button>
+        </td>
+        <td className="whitespace-nowrap px-3 py-2 font-mono text-[10px] text-muted-foreground">
+          {row.ip_address ?? "—"}
+        </td>
+      </tr>
+      {open && (
+        <tr className="border-t border-border bg-background/40">
+          <td colSpan={6} className="px-3 py-2">
+            <pre className="max-h-64 overflow-auto rounded-md bg-muted/40 p-2 font-mono text-[10px] leading-relaxed text-muted-foreground">
+              {JSON.stringify(row.details, null, 2)}
+            </pre>
+            {row.user_agent && (
+              <div className="mt-1 truncate font-mono text-[10px] text-muted-foreground">
+                UA: {row.user_agent}
+              </div>
+            )}
+          </td>
+        </tr>
+      )}
+    </>
+  );
+}
+
 function PreviewPanel({
   source,
   pv,

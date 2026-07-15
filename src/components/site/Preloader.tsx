@@ -106,7 +106,7 @@ export function Preloader() {
           animation: "lyra-fade-in 900ms ease-out 1600ms forwards",
         }}
       >
-        LYRADATA.COM
+        EMAILSLY.COM
       </p>
 
       <style>{`

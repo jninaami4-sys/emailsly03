@@ -6,6 +6,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { ensureDemoAccount } from "@/lib/demo-account.functions";
 import { ArrowRight, Loader2, Mail, Lock, ShieldCheck, Zap, BadgeCheck, Eye, EyeOff, AlertCircle, CheckCircle2, ArrowLeft } from "lucide-react";
 import { PremiumSparkles as Sparkles } from "@/components/site/PremiumIcons";
+import { useSiteContent } from "@/hooks/use-site-content";
 
 const searchSchema = z.object({
   mode: z.enum(["signin", "signup", "forgot"]).optional(),
@@ -37,6 +38,9 @@ type FieldErrors = { email?: string; password?: string };
 function AuthPage() {
   const search = useSearch({ from: "/login" });
   const { user, loading } = useAuth();
+  const branding = useSiteContent("branding");
+  const siteName = branding.site_name || "EmailsLy";
+  const logoUrl = (branding.logo_url || "").trim();
   const [mode, setMode] = useState<"signin" | "signup" | "forgot">(search.mode ?? "signup");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -349,13 +353,19 @@ function AuthPage() {
         {/* Mobile / tablet hero (hidden on lg — desktop uses left column below) */}
         <div className="lg:hidden">
           <div className="mx-auto flex max-w-md flex-col items-center text-center">
-            <Link to="/" className="inline-flex items-center gap-2 font-display text-lg font-bold tracking-tight">
-              <span className="grid size-6 place-items-center rounded-md bg-gradient-to-br from-violet to-magenta shadow-sm shadow-violet/25">
-                <span className="size-2 rounded-full bg-white" />
-              </span>
-              <span className="bg-gradient-to-r from-violet via-magenta to-coral bg-clip-text text-transparent">
-                EmailsLy
-              </span>
+            <Link to="/" aria-label={`${siteName} home`} className="inline-flex items-center gap-2 font-display text-lg font-bold tracking-tight">
+              {logoUrl ? (
+                <img src={logoUrl} alt={`${siteName} logo`} className="h-8 w-auto object-contain" />
+              ) : (
+                <>
+                  <span className="grid size-6 place-items-center rounded-md bg-gradient-to-br from-violet to-magenta shadow-sm shadow-violet/25">
+                    <span className="size-2 rounded-full bg-white" />
+                  </span>
+                  <span className="bg-gradient-to-r from-violet via-magenta to-coral bg-clip-text text-transparent">
+                    {siteName}
+                  </span>
+                </>
+              )}
             </Link>
             <div className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-border bg-card/60 px-2.5 py-1 text-[11px] font-medium text-muted-foreground shadow-sm backdrop-blur">
               <BadgeCheck className="size-3 text-primary" aria-hidden="true" /> Free · No card required
@@ -382,13 +392,19 @@ function AuthPage() {
 
         {/* Desktop hero — left column */}
         <div className="hidden lg:block">
-          <Link to="/" className="inline-flex items-center gap-2 font-display text-xl font-bold tracking-tight">
-            <span className="grid size-6 place-items-center rounded-md bg-gradient-to-br from-violet to-magenta shadow-sm shadow-violet/25">
-              <span className="size-2 rounded-full bg-white" />
-            </span>
-            <span className="bg-gradient-to-r from-violet via-magenta to-coral bg-clip-text text-transparent">
-              EmailsLy
-            </span>
+          <Link to="/" aria-label={`${siteName} home`} className="inline-flex items-center gap-2 font-display text-xl font-bold tracking-tight">
+            {logoUrl ? (
+              <img src={logoUrl} alt={`${siteName} logo`} className="h-9 w-auto object-contain" />
+            ) : (
+              <>
+                <span className="grid size-6 place-items-center rounded-md bg-gradient-to-br from-violet to-magenta shadow-sm shadow-violet/25">
+                  <span className="size-2 rounded-full bg-white" />
+                </span>
+                <span className="bg-gradient-to-r from-violet via-magenta to-coral bg-clip-text text-transparent">
+                  {siteName}
+                </span>
+              </>
+            )}
           </Link>
 
           <div className="mt-10 inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground shadow-sm">

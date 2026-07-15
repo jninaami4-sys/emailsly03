@@ -32,8 +32,10 @@ export function CookieConsent() {
               We use cookies
             </p>
             <p className="mt-1 text-xs text-muted-foreground sm:text-[13px]">
-              We use cookies to improve your experience and analyze site usage.
-              You can change your choice anytime from the footer.
+              We use cookies to ensure that we give you the best experience on our website.{" "}
+              <a href="/privacy-policy" className="underline underline-offset-2 hover:text-foreground">
+                Read cookies policies.
+              </a>
             </p>
           </div>
         </div>

@@ -1,31 +1,107 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
+import { useRouterState } from "@tanstack/react-router";
 import { X, Sparkles } from "lucide-react";
-import { getActiveAnnouncement, type Announcement } from "@/lib/announcements.functions";
+import { listActiveAnnouncements, type Announcement } from "@/lib/announcements.functions";
+import { supabase } from "@/integrations/supabase/client";
 
 const DISMISS_PREFIX = "lyra_announce_dismissed:";
 
+function pathMatches(pattern: string, pathname: string): boolean {
+  const p = pattern.trim();
+  if (!p || p === "*") return true;
+  if (p.endsWith("/*")) {
+    const prefix = p.slice(0, -2);
+    return pathname === prefix || pathname.startsWith(prefix + "/");
+  }
+  if (p.endsWith("*")) return pathname.startsWith(p.slice(0, -1));
+  return pathname === p;
+}
+
+type Viewer = { userId: string | null; isAdmin: boolean };
+
+function useViewer(): Viewer | null {
+  const [viewer, setViewer] = useState<Viewer | null>(null);
+  useEffect(() => {
+    let alive = true;
+    const load = async () => {
+      const { data } = await supabase.auth.getUser();
+      const uid = data.user?.id ?? null;
+      let isAdmin = false;
+      if (uid) {
+        try {
+          const { data: adminData } = await supabase.rpc("has_role", {
+            _user_id: uid,
+            _role: "admin",
+          });
+          isAdmin = !!adminData;
+        } catch {
+          isAdmin = false;
+        }
+      }
+      if (alive) setViewer({ userId: uid, isAdmin });
+    };
+    load();
+    const { data: sub } = supabase.auth.onAuthStateChange(() => load());
+    return () => {
+      alive = false;
+      sub.subscription.unsubscribe();
+    };
+  }, []);
+  return viewer;
+}
+
+function audienceMatches(a: Announcement, v: Viewer): boolean {
+  switch (a.audience) {
+    case "guests":
+      return v.userId === null;
+    case "authenticated":
+      return v.userId !== null;
+    case "admins":
+      return v.isAdmin;
+    case "all":
+    default:
+      return true;
+  }
+}
+
 export function AnnouncementModal() {
-  const fetchFn = useServerFn(getActiveAnnouncement);
-  const { data } = useQuery({
-    queryKey: ["active-announcement"],
+  const fetchFn = useServerFn(listActiveAnnouncements);
+  const { data: list } = useQuery({
+    queryKey: ["active-announcements"],
     queryFn: () => fetchFn(),
     staleTime: 60_000,
     retry: false,
   });
 
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const viewer = useViewer();
+
+  const data = useMemo<Announcement | null>(() => {
+    if (!list || !list.length || !viewer) return null;
+    return (
+      list.find(
+        (a) =>
+          (a.path_patterns?.length ? a.path_patterns : ["*"]).some((p) => pathMatches(p, pathname)) &&
+          audienceMatches(a, viewer),
+      ) ?? null
+    );
+  }, [list, viewer, pathname]);
+
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    if (!data) return;
+    if (!data) {
+      setOpen(false);
+      return;
+    }
     const key = `${DISMISS_PREFIX}${data.id}:${data.updated_at}`;
     try {
       if (localStorage.getItem(key)) return;
     } catch {
       // ignore
     }
-    // Small delay so it doesn't fight LCP
     const t = window.setTimeout(() => setOpen(true), 900);
     return () => window.clearTimeout(t);
   }, [data]);

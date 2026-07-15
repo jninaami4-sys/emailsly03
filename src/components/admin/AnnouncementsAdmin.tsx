@@ -286,6 +286,77 @@ export function AnnouncementsAdmin() {
             </div>
 
             <div className="rounded-xl border border-border bg-background/50 p-4">
+              <div className="mb-3 flex items-center gap-2">
+                <Target className="size-3.5 text-violet" />
+                <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                  Targeting rules
+                </span>
+              </div>
+
+              <div className="grid gap-4">
+                <Field label="Show on these pages">
+                  <textarea
+                    value={draft.path_patterns.join("\n")}
+                    onChange={(e) =>
+                      setDraft({
+                        ...draft,
+                        path_patterns: e.target.value.split(/\r?\n/).map((s) => s.trim()).filter(Boolean),
+                      })
+                    }
+                    rows={3}
+                    placeholder={"One path per line, e.g.\n*\n/\n/store\n/blog/*"}
+                    className="input resize-y font-mono text-xs"
+                  />
+                  <span className="text-[10px] text-muted-foreground">
+                    Use <code className="rounded bg-secondary px-1">*</code> for all pages,{" "}
+                    <code className="rounded bg-secondary px-1">/store</code> for an exact path, or{" "}
+                    <code className="rounded bg-secondary px-1">/blog/*</code> for a prefix match.
+                  </span>
+                  <div className="mt-1 flex flex-wrap gap-1.5">
+                    {["*", "/", "/store", "/pricing", "/blog/*", "/dashboard"].map((p) => (
+                      <button
+                        key={p}
+                        type="button"
+                        onClick={() => {
+                          if (draft.path_patterns.includes(p)) return;
+                          setDraft({ ...draft, path_patterns: [...draft.path_patterns, p] });
+                        }}
+                        className="rounded-md border border-border bg-background px-2 py-0.5 font-mono text-[10px] hover:bg-secondary"
+                      >
+                        + {p}
+                      </button>
+                    ))}
+                  </div>
+                </Field>
+
+                <Field label="Who can see it">
+                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                    {AUDIENCE_OPTIONS.map((opt) => {
+                      const active = draft.audience === opt.value;
+                      return (
+                        <button
+                          key={opt.value}
+                          type="button"
+                          onClick={() => setDraft({ ...draft, audience: opt.value })}
+                          className={`flex flex-col items-start gap-1 rounded-xl border p-2.5 text-left transition-colors ${
+                            active
+                              ? "border-violet bg-violet/5"
+                              : "border-border bg-background hover:bg-secondary/50"
+                          }`}
+                        >
+                          <Users className={`size-3.5 ${active ? "text-violet" : "text-muted-foreground"}`} />
+                          <span className="text-xs font-semibold">{opt.label}</span>
+                          <span className="text-[10px] text-muted-foreground">{opt.hint}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </Field>
+              </div>
+            </div>
+
+
+            <div className="rounded-xl border border-border bg-background/50 p-4">
               <div className="mb-3 flex items-center justify-between gap-2">
                 <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
                   Image style

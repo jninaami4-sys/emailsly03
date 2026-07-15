@@ -210,6 +210,286 @@ export function PremiumImageIcon({ className }: IconProps) {
   );
 }
 
+export function PremiumCheck({ className }: IconProps) {
+  return (
+    <Icon className={className}>
+      <circle cx="12" cy="12" r="10" fill="currentColor" fillOpacity="0.12" />
+      <circle cx="12" cy="12" r="10" />
+      <path d="m8 12.5 2.5 2.5 5.5-6" strokeWidth="2" />
+    </Icon>
+  );
+}
+
+export function PremiumSliders({ className }: IconProps) {
+  return (
+    <Icon className={className}>
+      <path d="M4 7h3" />
+      <path d="M10 7h10" />
+      <path d="M4 12h8" />
+      <path d="M15 12h5" />
+      <path d="M4 17h5" />
+      <path d="M12 17h8" />
+      <circle cx="7.5" cy="7" r="1.5" fill="currentColor" stroke="none" />
+      <circle cx="13" cy="12" r="1.5" fill="currentColor" stroke="none" />
+      <circle cx="9.5" cy="17" r="1.5" fill="currentColor" stroke="none" />
+    </Icon>
+  );
+}
+
+export function PremiumClipboardList({ className }: IconProps) {
+  return (
+    <Icon className={className}>
+      <path
+        d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"
+        fill="currentColor"
+        fillOpacity="0.12"
+      />
+      <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+      <rect x="8" y="2" width="8" height="4" rx="1" fill="currentColor" fillOpacity="0.25" />
+      <rect x="8" y="2" width="8" height="4" rx="1" />
+      <path d="M9 12h6" strokeWidth="1.8" />
+      <path d="M9 16h4" strokeWidth="1.8" strokeOpacity="0.7" />
+      <path d="M9 8h2" strokeWidth="1.8" strokeOpacity="0.7" />
+    </Icon>
+  );
+}
+
+export function PremiumWallet({ className }: IconProps) {
+  return (
+    <Icon className={className}>
+      <path
+        d="M19 7H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2Z"
+        fill="currentColor"
+        fillOpacity="0.12"
+      />
+      <path d="M19 7H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2Z" />
+      <path d="M19 7V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v1" />
+      <path d="M16 12h4" />
+      <circle cx="14" cy="12" r="1" fill="currentColor" stroke="none" />
+    </Icon>
+  );
+}
+
+export function PremiumArrowLeft({ className }: IconProps) {
+  return (
+    <Icon className={className}>
+      <path d="M19 12H5" />
+      <path d="m12 5-7 7 7 7" />
+    </Icon>
+  );
+}
+
+export function PremiumPlus({ className }: IconProps) {
+  return (
+    <Icon className={className}>
+      <path d="M12 5v14" />
+      <path d="M5 12h14" />
+    </Icon>
+  );
+}
+
+export function PremiumMinus({ className }: IconProps) {
+  return (
+    <Icon className={className}>
+      <path d="M5 12h14" />
+    </Icon>
+  );
+}
+
+export function PremiumLock({ className }: IconProps) {
+  return (
+    <Icon className={className}>
+      <rect x="5" y="11" width="14" height="10" rx="2" fill="currentColor" fillOpacity="0.15" />
+      <rect x="5" y="11" width="14" height="10" rx="2" />
+      <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+      <circle cx="12" cy="16" r="1.2" fill="currentColor" stroke="none" />
+      <path d="M12 17v2" strokeWidth="2" />
+    </Icon>
+  );
+}
+
+export function PremiumRocket({ className }: IconProps) {
+  return (
+    <Icon className={className} viewBox="0 0 24 24">
+      <path
+        d="M12 2s-6 4.5-6 11c0 2.5 1 4.5 2 6l4-2 4 2c1-1.5 2-3.5 2-6 0-6.5-6-11-6-11Z"
+        fill="currentColor"
+        fillOpacity="0.15"
+      />
+      <path d="M12 2s-6 4.5-6 11c0 2.5 1 4.5 2 6l4-2 4 2c1-1.5 2-3.5 2-6 0-6.5-6-11-6-11Z" />
+      <circle cx="12" cy="10" r="2.5" />
+      <path d="M8 19c-2 1-4 3-4 5M16 19c2 1 4 3 4 5" />
+    </Icon>
+  );
+}
+
+export function PremiumBadgeCheck({ className }: IconProps) {
+  return (
+    <Icon className={className}>
+      <path
+        d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"
+        fill="currentColor"
+        fillOpacity="0.15"
+      />
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" />
+      <path d="m8.5 12.2 2.4 2.3 4.6-4.8" strokeWidth="1.8" />
+    </Icon>
+  );
+}
+
+export function PremiumTag({ className }: IconProps) {
+  return (
+    <Icon className={className}>
+      <path
+        d="m20.6 13.4-7 7a2 2 0 0 1-2.8 0L3.4 13a2 2 0 0 1 0-2.8l7-7a2 2 0 0 1 2.8 0l7.4 7.4a2 2 0 0 1 0 2.8Z"
+        fill="currentColor"
+        fillOpacity="0.12"
+      />
+      <path d="m20.6 13.4-7 7a2 2 0 0 1-2.8 0L3.4 13a2 2 0 0 1 0-2.8l7-7a2 2 0 0 1 2.8 0l7.4 7.4a2 2 0 0 1 0 2.8Z" />
+      <circle cx="12" cy="10" r="1.5" fill="currentColor" stroke="none" />
+    </Icon>
+  );
+}
+
+export function PremiumZap({ className }: IconProps) {
+  return (
+    <Icon className={className} viewBox="0 0 24 24">
+      <path
+        d="M13 2 4.5 13h6L11 22l8.5-11h-6L13 2Z"
+        fill="currentColor"
+        fillOpacity="0.18"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </Icon>
+  );
+}
+
+export function PremiumLinkedin({ className }: IconProps) {
+  return (
+    <Icon className={className}>
+      <rect x="3" y="3" width="18" height="18" rx="3" fill="currentColor" fillOpacity="0.12" />
+      <rect x="3" y="3" width="18" height="18" rx="3" />
+      <path d="M8 10v6" strokeWidth="2" />
+      <path d="M8 7v.01" strokeWidth="2.5" />
+      <path d="M12 16v-3a2 2 0 0 1 4 0v3" />
+      <path d="M16 13v3" />
+    </Icon>
+  );
+}
+
+export function PremiumBuilding({ className }: IconProps) {
+  return (
+    <Icon className={className}>
+      <path d="M4 21h16" />
+      <path d="M6 21V9l6-4 6 4v12" fill="currentColor" fillOpacity="0.12" />
+      <path d="M6 21V9l6-4 6 4v12" />
+      <path d="M10 21V14h4v7" />
+      <path d="M10 10h.01" strokeWidth="2" />
+      <path d="M14 10h.01" strokeWidth="2" />
+    </Icon>
+  );
+}
+
+export function PremiumUserSearch({ className }: IconProps) {
+  return (
+    <Icon className={className}>
+      <circle cx="10" cy="8" r="4" />
+      <path d="M3 20c0-3.5 3.5-6 7-6s7 2.5 7 6" />
+      <circle cx="17" cy="15" r="3.5" strokeOpacity="0.7" />
+      <path d="m21 19-2 2" />
+    </Icon>
+  );
+}
+
+export function PremiumPhone({ className }: IconProps) {
+  return (
+    <Icon className={className}>
+      <path
+        d="M22 16.9v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.72c.13 1 .35 1.98.63 2.92a2 2 0 0 1-.45 2.11L8.5 10a16 16 0 0 0 6 6l1.25-1.25a2 2 0 0 1 2.11-.45c.94.28 1.92.5 2.92.63a2 2 0 0 1 1.72 2Z"
+        fill="currentColor"
+        fillOpacity="0.12"
+      />
+      <path d="M22 16.9v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.72c.13 1 .35 1.98.63 2.92a2 2 0 0 1-.45 2.11L8.5 10a16 16 0 0 0 6 6l1.25-1.25a2 2 0 0 1 2.11-.45c.94.28 1.92.5 2.92.63a2 2 0 0 1 1.72 2Z" />
+    </Icon>
+  );
+}
+
+export function PremiumMousePointerClick({ className }: IconProps) {
+  return (
+    <Icon className={className}>
+      <path
+        d="M5 3l10 4-4 1-1 4-5-9Z"
+        fill="currentColor"
+        fillOpacity="0.2"
+      />
+      <path d="M5 3l10 4-4 1-1 4-5-9Z" />
+      <path d="M13 13l6 6" />
+      <circle cx="18" cy="18" r="3" strokeOpacity="0.7" />
+    </Icon>
+  );
+}
+
+export function PremiumLineChart({ className }: IconProps) {
+  return (
+    <Icon className={className}>
+      <path d="M3 3v18h18" />
+      <path d="m7 16 4-4 3 3 5-6" strokeWidth="2" />
+      <path d="m18 9 1-1" strokeWidth="2" />
+    </Icon>
+  );
+}
+
+export function PremiumServerCog({ className }: IconProps) {
+  return (
+    <Icon className={className}>
+      <rect x="2" y="4" width="20" height="7" rx="2" fill="currentColor" fillOpacity="0.12" />
+      <rect x="2" y="4" width="20" height="7" rx="2" />
+      <rect x="2" y="13" width="20" height="7" rx="2" fill="currentColor" fillOpacity="0.12" />
+      <rect x="2" y="13" width="20" height="7" rx="2" />
+      <circle cx="6" cy="7.5" r="1" fill="currentColor" stroke="none" />
+      <circle cx="6" cy="16.5" r="1" fill="currentColor" stroke="none" />
+      <circle cx="17" cy="16.5" r="2" strokeOpacity="0.7" />
+      <path d="M17 14v1.5" strokeOpacity="0.8" />
+      <path d="M17 17.5V19" strokeOpacity="0.8" />
+      <path d="M15 16.5h1.5" strokeOpacity="0.8" />
+      <path d="M18.5 16.5H20" strokeOpacity="0.8" />
+    </Icon>
+  );
+}
+
+export function PremiumPenTool({ className }: IconProps) {
+  return (
+    <Icon className={className}>
+      <path d="M12 19l7-13" />
+      <path d="M5 6l7 13" />
+      <path d="M19 6l-7-3-7 3" fill="currentColor" fillOpacity="0.15" />
+      <path d="M19 6l-7-3-7 3" />
+      <circle cx="12" cy="19" r="2" fill="currentColor" fillOpacity="0.25" />
+      <circle cx="12" cy="19" r="2" />
+      <path d="M5 6 3 3l3 2" />
+      <path d="M19 6l2-3-3 2" />
+    </Icon>
+  );
+}
+
+export function PremiumGift({ className }: IconProps) {
+  return (
+    <Icon className={className}>
+      <rect x="3" y="8" width="18" height="12" rx="2" fill="currentColor" fillOpacity="0.12" />
+      <rect x="3" y="8" width="18" height="12" rx="2" />
+      <path d="M12 8v12" strokeWidth="1.8" />
+      <path d="M3 12h18" strokeOpacity="0.5" />
+      <path d="M8 8h.01" strokeWidth="2.5" />
+      <path d="M16 8h.01" strokeWidth="2.5" />
+      <path d="M8 8c-1.5-2-1-4 1-4s2.5 2 1 4" />
+      <path d="M16 8c-1.5-2-1-4 1-4s2.5 2 1 4" />
+    </Icon>
+  );
+}
+
 export function PremiumUpload({ className }: IconProps) {
   return (
     <Icon className={className}>

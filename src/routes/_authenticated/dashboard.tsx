@@ -546,6 +546,7 @@ function OrderDrawer({ id, onClose }: { id: string; onClose: () => void }) {
     queryFn: () => getFn({ data: { id } }),
   });
   const [revText, setRevText] = useState("");
+  const [ticketOpen, setTicketOpen] = useState(false);
   const rev = useMutation({
     mutationFn: () => revFn({ data: { order_id: id, message: revText } }),
     onSuccess: () => {
@@ -666,6 +667,12 @@ function OrderDrawer({ id, onClose }: { id: string; onClose: () => void }) {
               >
                 <RotateCcw className="size-3" /> Reorder
               </Link>
+              <button
+                onClick={() => setTicketOpen(true)}
+                className="inline-flex items-center gap-2 rounded-lg border border-neon-orange/40 bg-neon-orange/10 px-3 py-1.5 text-xs font-semibold text-neon-orange hover:bg-neon-orange/20"
+              >
+                <LifeBuoy className="size-3" /> Report an issue
+              </button>
               <Link
                 to="/contact"
                 className="inline-flex items-center gap-2 rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-semibold hover:bg-secondary"

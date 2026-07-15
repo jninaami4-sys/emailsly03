@@ -1,13 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Megaphone, Plus, Save, Trash2, Eye, EyeOff, Loader2, Upload, ImageIcon, ImageOff, Monitor, Smartphone } from "lucide-react";
+import { Megaphone, Plus, Save, Trash2, Eye, EyeOff, Loader2, Upload, ImageIcon, ImageOff, Monitor, Smartphone, Target, Users } from "lucide-react";
 import {
   listAnnouncements,
   upsertAnnouncement,
   deleteAnnouncement,
   type Announcement,
   type AnnouncementImageStyle,
+  type AnnouncementAudience,
 } from "@/lib/announcements.functions";
 import { AnnouncementPreview } from "@/components/site/AnnouncementModal";
 import { supabase } from "@/integrations/supabase/client";
@@ -23,9 +24,18 @@ const emptyDraft = {
   image_style: "cover" as AnnouncementImageStyle,
   badge: "",
   accent: "violet",
+  path_patterns: ["*"] as string[],
+  audience: "all" as AnnouncementAudience,
 };
 
 const ACCENTS = ["violet", "emerald", "amber", "rose", "sky"] as const;
+
+const AUDIENCE_OPTIONS: { value: AnnouncementAudience; label: string; hint: string }[] = [
+  { value: "all", label: "Everyone", hint: "Signed in or not" },
+  { value: "guests", label: "Guests only", hint: "Not signed in" },
+  { value: "authenticated", label: "Signed-in users", hint: "Any logged-in customer" },
+  { value: "admins", label: "Admins only", hint: "Admin accounts" },
+];
 
 const STYLE_OPTIONS: { value: AnnouncementImageStyle; label: string; hint: string; Icon: typeof ImageIcon }[] = [
   { value: "cover", label: "Cover photo", hint: "Large 16:9 hero image", Icon: ImageIcon },

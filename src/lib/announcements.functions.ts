@@ -19,6 +19,8 @@ export type Announcement = {
   accent: string;
   path_patterns: string[];
   audience: AnnouncementAudience;
+  start_at: string | null;
+  end_at: string | null;
   created_at: string;
   updated_at: string;
 };

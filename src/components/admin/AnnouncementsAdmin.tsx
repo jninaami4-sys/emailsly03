@@ -85,6 +85,8 @@ export function AnnouncementsAdmin() {
   const [status, setStatus] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [device, setDevice] = useState<"desktop" | "mobile">("desktop");
+  const [pendingFile, setPendingFile] = useState<File | null>(null);
+  const [lockAspect, setLockAspect] = useState(true);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const loadEdit = (a: Announcement) => {

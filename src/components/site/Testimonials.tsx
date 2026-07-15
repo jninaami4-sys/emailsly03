@@ -2,7 +2,7 @@ import React, { useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Star, Quote, Play, Pause, BadgeCheck, PenSquare } from "lucide-react";
+import { Star, Quote, Play, Pause, BadgeCheck } from "lucide-react";
 import amineVideo from "@/assets/amine-italy.mp4.asset.json";
 import aminePoster from "@/assets/amine-poster.jpg.asset.json";
 import { ReviewSubmitModal } from "@/components/site/ReviewSubmitModal";
@@ -354,14 +354,6 @@ export function Testimonials() {
           <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
             Every review below comes from a signed-in customer. We verify before we publish.
           </p>
-
-          <button
-            type="button"
-            onClick={() => setOpen(true)}
-            className="mt-6 inline-flex items-center gap-2 rounded-xl bg-foreground px-5 py-3 text-sm font-semibold text-background shadow-md transition-transform hover:-translate-y-0.5"
-          >
-            <PenSquare className="size-4" /> Share your experience
-          </button>
         </div>
 
         {/* Video testimonials */}

@@ -91,7 +91,7 @@ function parseCsv(text: string): ParsedCsv {
   if (filtered.length === 0) return { headers: [], rows: [] };
   const headers = filtered[0].map((h) => h.trim());
   const dataRows = filtered.slice(1).map((r) => {
-    const obj: Record<string, string> = {};
+    const obj: Record<string, string | number | boolean> = {};
     headers.forEach((h, idx) => { obj[h] = r[idx] ?? ""; });
     return obj;
   });

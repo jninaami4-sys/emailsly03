@@ -115,6 +115,8 @@ type UpsertInput = {
   accent: string;
   path_patterns: string[];
   audience: AnnouncementAudience;
+  start_at: string | null;
+  end_at: string | null;
 };
 
 export const upsertAnnouncement = createServerFn({ method: "POST" })

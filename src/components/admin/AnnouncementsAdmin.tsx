@@ -48,6 +48,7 @@ export function AnnouncementsAdmin() {
   const [draft, setDraft] = useState(emptyDraft);
   const [status, setStatus] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [device, setDevice] = useState<"desktop" | "mobile">("desktop");
   const fileRef = useRef<HTMLInputElement>(null);
 
   const loadEdit = (a: Announcement) => {

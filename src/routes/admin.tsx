@@ -198,6 +198,7 @@ function AdminPage() {
         </header>
 
         <div className="mb-10 space-y-6">
+          <div id="wt-brand-settings"><BrandSettingsAdmin /></div>
           <div id="wt-site-content"><SiteContentAdmin /></div>
           <div id="wt-sample-datasets"><SampleDatasetsAdmin /></div>
           <div id="wt-sample-audit"><SampleDatasetAuditLog /></div>

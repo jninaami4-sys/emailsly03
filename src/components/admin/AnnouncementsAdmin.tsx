@@ -400,6 +400,57 @@ export function AnnouncementsAdmin() {
 
               <div className="mt-4 border-t border-border pt-4">
                 <div className="mb-3 flex items-center gap-2">
+                  <ArrowUpDown className="size-3.5 text-violet" />
+                  <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                    Priority
+                  </span>
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <input
+                    type="number"
+                    step={1}
+                    min={-1000}
+                    max={1000}
+                    value={draft.priority}
+                    onChange={(e) =>
+                      setDraft({ ...draft, priority: Number.parseInt(e.target.value || "0", 10) || 0 })
+                    }
+                    className="input w-28"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setDraft({ ...draft, priority: draft.priority - 1 })}
+                    className="inline-flex items-center gap-1 rounded-lg border border-border bg-background px-2.5 py-1.5 text-xs font-medium hover:bg-secondary"
+                  >
+                    <ChevronDown className="size-3.5" /> Lower
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setDraft({ ...draft, priority: draft.priority + 1 })}
+                    className="inline-flex items-center gap-1 rounded-lg border border-border bg-background px-2.5 py-1.5 text-xs font-medium hover:bg-secondary"
+                  >
+                    <ChevronUp className="size-3.5" /> Raise
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const max = list.reduce((m, a) => Math.max(m, a.priority ?? 0), 0);
+                      setDraft({ ...draft, priority: max + 1 });
+                    }}
+                    className="inline-flex items-center gap-1 rounded-lg border border-violet/30 bg-violet/5 px-2.5 py-1.5 text-xs font-semibold text-violet hover:bg-violet/10"
+                  >
+                    Bump to top
+                  </button>
+                </div>
+                <p className="mt-2 text-[10px] text-muted-foreground">
+                  Higher numbers win when several announcements match the same page and viewer. Ties break on most recently updated.
+                </p>
+              </div>
+
+
+
+              <div className="mt-4 border-t border-border pt-4">
+                <div className="mb-3 flex items-center gap-2">
                   <CalendarClock className="size-3.5 text-violet" />
                   <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
                     Schedule (optional)

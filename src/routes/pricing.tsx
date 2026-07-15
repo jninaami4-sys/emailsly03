@@ -1,16 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteShell } from "@/components/site/SiteShell";
 import { PricingCalculator } from "@/components/site/PricingCalculator";
-import {
-  Zap,
-  Crown,
-  Phone,
-  Linkedin,
-  PenTool,
-  ArrowRight,
-  Sparkles,
-  CheckCircle2,
-} from "lucide-react";
+import { Zap, Crown, Phone, Linkedin, PenTool, ArrowRight, CheckCircle2 } from "lucide-react";
+import { PremiumSparkles as Sparkles } from "@/components/site/PremiumIcons";
 import { AddOns } from "@/components/site/AddOns";
 
 export const Route = createFileRoute("/pricing")({

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Crown, Sparkles } from "lucide-react";
+import { Crown } from "lucide-react";
+import { PremiumSparkles as Sparkles } from "@/components/site/PremiumIcons";
 
 /**
  * Premium orb loader.

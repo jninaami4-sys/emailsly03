@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 import { SiteShell } from "./SiteShell";
-import { ArrowRight, FileText, Mail, Sparkles } from "lucide-react";
+import { ArrowRight, FileText, Mail } from "lucide-react";
+import { PremiumSparkles as Sparkles } from "@/components/site/PremiumIcons";
 
 type LegalLink = { to: string; label: string };
 

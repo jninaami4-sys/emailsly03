@@ -14,33 +14,8 @@ import { SiteShell } from "@/components/site/SiteShell";
 import { ReferralErrorBoundary } from "@/components/site/ReferralErrorBoundary";
 import { useAuth } from "@/hooks/use-auth";
 import { openOrderDrawer } from "@/components/site/OrderDrawer";
-import {
-  Loader2,
-  Download,
-  Package,
-  User as UserIcon,
-  Receipt,
-  RotateCcw,
-  ExternalLink,
-  Sparkles,
-  ShoppingBag,
-  PackageSearch,
-  MessageCircle,
-  BookOpen,
-  Zap,
-  TrendingUp,
-  CheckCircle2,
-  Clock,
-  Wallet,
-  ArrowUpRight,
-  Copy,
-  Gift,
-  Headphones,
-  ChevronRight,
-  Search,
-  Camera,
-  Trash2,
-} from "lucide-react";
+import { Loader2, Download, Package, User as UserIcon, Receipt, RotateCcw, ExternalLink, ShoppingBag, PackageSearch, MessageCircle, BookOpen, Zap, TrendingUp, CheckCircle2, Clock, Wallet, ArrowUpRight, Copy, Gift, Headphones, ChevronRight, Search, Camera, Trash2 } from "lucide-react";
+import { PremiumSparkles as Sparkles } from "@/components/site/PremiumIcons";
 import { supabase } from "@/integrations/supabase/client";
 import { compressImage } from "@/lib/image-compress";
 import { AvatarCropDialog } from "@/components/site/AvatarCropDialog";

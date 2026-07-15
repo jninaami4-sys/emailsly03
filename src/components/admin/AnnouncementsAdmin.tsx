@@ -73,6 +73,8 @@ export function AnnouncementsAdmin() {
       image_style: (a.image_style || "cover") as AnnouncementImageStyle,
       badge: a.badge,
       accent: a.accent || "violet",
+      path_patterns: a.path_patterns && a.path_patterns.length ? a.path_patterns : ["*"],
+      audience: (a.audience || "all") as AnnouncementAudience,
     });
   };
 

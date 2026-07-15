@@ -1024,6 +1024,8 @@ export type Database = {
           ga4_id: string
           gtm_id: string
           id: boolean
+          tawk_enabled: boolean
+          tawk_position: string
           tiktok_pixel_id: string
           updated_at: string
         }
@@ -1033,6 +1035,8 @@ export type Database = {
           ga4_id?: string
           gtm_id?: string
           id?: boolean
+          tawk_enabled?: boolean
+          tawk_position?: string
           tiktok_pixel_id?: string
           updated_at?: string
         }
@@ -1042,6 +1046,8 @@ export type Database = {
           ga4_id?: string
           gtm_id?: string
           id?: boolean
+          tawk_enabled?: boolean
+          tawk_position?: string
           tiktok_pixel_id?: string
           updated_at?: string
         }

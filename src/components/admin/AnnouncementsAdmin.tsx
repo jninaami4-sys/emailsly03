@@ -224,9 +224,25 @@ export function AnnouncementsAdmin() {
                   </span>
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-semibold">{a.title || "Untitled"}</p>
-                    <p className="mt-0.5 truncate font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
-                      {new Date(a.updated_at).toLocaleString()}
-                    </p>
+                    {(() => {
+                      const s = formatSchedule(a, new Date());
+                      const toneClass =
+                        s.tone === "live"
+                          ? "bg-emerald/10 text-emerald"
+                          : s.tone === "scheduled"
+                          ? "bg-amber-500/10 text-amber-600"
+                          : s.tone === "ended"
+                          ? "bg-rose-500/10 text-rose-500"
+                          : "bg-muted text-muted-foreground";
+                      return (
+                        <span
+                          className={`mt-1 inline-flex max-w-full items-center gap-1 truncate rounded-md px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-wider ${toneClass}`}
+                        >
+                          <CalendarClock className="size-2.5 shrink-0" />
+                          <span className="truncate">{s.label}</span>
+                        </span>
+                      );
+                    })()}
                   </div>
                 </button>
               </li>

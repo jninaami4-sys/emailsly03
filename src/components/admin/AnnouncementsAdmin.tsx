@@ -271,14 +271,93 @@ export function AnnouncementsAdmin() {
               </Field>
             </div>
 
-            <Field label="Image URL (optional)">
-              <input
-                value={draft.image_url}
-                onChange={(e) => setDraft({ ...draft, image_url: e.target.value })}
-                placeholder="https://…"
-                className="input"
-              />
-            </Field>
+            <div className="rounded-xl border border-border bg-background/50 p-4">
+              <div className="mb-3 flex items-center justify-between gap-2">
+                <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                  Image style
+                </span>
+                {draft.image_url && draft.image_style !== "none" && (
+                  <button
+                    type="button"
+                    onClick={() => setDraft({ ...draft, image_url: "" })}
+                    className="font-mono text-[10px] font-bold uppercase tracking-wider text-rose-500 hover:underline"
+                  >
+                    Remove image
+                  </button>
+                )}
+              </div>
+              <div className="grid grid-cols-3 gap-2">
+                {STYLE_OPTIONS.map(({ value, label, hint, Icon }) => (
+                  <button
+                    key={value}
+                    type="button"
+                    onClick={() => setDraft({ ...draft, image_style: value })}
+                    className={`flex flex-col items-start gap-1 rounded-xl border p-3 text-left transition-colors ${
+                      draft.image_style === value
+                        ? "border-violet bg-violet/5"
+                        : "border-border bg-background hover:bg-secondary/50"
+                    }`}
+                  >
+                    <Icon className={`size-4 ${draft.image_style === value ? "text-violet" : "text-muted-foreground"}`} />
+                    <span className="text-xs font-semibold">{label}</span>
+                    <span className="text-[10px] text-muted-foreground">{hint}</span>
+                  </button>
+                ))}
+              </div>
+
+              {draft.image_style !== "none" && (
+                <div className="mt-4 grid gap-3">
+                  <div className="flex items-start gap-3">
+                    {draft.image_url ? (
+                      <div
+                        className={`shrink-0 overflow-hidden rounded-lg border border-border bg-secondary ${
+                          draft.image_style === "thumbnail" ? "size-16" : "h-16 w-28"
+                        }`}
+                      >
+                        <img src={draft.image_url} alt="" className="h-full w-full object-cover" />
+                      </div>
+                    ) : (
+                      <div
+                        className={`flex shrink-0 items-center justify-center rounded-lg border border-dashed border-border bg-secondary text-muted-foreground ${
+                          draft.image_style === "thumbnail" ? "size-16" : "h-16 w-28"
+                        }`}
+                      >
+                        <ImageIcon className="size-5" />
+                      </div>
+                    )}
+                    <div className="flex-1 space-y-2">
+                      <input
+                        ref={fileRef}
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => {
+                          const f = e.target.files?.[0];
+                          if (f) handleUpload(f);
+                        }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => fileRef.current?.click()}
+                        disabled={uploading}
+                        className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-semibold hover:bg-secondary disabled:opacity-50"
+                      >
+                        {uploading ? <Loader2 className="size-3.5 animate-spin" /> : <Upload className="size-3.5" />}
+                        {uploading ? "Uploading…" : "Upload image"}
+                      </button>
+                      <p className="text-[10px] text-muted-foreground">PNG/JPG/WebP, max 5MB</p>
+                    </div>
+                  </div>
+                  <input
+                    value={draft.image_url}
+                    onChange={(e) => setDraft({ ...draft, image_url: e.target.value })}
+                    placeholder="Or paste image URL: https://…"
+                    className="input"
+                  />
+                </div>
+              )}
+            </div>
+
 
             {status && (
               <p className="rounded-lg bg-secondary p-2.5 text-xs text-foreground">{status}</p>

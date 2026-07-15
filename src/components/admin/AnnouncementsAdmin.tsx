@@ -458,6 +458,7 @@ export function AnnouncementsAdmin() {
                     badge: draft.badge,
                     accent: draft.accent,
                     updated_at: new Date().toISOString(),
+                    created_at: new Date().toISOString(),
                   }}
                 />
               </div>

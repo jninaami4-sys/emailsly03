@@ -89,13 +89,32 @@ function InvoicePage() {
             <Printer className="size-4" /> Print
           </button>
         </div>
-        <div ref={invoiceRef} className="rounded-2xl border border-border bg-card p-8 print:border-0 print:shadow-none">
+        <div ref={invoiceRef} className="rounded-2xl border border-border bg-white p-8 text-black print:border-0 print:shadow-none">
+          {/* Brand header */}
+          <div className="mb-6 flex items-start justify-between border-b border-neutral-200 pb-5">
+            <div className="flex items-center gap-3">
+              <div className="flex size-11 items-center justify-center rounded-xl bg-gradient-to-br from-violet-600 to-fuchsia-500 font-display text-lg font-black text-white shadow-sm">
+                E
+              </div>
+              <div>
+                <div className="font-display text-xl font-bold leading-tight">EmailsLy</div>
+                <div className="text-[11px] text-neutral-500">Lead generation & outbound data</div>
+              </div>
+            </div>
+            <div className="text-right text-[11px] text-neutral-600">
+              <div>hello@emailsly.com</div>
+              <div>emailsly.com</div>
+              <div>1007 N Orange St, 4th Floor</div>
+              <div>Wilmington, DE 19801, USA</div>
+            </div>
+          </div>
+
           <div className="mb-6 flex items-start justify-between">
             <div>
               <h1 className="font-display text-2xl font-bold">Invoice</h1>
-              <p className="text-xs text-muted-foreground">#{o.id.slice(0, 8).toUpperCase()}</p>
+              <p className="text-xs text-neutral-500">#{o.id.slice(0, 8).toUpperCase()}</p>
             </div>
-            <div className="text-right text-xs text-muted-foreground">
+            <div className="text-right text-xs text-neutral-600">
               <div>Date: {new Date(o.created_at).toLocaleDateString()}</div>
               <div>Status: {o.status}</div>
               <div>Payment: {o.payment_status}</div>
@@ -104,13 +123,18 @@ function InvoicePage() {
 
           <div className="mb-6 grid gap-4 sm:grid-cols-2">
             <div>
-              <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">Billed to</div>
+              <div className="font-mono text-[10px] uppercase tracking-widest text-neutral-500">Billed to</div>
               <div className="mt-1 font-semibold">{o.email}</div>
+            </div>
+            <div className="sm:text-right">
+              <div className="font-mono text-[10px] uppercase tracking-widest text-neutral-500">From</div>
+              <div className="mt-1 font-semibold">EmailsLy</div>
+              <div className="text-xs text-neutral-600">billing@emailsly.com</div>
             </div>
           </div>
 
           <table className="mb-6 w-full text-sm">
-            <thead className="border-b border-border">
+            <thead className="border-b border-neutral-300">
               <tr className="text-left">
                 <th className="py-2">Description</th>
                 <th className="py-2 text-right">Qty</th>
@@ -118,16 +142,16 @@ function InvoicePage() {
               </tr>
             </thead>
             <tbody>
-              <tr className="border-b border-border">
+              <tr className="border-b border-neutral-200">
                 <td className="py-2">{o.service_label}</td>
                 <td className="py-2 text-right">{o.quantity}</td>
                 <td className="py-2 text-right font-mono">{money(o.subtotal_cents, o.currency)}</td>
               </tr>
               {o.discount_cents > 0 && (
-                <tr className="border-b border-border">
-                  <td className="py-2 text-muted-foreground">Discount {o.promo_code ? `(${o.promo_code})` : ""}</td>
+                <tr className="border-b border-neutral-200">
+                  <td className="py-2 text-neutral-500">Discount {o.promo_code ? `(${o.promo_code})` : ""}</td>
                   <td />
-                  <td className="py-2 text-right font-mono text-emerald">−{money(o.discount_cents, o.currency)}</td>
+                  <td className="py-2 text-right font-mono text-emerald-600">−{money(o.discount_cents, o.currency)}</td>
                 </tr>
               )}
             </tbody>
@@ -142,8 +166,24 @@ function InvoicePage() {
           </table>
 
           {o.payment_ref && (
-            <p className="text-xs text-muted-foreground">Payment reference: {o.payment_ref}</p>
+            <p className="text-xs text-neutral-500">Payment reference: {o.payment_ref}</p>
           )}
+
+          {/* Footer notes */}
+          <div className="mt-10 border-t border-neutral-200 pt-4 text-[11px] leading-relaxed text-neutral-500">
+            <p className="font-semibold text-neutral-700">Thank you for choosing EmailsLy.</p>
+            <p className="mt-1">
+              Payment is due upon receipt. All sales of digital lead data are final and non-refundable
+              once delivered, per our refund policy at emailsly.com/refund-policy.
+            </p>
+            <p className="mt-1">
+              Questions about this invoice? Email billing@emailsly.com and quote invoice
+              #{o.id.slice(0, 8).toUpperCase()}.
+            </p>
+            <p className="mt-3 text-center text-neutral-400">
+              EmailsLy · 1007 N Orange St, 4th Floor, Wilmington, DE 19801, USA · emailsly.com
+            </p>
+          </div>
         </div>
       </div>
     </div>

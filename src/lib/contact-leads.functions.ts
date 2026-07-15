@@ -96,7 +96,7 @@ export const adminUpdateContactLead = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => updateSchema.parse(data))
   .handler(async ({ data, context }) => {
     await assertAdmin(context.supabase as unknown as ReturnType<typeof serverAnonClient>, context.userId);
-    const patch: Record<string, unknown> = {};
+    const patch: { status?: LeadStatus; notes?: string | null } = {};
     if (data.status !== undefined) patch.status = data.status;
     if (data.notes !== undefined) patch.notes = data.notes;
     const { error } = await context.supabase.from("contact_leads").update(patch).eq("id", data.id);

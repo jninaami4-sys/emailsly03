@@ -707,6 +707,13 @@ function OrderDrawer({ id, onClose }: { id: string; onClose: () => void }) {
           </>
         )}
       </div>
+      <SupportTicketModal
+        open={ticketOpen}
+        onClose={() => setTicketOpen(false)}
+        orderId={id}
+        orderLabel={data?.order?.service_label}
+        defaultCategory="delivery"
+      />
     </div>
   );
 }

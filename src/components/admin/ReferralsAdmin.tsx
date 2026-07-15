@@ -33,7 +33,7 @@ import {
   MousePointerClick,
   UserPlus,
   CreditCard,
-} from "lucide-react";
+} from "@/components/admin/AdminIcons";
 import { toast } from "sonner";
 
 const STATUSES = ["all", "pending", "qualified", "rewarded", "paid_out", "cancelled"];

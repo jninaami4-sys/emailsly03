@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Loader2, RefreshCw, Trash2, Plus, Save, X } from "lucide-react";
+import { Loader2, RefreshCw, Trash2, Plus, Save, X } from "@/components/admin/AdminIcons";
 import {
   adminListSocialLinks,
   adminUpsertSocialLink,

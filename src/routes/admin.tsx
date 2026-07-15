@@ -24,7 +24,7 @@ import { ImportExportAdmin } from "@/components/admin/ImportExportAdmin";
 import { PricingAdmin } from "@/components/admin/PricingAdmin";
 import { whoAmIAdmin } from "@/lib/announcements.functions";
 import { useAuth } from "@/hooks/use-auth";
-import { Upload, X, Search, ShieldAlert, Lock } from "lucide-react";
+import { Upload, X, Search, ShieldAlert, Lock } from "@/components/admin/AdminIcons";
 import { Loader713Panel } from "@/components/site/Loader713";
 
 export const Route = createFileRoute("/admin")({

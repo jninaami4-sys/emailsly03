@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Target, Plus, Save, Trash2, Loader2, ChevronDown, ChevronRight } from "lucide-react";
+import { Target, Plus, Save, Trash2, Loader2, ChevronDown, ChevronRight } from "@/components/admin/AdminIcons";
 import {
   listConversionEventsAdmin,
   upsertConversionEvent,

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import Cropper, { type Area } from "react-easy-crop";
-import { Loader2, Crop as CropIcon, X } from "lucide-react";
+import { Loader2, Crop as CropIcon, X } from "@/components/admin/AdminIcons";
 
 type Props = {
   file: File;

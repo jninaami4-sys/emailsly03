@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { DollarSign, Save, Loader2, Check } from "lucide-react";
+import { DollarSign, Save, Loader2, Check } from "@/components/admin/AdminIcons";
 import {
   getPricingSettings,
   updatePricingSetting,

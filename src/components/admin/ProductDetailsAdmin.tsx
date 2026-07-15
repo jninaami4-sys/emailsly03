@@ -8,7 +8,7 @@ import {
   upsertProductDetails,
   type ProductDetails,
 } from "@/lib/product-details.functions";
-import { Loader2, Save, Trash2, Info } from "lucide-react";
+import { Loader2, Save, Trash2, Info } from "@/components/admin/AdminIcons";
 
 type FormState = {
   enabled: boolean;

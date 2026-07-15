@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Server, Save, Loader2, CheckCircle2, XCircle, MinusCircle, RefreshCcw } from "lucide-react";
+import { Server, Save, Loader2, CheckCircle2, XCircle, MinusCircle, RefreshCcw } from "@/components/admin/AdminIcons";
 import {
   getServerTrackingConfig,
   updateServerTrackingConfig,

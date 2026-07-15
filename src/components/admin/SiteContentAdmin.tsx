@@ -6,7 +6,7 @@ import { SITE_CONTENT_DEFAULTS, type SiteContentSection } from "@/lib/site-conte
 import {
   Globe, Layout, BellRing, ShieldCheck, Boxes, BarChart3, HelpCircle,
   Megaphone, PanelBottom, Sparkles, Palette, Mail, Save, Loader2, RefreshCw,
-} from "lucide-react";
+} from "@/components/admin/AdminIcons";
 
 type TabDef = {
   id: SiteContentSection;

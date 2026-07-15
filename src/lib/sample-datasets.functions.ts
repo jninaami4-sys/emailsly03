@@ -210,12 +210,17 @@ function requestMeta(): { ip: string | null; userAgent: string | null } {
   }
 }
 
+type JsonValue =
+  | string | number | boolean | null
+  | { [k: string]: JsonValue }
+  | JsonValue[];
+
 async function writeAudit(params: {
   userId: string;
   email: string | null;
   source: string;
   action: string;
-  details: Record<string, unknown>;
+  details: JsonValue;
 }) {
   try {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -230,7 +235,6 @@ async function writeAudit(params: {
       user_agent: meta.userAgent,
     });
   } catch {
-    // Never let audit failures block the user action; log server-side only.
     // eslint-disable-next-line no-console
     console.warn("[sample-datasets] audit write failed");
   }

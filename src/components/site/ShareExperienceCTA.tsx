@@ -77,7 +77,7 @@ export function ShareExperienceCTA({ variant = "footer", className = "" }: Props
   return (
     <>
       <div
-        className={`group/cta relative overflow-hidden rounded-[28px] border border-white/10 bg-[radial-gradient(120%_120%_at_0%_0%,rgba(139,92,246,0.18),transparent_55%),radial-gradient(120%_120%_at_100%_100%,rgba(59,130,246,0.16),transparent_55%),linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.015))] p-8 backdrop-blur-md sm:p-12 ${className}`}
+        className={`group/cta relative overflow-hidden rounded-2xl border border-white/10 bg-[radial-gradient(120%_120%_at_0%_0%,rgba(139,92,246,0.18),transparent_55%),radial-gradient(120%_120%_at_100%_100%,rgba(59,130,246,0.16),transparent_55%),linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.015))] p-5 backdrop-blur-md sm:rounded-[28px] sm:p-8 md:p-12 ${className}`}
       >
         {/* Ambient glows */}
         <div className="pointer-events-none absolute -left-24 -top-24 size-72 rounded-full bg-violet/25 blur-[110px]" />

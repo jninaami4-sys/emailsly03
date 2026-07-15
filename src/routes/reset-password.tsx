@@ -253,7 +253,7 @@ function ResetPasswordPage() {
                 <span className="grid size-6 place-items-center rounded-md bg-primary">
                   <span className="size-2 rounded-full bg-primary-foreground" />
                 </span>
-                LYRA<span className="text-muted-foreground">DATA</span>
+                Emails<span className="text-muted-foreground">Ly</span>
               </Link>
 
               {linkState === "checking" ? (

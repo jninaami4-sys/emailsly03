@@ -127,7 +127,7 @@ export function Header() {
               <button
                 type="button"
                 onClick={open}
-                className={`relative rounded-lg p-2 transition-colors hover:bg-secondary hover:text-violet ${focusRing}`}
+                className={`relative rounded-lg p-2 text-ink transition-colors hover:bg-violet/10 hover:text-violet ${focusRing}`}
                 aria-label={cartLabel}
               >
                 <PremiumShoppingCart className="size-5" aria-hidden="true" />
@@ -144,16 +144,16 @@ export function Header() {
                 <>
                   <Link
                     to="/dashboard"
-                    className={`hidden items-center gap-1.5 rounded-lg bg-secondary px-3 py-2 text-xs font-semibold text-ink transition-colors hover:bg-violet/10 hover:text-violet lg:inline-flex ${focusRing}`}
+                    className={`hidden items-center gap-1.5 rounded-lg bg-violet/10 px-3 py-2 text-xs font-semibold text-violet transition-colors hover:bg-violet hover:text-white lg:inline-flex ${focusRing}`}
                     aria-label="Open your dashboard"
                   >
-                    <PremiumUser className="size-3.5 text-violet" aria-hidden="true" />
+                    <PremiumUser className="size-3.5" aria-hidden="true" />
                     <span className="max-w-[140px] truncate">Dashboard</span>
                   </Link>
                   <button
                     type="button"
                     onClick={handleSignOut}
-                    className={`hidden items-center gap-1.5 rounded-lg bg-ink px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-violet lg:inline-flex ${focusRing}`}
+                    className={`hidden items-center gap-1.5 rounded-lg bg-violet px-3 py-2 text-xs font-semibold text-white transition-colors hover:brightness-110 lg:inline-flex ${focusRing}`}
                   >
                     <PremiumLogOut className="size-3.5" aria-hidden="true" /> Sign out
                   </button>
@@ -163,14 +163,14 @@ export function Header() {
                   <Link
                     to="/login"
                     aria-label="Sign in to your account"
-                    className={`hidden size-9 items-center justify-center rounded-full border border-black/10 bg-white text-ink transition-colors hover:bg-secondary hover:text-violet lg:inline-flex ${focusRing}`}
+                    className={`hidden size-9 items-center justify-center rounded-full border border-violet/20 bg-violet/10 text-violet transition-colors hover:bg-violet hover:text-white lg:inline-flex ${focusRing}`}
                   >
                     <PremiumUser className="size-4" aria-hidden="true" />
                   </Link>
                   <button
                     type="button"
                     onClick={openOrderDrawer}
-                    className={`hidden rounded-full bg-ink px-5 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:bg-violet lg:inline-flex ${focusRing}`}
+                    className={`hidden rounded-full bg-violet px-5 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:brightness-110 lg:inline-flex ${focusRing}`}
                   >
                     Order Now
                   </button>
@@ -229,9 +229,9 @@ export function Header() {
                 <Link
                   to="/dashboard"
                   onClick={() => setMobileOpen(false)}
-                  className={`flex items-center gap-2 rounded-md bg-secondary px-3 py-2 text-sm font-semibold text-ink transition-colors hover:bg-violet/10 hover:text-violet ${focusRing}`}
+                  className={`flex items-center gap-2 rounded-md bg-violet/10 px-3 py-2 text-sm font-semibold text-violet transition-colors hover:bg-violet hover:text-white ${focusRing}`}
                 >
-                  <PremiumUser className="size-4 text-violet" aria-hidden="true" />
+                  <PremiumUser className="size-4" aria-hidden="true" />
                   Dashboard
                 </Link>
                 <button
@@ -240,7 +240,7 @@ export function Header() {
                     setMobileOpen(false);
                     handleSignOut();
                   }}
-                  className={`flex items-center gap-2 rounded-md bg-ink px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-violet ${focusRing}`}
+                  className={`flex items-center gap-2 rounded-md bg-violet px-3 py-2 text-sm font-semibold text-white transition-colors hover:brightness-110 ${focusRing}`}
                 >
                   <PremiumLogOut className="size-4" aria-hidden="true" />
                   Sign out
@@ -251,9 +251,9 @@ export function Header() {
                 <Link
                   to="/login"
                   onClick={() => setMobileOpen(false)}
-                  className={`flex items-center gap-2 rounded-md bg-secondary px-3 py-2 text-sm font-semibold text-ink transition-colors hover:bg-violet/10 hover:text-violet ${focusRing}`}
+                  className={`flex items-center gap-2 rounded-md bg-violet/10 px-3 py-2 text-sm font-semibold text-violet transition-colors hover:bg-violet hover:text-white ${focusRing}`}
                 >
-                  <PremiumUser className="size-4 text-violet" aria-hidden="true" />
+                  <PremiumUser className="size-4" aria-hidden="true" />
                   Sign in
                 </Link>
               </div>

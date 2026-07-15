@@ -14,6 +14,7 @@ import { ServerTrackingAdmin } from "@/components/admin/ServerTrackingAdmin";
 import { ProductDetailsAdmin } from "@/components/admin/ProductDetailsAdmin";
 import { ChatbotAdmin } from "@/components/admin/ChatbotAdmin";
 import { ReviewsAdmin } from "@/components/admin/ReviewsAdmin";
+import { ContactLeadsAdmin } from "@/components/admin/ContactLeadsAdmin";
 import { OrdersAdmin } from "@/components/admin/OrdersAdmin";
 import { ReferralsAdmin } from "@/components/admin/ReferralsAdmin";
 import { StripeEventsAdmin } from "@/components/admin/StripeEventsAdmin";
@@ -194,6 +195,7 @@ function AdminPage() {
           <DebugModeAdmin />
           <ChatbotAdmin />
           <ReviewsAdmin />
+          <ContactLeadsAdmin />
         </div>
 
         <h2 className="mb-4 font-display text-xl font-bold">Product cover editor</h2>

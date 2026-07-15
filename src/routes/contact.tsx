@@ -1,7 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteShell } from "@/components/site/SiteShell";
 import { useState } from "react";
-import { Mail, MessageCircle, Calendar } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
+import { Mail, MessageCircle, Calendar, Loader2 } from "lucide-react";
+import { submitContactLead } from "@/lib/contact-leads.functions";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -15,6 +17,34 @@ export const Route = createFileRoute("/contact")({
 
 function Contact() {
   const [sent, setSent] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const submit = useServerFn(submitContactLead);
+
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (submitting) return;
+    const fd = new FormData(e.currentTarget);
+    const payload = {
+      name: String(fd.get("name") ?? "").trim(),
+      email: String(fd.get("email") ?? "").trim(),
+      company: String(fd.get("company") ?? "").trim() || null,
+      message: String(fd.get("message") ?? "").trim(),
+      source: "contact_form",
+      page_url: typeof window !== "undefined" ? window.location.href : null,
+    };
+    setSubmitting(true);
+    setError(null);
+    try {
+      await submit({ data: payload });
+      setSent(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
   return (
     <SiteShell>
       <section className="px-6 py-20">
@@ -33,16 +63,13 @@ function Contact() {
             ) : (
               <form
                 className="mt-8 space-y-4 rounded-2xl border border-border bg-card p-6"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  setSent(true);
-                }}
+                onSubmit={onSubmit}
               >
                 <div className="grid gap-4 sm:grid-cols-2">
-                  <Field label="Name" name="name" placeholder="Jane Doe" required />
-                  <Field label="Work email" name="email" type="email" placeholder="jane@company.com" required />
+                  <Field label="Name" name="name" placeholder="Jane Doe" required maxLength={120} />
+                  <Field label="Work email" name="email" type="email" placeholder="jane@company.com" required maxLength={255} />
                 </div>
-                <Field label="Company" name="company" placeholder="Acme Inc." />
+                <Field label="Company" name="company" placeholder="Acme Inc." maxLength={160} />
                 <div>
                   <label className="mb-1.5 block font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
                     What do you need?
@@ -51,15 +78,23 @@ function Contact() {
                     name="message"
                     rows={5}
                     required
+                    maxLength={4000}
                     placeholder="Describe your ICP: industry, title, geography, quantity."
                     className="w-full rounded-xl border border-border bg-background px-4 py-3 outline-none focus:border-violet"
                   />
                 </div>
+                {error && (
+                  <p className="rounded-lg border border-coral/30 bg-coral/5 px-3 py-2 text-sm text-coral">
+                    {error}
+                  </p>
+                )}
                 <button
                   type="submit"
-                  className="w-full rounded-xl bg-violet py-3 font-semibold text-white shadow-lg shadow-violet/20"
+                  disabled={submitting}
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-violet py-3 font-semibold text-white shadow-lg shadow-violet/20 disabled:opacity-60"
                 >
-                  Send message
+                  {submitting && <Loader2 className="size-4 animate-spin" />}
+                  {submitting ? "Sending..." : "Send message"}
                 </button>
               </form>
             )}

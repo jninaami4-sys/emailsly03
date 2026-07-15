@@ -324,6 +324,57 @@ export type Database = {
         }
         Relationships: []
       }
+      contact_leads: {
+        Row: {
+          company: string | null
+          created_at: string
+          email: string
+          id: string
+          ip: string | null
+          message: string
+          name: string
+          notes: string | null
+          page_url: string | null
+          source: string
+          status: string
+          updated_at: string
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          company?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          ip?: string | null
+          message: string
+          name: string
+          notes?: string | null
+          page_url?: string | null
+          source?: string
+          status?: string
+          updated_at?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          company?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          ip?: string | null
+          message?: string
+          name?: string
+          notes?: string | null
+          page_url?: string | null
+          source?: string
+          status?: string
+          updated_at?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       conversion_events: {
         Row: {
           created_at: string

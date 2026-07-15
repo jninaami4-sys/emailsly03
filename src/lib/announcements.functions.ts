@@ -118,6 +118,7 @@ type UpsertInput = {
   audience: AnnouncementAudience;
   start_at: string | null;
   end_at: string | null;
+  priority: number;
 };
 
 export const upsertAnnouncement = createServerFn({ method: "POST" })

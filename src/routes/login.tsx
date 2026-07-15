@@ -6,6 +6,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { ensureDemoAccount } from "@/lib/demo-account.functions";
 import { ArrowRight, Loader2, Mail, Lock, ShieldCheck, Zap, BadgeCheck, Eye, EyeOff, AlertCircle, CheckCircle2, ArrowLeft } from "lucide-react";
 import { PremiumSparkles as Sparkles } from "@/components/site/PremiumIcons";
+import { useSiteContent } from "@/hooks/use-site-content";
 
 const searchSchema = z.object({
   mode: z.enum(["signin", "signup", "forgot"]).optional(),

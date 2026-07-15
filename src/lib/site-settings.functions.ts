@@ -3,12 +3,16 @@ import { createClient } from "@supabase/supabase-js";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import type { Database } from "@/integrations/supabase/types";
 
+export type TawkPosition = "br" | "bl" | "tr" | "tl";
+
 export type SiteSettings = {
   gtm_id: string;
   ga4_id: string;
   fb_pixel_id: string;
   tiktok_pixel_id: string;
   custom_head_html: string;
+  tawk_enabled: boolean;
+  tawk_position: TawkPosition;
   updated_at: string;
 };
 
@@ -18,6 +22,8 @@ const EMPTY: SiteSettings = {
   fb_pixel_id: "",
   tiktok_pixel_id: "",
   custom_head_html: "",
+  tawk_enabled: true,
+  tawk_position: "br",
   updated_at: "",
 };
 

@@ -62,6 +62,14 @@ const defaultFaqs = [
 
 function Home() {
   const featured = PRODUCTS.filter((p) => p.featured).concat(PRODUCTS.filter((p) => !p.featured)).slice(0, 3);
+  const trust = useSiteContent("trust");
+  const faqContent = useSiteContent("faq");
+  const stats = [
+    { k: trust.stat_1_value, v: trust.stat_1_label },
+    { k: trust.stat_2_value, v: trust.stat_2_label },
+    { k: trust.stat_3_value, v: trust.stat_3_label },
+  ];
+  const faqs = (faqContent.items && faqContent.items.length > 0 ? faqContent.items : defaultFaqs) as Array<{ q: string; a: string }>;
 
   return (
     <SiteShell>

@@ -77,7 +77,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "Verified B2B lead data. Pay per lead, no subscription, 24-hour delivery, 99% accuracy.",
       },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
+      // og:image / twitter:image are set per-leaf-route via ogImageMeta()
+      // from '@/lib/og-images' so each page can pick a branded template.
     ],
     links: [
       { rel: "stylesheet", href: appCss },

@@ -3,6 +3,7 @@ import { SiteShell } from "@/components/site/SiteShell";
 import { BLOG_POSTS, formatPublishedAt, getPostBySlug, type PostBlock } from "@/lib/blog-posts";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { PremiumSparkles as Sparkles } from "@/components/site/PremiumIcons";
+import { ogImageMeta, OG_IMAGES } from "@/lib/og-images";
 
 export const Route = createFileRoute("/blog/$slug")({
   loader: ({ params }) => {
@@ -15,6 +16,7 @@ export const Route = createFileRoute("/blog/$slug")({
     if (!post) {
       return { meta: [{ title: "Post not found | EmailsLy Blog" }] };
     }
+    const image = (post as { coverImage?: string }).coverImage ?? OG_IMAGES.blog;
     return {
       meta: [
         { title: `${post.title} | EmailsLy Blog` },
@@ -22,6 +24,7 @@ export const Route = createFileRoute("/blog/$slug")({
         { property: "og:title", content: post.title },
         { property: "og:description", content: post.excerpt },
         { property: "og:type", content: "article" },
+        ...ogImageMeta(image),
       ],
     };
   },

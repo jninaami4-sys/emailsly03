@@ -5,12 +5,16 @@ import { useServerFn } from "@tanstack/react-start";
 import { Mail, MessageCircle, Calendar, Loader2 } from "lucide-react";
 import { submitContactLead } from "@/lib/contact-leads.functions";
 import { useSiteContent } from "@/hooks/use-site-content";
+import { ogImageMeta, OG_IMAGES } from "@/lib/og-images";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
       { title: "Contact — Talk to sales | EmailsLy" },
       { name: "description", content: "Get a custom quote or ask about our lead-data services. Response within 4 business hours." },
+      { property: "og:title", content: "Contact EmailsLy — Talk to sales" },
+      { property: "og:description", content: "Get a custom quote. Response within 4 business hours." },
+      ...ogImageMeta(OG_IMAGES.default),
     ],
   }),
   component: Contact,

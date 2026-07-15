@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { ogImageMeta, OG_IMAGES } from "@/lib/og-images";
 import { SiteShell } from "@/components/site/SiteShell";
 import { BLOG_POSTS, formatPublishedAt } from "@/lib/blog-posts";
 import { ArrowRight } from "lucide-react";
@@ -18,6 +19,7 @@ export const Route = createFileRoute("/blog")({
         property: "og:description",
         content: "Deliverability, ICP, RevOps — practical guides from the EmailsLy team.",
       },
+      ...ogImageMeta(OG_IMAGES.blog),
     ],
   }),
   component: BlogList,

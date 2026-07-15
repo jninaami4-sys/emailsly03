@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { ogImageMeta, OG_IMAGES } from "@/lib/og-images";
 import { SiteShell } from "@/components/site/SiteShell";
 import { PricingCalculator } from "@/components/site/PricingCalculator";
 import { Zap, Crown, Phone, Linkedin, PenTool, ArrowRight, CheckCircle2 } from "lucide-react";
@@ -19,6 +20,7 @@ export const Route = createFileRoute("/pricing")({
         property: "og:description",
         content: "B2B leads at a fraction of the cost. Pay per lead, no subscription.",
       },
+      ...ogImageMeta(OG_IMAGES.pricing),
     ],
   }),
   component: Pricing,

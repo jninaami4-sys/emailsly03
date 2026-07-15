@@ -9,7 +9,7 @@ import { useSiteContent } from "@/hooks/use-site-content";
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact — Talk to sales | LyraData" },
+      { title: "Contact — Talk to sales | EmailsLy" },
       { name: "description", content: "Get a custom quote or ask about our lead-data services. Response within 4 business hours." },
     ],
   }),

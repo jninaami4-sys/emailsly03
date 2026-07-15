@@ -92,10 +92,10 @@ function Consent() {
       <div className="w-full max-w-md rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur p-8 space-y-6">
         <div className="space-y-2">
           <p className="text-xs uppercase tracking-widest text-muted-foreground">Authorize connection</p>
-          <h1 className="text-2xl font-semibold">Connect {clientName} to LyraData</h1>
+          <h1 className="text-2xl font-semibold">Connect {clientName} to EmailsLy</h1>
           <p className="text-sm text-muted-foreground">
-            This lets {clientName} call LyraData tools while you are signed in. It does not bypass
-            LyraData's permissions or backend policies.
+            This lets {clientName} call EmailsLy tools while you are signed in. It does not bypass
+            EmailsLy's permissions or backend policies.
           </p>
         </div>
 

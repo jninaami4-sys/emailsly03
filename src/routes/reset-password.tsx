@@ -26,8 +26,8 @@ export const Route = createFileRoute("/reset-password")({
   validateSearch: zodValidator(searchSchema),
   head: () => ({
     meta: [
-      { title: "Reset your password | LyraData" },
-      { name: "description", content: "Set a new password for your LyraData account." },
+      { title: "Reset your password | EmailsLy" },
+      { name: "description", content: "Set a new password for your EmailsLy account." },
     ],
   }),
   component: ResetPasswordPage,

@@ -10,7 +10,7 @@ import { Search } from "lucide-react";
 export const Route = createFileRoute("/store")({
   head: () => ({
     meta: [
-      { title: "Lead Store — Prebuilt B2B lead lists | LyraData" },
+      { title: "Lead Store — Prebuilt B2B lead lists | EmailsLy" },
       { name: "description", content: "Browse verified prebuilt B2B lead lists. Instant download, pay per list, no subscription." },
       { property: "og:title", content: "Lead Store — Prebuilt B2B lead lists" },
       { property: "og:description", content: "Browse verified prebuilt B2B lead lists. Instant download after checkout." },

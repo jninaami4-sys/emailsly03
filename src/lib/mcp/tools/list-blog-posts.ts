@@ -5,7 +5,7 @@ import { BLOG_POSTS } from "@/lib/blog-posts";
 export default defineTool({
   name: "list_blog_posts",
   title: "List blog posts",
-  description: "List LyraData blog posts with title, excerpt, category, and publish date.",
+  description: "List EmailsLy blog posts with title, excerpt, category, and publish date.",
   inputSchema: {
     limit: z.number().int().min(1).max(50).optional().describe("Max posts to return (default 20)."),
   },
@@ -17,7 +17,7 @@ export default defineTool({
       excerpt: p.excerpt,
       category: p.category,
       publishedAt: p.publishedAt,
-      url: `https://lyradata.app/blog/${p.slug}`,
+      url: `https://emailsly.app/blog/${p.slug}`,
     }));
     return {
       content: [{ type: "text", text: JSON.stringify(items, null, 2) }],

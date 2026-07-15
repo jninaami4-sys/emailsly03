@@ -4,7 +4,7 @@ import { ServiceLanding } from "@/components/site/ServiceLanding";
 export const Route = createFileRoute("/manual-lead-research")({
   head: () => ({
     meta: [
-      { title: "Manual lead research — Human-verified B2B leads | LyraData" },
+      { title: "Manual lead research — Human-verified B2B leads | EmailsLy" },
       { name: "description", content: "Bespoke manual B2B lead research for niche industries and unique parameters. Delivered in 48 hours." },
       { property: "og:title", content: "Manual lead research — Human-verified" },
       { property: "og:description", content: "Human researchers build your list from scratch. Any niche, any field." },

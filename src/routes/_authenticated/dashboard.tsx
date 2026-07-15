@@ -26,7 +26,7 @@ import { SupportTicketModal } from "@/components/site/SupportTicketModal";
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
     meta: [
-      { title: "Your dashboard — LyraData" },
+      { title: "Your dashboard — EmailsLy" },
       { name: "robots", content: "noindex,nofollow" },
     ],
   }),
@@ -1094,7 +1094,7 @@ function ReferralCard() {
   const code = data?.referral_code ?? "…";
   const link = typeof window !== "undefined"
     ? `${window.location.origin}/?ref=${code}`
-    : `https://lyradata.com/?ref=${code}`;
+    : `https://emailsly.com/?ref=${code}`;
   const balance = (data?.balance_cents ?? 0) / 100;
   const earned = (data?.totals.earned_cents ?? 0) / 100;
   const pending = (data?.totals.pending_cents ?? 0) / 100;

@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 
-export const DEMO_EMAIL = "demo@lyradata.app";
+export const DEMO_EMAIL = "demo@emailsly.app";
 export const DEMO_PASSWORD = "DemoLyra!2026";
 
 export const ensureDemoAccount = createServerFn({ method: "POST" }).handler(async () => {

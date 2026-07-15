@@ -6,9 +6,9 @@ import { PremiumSparkles as Sparkles } from "@/components/site/PremiumIcons";
 export const Route = createFileRoute("/shader-lab")({
   head: () => ({
     meta: [
-      { title: "Shader Lab — LyraData" },
+      { title: "Shader Lab — EmailsLy" },
       { name: "description", content: "Interactive WebGL hero shader — a living nebula that reacts to your cursor." },
-      { property: "og:title", content: "Shader Lab — LyraData" },
+      { property: "og:title", content: "Shader Lab — EmailsLy" },
       { property: "og:description", content: "A living nebula built with WebGL 2. Move your cursor to bend the light." },
     ],
   }),
@@ -199,7 +199,7 @@ function ShaderLabPage() {
             to="/"
             className="font-mono text-xs font-bold uppercase tracking-[0.25em] text-white/80 transition-colors hover:text-white"
           >
-            ← LyraData
+            ← EmailsLy
           </Link>
           <span className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/5 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-white/80 backdrop-blur">
             <Sparkles className="size-3" /> Shader Lab

@@ -39,7 +39,7 @@ const curatedTestimonials: Testimonial[] = [
     role: "VP Growth, Northwind",
   },
   {
-    text: "Delivered in 18 hours. Bounce rate under 2%. LyraData is now our default outbound engine — we cancelled two other tools.",
+    text: "Delivered in 18 hours. Bounce rate under 2%. EmailsLy is now our default outbound engine — we cancelled two other tools.",
     image:
       "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=150&h=150",
     name: "Marcus Rivera",
@@ -60,7 +60,7 @@ const curatedTestimonials: Testimonial[] = [
     role: "CEO, Vortex",
   },
   {
-    text: "Our reply rate doubled and pipeline coverage tripled. LyraData is the quiet engine behind our Q4 number.",
+    text: "Our reply rate doubled and pipeline coverage tripled. EmailsLy is the quiet engine behind our Q4 number.",
     image:
       "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=150&h=150",
     name: "Hassan Ali",
@@ -96,7 +96,7 @@ function toVideoItem(r: PublicReview): VideoTestimonial | null {
   return {
     name: r.display_name,
     role: r.role || "Verified client",
-    company: r.country || "LyraData customer",
+    company: r.country || "EmailsLy customer",
     poster: r.poster_url ?? "",
     src: r.video_url,
     quote: r.body ?? "",

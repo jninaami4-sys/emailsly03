@@ -32,7 +32,7 @@ export const Route = createFileRoute("/payment-success")({
   }),
   head: () => ({
     meta: [
-      { title: "Payment successful — LyraData" },
+      { title: "Payment successful — EmailsLy" },
       { name: "description", content: "Your order has been received and payment confirmed." },
       { name: "robots", content: "noindex, nofollow" },
     ],
@@ -493,7 +493,7 @@ function Invoice(props: {
               <PremiumLogoMark className="size-6" />
             </div>
             <div className="min-w-0">
-              <div className="font-display text-lg font-bold leading-none">LyraData</div>
+              <div className="font-display text-lg font-bold leading-none">EmailsLy</div>
               <div className="text-[11px] uppercase tracking-widest text-neutral-500">
                 Official Receipt
               </div>
@@ -512,7 +512,7 @@ function Invoice(props: {
               <div className="mb-1 font-mono text-[10px] font-semibold uppercase tracking-widest text-neutral-400">
                 From
               </div>
-              <div className="font-semibold">LyraData, Inc.</div>
+              <div className="font-semibold">EmailsLy, Inc.</div>
               <div className="text-neutral-600">
                 548 Market St #92384
                 <br />
@@ -635,7 +635,7 @@ function Invoice(props: {
           <p className="mt-6 text-xs text-neutral-500">
             Thank you for your business. If you have questions about this receipt, reply to your
             confirmation email or contact{" "}
-            <span className="text-neutral-700">support@lyradata.com</span>.
+            <span className="text-neutral-700">support@emailsly.com</span>.
           </p>
         </div>
 
@@ -686,7 +686,7 @@ function Invoice(props: {
         <div className="absolute inset-x-0 -top-2 h-4 bg-[radial-gradient(circle_at_8px_8px,white_6px,transparent_7px)] [background-size:16px_16px]" />
         <div className="flex flex-wrap items-center justify-between gap-2 border-t border-dashed border-neutral-200 px-5 py-4 text-[11px] text-neutral-500 sm:px-8 sm:py-5 md:px-12">
           <span className="font-mono uppercase tracking-widest">
-            Lyra Data · lyradata.com
+            EmailsLy · emailsly.com
           </span>
           <span className="truncate font-mono">{orderId}</span>
         </div>
@@ -783,7 +783,7 @@ function buildReceiptHtml(r: {
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<title>Receipt ${esc(r.invoiceNo)} — LyraData</title>
+<title>Receipt ${esc(r.invoiceNo)} — EmailsLy</title>
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <style>
   :root { color-scheme: light; }
@@ -818,7 +818,7 @@ function buildReceiptHtml(r: {
         <div class="brand">
           <div class="mark">L</div>
           <div>
-            <h1>LyraData</h1>
+            <h1>EmailsLy</h1>
             <div class="muted">Official Receipt</div>
           </div>
         </div>
@@ -837,7 +837,7 @@ function buildReceiptHtml(r: {
         </div>
         <div>
           <div class="muted">From</div>
-          <div style="font-weight:600; margin-top:4px;">LyraData, Inc.</div>
+          <div style="font-weight:600; margin-top:4px;">EmailsLy, Inc.</div>
           <div style="color:#4b5563;">548 Market St #92384<br />San Francisco, CA 94104</div>
         </div>
         <div>
@@ -870,11 +870,11 @@ function buildReceiptHtml(r: {
       </table>
 
       <p style="margin-top:24px; font-size:12px; color:#6b7280;">
-        Thank you for your business. Questions? Contact support@lyradata.com.
+        Thank you for your business. Questions? Contact support@emailsly.com.
       </p>
     </div>
     <div class="foot">
-      <span>LyraData · lyradata.com</span>
+      <span>EmailsLy · emailsly.com</span>
       <span>${esc(r.invoiceNo)}</span>
     </div>
   </div>

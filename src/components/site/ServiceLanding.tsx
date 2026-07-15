@@ -50,7 +50,7 @@ const DEFAULT_PROCESS: NonNullable<ServicePageProps["process"]> = [
 const DEFAULT_TESTIMONIALS: NonNullable<ServicePageProps["testimonials"]> = [
   {
     quote:
-      "LyraData cut our prospecting time in half. We no longer spend hours cleaning exports — we just receive the verified file and start selling.",
+      "EmailsLy cut our prospecting time in half. We no longer spend hours cleaning exports — we just receive the verified file and start selling.",
     author: "Marcus Thorne",
     role: "VP Sales, VelocityGrowth",
     initials: "MT",

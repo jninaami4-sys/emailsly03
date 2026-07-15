@@ -26,7 +26,7 @@ export function AuthGate({ children }: { children: ReactNode }) {
           <span className="size-1.5 animate-pulse rounded-full bg-violet" />
           Members-only access
         </div>
-        <h1 className="mt-2 font-display text-2xl font-bold">Sign in to unlock LyraData</h1>
+        <h1 className="mt-2 font-display text-2xl font-bold">Sign in to unlock EmailsLy</h1>
         <p className="mt-2 text-sm text-muted-foreground">
           Access verified B2B lead data, live pricing, and your order history.
         </p>

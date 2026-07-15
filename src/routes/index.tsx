@@ -36,9 +36,9 @@ const totalRows = apolloData.rows.length + linkedinData.rows.length + zoominfoDa
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "LyraData — Verified B2B leads from Apollo, ZoomInfo & LinkedIn" },
+      { title: "EmailsLy — Verified B2B leads from Apollo, ZoomInfo & LinkedIn" },
       { name: "description", content: "Clean, verified B2B lead exports from Apollo, ZoomInfo, and LinkedIn Sales Navigator — delivered to your CRM in 24 hours." },
-      { property: "og:title", content: "LyraData — Verified B2B Data Platform" },
+      { property: "og:title", content: "EmailsLy — Verified B2B Data Platform" },
       { property: "og:description", content: "Verified leads delivered to your CRM in 24h. No manual cleaning." },
     ],
   }),
@@ -137,7 +137,7 @@ function Home() {
           <div className="mx-auto max-w-7xl">
             <div className="mb-12 flex flex-wrap items-end justify-between gap-6">
               <div>
-                <p className="font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-indigo">Why LyraData</p>
+                <p className="font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-indigo">Why EmailsLy</p>
                 <h2 className="mt-2 font-display text-3xl font-bold lg:text-5xl">Built for operators who ship.</h2>
               </div>
               <Link
@@ -292,7 +292,7 @@ function Home() {
               ))}
             </div>
             <blockquote className="font-display text-3xl font-medium leading-snug text-foreground md:text-4xl">
-              "LyraData cut our prospecting time in half. We no longer spend hours cleaning Apollo exports — we just receive the verified file and start selling."
+              "EmailsLy cut our prospecting time in half. We no longer spend hours cleaning Apollo exports — we just receive the verified file and start selling."
             </blockquote>
             <div className="mt-10 flex items-center justify-center gap-3">
               <div className="grid size-12 place-items-center rounded-full bg-indigo font-bold text-white">MT</div>

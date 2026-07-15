@@ -14,13 +14,13 @@ const sampleDatasetsQuery = queryOptions({
 export const Route = createFileRoute("/sample-data")({
   head: () => ({
     meta: [
-      { title: "Live sample data — Apollo, LinkedIn, ZoomInfo | LyraData" },
+      { title: "Live sample data — Apollo, LinkedIn, ZoomInfo | EmailsLy" },
       {
         name: "description",
         content:
           "Browse verified B2B lead samples from Apollo, LinkedIn Sales Navigator, and ZoomInfo. Preview live Google Drive CSVs before you order.",
       },
-      { property: "og:title", content: "Live sample data — LyraData" },
+      { property: "og:title", content: "Live sample data — EmailsLy" },
       {
         property: "og:description",
         content:

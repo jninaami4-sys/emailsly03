@@ -21,7 +21,7 @@ export const Route = createFileRoute("/payment-failed")({
   }),
   head: () => ({
     meta: [
-      { title: "Payment failed — LyraData" },
+      { title: "Payment failed — EmailsLy" },
       { name: "description", content: "Your payment could not be processed." },
       { name: "robots", content: "noindex, nofollow" },
     ],

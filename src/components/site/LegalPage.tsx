@@ -150,7 +150,7 @@ export function LegalPage({
                 Questions?
               </div>
               <p className="mt-2 text-sm text-muted-foreground">
-                Reach the LyraData team for anything policy-related.
+                Reach the EmailsLy team for anything policy-related.
               </p>
               <Link
                 to="/contact"

@@ -63,13 +63,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "LyraData — Verified B2B lead data, on-demand" },
+      { title: "EmailsLy — Verified B2B lead data, on-demand" },
       {
         name: "description",
         content:
           "Verified B2B lead data from Apollo, LinkedIn, and ZoomInfo. Pay per lead, no subscription, delivered in 24 hours with 99% accuracy.",
       },
-      { property: "og:title", content: "LyraData — Verified B2B lead data, on-demand" },
+      { property: "og:title", content: "EmailsLy — Verified B2B lead data, on-demand" },
       {
         property: "og:description",
         content:

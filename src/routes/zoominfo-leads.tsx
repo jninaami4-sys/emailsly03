@@ -4,7 +4,7 @@ import { ServiceLanding } from "@/components/site/ServiceLanding";
 export const Route = createFileRoute("/zoominfo-leads")({
   head: () => ({
     meta: [
-      { title: "ZoomInfo verified leads | LyraData" },
+      { title: "ZoomInfo verified leads | EmailsLy" },
       { name: "description", content: "ZoomInfo-sourced leads with direct-dial mobile numbers and enterprise firmographics. From $0.25/lead." },
       { property: "og:title", content: "ZoomInfo verified leads" },
       { property: "og:description", content: "Enterprise-grade B2B data with direct dials — no $15k contract." },

@@ -16,8 +16,8 @@ export const Route = createFileRoute("/login")({
   validateSearch: searchSchema,
   head: () => ({
     meta: [
-      { title: "Sign in or get started | LyraData" },
-      { name: "description", content: "Sign in or create your free LyraData account to access verified B2B lead data." },
+      { title: "Sign in or get started | EmailsLy" },
+      { name: "description", content: "Sign in or create your free EmailsLy account to access verified B2B lead data." },
     ],
   }),
   component: AuthPage,

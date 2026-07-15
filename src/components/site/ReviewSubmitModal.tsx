@@ -370,7 +370,7 @@ function SubmitFlow({
                 rows={6}
                 minLength={40}
                 maxLength={800}
-                placeholder="What did LyraData help you do? Be specific — numbers and outcomes are gold."
+                placeholder="What did EmailsLy help you do? Be specific — numbers and outcomes are gold."
                 className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none focus:border-violet"
               />
               <div className="mt-1 flex items-center justify-between text-[11px] text-muted-foreground">
@@ -430,7 +430,7 @@ function SubmitFlow({
               className="mt-0.5 size-4 accent-violet"
             />
             <span className="text-muted-foreground">
-              I confirm this review is my own honest experience and I allow LyraData to display it
+              I confirm this review is my own honest experience and I allow EmailsLy to display it
               with the name shown above.
             </span>
           </label>

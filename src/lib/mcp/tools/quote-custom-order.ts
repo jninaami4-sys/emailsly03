@@ -14,7 +14,7 @@ export default defineTool({
   name: "quote_custom_order",
   title: "Quote a custom lead order",
   description:
-    "Estimate the price for a custom lead order (100+ leads) using LyraData's public per-lead pricing tiers. Returns per-lead rate, subtotal, and the matching tier.",
+    "Estimate the price for a custom lead order (100+ leads) using EmailsLy's public per-lead pricing tiers. Returns per-lead rate, subtotal, and the matching tier.",
   inputSchema: {
     quantity: z.number().int().min(100).max(1_000_000).describe("Number of leads (minimum 100)."),
   },
@@ -29,7 +29,7 @@ export default defineTool({
       currency: "USD",
       tier: `${tier.minQty.toLocaleString()}–${tier.maxQty.toLocaleString()} leads`,
       note: "Estimate only. Final quote may vary based on filters, geography, and enrichment.",
-      pricingUrl: "https://lyradata.app/pricing",
+      pricingUrl: "https://emailsly.app/pricing",
     };
     return {
       content: [{ type: "text", text: JSON.stringify(payload, null, 2) }],

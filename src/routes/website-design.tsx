@@ -5,7 +5,7 @@ import { Check, ArrowRight } from "lucide-react";
 export const Route = createFileRoute("/website-design")({
   head: () => ({
     meta: [
-      { title: "B2B Website Design | LyraData" },
+      { title: "B2B Website Design | EmailsLy" },
       { name: "description", content: "Conversion-focused B2B website design for outbound teams. From landing pages to full brand sites." },
       { property: "og:title", content: "B2B Website Design" },
       { property: "og:description", content: "Conversion-focused B2B websites, built to convert cold traffic." },

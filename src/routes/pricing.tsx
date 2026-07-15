@@ -8,13 +8,13 @@ import { AddOns } from "@/components/site/AddOns";
 export const Route = createFileRoute("/pricing")({
   head: () => ({
     meta: [
-      { title: "Pricing — Simple, Honest Pricing | LyraData" },
+      { title: "Pricing — Simple, Honest Pricing | EmailsLy" },
       {
         name: "description",
         content:
           "Transparent per-lead and flat-rate pricing. No hidden fees, no monthly subscriptions. Pay only for what you need.",
       },
-      { property: "og:title", content: "Simple, Honest Pricing — LyraData" },
+      { property: "og:title", content: "Simple, Honest Pricing — EmailsLy" },
       {
         property: "og:description",
         content: "B2B leads at a fraction of the cost. Pay per lead, no subscription.",
@@ -276,14 +276,14 @@ function Pricing() {
               tagline="Sales Engagement Platform"
               theirRate="~$0.20"
               ourRate="$0.0035"
-              ourLabel="LyraData Apollo Export"
+              ourLabel="EmailsLy Apollo Export"
             />
             <ComparisonCard
               competitor="LinkedIn Sales Navigator"
               tagline="Professional Network Data"
               theirRate="~$0.10"
               ourRate="$0.01"
-              ourLabel="LyraData LinkedIn B2B"
+              ourLabel="EmailsLy LinkedIn B2B"
             />
           </div>
           <p className="mt-8 text-center font-mono text-[11px] text-muted-foreground">

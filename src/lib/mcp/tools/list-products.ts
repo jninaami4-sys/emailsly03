@@ -6,7 +6,7 @@ export default defineTool({
   name: "list_products",
   title: "List prebuilt lead products",
   description:
-    "List LyraData's prebuilt lead-list products from the store. Optionally filter by category and limit results.",
+    "List EmailsLy's prebuilt lead-list products from the store. Optionally filter by category and limit results.",
   inputSchema: {
     category: z
       .string()
@@ -31,7 +31,7 @@ export default defineTool({
       geography: p.geography,
       description: p.description,
       fields: p.fields,
-      url: `https://lyradata.app/store#${p.slug}`,
+      url: `https://emailsly.app/store#${p.slug}`,
     }));
     return {
       content: [{ type: "text", text: JSON.stringify(items, null, 2) }],

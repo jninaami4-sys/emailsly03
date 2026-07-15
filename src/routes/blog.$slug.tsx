@@ -13,11 +13,11 @@ export const Route = createFileRoute("/blog/$slug")({
   head: ({ loaderData }) => {
     const post = loaderData?.post;
     if (!post) {
-      return { meta: [{ title: "Post not found | LyraData Blog" }] };
+      return { meta: [{ title: "Post not found | EmailsLy Blog" }] };
     }
     return {
       meta: [
-        { title: `${post.title} | LyraData Blog` },
+        { title: `${post.title} | EmailsLy Blog` },
         { name: "description", content: post.excerpt },
         { property: "og:title", content: post.title },
         { property: "og:description", content: post.excerpt },
@@ -138,7 +138,7 @@ function BlogPost() {
             </div>
           </div>
           <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-            Writing from the LyraData outbound desk — where the plays in this post are tested against
+            Writing from the EmailsLy outbound desk — where the plays in this post are tested against
             real quotas every single week.
           </p>
         </div>

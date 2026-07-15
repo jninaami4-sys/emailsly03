@@ -7,16 +7,16 @@ import { PremiumSparkles as Sparkles } from "@/components/site/PremiumIcons";
 export const Route = createFileRoute("/blog")({
   head: () => ({
     meta: [
-      { title: "Blog — Outbound, data, and RevOps playbooks | LyraData" },
+      { title: "Blog — Outbound, data, and RevOps playbooks | EmailsLy" },
       {
         name: "description",
         content:
-          "Field-tested playbooks on cold email deliverability, B2B data sources, ICP scoring, and CRM operations from the LyraData team.",
+          "Field-tested playbooks on cold email deliverability, B2B data sources, ICP scoring, and CRM operations from the EmailsLy team.",
       },
-      { property: "og:title", content: "LyraData Blog — Outbound & data playbooks" },
+      { property: "og:title", content: "EmailsLy Blog — Outbound & data playbooks" },
       {
         property: "og:description",
-        content: "Deliverability, ICP, RevOps — practical guides from the LyraData team.",
+        content: "Deliverability, ICP, RevOps — practical guides from the EmailsLy team.",
       },
     ],
   }),
@@ -36,7 +36,7 @@ function BlogList() {
           <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-violet/20 bg-violet-soft px-3 py-1">
             <Sparkles className="size-3 text-violet" />
             <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-violet">
-              LyraData Field Notes
+              EmailsLy Field Notes
             </span>
           </div>
           <h1 className="font-display text-5xl font-bold leading-[1.05] tracking-tighter text-foreground md:text-6xl">
@@ -45,7 +45,7 @@ function BlogList() {
             <span className="text-violet">building modern pipelines.</span>
           </h1>
           <p className="mx-auto mt-8 max-w-2xl text-lg leading-relaxed text-muted-foreground md:text-xl">
-            Deliverability, data, and RevOps — written by the operators running LyraData's own outbound engine.
+            Deliverability, data, and RevOps — written by the operators running EmailsLy's own outbound engine.
           </p>
         </div>
       </section>

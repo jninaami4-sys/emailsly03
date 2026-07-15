@@ -28,7 +28,7 @@ export default defineTool({
       description: product.description,
       fields: product.fields,
       sampleNote: product.sampleNote,
-      url: `https://lyradata.app/store#${product.slug}`,
+      url: `https://emailsly.app/store#${product.slug}`,
     };
     return {
       content: [{ type: "text", text: JSON.stringify(payload, null, 2) }],

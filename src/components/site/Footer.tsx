@@ -147,7 +147,7 @@ export function Footer() {
         {/* Bottom bar */}
         <div className="flex flex-col gap-4 pt-8 text-xs text-white/40 md:flex-row md:items-center md:justify-between">
           <span className="font-mono uppercase tracking-widest">
-            © {new Date().getFullYear()} LyraData Inc. All rights reserved.
+            © {new Date().getFullYear()} EmailsLy Inc. All rights reserved.
           </span>
           <div className="flex flex-wrap gap-6">
             <Link to="/privacy-policy" className="transition-colors hover:text-white">

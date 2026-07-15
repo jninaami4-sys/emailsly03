@@ -10,10 +10,10 @@ import { PremiumSparkles as Sparkles } from "@/components/site/PremiumIcons";
 export const Route = createFileRoute("/track-order")({
   head: () => ({
     meta: [
-      { title: "Track your order | LyraData" },
-      { name: "description", content: "Look up your LyraData order status in real time using your order ID or email." },
-      { property: "og:title", content: "Track your order | LyraData" },
-      { property: "og:description", content: "Look up your LyraData order status in real time using your order ID or email." },
+      { title: "Track your order | EmailsLy" },
+      { name: "description", content: "Look up your EmailsLy order status in real time using your order ID or email." },
+      { property: "og:title", content: "Track your order | EmailsLy" },
+      { property: "og:description", content: "Look up your EmailsLy order status in real time using your order ID or email." },
     ],
   }),
   pendingComponent: TrackOrderSkeleton,

@@ -29,7 +29,7 @@ export const BLOG_POSTS: BlogPost[] = [
     category: "Outbound",
     readingMinutes: 8,
     publishedAt: "2026-06-24",
-    author: { name: "Marcus Thorne", role: "VP Sales, LyraData", initials: "MT" },
+    author: { name: "Marcus Thorne", role: "VP Sales, EmailsLy", initials: "MT" },
     cover: { eyebrow: "Deliverability", kicker: "Land in the primary tab — every time." },
     featured: true,
     content: [
@@ -74,7 +74,7 @@ export const BLOG_POSTS: BlogPost[] = [
       {
         type: "quote",
         text: "Deliverability is a compounding asset. Every clean send you make is credit toward the next one; every spam complaint burns a month of goodwill.",
-        cite: "LyraData deliverability desk",
+        cite: "EmailsLy deliverability desk",
       },
     ],
   },
@@ -86,7 +86,7 @@ export const BLOG_POSTS: BlogPost[] = [
     category: "Data Sources",
     readingMinutes: 6,
     publishedAt: "2026-06-10",
-    author: { name: "Elena Rodriguez", role: "Head of Data, LyraData", initials: "ER" },
+    author: { name: "Elena Rodriguez", role: "Head of Data, EmailsLy", initials: "ER" },
     cover: { eyebrow: "Benchmark", kicker: "Coverage, freshness, and cost — side by side." },
     content: [
       {
@@ -127,7 +127,7 @@ export const BLOG_POSTS: BlogPost[] = [
     category: "Strategy",
     readingMinutes: 5,
     publishedAt: "2026-05-28",
-    author: { name: "David Park", role: "Director RevOps, LyraData", initials: "DP" },
+    author: { name: "David Park", role: "Director RevOps, EmailsLy", initials: "DP" },
     cover: { eyebrow: "Framework", kicker: "Rank any list in five minutes." },
     content: [
       {
@@ -163,7 +163,7 @@ export const BLOG_POSTS: BlogPost[] = [
     category: "Operations",
     readingMinutes: 7,
     publishedAt: "2026-05-12",
-    author: { name: "Sarah Jenkins", role: "VP Growth, LyraData", initials: "SJ" },
+    author: { name: "Sarah Jenkins", role: "VP Growth, EmailsLy", initials: "SJ" },
     cover: { eyebrow: "RevOps", kicker: "Reclaim your pipeline in a weekend." },
     content: [
       {

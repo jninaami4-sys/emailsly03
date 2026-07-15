@@ -11,15 +11,15 @@
   },
   "mcp": {
     "server": {
-      "name": "lyradata-mcp",
+      "name": "emailsly-mcp",
       "version": "0.1.0",
-      "title": "LyraData MCP"
+      "title": "EmailsLy MCP"
     },
     "tools": [
       {
         "name": "list_products",
         "title": "List prebuilt lead products",
-        "description": "List LyraData's prebuilt lead-list products from the store. Optionally filter by category and limit results.",
+        "description": "List EmailsLy's prebuilt lead-list products from the store. Optionally filter by category and limit results.",
         "annotations": {
           "readOnlyHint": true,
           "idempotentHint": true,
@@ -71,7 +71,7 @@
       {
         "name": "list_blog_posts",
         "title": "List blog posts",
-        "description": "List LyraData blog posts with title, excerpt, category, and publish date.",
+        "description": "List EmailsLy blog posts with title, excerpt, category, and publish date.",
         "annotations": {
           "readOnlyHint": true,
           "idempotentHint": true,
@@ -94,7 +94,7 @@
       {
         "name": "quote_custom_order",
         "title": "Quote a custom lead order",
-        "description": "Estimate the price for a custom lead order (100+ leads) using LyraData's public per-lead pricing tiers. Returns per-lead rate, subtotal, and the matching tier.",
+        "description": "Estimate the price for a custom lead order (100+ leads) using EmailsLy's public per-lead pricing tiers. Returns per-lead rate, subtotal, and the matching tier.",
         "annotations": {
           "readOnlyHint": true,
           "idempotentHint": true,

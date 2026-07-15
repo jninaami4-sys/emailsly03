@@ -64,7 +64,7 @@ export function Preloader() {
               letterSpacing: "0.22em",
             }}
           >
-            {"lyradata".split("").map((ch, i) => (
+            {"emailsly".split("").map((ch, i) => (
               <span
                 key={i}
                 className="inline-block opacity-0"

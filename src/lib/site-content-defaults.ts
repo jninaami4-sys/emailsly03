@@ -55,7 +55,7 @@ export const SITE_CONTENT_DEFAULTS = {
   },
   footer: {
     tagline: "Verified B2B leads, delivered.",
-    copyright: "© LyraData. All rights reserved.",
+    copyright: "© EmailsLy. All rights reserved.",
     newsletter_heading: "Get lead-gen tips",
     newsletter_sub: "One short email a week. Unsubscribe anytime.",
   },
@@ -65,15 +65,15 @@ export const SITE_CONTENT_DEFAULTS = {
     cta_banner_button: "Start your order",
   },
   branding: {
-    site_name: "LyraData",
+    site_name: "EmailsLy",
     logo_url: "",
     favicon_url: "",
     tagline: "Verified B2B Data Platform",
   },
   contact: {
-    email: "hello@lyradata.com",
+    email: "hello@emailsly.com",
     whatsapp: "+1 (555) 010-9820",
-    calendar_url: "cal.com/lyradata",
+    calendar_url: "cal.com/emailsly",
     address: "",
     hours: "Mon–Fri · 9am–6pm",
     response_promise: "Response within 4 business hours. Or grab time on the calendar directly.",

@@ -4,7 +4,7 @@ import { ServiceLanding } from "@/components/site/ServiceLanding";
 export const Route = createFileRoute("/linkedin-sales-navigator-leads")({
   head: () => ({
     meta: [
-      { title: "LinkedIn Sales Navigator leads | LyraData" },
+      { title: "LinkedIn Sales Navigator leads | EmailsLy" },
       { name: "description", content: "Custom LinkedIn Sales Navigator scrapes with verified emails, trigger events, and Boolean filters. $0.15/lead." },
       { property: "og:title", content: "LinkedIn Sales Navigator leads" },
       { property: "og:description", content: "Turn any Sales-Nav search into a verified CSV in 24 hours." },

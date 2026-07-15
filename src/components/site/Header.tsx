@@ -68,7 +68,7 @@ export function Header() {
             <div className="z-10 flex items-center gap-8">
               <Link
                 to="/"
-                aria-label="LyraData home"
+                aria-label="EmailsLy home"
                 className={`flex items-center gap-2 rounded-md font-display text-xl font-bold tracking-tight ${focusRing}`}
               >
                 <PremiumLogoMark className="size-6" aria-hidden="true" />

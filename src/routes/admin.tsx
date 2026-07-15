@@ -220,7 +220,7 @@ function AdminPage() {
 
         <h2 className="mb-4 font-display text-xl font-bold">Product cover editor</h2>
 
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
+        <div id="wt-product-covers" className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
           {/* LIST */}
           <section className="rounded-2xl border border-border bg-card">
             <div className="flex items-center gap-2 border-b border-border p-3">

@@ -197,28 +197,65 @@ function AdminPage() {
           </button>
         </header>
 
-        <div className="mb-10 space-y-6">
-          <div id="wt-brand-settings"><BrandSettingsAdmin /></div>
-          <div id="wt-site-content"><SiteContentAdmin /></div>
-          <div id="wt-sample-datasets"><SampleDatasetsAdmin /></div>
-          <div id="wt-sample-audit"><SampleDatasetAuditLog /></div>
-          <div id="wt-orders"><OrdersAdmin /></div>
-          <div id="wt-support"><SupportTicketsAdmin /></div>
-          <div id="wt-referrals"><ReferralsAdmin /></div>
-          <div id="wt-stripe-events"><StripeEventsAdmin /></div>
-          <div id="wt-pricing"><PricingAdmin /></div>
-          <div id="wt-import-export"><ImportExportAdmin /></div>
-          <div id="wt-announcements"><AnnouncementsAdmin /></div>
-          <div id="wt-product-details"><ProductDetailsAdmin /></div>
-          <div id="wt-tracking"><TrackingAdmin /></div>
-          <div id="wt-conversion-events"><ConversionEventsAdmin /></div>
-          <div id="wt-server-tracking"><ServerTrackingAdmin /></div>
-          <div id="wt-debug"><DebugModeAdmin /></div>
-          <div id="wt-chatbot"><ChatbotAdmin /></div>
-          <div id="wt-reviews"><ReviewsAdmin /></div>
-          <div id="wt-contact-leads"><ContactLeadsAdmin /></div>
-          <div id="wt-social-links"><SocialLinksAdmin /></div>
-        </div>
+        <AdminSections
+          sections={[
+            {
+              id: "content",
+              label: "Content & Branding",
+              hint: "Site copy, brand identity, product descriptions, announcements",
+              groups: [
+                { title: "Brand identity", desc: "Logo, colors, and global brand tokens.", node: <div id="wt-brand-settings"><BrandSettingsAdmin /></div> },
+                { title: "Site content", desc: "Editable copy for landing pages and marketing sections.", node: <div id="wt-site-content"><SiteContentAdmin /></div> },
+                { title: "Product details", desc: "Long descriptions, extra info, hero images, and CTAs per product.", node: <div id="wt-product-details"><ProductDetailsAdmin /></div> },
+                { title: "Announcements", desc: "Marketing banners and modals shown to visitors.", node: <div id="wt-announcements"><AnnouncementsAdmin /></div> },
+                { title: "Reviews", desc: "Curate customer testimonials.", node: <div id="wt-reviews"><ReviewsAdmin /></div> },
+                { title: "Social links", desc: "Footer and header social profile URLs.", node: <div id="wt-social-links"><SocialLinksAdmin /></div> },
+              ],
+            },
+            {
+              id: "commerce",
+              label: "Commerce",
+              hint: "Orders, pricing, product covers, payments, referrals",
+              groups: [
+                { title: "Orders", desc: "Review orders, statuses, and fulfilment.", node: <div id="wt-orders"><OrdersAdmin /></div> },
+                { title: "Pricing", desc: "Per-service rates, minimums, and helper text.", node: <div id="wt-pricing"><PricingAdmin /></div> },
+                { title: "Stripe events", desc: "Recent webhook events from Stripe.", node: <div id="wt-stripe-events"><StripeEventsAdmin /></div> },
+                { title: "Referrals", desc: "Referral codes, clicks, and conversions.", node: <div id="wt-referrals"><ReferralsAdmin /></div> },
+              ],
+            },
+            {
+              id: "data",
+              label: "Data",
+              hint: "Sample datasets, import/export, audit log",
+              groups: [
+                { title: "Sample datasets", desc: "Manage seeded demo datasets shown across the site.", node: <div id="wt-sample-datasets"><SampleDatasetsAdmin /></div> },
+                { title: "Sample dataset audit log", desc: "History of sample dataset changes.", node: <div id="wt-sample-audit"><SampleDatasetAuditLog /></div> },
+                { title: "Import / Export", desc: "Bulk import or export data via CSV/JSON.", node: <div id="wt-import-export"><ImportExportAdmin /></div> },
+              ],
+            },
+            {
+              id: "support",
+              label: "Support",
+              hint: "Tickets, contact leads, chatbot",
+              groups: [
+                { title: "Support tickets", desc: "Reply to customer tickets and change status.", node: <div id="wt-support"><SupportTicketsAdmin /></div> },
+                { title: "Contact leads", desc: "Inbound contact form submissions.", node: <div id="wt-contact-leads"><ContactLeadsAdmin /></div> },
+                { title: "Chatbot", desc: "Configure the AI chatbot knowledge base and behavior.", node: <div id="wt-chatbot"><ChatbotAdmin /></div> },
+              ],
+            },
+            {
+              id: "tracking",
+              label: "Tracking & Debug",
+              hint: "Analytics tags, conversion events, server tracking, debug mode",
+              groups: [
+                { title: "Tracking scripts", desc: "GA / Meta / custom pixel snippets injected site-wide.", node: <div id="wt-tracking"><TrackingAdmin /></div> },
+                { title: "Conversion events", desc: "Define named events for analytics providers.", node: <div id="wt-conversion-events"><ConversionEventsAdmin /></div> },
+                { title: "Server tracking", desc: "Server-side event forwarding configuration.", node: <div id="wt-server-tracking"><ServerTrackingAdmin /></div> },
+                { title: "Debug mode", desc: "Toggle verbose logging and on-screen debug tools.", node: <div id="wt-debug"><DebugModeAdmin /></div> },
+              ],
+            },
+          ]}
+        />
 
         <h2 className="mb-4 font-display text-xl font-bold">Product cover editor</h2>
 

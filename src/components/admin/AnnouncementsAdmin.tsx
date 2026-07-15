@@ -99,6 +99,8 @@ export function AnnouncementsAdmin() {
       accent: a.accent || "violet",
       path_patterns: a.path_patterns && a.path_patterns.length ? a.path_patterns : ["*"],
       audience: (a.audience || "all") as AnnouncementAudience,
+      start_at: toDatetimeLocal(a.start_at),
+      end_at: toDatetimeLocal(a.end_at),
     });
   };
 

@@ -9,6 +9,7 @@ import {
 } from "./PremiumIcons";
 import { useCart } from "@/lib/cart";
 import { useAuth } from "@/hooks/use-auth";
+import { useSiteContent } from "@/hooks/use-site-content";
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { openOrderDrawer } from "./OrderDrawer";

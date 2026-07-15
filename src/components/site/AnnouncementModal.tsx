@@ -45,7 +45,11 @@ export function AnnouncementModal() {
   return <ModalContent a={data} onClose={dismiss} />;
 }
 
-function ModalContent({ a, onClose }: { a: Announcement; onClose: () => void }) {
+export function AnnouncementPreview({ a }: { a: Announcement }) {
+  return <ModalContent a={a} onClose={() => {}} preview />;
+}
+
+function ModalContent({ a, onClose, preview = false }: { a: Announcement; onClose: () => void; preview?: boolean }) {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();

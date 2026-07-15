@@ -76,11 +76,13 @@ export function Header() {
                 className={`flex items-center gap-2 rounded-md font-display text-xl font-bold tracking-tight ${focusRing}`}
               >
                 {logoUrl ? (
-                  <img src={logoUrl} alt={`${siteName} logo`} className="size-6 rounded-sm object-contain" />
+                  <img src={logoUrl} alt={`${siteName} logo`} className="h-7 w-auto object-contain" />
                 ) : (
-                  <PremiumLogoMark className="size-6" aria-hidden="true" />
+                  <>
+                    <PremiumLogoMark className="size-6" aria-hidden="true" />
+                    <span>{siteName}</span>
+                  </>
                 )}
-                <span>{siteName}</span>
               </Link>
               <ul className="hidden items-center gap-1 text-sm font-medium lg:flex">
                 {NAV_ITEMS.map((item) => {

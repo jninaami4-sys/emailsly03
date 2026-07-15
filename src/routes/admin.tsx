@@ -197,28 +197,65 @@ function AdminPage() {
           </button>
         </header>
 
-        <div className="mb-10 space-y-6">
-          <div id="wt-brand-settings"><BrandSettingsAdmin /></div>
-          <div id="wt-site-content"><SiteContentAdmin /></div>
-          <div id="wt-sample-datasets"><SampleDatasetsAdmin /></div>
-          <div id="wt-sample-audit"><SampleDatasetAuditLog /></div>
-          <div id="wt-orders"><OrdersAdmin /></div>
-          <div id="wt-support"><SupportTicketsAdmin /></div>
-          <div id="wt-referrals"><ReferralsAdmin /></div>
-          <div id="wt-stripe-events"><StripeEventsAdmin /></div>
-          <div id="wt-pricing"><PricingAdmin /></div>
-          <div id="wt-import-export"><ImportExportAdmin /></div>
-          <div id="wt-announcements"><AnnouncementsAdmin /></div>
-          <div id="wt-product-details"><ProductDetailsAdmin /></div>
-          <div id="wt-tracking"><TrackingAdmin /></div>
-          <div id="wt-conversion-events"><ConversionEventsAdmin /></div>
-          <div id="wt-server-tracking"><ServerTrackingAdmin /></div>
-          <div id="wt-debug"><DebugModeAdmin /></div>
-          <div id="wt-chatbot"><ChatbotAdmin /></div>
-          <div id="wt-reviews"><ReviewsAdmin /></div>
-          <div id="wt-contact-leads"><ContactLeadsAdmin /></div>
-          <div id="wt-social-links"><SocialLinksAdmin /></div>
-        </div>
+        <AdminSections
+          sections={[
+            {
+              id: "content",
+              label: "Content & Branding",
+              hint: "Site copy, brand identity, product descriptions, announcements",
+              groups: [
+                { title: "Brand identity", desc: "Logo, colors, and global brand tokens.", node: <div id="wt-brand-settings"><BrandSettingsAdmin /></div> },
+                { title: "Site content", desc: "Editable copy for landing pages and marketing sections.", node: <div id="wt-site-content"><SiteContentAdmin /></div> },
+                { title: "Product details", desc: "Long descriptions, extra info, hero images, and CTAs per product.", node: <div id="wt-product-details"><ProductDetailsAdmin /></div> },
+                { title: "Announcements", desc: "Marketing banners and modals shown to visitors.", node: <div id="wt-announcements"><AnnouncementsAdmin /></div> },
+                { title: "Reviews", desc: "Curate customer testimonials.", node: <div id="wt-reviews"><ReviewsAdmin /></div> },
+                { title: "Social links", desc: "Footer and header social profile URLs.", node: <div id="wt-social-links"><SocialLinksAdmin /></div> },
+              ],
+            },
+            {
+              id: "commerce",
+              label: "Commerce",
+              hint: "Orders, pricing, product covers, payments, referrals",
+              groups: [
+                { title: "Orders", desc: "Review orders, statuses, and fulfilment.", node: <div id="wt-orders"><OrdersAdmin /></div> },
+                { title: "Pricing", desc: "Per-service rates, minimums, and helper text.", node: <div id="wt-pricing"><PricingAdmin /></div> },
+                { title: "Stripe events", desc: "Recent webhook events from Stripe.", node: <div id="wt-stripe-events"><StripeEventsAdmin /></div> },
+                { title: "Referrals", desc: "Referral codes, clicks, and conversions.", node: <div id="wt-referrals"><ReferralsAdmin /></div> },
+              ],
+            },
+            {
+              id: "data",
+              label: "Data",
+              hint: "Sample datasets, import/export, audit log",
+              groups: [
+                { title: "Sample datasets", desc: "Manage seeded demo datasets shown across the site.", node: <div id="wt-sample-datasets"><SampleDatasetsAdmin /></div> },
+                { title: "Sample dataset audit log", desc: "History of sample dataset changes.", node: <div id="wt-sample-audit"><SampleDatasetAuditLog /></div> },
+                { title: "Import / Export", desc: "Bulk import or export data via CSV/JSON.", node: <div id="wt-import-export"><ImportExportAdmin /></div> },
+              ],
+            },
+            {
+              id: "support",
+              label: "Support",
+              hint: "Tickets, contact leads, chatbot",
+              groups: [
+                { title: "Support tickets", desc: "Reply to customer tickets and change status.", node: <div id="wt-support"><SupportTicketsAdmin /></div> },
+                { title: "Contact leads", desc: "Inbound contact form submissions.", node: <div id="wt-contact-leads"><ContactLeadsAdmin /></div> },
+                { title: "Chatbot", desc: "Configure the AI chatbot knowledge base and behavior.", node: <div id="wt-chatbot"><ChatbotAdmin /></div> },
+              ],
+            },
+            {
+              id: "tracking",
+              label: "Tracking & Debug",
+              hint: "Analytics tags, conversion events, server tracking, debug mode",
+              groups: [
+                { title: "Tracking scripts", desc: "GA / Meta / custom pixel snippets injected site-wide.", node: <div id="wt-tracking"><TrackingAdmin /></div> },
+                { title: "Conversion events", desc: "Define named events for analytics providers.", node: <div id="wt-conversion-events"><ConversionEventsAdmin /></div> },
+                { title: "Server tracking", desc: "Server-side event forwarding configuration.", node: <div id="wt-server-tracking"><ServerTrackingAdmin /></div> },
+                { title: "Debug mode", desc: "Toggle verbose logging and on-screen debug tools.", node: <div id="wt-debug"><DebugModeAdmin /></div> },
+              ],
+            },
+          ]}
+        />
 
         <h2 className="mb-4 font-display text-xl font-bold">Product cover editor</h2>
 
@@ -402,6 +439,70 @@ function AuroraBackdrop({ children }: { children: React.ReactNode }) {
         />
       </div>
       <div className="relative">{children}</div>
+    </div>
+  );
+}
+
+type AdminGroup = { title: string; desc: string; node: React.ReactNode };
+type AdminSection = { id: string; label: string; hint: string; groups: AdminGroup[] };
+
+function AdminSections({ sections }: { sections: AdminSection[] }) {
+  const [activeId, setActiveId] = useState(sections[0]?.id ?? "");
+  const active = sections.find((s) => s.id === activeId) ?? sections[0];
+  return (
+    <div className="mb-10 grid gap-6 lg:grid-cols-[240px_minmax(0,1fr)]">
+      <nav className="lg:sticky lg:top-20 h-max rounded-2xl border border-border bg-card p-2">
+        <p className="px-3 pb-2 pt-2 font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+          Sections
+        </p>
+        <ul className="space-y-1">
+          {sections.map((s) => {
+            const isActive = s.id === active?.id;
+            return (
+              <li key={s.id}>
+                <button
+                  type="button"
+                  onClick={() => setActiveId(s.id)}
+                  className={`w-full rounded-xl px-3 py-2 text-left text-sm transition-colors ${
+                    isActive
+                      ? "bg-violet text-white shadow-[0_10px_30px_-12px_oklch(0.52_0.24_293/0.5)]"
+                      : "text-foreground hover:bg-secondary"
+                  }`}
+                >
+                  <span className="block font-semibold">{s.label}</span>
+                  <span
+                    className={`mt-0.5 block text-[11px] ${
+                      isActive ? "text-white/80" : "text-muted-foreground"
+                    }`}
+                  >
+                    {s.groups.length} tools
+                  </span>
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
+
+      <div className="space-y-6">
+        {active && (
+          <div className="rounded-2xl border border-border bg-gradient-to-br from-violet/10 to-transparent p-5">
+            <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-violet">
+              {active.label}
+            </span>
+            <p className="mt-1 text-sm text-muted-foreground">{active.hint}</p>
+          </div>
+        )}
+        {active?.groups.map((g, i) => (
+          <section key={i} className="rounded-2xl border border-border bg-card">
+            <header className="flex flex-wrap items-baseline justify-between gap-2 border-b border-border px-5 py-3">
+              <h3 className="font-display text-base font-bold">{g.title}</h3>
+              <p className="text-xs text-muted-foreground">{g.desc}</p>
+            </header>
+            <div className="p-4">{g.node}</div>
+          </section>
+        ))}
+      </div>
     </div>
   );
 }

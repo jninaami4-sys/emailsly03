@@ -102,6 +102,7 @@ export function AnnouncementsAdmin() {
       audience: (a.audience || "all") as AnnouncementAudience,
       start_at: toDatetimeLocal(a.start_at),
       end_at: toDatetimeLocal(a.end_at),
+      priority: typeof a.priority === "number" ? a.priority : 0,
     });
   };
 

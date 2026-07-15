@@ -54,7 +54,7 @@ function Contact() {
           <div>
             <h1 className="font-display text-4xl font-bold lg:text-5xl">Get in touch</h1>
             <p className="mt-3 text-muted-foreground">
-              Response within 4 business hours. Or grab time on the calendar directly.
+              {contactInfo.response_promise}
             </p>
 
             {sent ? (
@@ -103,10 +103,10 @@ function Contact() {
           </div>
           <aside className="space-y-3">
             {[
-              { icon: Mail, title: "Email", value: "hello@lyradata.com" },
-              { icon: MessageCircle, title: "WhatsApp", value: "+1 (555) 010-9820" },
-              { icon: Calendar, title: "Book a call", value: "cal.com/lyradata" },
-            ].map((c) => (
+              { icon: Mail, title: "Email", value: contactInfo.email },
+              { icon: MessageCircle, title: "WhatsApp", value: contactInfo.whatsapp },
+              { icon: Calendar, title: "Book a call", value: contactInfo.calendar_url },
+            ].filter((c) => c.value).map((c) => (
               <div key={c.title} className="rounded-xl border border-border bg-card p-5">
                 <c.icon className="mb-2 size-5 text-violet" />
                 <h3 className="font-semibold">{c.title}</h3>

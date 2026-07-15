@@ -114,7 +114,7 @@ export function AnnouncementsAdmin() {
     onSuccess: () => {
       setStatus("Saved");
       qc.invalidateQueries({ queryKey: ["announcements", "admin"] });
-      qc.invalidateQueries({ queryKey: ["active-announcement"] });
+      qc.invalidateQueries({ queryKey: ["active-announcements"] });
       setDraft(emptyDraft);
     },
     onError: (e: Error) => setStatus(e.message),
@@ -124,7 +124,7 @@ export function AnnouncementsAdmin() {
     mutationFn: (id: string) => deleteFn({ data: { id } }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["announcements", "admin"] });
-      qc.invalidateQueries({ queryKey: ["active-announcement"] });
+      qc.invalidateQueries({ queryKey: ["active-announcements"] });
       setDraft(emptyDraft);
     },
   });

@@ -24,10 +24,12 @@ export type Database = {
           cta_label: string
           cta_url: string
           enabled: boolean
+          end_at: string | null
           id: string
           image_style: string
           image_url: string
           path_patterns: string[]
+          start_at: string | null
           title: string
           updated_at: string
         }
@@ -40,10 +42,12 @@ export type Database = {
           cta_label?: string
           cta_url?: string
           enabled?: boolean
+          end_at?: string | null
           id?: string
           image_style?: string
           image_url?: string
           path_patterns?: string[]
+          start_at?: string | null
           title: string
           updated_at?: string
         }
@@ -56,10 +60,12 @@ export type Database = {
           cta_label?: string
           cta_url?: string
           enabled?: boolean
+          end_at?: string | null
           id?: string
           image_style?: string
           image_url?: string
           path_patterns?: string[]
+          start_at?: string | null
           title?: string
           updated_at?: string
         }

@@ -18,7 +18,7 @@ import { AnnouncementModal } from "@/components/site/AnnouncementModal";
 import { TrackingScripts } from "@/components/site/TrackingScripts";
 import { TrackingDebugPanel } from "@/components/site/TrackingDebugPanel";
 import { CookieConsent } from "@/components/site/CookieConsent";
-import { TawkChat } from "@/components/site/TawkChat";
+import { CrispChat } from "@/components/site/CrispChat";
 
 import { RouteTransition } from "@/components/site/RouteTransition";
 import { SectionReveal } from "@/components/site/SectionReveal";
@@ -127,7 +127,7 @@ function RootComponent() {
           <TrackingScripts />
           <TrackingDebugPanel />
           <CookieConsent />
-          <TawkChat />
+          <CrispChat />
           <ReferralCapture />
         </CartProvider>
       </AuthProvider>

@@ -58,7 +58,9 @@ export const getSiteSettings = createServerFn({ method: "GET" }).handler(
     const supabase = serverAnonClient();
     const { data, error } = await supabase
       .from("site_settings")
-      .select("gtm_id, ga4_id, fb_pixel_id, tiktok_pixel_id, custom_head_html, updated_at")
+      .select(
+        "gtm_id, ga4_id, fb_pixel_id, tiktok_pixel_id, custom_head_html, tawk_enabled, tawk_position, updated_at",
+      )
       .eq("id", true)
       .maybeSingle();
     if (error) {
@@ -75,6 +77,8 @@ type UpdateInput = {
   fb_pixel_id: string;
   tiktok_pixel_id: string;
   custom_head_html: string;
+  tawk_enabled: boolean;
+  tawk_position: TawkPosition;
 };
 
 export const updateSiteSettings = createServerFn({ method: "POST" })
@@ -83,12 +87,18 @@ export const updateSiteSettings = createServerFn({ method: "POST" })
   .handler(async ({ data, context }): Promise<SiteSettings> => {
     assertAdmin((context.claims as { email?: string }).email);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const allowedPositions: TawkPosition[] = ["br", "bl", "tr", "tl"];
+    const position: TawkPosition = allowedPositions.includes(data.tawk_position)
+      ? data.tawk_position
+      : "br";
     const payload = {
       gtm_id: String(data.gtm_id || "").trim().slice(0, 40),
       ga4_id: String(data.ga4_id || "").trim().slice(0, 40),
       fb_pixel_id: String(data.fb_pixel_id || "").trim().slice(0, 40),
       tiktok_pixel_id: String(data.tiktok_pixel_id || "").trim().slice(0, 60),
       custom_head_html: String(data.custom_head_html || "").slice(0, 8000),
+      tawk_enabled: Boolean(data.tawk_enabled),
+      tawk_position: position,
     };
     const { data: row, error } = await supabaseAdmin
       .from("site_settings")
@@ -99,3 +109,4 @@ export const updateSiteSettings = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return row as SiteSettings;
   });
+

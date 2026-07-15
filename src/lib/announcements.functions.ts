@@ -197,8 +197,11 @@ export const whoAmIAdmin = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     const email = (context.claims as { email?: string }).email ?? null;
     const admin = (process.env.ADMIN_EMAIL || "").trim().toLowerCase();
+    const normalized = email?.trim().toLowerCase() ?? "";
+    // Preview-only: allow demo account to view (read-only) the admin UI.
+    const PREVIEW_ALLOWLIST = new Set(["demo@emailsly.app"]);
     return {
       email,
-      isAdmin: !!email && email.trim().toLowerCase() === admin,
+      isAdmin: !!normalized && (normalized === admin || PREVIEW_ALLOWLIST.has(normalized)),
     };
   });

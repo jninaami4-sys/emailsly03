@@ -540,6 +540,8 @@ export function AnnouncementsAdmin() {
                     image_style: draft.image_style,
                     badge: draft.badge,
                     accent: draft.accent,
+                    path_patterns: draft.path_patterns,
+                    audience: draft.audience,
                     updated_at: new Date().toISOString(),
                     created_at: new Date().toISOString(),
                   }}

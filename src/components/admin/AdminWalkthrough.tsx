@@ -9,6 +9,12 @@ export type WalkthroughStep = {
 
 export const ADMIN_WALKTHROUGH_STEPS: WalkthroughStep[] = [
   {
+    id: "wt-brand-settings",
+    title: "Brand settings",
+    body: "Update the site name, logo, favicon, tagline, and primary colors.",
+    action: "Change the Primary color, then press Save brand settings and reload to see it apply.",
+  },
+  {
     id: "wt-site-content",
     title: "Site content",
     body: "Edit hero copy, marketing sections, and CTAs shown across the storefront.",

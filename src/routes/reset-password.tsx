@@ -4,6 +4,7 @@ import { z } from "zod";
 import { fallback, zodValidator } from "@tanstack/zod-adapter";
 import { supabase } from "@/integrations/supabase/client";
 import { ArrowRight, Loader2, Lock, CheckCircle2, AlertCircle, Eye, EyeOff, Check, X } from "lucide-react";
+import { useSiteContent } from "@/hooks/use-site-content";
 
 const searchSchema = z.object({
   redirectTo: fallback(z.string(), "").default(""),

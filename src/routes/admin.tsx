@@ -82,7 +82,7 @@ function AdminGate() {
               Sign in with the admin email to manage site content.
             </p>
             <Link
-              to="/auth"
+              to="/login"
               className="mt-6 inline-flex rounded-xl bg-violet px-5 py-2.5 text-sm font-semibold text-white shadow-[0_10px_30px_-10px_oklch(0.52_0.24_293/0.6)] transition-transform hover:-translate-y-0.5"
             >
               Go to sign in

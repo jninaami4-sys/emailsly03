@@ -25,10 +25,10 @@ import { Route as PaymentSuccessRouteImport } from './routes/payment-success'
 import { Route as PaymentFailedRouteImport } from './routes/payment-failed'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as ManualLeadResearchRouteImport } from './routes/manual-lead-research'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as LinkedinSalesNavigatorLeadsRouteImport } from './routes/linkedin-sales-navigator-leads'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as BlogRouteImport } from './routes/blog'
-import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ApolloLeadsExportRouteImport } from './routes/apollo-leads-export'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
@@ -125,6 +125,11 @@ const ManualLeadResearchRoute = ManualLeadResearchRouteImport.update({
   path: '/manual-lead-research',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LinkedinSalesNavigatorLeadsRoute =
   LinkedinSalesNavigatorLeadsRouteImport.update({
     id: '/linkedin-sales-navigator-leads',
@@ -139,11 +144,6 @@ const ContactRoute = ContactRouteImport.update({
 const BlogRoute = BlogRouteImport.update({
   id: '/blog',
   path: '/blog',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthRoute = AuthRouteImport.update({
-  id: '/auth',
-  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApolloLeadsExportRoute = ApolloLeadsExportRouteImport.update({
@@ -230,10 +230,10 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/apollo-leads-export': typeof ApolloLeadsExportRoute
-  '/auth': typeof AuthRoute
   '/blog': typeof BlogRouteWithChildren
   '/contact': typeof ContactRoute
   '/linkedin-sales-navigator-leads': typeof LinkedinSalesNavigatorLeadsRoute
+  '/login': typeof LoginRoute
   '/manual-lead-research': typeof ManualLeadResearchRoute
   '/mcp': typeof McpRoute
   '/payment-failed': typeof PaymentFailedRoute
@@ -266,10 +266,10 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/apollo-leads-export': typeof ApolloLeadsExportRoute
-  '/auth': typeof AuthRoute
   '/blog': typeof BlogRouteWithChildren
   '/contact': typeof ContactRoute
   '/linkedin-sales-navigator-leads': typeof LinkedinSalesNavigatorLeadsRoute
+  '/login': typeof LoginRoute
   '/manual-lead-research': typeof ManualLeadResearchRoute
   '/mcp': typeof McpRoute
   '/payment-failed': typeof PaymentFailedRoute
@@ -304,10 +304,10 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/admin': typeof AdminRoute
   '/apollo-leads-export': typeof ApolloLeadsExportRoute
-  '/auth': typeof AuthRoute
   '/blog': typeof BlogRouteWithChildren
   '/contact': typeof ContactRoute
   '/linkedin-sales-navigator-leads': typeof LinkedinSalesNavigatorLeadsRoute
+  '/login': typeof LoginRoute
   '/manual-lead-research': typeof ManualLeadResearchRoute
   '/mcp': typeof McpRoute
   '/payment-failed': typeof PaymentFailedRoute
@@ -342,10 +342,10 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/apollo-leads-export'
-    | '/auth'
     | '/blog'
     | '/contact'
     | '/linkedin-sales-navigator-leads'
+    | '/login'
     | '/manual-lead-research'
     | '/mcp'
     | '/payment-failed'
@@ -378,10 +378,10 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/apollo-leads-export'
-    | '/auth'
     | '/blog'
     | '/contact'
     | '/linkedin-sales-navigator-leads'
+    | '/login'
     | '/manual-lead-research'
     | '/mcp'
     | '/payment-failed'
@@ -415,10 +415,10 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/admin'
     | '/apollo-leads-export'
-    | '/auth'
     | '/blog'
     | '/contact'
     | '/linkedin-sales-navigator-leads'
+    | '/login'
     | '/manual-lead-research'
     | '/mcp'
     | '/payment-failed'
@@ -453,10 +453,10 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AdminRoute: typeof AdminRoute
   ApolloLeadsExportRoute: typeof ApolloLeadsExportRoute
-  AuthRoute: typeof AuthRoute
   BlogRoute: typeof BlogRouteWithChildren
   ContactRoute: typeof ContactRoute
   LinkedinSalesNavigatorLeadsRoute: typeof LinkedinSalesNavigatorLeadsRoute
+  LoginRoute: typeof LoginRoute
   ManualLeadResearchRoute: typeof ManualLeadResearchRoute
   McpRoute: typeof McpRoute
   PaymentFailedRoute: typeof PaymentFailedRoute
@@ -597,6 +597,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ManualLeadResearchRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/linkedin-sales-navigator-leads': {
       id: '/linkedin-sales-navigator-leads'
       path: '/linkedin-sales-navigator-leads'
@@ -616,13 +623,6 @@ declare module '@tanstack/react-router' {
       path: '/blog'
       fullPath: '/blog'
       preLoaderRoute: typeof BlogRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/apollo-leads-export': {
@@ -761,10 +761,10 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AdminRoute: AdminRoute,
   ApolloLeadsExportRoute: ApolloLeadsExportRoute,
-  AuthRoute: AuthRoute,
   BlogRoute: BlogRouteWithChildren,
   ContactRoute: ContactRoute,
   LinkedinSalesNavigatorLeadsRoute: LinkedinSalesNavigatorLeadsRoute,
+  LoginRoute: LoginRoute,
   ManualLeadResearchRoute: ManualLeadResearchRoute,
   McpRoute: McpRoute,
   PaymentFailedRoute: PaymentFailedRoute,

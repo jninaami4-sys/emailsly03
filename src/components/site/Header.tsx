@@ -46,7 +46,7 @@ export function Header() {
     await queryClient.cancelQueries();
     queryClient.clear();
     await signOut();
-    navigate({ to: "/auth", replace: true });
+    navigate({ to: "/login", replace: true });
   }
 
   const cartLabel = count > 0 ? `Open cart, ${count} item${count === 1 ? "" : "s"}` : "Open cart";
@@ -151,7 +151,7 @@ export function Header() {
               ) : (
                 <>
                   <Link
-                    to="/auth"
+                    to="/login"
                     aria-label="Sign in to your account"
                     className={`hidden size-9 items-center justify-center rounded-full border border-black/10 bg-white text-ink transition-colors hover:bg-secondary hover:text-violet lg:inline-flex ${focusRing}`}
                   >
@@ -239,7 +239,7 @@ export function Header() {
             ) : (
               <div className="relative z-10 flex flex-col gap-1 border-t border-black/10 px-3 py-3">
                 <Link
-                  to="/auth"
+                  to="/login"
                   onClick={() => setMobileOpen(false)}
                   className={`flex items-center gap-2 rounded-md bg-secondary px-3 py-2 text-sm font-semibold text-ink transition-colors hover:bg-violet/10 hover:text-violet ${focusRing}`}
                 >

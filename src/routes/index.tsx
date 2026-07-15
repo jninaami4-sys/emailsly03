@@ -137,8 +137,10 @@ function Home() {
         </section>
 
         {/* WHY LYRADATA */}
-        <section className="px-6 pb-24">
-          <div className="mx-auto max-w-7xl">
+        <section className="relative px-6 pb-24">
+          {/* Top blend from hero glow */}
+          <div className="pointer-events-none absolute inset-x-0 -top-24 h-48 bg-gradient-to-b from-indigo/15 via-violet/5 to-transparent blur-3xl" aria-hidden="true" />
+          <div className="relative mx-auto max-w-7xl">
             <div className="mb-12 flex flex-wrap items-end justify-between gap-6">
               <div>
                 <p className="font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-indigo">Why EmailsLy</p>

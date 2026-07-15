@@ -1122,6 +1122,45 @@ export type Database = {
         }
         Relationships: []
       }
+      social_links: {
+        Row: {
+          color: string
+          created_at: string
+          enabled: boolean
+          href: string
+          icon: string
+          id: string
+          label: string
+          platform: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          color?: string
+          created_at?: string
+          enabled?: boolean
+          href: string
+          icon?: string
+          id?: string
+          label: string
+          platform: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          color?: string
+          created_at?: string
+          enabled?: boolean
+          href?: string
+          icon?: string
+          id?: string
+          label?: string
+          platform?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       stripe_events: {
         Row: {
           id: string

@@ -21,6 +21,7 @@ import {
 } from "@/components/site/PremiumIcons";
 import { Testimonials } from "@/components/site/Testimonials";
 import { ServicesCarousel } from "@/components/site/ServicesCarousel";
+import { useSiteContent } from "@/hooks/use-site-content";
 
 
 type RawData = {
@@ -44,13 +45,8 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
-const stats = [
-  { k: "500+", v: "clients served" },
-  { k: "100M+", v: "leads delivered" },
-  { k: "24h", v: "avg. delivery" },
-];
 
-const faqs = [
+const defaultFaqs = [
   { q: "How fast will I receive my data?", a: "Most orders are delivered within 24 hours. Larger or custom research orders may take 48–72 hours. You'll get an email update at every step." },
   { q: "What format will the data be in?", a: "All data is delivered as a clean, ready-to-import CSV file with verified work emails, job titles, company info, and LinkedIn URLs (where available)." },
   { q: "How accurate is the data?", a: "Data is sourced from pre-built, verified databases and cleaned/formatted for your ICP before delivery." },
@@ -61,6 +57,14 @@ const faqs = [
 
 function Home() {
   const featured = PRODUCTS.filter((p) => p.featured).concat(PRODUCTS.filter((p) => !p.featured)).slice(0, 3);
+  const trust = useSiteContent("trust");
+  const faqContent = useSiteContent("faq");
+  const stats = [
+    { k: trust.stat_1_value, v: trust.stat_1_label },
+    { k: trust.stat_2_value, v: trust.stat_2_label },
+    { k: trust.stat_3_value, v: trust.stat_3_label },
+  ];
+  const faqs = (faqContent.items && faqContent.items.length > 0 ? faqContent.items : defaultFaqs) as Array<{ q: string; a: string }>;
 
   return (
     <SiteShell>

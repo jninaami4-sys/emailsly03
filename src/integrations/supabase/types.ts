@@ -1086,6 +1086,27 @@ export type Database = {
         }
         Relationships: []
       }
+      site_content: {
+        Row: {
+          data: Json
+          section: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          data?: Json
+          section: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          data?: Json
+          section?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       site_settings: {
         Row: {
           custom_head_html: string

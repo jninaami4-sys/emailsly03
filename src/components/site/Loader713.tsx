@@ -79,7 +79,7 @@ export function Loader713Panel({
   subtitle = "Gathering intelligence…",
   chip = "System_Ready",
   steps = DEFAULT_STEPS,
-  systemLabel = "LYRADATA_OS v2.4",
+  systemLabel = "EMAILSLY_OS v2.4",
   label = "LOADING",
 }: {
   title?: string;

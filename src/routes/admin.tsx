@@ -16,6 +16,7 @@ import { ChatbotAdmin } from "@/components/admin/ChatbotAdmin";
 import { ReviewsAdmin } from "@/components/admin/ReviewsAdmin";
 import { ContactLeadsAdmin } from "@/components/admin/ContactLeadsAdmin";
 import { SocialLinksAdmin } from "@/components/admin/SocialLinksAdmin";
+import { SiteContentAdmin } from "@/components/admin/SiteContentAdmin";
 import { OrdersAdmin } from "@/components/admin/OrdersAdmin";
 import { ReferralsAdmin } from "@/components/admin/ReferralsAdmin";
 import { StripeEventsAdmin } from "@/components/admin/StripeEventsAdmin";
@@ -183,6 +184,7 @@ function AdminPage() {
         </header>
 
         <div className="mb-10 space-y-6">
+          <SiteContentAdmin />
           <OrdersAdmin />
           <ReferralsAdmin />
           <StripeEventsAdmin />

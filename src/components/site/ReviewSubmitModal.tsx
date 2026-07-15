@@ -121,7 +121,7 @@ function SignInPrompt({ onClose }: { onClose: () => void }) {
       </p>
       <div className="mt-6 flex flex-col gap-2">
         <Link
-          to="/auth"
+          to="/login"
           onClick={onClose}
           className="inline-flex items-center justify-center gap-2 rounded-xl bg-violet px-5 py-3 text-sm font-semibold text-white shadow-md transition-transform hover:-translate-y-0.5"
         >

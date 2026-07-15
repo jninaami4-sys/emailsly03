@@ -8,7 +8,7 @@ export const Route = createFileRoute("/_authenticated")({
     // transient network/API hiccup doesn't kick a signed-in user to /auth.
     const { data } = await supabase.auth.getSession();
     if (!data.session?.user) {
-      throw redirect({ to: "/auth", search: { mode: "signin", redirect: location.href } });
+      throw redirect({ to: "/login", search: { mode: "signin", redirect: location.href } });
     }
     return { user: data.session.user };
   },

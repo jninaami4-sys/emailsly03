@@ -51,6 +51,7 @@ export function AnnouncementPreview({ a }: { a: Announcement }) {
 
 function ModalContent({ a, onClose, preview = false }: { a: Announcement; onClose: () => void; preview?: boolean }) {
   useEffect(() => {
+    if (preview) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
@@ -60,7 +61,7 @@ function ModalContent({ a, onClose, preview = false }: { a: Announcement; onClos
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
     };
-  }, [onClose]);
+  }, [onClose, preview]);
 
   const palette: Record<string, { bg: string; text: string; ring: string; soft: string; shadow: string }> = {
     violet: { bg: "bg-violet", text: "text-violet", ring: "border-violet/30", soft: "bg-violet/10", shadow: "shadow-violet/30" },

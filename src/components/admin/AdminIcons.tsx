@@ -590,3 +590,13 @@ export const Star = (p: IconProps) => (
     <path d="M12 3l2.7 5.5 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.8 1-6.1L3.2 9.4l6.1-.9L12 3Z" />
   </I>
 );
+
+export const Target = (p: IconProps) => (
+  <I {...p}>
+    <circle cx="12" cy="12" r="10" fill="currentColor" fillOpacity="0.08" />
+    <circle cx="12" cy="12" r="10" />
+    <circle cx="12" cy="12" r="6" strokeOpacity="0.6" />
+    <circle cx="12" cy="12" r="2.5" fill="currentColor" fillOpacity="0.3" />
+    <circle cx="12" cy="12" r="2.5" />
+  </I>
+);

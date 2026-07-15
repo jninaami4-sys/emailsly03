@@ -1,8 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
+import { useRef, useState } from "react";
 import { getMyOrder } from "@/lib/orders.functions";
-import { Loader2, Printer } from "lucide-react";
+import { Loader2, Printer, Download } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/invoice/$orderId")({
   head: () => ({ meta: [{ title: "Invoice" }, { name: "robots", content: "noindex,nofollow" }] }),
@@ -17,6 +18,49 @@ function InvoicePage() {
   const { orderId } = Route.useParams();
   const getFn = useServerFn(getMyOrder);
   const { data, isLoading } = useQuery({ queryKey: ["my-order", orderId], queryFn: () => getFn({ data: { id: orderId } }) });
+  const invoiceRef = useRef<HTMLDivElement>(null);
+  const [downloading, setDownloading] = useState(false);
+
+  async function handleDownload() {
+    if (!invoiceRef.current || downloading) return;
+    setDownloading(true);
+    try {
+      const [{ default: html2canvas }, jspdfMod] = await Promise.all([
+        import("html2canvas"),
+        import("jspdf"),
+      ]);
+      const jsPDF = (jspdfMod as any).jsPDF ?? (jspdfMod as any).default;
+      const el = invoiceRef.current;
+      const canvas = await html2canvas(el, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#ffffff",
+        logging: false,
+      });
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF("p", "mm", "a4");
+      const pageWidth = 210;
+      const pageHeight = 297;
+      const imgWidth = pageWidth;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      let heightLeft = imgHeight;
+      let position = 0;
+      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+      while (heightLeft > 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+      pdf.save(`invoice-${orderId.slice(0, 8).toUpperCase()}.pdf`);
+    } catch (err) {
+      console.error("Invoice download failed", err);
+      window.print();
+    } finally {
+      setDownloading(false);
+    }
+  }
 
   if (isLoading || !data?.order)
     return (
@@ -29,15 +73,23 @@ function InvoicePage() {
   return (
     <div className="min-h-screen bg-background p-6 print:p-0">
       <div className="mx-auto max-w-2xl">
-        <div className="mb-4 flex justify-end print:hidden">
+        <div className="mb-4 flex justify-end gap-2 print:hidden">
+          <button
+            onClick={handleDownload}
+            disabled={downloading}
+            className="inline-flex items-center gap-2 rounded-lg bg-violet px-4 py-2 text-sm font-semibold text-white disabled:opacity-60"
+          >
+            {downloading ? <Loader2 className="size-4 animate-spin" /> : <Download className="size-4" />}
+            {downloading ? "Preparing…" : "Download PDF"}
+          </button>
           <button
             onClick={() => window.print()}
-            className="inline-flex items-center gap-2 rounded-lg bg-violet px-4 py-2 text-sm font-semibold text-white"
+            className="inline-flex items-center gap-2 rounded-lg border border-border bg-background px-4 py-2 text-sm font-semibold hover:bg-secondary"
           >
-            <Printer className="size-4" /> Print / Save PDF
+            <Printer className="size-4" /> Print
           </button>
         </div>
-        <div className="rounded-2xl border border-border bg-card p-8 print:border-0 print:shadow-none">
+        <div ref={invoiceRef} className="rounded-2xl border border-border bg-card p-8 print:border-0 print:shadow-none">
           <div className="mb-6 flex items-start justify-between">
             <div>
               <h1 className="font-display text-2xl font-bold">Invoice</h1>

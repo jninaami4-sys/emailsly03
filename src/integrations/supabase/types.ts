@@ -29,6 +29,7 @@ export type Database = {
           image_style: string
           image_url: string
           path_patterns: string[]
+          priority: number
           start_at: string | null
           title: string
           updated_at: string
@@ -47,6 +48,7 @@ export type Database = {
           image_style?: string
           image_url?: string
           path_patterns?: string[]
+          priority?: number
           start_at?: string | null
           title: string
           updated_at?: string
@@ -65,6 +67,7 @@ export type Database = {
           image_style?: string
           image_url?: string
           path_patterns?: string[]
+          priority?: number
           start_at?: string | null
           title?: string
           updated_at?: string

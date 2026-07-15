@@ -111,13 +111,13 @@ export function ShareExperienceCTA({ variant = "footer", className = "" }: Props
               </span>
             </div>
 
-            <h3 className="mt-5 font-display text-3xl font-bold leading-[1.05] tracking-tight text-white sm:text-4xl">
+            <h3 className="mt-3 font-display text-2xl font-bold leading-[1.05] tracking-tight text-white sm:mt-5 sm:text-3xl md:text-4xl">
               Share your experience —{" "}
               <span className="relative inline-block bg-gradient-to-r from-violet via-neon-blue to-violet bg-[length:200%_100%] bg-clip-text text-transparent [animation:shimmer_6s_linear_infinite]">
                 get featured
               </span>
             </h3>
-            <p className="mt-3 text-[15px] leading-relaxed text-white/65 sm:text-base">
+            <p className="mt-3 hidden text-[15px] leading-relaxed text-white/65 sm:block sm:text-base">
               A 60-second text or video review helps other founders trust the process. Verified customers only — we hand-pick a few every week to spotlight.
             </p>
 

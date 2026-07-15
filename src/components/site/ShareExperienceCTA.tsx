@@ -97,7 +97,7 @@ export function ShareExperienceCTA({ variant = "footer", className = "" }: Props
           }}
         />
 
-        <div className="relative flex flex-col items-center gap-8 text-center md:flex-row md:items-stretch md:justify-between md:gap-10 md:text-left">
+        <div className="relative flex flex-col items-center gap-5 text-center sm:gap-8 md:flex-row md:items-stretch md:justify-between md:gap-10 md:text-left">
           {/* Left: story */}
           <div className="max-w-xl">
             <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.06] px-3 py-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">

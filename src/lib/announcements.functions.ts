@@ -4,6 +4,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import type { Database } from "@/integrations/supabase/types";
 
 export type AnnouncementImageStyle = "cover" | "thumbnail" | "none";
+export type AnnouncementAudience = "all" | "guests" | "authenticated" | "admins";
 
 export type Announcement = {
   id: string;
@@ -16,6 +17,8 @@ export type Announcement = {
   image_style: AnnouncementImageStyle;
   badge: string;
   accent: string;
+  path_patterns: string[];
+  audience: AnnouncementAudience;
   created_at: string;
   updated_at: string;
 };

@@ -253,13 +253,19 @@ function ResetPasswordPage() {
             </div>
 
             <div className="relative">
-              <Link to="/" className="inline-flex items-center gap-2 font-display text-xl font-bold tracking-tight">
-                <span className="grid size-6 place-items-center rounded-md bg-gradient-to-br from-violet to-magenta shadow-sm shadow-violet/25">
-                  <span className="size-2 rounded-full bg-white" />
-                </span>
-                <span className="bg-gradient-to-r from-violet via-magenta to-coral bg-clip-text text-transparent">
-                  EmailsLy
-                </span>
+              <Link to="/" aria-label={`${siteName} home`} className="inline-flex items-center gap-2 font-display text-xl font-bold tracking-tight">
+                {logoUrl ? (
+                  <img src={logoUrl} alt={`${siteName} logo`} className="h-9 w-auto object-contain" />
+                ) : (
+                  <>
+                    <span className="grid size-6 place-items-center rounded-md bg-gradient-to-br from-violet to-magenta shadow-sm shadow-violet/25">
+                      <span className="size-2 rounded-full bg-white" />
+                    </span>
+                    <span className="bg-gradient-to-r from-violet via-magenta to-coral bg-clip-text text-transparent">
+                      {siteName}
+                    </span>
+                  </>
+                )}
               </Link>
 
               {linkState === "checking" ? (

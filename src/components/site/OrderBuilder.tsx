@@ -53,16 +53,16 @@ type Service = {
 };
 
 const SERVICES: Service[] = [
-  { id: "apollo", name: "Apollo B2B Data", rate: 0.0035, minQty: 5000, minOrder: 20, unit: "lead", helper: "$20 / 5K · $35 / 10K+", icon: Target, group: "data" },
-  { id: "zoominfo", name: "ZoomInfo Data", rate: 0.02, minQty: 1000, minOrder: 20, unit: "lead", icon: Building2, group: "data" },
-  { id: "linkedin", name: "LinkedIn Lead Lists", rate: 0.01, minQty: 5000, minOrder: 50, unit: "lead", helper: "~70% include verified emails", icon: Linkedin, group: "data" },
-  { id: "manual", name: "Hand-Picked Leads", rate: 0.35, minQty: 100, minOrder: 35, unit: "lead", helper: "Min 100 leads · enter any quantity", icon: UserSearch, group: "data" },
-  { id: "mobile", name: "Mobile Number Lookup", rate: 0.25, minQty: 100, minOrder: 25, unit: "record", helper: "Min 100 numbers · enter any quantity", icon: Phone, group: "data" },
-  { id: "pixel", name: "Facebook Pixel", rate: 100, minQty: 1, minOrder: 100, unit: "setup", fixed: true, icon: MousePointerClick, group: "growth" },
-  { id: "ads", name: "Google Ads Launch", rate: 100, minQty: 1, minOrder: 100, unit: "setup", fixed: true, icon: LineChart, group: "growth" },
-  { id: "tracking", name: "Server-Side Tracking", rate: 150, minQty: 1, minOrder: 150, unit: "setup", fixed: true, icon: ServerCog, group: "growth" },
-  { id: "logo", name: "Logo & Brand Kit", rate: 50, minQty: 1, minOrder: 50, unit: "kit", fixed: true, icon: PenTool, group: "design" },
-  { id: "webdesign", name: "Custom Website Build", rate: 200, minQty: 1, minOrder: 200, unit: "site", fixed: true, icon: Globe2, group: "design" },
+  { id: "apollo", name: "Apollo B2B Data", rate: 0.0035, minQty: 5000, minOrder: 20, unit: "lead", helper: "$20 / 5K · $35 / 10K+", icon: PremiumTarget, group: "data" },
+  { id: "zoominfo", name: "ZoomInfo Data", rate: 0.02, minQty: 1000, minOrder: 20, unit: "lead", icon: PremiumBuilding, group: "data" },
+  { id: "linkedin", name: "LinkedIn Lead Lists", rate: 0.01, minQty: 5000, minOrder: 50, unit: "lead", helper: "~70% include verified emails", icon: PremiumLinkedin, group: "data" },
+  { id: "manual", name: "Hand-Picked Leads", rate: 0.35, minQty: 100, minOrder: 35, unit: "lead", helper: "Min 100 leads · enter any quantity", icon: PremiumUserSearch, group: "data" },
+  { id: "mobile", name: "Mobile Number Lookup", rate: 0.25, minQty: 100, minOrder: 25, unit: "record", helper: "Min 100 numbers · enter any quantity", icon: PremiumPhone, group: "data" },
+  { id: "pixel", name: "Facebook Pixel", rate: 100, minQty: 1, minOrder: 100, unit: "setup", fixed: true, icon: PremiumMousePointerClick, group: "growth" },
+  { id: "ads", name: "Google Ads Launch", rate: 100, minQty: 1, minOrder: 100, unit: "setup", fixed: true, icon: PremiumLineChart, group: "growth" },
+  { id: "tracking", name: "Server-Side Tracking", rate: 150, minQty: 1, minOrder: 150, unit: "setup", fixed: true, icon: PremiumServerCog, group: "growth" },
+  { id: "logo", name: "Logo & Brand Kit", rate: 50, minQty: 1, minOrder: 50, unit: "kit", fixed: true, icon: PremiumPenTool, group: "design" },
+  { id: "webdesign", name: "Custom Website Build", rate: 200, minQty: 1, minOrder: 200, unit: "site", fixed: true, icon: PremiumGlobe, group: "design" },
 ];
 
 const QTY_PRESETS = [5000, 10000, 15000, 20000, 50000, 100000, 250000, 500000, 1000000];
@@ -70,10 +70,10 @@ const TIER_PRESETS = [100, 200, 300, 400, 500, 750, 1000, 1500, 2000, 3000, 5000
 const TIER_SERVICES = new Set(["manual", "mobile"]);
 
 const STEPS = [
-  { id: 1, label: "Service", icon: Sliders },
-  { id: 2, label: "Configure", icon: ClipboardList },
-  { id: 3, label: "Extras", icon: Sparkles },
-  { id: 4, label: "Review", icon: Wallet },
+  { id: 1, label: "Service", icon: PremiumSliders },
+  { id: 2, label: "Configure", icon: PremiumClipboardList },
+  { id: 3, label: "Extras", icon: PremiumSparkles },
+  { id: 4, label: "Review", icon: PremiumWallet },
 ] as const;
 
 function formatUSD(n: number) {
@@ -238,7 +238,7 @@ export function OrderBuilder() {
         {/* Header */}
         <div className="mx-auto max-w-3xl text-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-violet/20 bg-violet-soft px-3 py-1">
-            <Rocket className="size-3 text-violet" />
+            <PremiumRocket className="size-3 text-violet" />
             <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-violet">
               Guided order builder
             </span>
@@ -251,15 +251,15 @@ export function OrderBuilder() {
           </p>
           <div className="mt-4 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 font-mono text-[10px] font-semibold uppercase tracking-widest text-muted-foreground sm:gap-x-8 sm:gap-y-3 sm:text-[11px]">
             <span className="inline-flex items-center gap-1.5 sm:gap-2">
-              <BadgeCheck className="size-3.5 text-emerald sm:size-4" /> 99% verified data
+              <PremiumBadgeCheck className="size-3.5 text-emerald sm:size-4" /> 99% verified data
             </span>
             <span className="hidden size-1 rounded-full bg-border sm:inline-block" />
             <span className="inline-flex items-center gap-1.5 sm:gap-2">
-              <Clock className="size-3.5 text-violet sm:size-4" /> Delivered in ≤24h
+              <PremiumTimer className="size-3.5 text-violet sm:size-4" /> Delivered in ≤24h
             </span>
             <span className="hidden size-1 rounded-full bg-border sm:inline-block" />
             <span className="inline-flex items-center gap-1.5 sm:gap-2">
-              <ShieldCheck className="size-3.5 text-coral sm:size-4" /> Pay after preview
+              <PremiumShieldCheck className="size-3.5 text-coral sm:size-4" /> Pay after preview
             </span>
           </div>
         </div>
@@ -293,7 +293,7 @@ export function OrderBuilder() {
                             : "bg-secondary"
                       }`}
                     >
-                      {done ? <Check className="size-3.5 sm:size-4" /> : <Icon className="size-3.5 sm:size-4" />}
+                      {done ? <PremiumCheck className="size-3.5 sm:size-4" /> : <Icon className="size-3.5 sm:size-4" />}
                     </span>
                     <span className="flex min-w-0 flex-col items-center leading-tight">
                       <span className={`hidden whitespace-nowrap font-mono text-[10px] font-bold uppercase tracking-widest sm:block ${active ? "text-white/70" : done ? "text-emerald/80" : "text-muted-foreground/70"}`}>
@@ -322,7 +322,7 @@ export function OrderBuilder() {
               <div className="hidden rounded-2xl border border-border bg-secondary/40 p-4 sm:p-5 lg:block">
                 <div className="flex items-center gap-2">
                   <span className="grid size-8 place-items-center rounded-lg bg-violet/10 text-violet">
-                    <User className="size-4" />
+                    <PremiumUser className="size-4" />
                   </span>
                   <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-violet">Customer details</span>
                 </div>
@@ -405,7 +405,7 @@ export function OrderBuilder() {
 
                 {!service.fixed && TIER_SERVICES.has(service.id) && (
                   <div className="mt-6 sm:mt-8">
-                    <SectionLabel icon={Layers} rightText={`Min ${service.minQty.toLocaleString()} · Max 10,000`}>
+                    <SectionLabel icon={PremiumLayers} rightText={`Min ${service.minQty.toLocaleString()} · Max 10,000`}>
                       Pick a tier
                     </SectionLabel>
                     <div className="rounded-2xl border border-border bg-secondary/40 p-4 sm:p-6">
@@ -455,13 +455,13 @@ export function OrderBuilder() {
                           className="inline-flex items-center gap-1.5 rounded-full bg-ink px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-violet"
                         >
                           Contact sales
-                          <ArrowRight className="size-4" />
+                          <PremiumArrowRight className="size-4" />
                         </a>
                       </div>
                     </div>
 
                     <div className="mt-6 sm:mt-8">
-                      <SectionLabel icon={Tag}>Price comparison</SectionLabel>
+                      <SectionLabel icon={PremiumTag}>Price comparison</SectionLabel>
                       <div className="grid gap-3 grid-cols-2">
                         <ComparePill label="Apollo.io retail" price={comparePriceApollo} note={`${(comparePriceApollo / base).toFixed(0)}× more`} tone="muted" />
                         <ComparePill label="LinkedIn Nav" price={comparePriceLinkedIn} note={`${(comparePriceLinkedIn / base).toFixed(0)}× more`} tone="muted" />
@@ -474,7 +474,7 @@ export function OrderBuilder() {
 
                 {!service.fixed && !TIER_SERVICES.has(service.id) && (
                   <div className="mt-6 sm:mt-8">
-                    <SectionLabel icon={Layers} rightText={`Min ${service.minQty.toLocaleString()}`}>
+                    <SectionLabel icon={PremiumLayers} rightText={`Min ${service.minQty.toLocaleString()}`}>
                       {service.unit === "lead" ? "Lead quantity" : "Quantity"}
                     </SectionLabel>
                     <div className="rounded-2xl border border-border bg-secondary/40 p-4 sm:p-6">
@@ -516,7 +516,7 @@ export function OrderBuilder() {
                     </div>
 
                     <div className="mt-6 sm:mt-8">
-                      <SectionLabel icon={Tag}>Price comparison</SectionLabel>
+                      <SectionLabel icon={PremiumTag}>Price comparison</SectionLabel>
                       <div className="grid gap-3 grid-cols-2">
                         <ComparePill label="Apollo.io retail" price={comparePriceApollo} note={`${(comparePriceApollo / base).toFixed(0)}× more`} tone="muted" />
                         <ComparePill label="LinkedIn Nav" price={comparePriceLinkedIn} note={`${(comparePriceLinkedIn / base).toFixed(0)}× more`} tone="muted" />
@@ -530,7 +530,7 @@ export function OrderBuilder() {
                 {service.id === "apollo" && (
                   <div className="mt-6 grid gap-4 sm:mt-8 md:grid-cols-2 md:gap-6">
                     <div>
-                      <SectionLabel icon={Zap} rightText="1st free · +$5 each extra">
+                      <SectionLabel icon={PremiumZap} rightText="1st free · +$5 each extra">
                         Apollo search URLs
                       </SectionLabel>
                       <div className="inline-flex items-center gap-4 rounded-xl border border-input bg-background px-2 py-2">
@@ -540,7 +540,7 @@ export function OrderBuilder() {
                           className="grid size-9 place-items-center rounded-lg text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
                           aria-label="Decrease"
                         >
-                          <Minus className="size-4" />
+                          <PremiumMinus className="size-4" />
                         </button>
                         <span className="min-w-6 text-center font-mono text-lg font-bold">{extraUrls}</span>
                         <button
@@ -549,7 +549,7 @@ export function OrderBuilder() {
                           className="grid size-9 place-items-center rounded-lg text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
                           aria-label="Increase"
                         >
-                          <Plus className="size-4" />
+                          <PremiumPlus className="size-4" />
                         </button>
                       </div>
                     </div>
@@ -607,7 +607,7 @@ export function OrderBuilder() {
                 <div className="mt-6 rounded-2xl border border-border bg-secondary/40 p-4 sm:mt-10 sm:p-6">
                   <div className="flex items-center gap-3">
                     <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-violet/10 text-violet">
-                      <Sparkles className="size-5" />
+                      <PremiumSparkles className="size-5" />
                     </span>
                     <div className="min-w-0 flex-1">
                       <div className="text-sm font-semibold">Running total</div>
@@ -681,7 +681,7 @@ export function OrderBuilder() {
                 disabled={step === 1}
                 className="inline-flex items-center gap-2 rounded-xl border border-border bg-background px-4 py-2.5 text-sm font-semibold text-foreground transition-all hover:border-foreground/20 disabled:cursor-not-allowed disabled:opacity-40 sm:px-5 sm:py-3"
               >
-                <ArrowLeft className="size-4" /> Back
+                <PremiumArrowLeft className="size-4" /> Back
               </button>
               <div className="hidden font-mono text-[11px] font-bold uppercase tracking-widest text-muted-foreground sm:block">
                 {step === 4 ? "Ready to checkout" : `${STEPS.length - step} step${STEPS.length - step === 1 ? "" : "s"} left`}
@@ -693,7 +693,7 @@ export function OrderBuilder() {
                   disabled={!canNext}
                   className="inline-flex items-center gap-2 rounded-xl bg-violet px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-violet/30 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-violet/40 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 sm:px-6 sm:py-3"
                 >
-                  Continue <ArrowRight className="size-4" />
+                  Continue <PremiumArrowRight className="size-4" />
                 </button>
               )}
             </div>
@@ -709,7 +709,7 @@ export function OrderBuilder() {
                 <div className="relative flex items-center justify-between">
                   <h3 className="font-display text-xl font-bold">Order summary</h3>
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-white/80">
-                    <Lock className="size-3" /> Secure
+                    <PremiumLock className="size-3" /> Secure
                   </span>
                 </div>
 
@@ -804,7 +804,7 @@ export function OrderBuilder() {
                       />
                       <span className="flex-1 text-xs text-white">
                         <span className="flex items-center gap-1.5 font-semibold text-emerald">
-                          <Gift className="size-3.5" /> Apply my referral credit
+                          <PremiumGift className="size-3.5" /> Apply my referral credit
                         </span>
                         <span className="mt-0.5 block text-white/60">
                           You have <span className="font-mono text-emerald">{formatUSD(creditBalanceCents / 100)}</span> available
@@ -884,18 +884,18 @@ export function OrderBuilder() {
                   <span className="slide-btn-decor" aria-hidden />
                   <span className="slide-btn-content justify-between">
                     <span className="slide-btn-icon">
-                      <Lock className="size-4" />
+                      <PremiumLock className="size-4" />
                     </span>
                     <span className="slide-btn-text flex-1 justify-center">
                       Checkout · Secure demo
                     </span>
                     <span className="slide-btn-icon" style={{ background: "color-mix(in oklab, var(--violet) 88%, black)" }}>
-                      <ArrowRight className="size-4" />
+                      <PremiumArrowRight className="size-4" />
                     </span>
                   </span>
                 </Link>
                 <p className="relative mt-3 flex items-center justify-center gap-1.5 font-mono text-[10px] font-bold uppercase tracking-widest text-white/40">
-                  <Lock className="size-3" /> 256-bit SSL encrypted
+                  <PremiumLock className="size-3" /> 256-bit SSL encrypted
                 </p>
               </div>
             </div>
@@ -907,7 +907,7 @@ export function OrderBuilder() {
           <div className="mx-auto mt-4 flex max-w-5xl items-center justify-between rounded-2xl border border-border bg-card/60 px-4 py-3 backdrop-blur sm:mt-6 sm:px-6 sm:py-4">
             <div className="flex items-center gap-2.5 sm:gap-3">
               <span className="grid size-8 place-items-center rounded-lg bg-violet/10 text-violet sm:size-9">
-                <Wallet className="size-3.5 sm:size-4" />
+                <PremiumWallet className="size-3.5 sm:size-4" />
               </span>
               <div>
                 <div className="font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Live estimate</div>
@@ -1104,7 +1104,7 @@ function ServiceChip({
           {service.fixed ? `$${service.minOrder} flat` : `$${service.rate.toFixed(4)}/${service.unit}`}
         </span>
       </span>
-      {active && <Check className="mt-1 size-4 shrink-0" />}
+      {active && <PremiumCheck className="mt-1 size-4 shrink-0" />}
     </button>
   );
 }

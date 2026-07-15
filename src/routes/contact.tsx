@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { Mail, MessageCircle, Calendar, Loader2 } from "lucide-react";
 import { submitContactLead } from "@/lib/contact-leads.functions";
+import { useSiteContent } from "@/hooks/use-site-content";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -16,6 +17,7 @@ export const Route = createFileRoute("/contact")({
 });
 
 function Contact() {
+  const contactInfo = useSiteContent("contact");
   const [sent, setSent] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);

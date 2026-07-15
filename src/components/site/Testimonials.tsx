@@ -2,7 +2,7 @@ import React, { useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Star, Quote, Play, Pause, BadgeCheck } from "lucide-react";
+import { Star, Quote, Play, Pause, BadgeCheck, Users, Clock, TrendingUp } from "lucide-react";
 import amineVideo from "@/assets/amine-italy.mp4.asset.json";
 import aminePoster from "@/assets/amine-poster.jpg.asset.json";
 import { ReviewSubmitModal } from "@/components/site/ReviewSubmitModal";
@@ -316,26 +316,58 @@ export function Testimonials() {
 
       <div className="mx-auto max-w-7xl">
         {/* Trust bar */}
-        <div className="mb-20 grid gap-4 sm:grid-cols-3">
-          <div className="rounded-2xl border border-border bg-background p-6 text-center shadow-sm">
-            <div className="font-display text-3xl font-bold tracking-tight text-foreground">500+</div>
-            <p className="mt-1 font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-              Clients served
-            </p>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          className="mx-auto mb-20 max-w-4xl overflow-hidden rounded-xl border border-border bg-background shadow-lg"
+        >
+          <div className="grid divide-y divide-border sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+            <div className="group relative flex items-center gap-4 p-6 sm:justify-center sm:p-8">
+              <div className="grid size-12 place-items-center rounded-lg bg-violet-soft text-violet transition-colors group-hover:bg-violet group-hover:text-white">
+                <Users className="size-6" />
+              </div>
+              <div className="text-left">
+                <div className="font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+                  500+
+                </div>
+                <p className="mt-0.5 font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                  Clients served
+                </p>
+              </div>
+            </div>
+
+            <div className="group relative flex items-center gap-4 p-6 sm:justify-center sm:p-8">
+              <div className="grid size-12 place-items-center rounded-lg bg-coral-soft text-coral transition-colors group-hover:bg-coral group-hover:text-white">
+                <TrendingUp className="size-6" />
+              </div>
+              <div className="text-left">
+                <div className="flex items-baseline gap-1 font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+                  4.9
+                  <span className="text-base font-medium text-muted-foreground">/ 5</span>
+                </div>
+                <p className="mt-0.5 font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                  Average verified rating
+                </p>
+              </div>
+            </div>
+
+            <div className="group relative flex items-center gap-4 p-6 sm:justify-center sm:p-8">
+              <div className="grid size-12 place-items-center rounded-lg bg-emerald-soft text-emerald transition-colors group-hover:bg-emerald group-hover:text-white">
+                <Clock className="size-6" />
+              </div>
+              <div className="text-left">
+                <div className="font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+                  24h
+                </div>
+                <p className="mt-0.5 font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                  Standard delivery
+                </p>
+              </div>
+            </div>
           </div>
-          <div className="rounded-2xl border border-border bg-background p-6 text-center shadow-sm">
-            <div className="font-display text-3xl font-bold tracking-tight text-foreground">4.9 / 5</div>
-            <p className="mt-1 font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-              Average verified rating
-            </p>
-          </div>
-          <div className="rounded-2xl border border-border bg-background p-6 text-center shadow-sm">
-            <div className="font-display text-3xl font-bold tracking-tight text-foreground">24h</div>
-            <p className="mt-1 font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-              Standard delivery
-            </p>
-          </div>
-        </div>
+        </motion.div>
 
         {/* Header */}
         <div className="mx-auto mb-10 flex max-w-2xl flex-col items-center text-center">

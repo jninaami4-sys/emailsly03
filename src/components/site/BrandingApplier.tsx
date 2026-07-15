@@ -39,7 +39,10 @@ export function BrandingApplier() {
       parts.push(`--emerald-soft: color-mix(in oklab, ${accent} 12%, transparent);`);
       parts.push(`--color-emerald-soft: color-mix(in oklab, ${accent} 12%, transparent);`);
     }
-    if (ink) parts.push(`--ink: ${ink}; --color-ink: ${ink}; --foreground: ${ink}; --color-foreground: ${ink};`);
+    // Only set the ink token itself — never override --foreground globally,
+    // otherwise dark surfaces (.theme-midnight) inherit dark ink on dark bg
+    // and text becomes unreadable.
+    if (ink) parts.push(`--ink: ${ink}; --color-ink: ${ink};`);
 
     let el = document.getElementById(STYLE_ID) as HTMLStyleElement | null;
     if (parts.length === 0) {
@@ -50,7 +53,9 @@ export function BrandingApplier() {
         el.id = STYLE_ID;
         document.head.appendChild(el);
       }
-      el.textContent = `:root, .theme-midnight { ${parts.join(" ")} }`;
+      // Scope brand overrides to :root only. .theme-midnight already
+      // defines its own light --foreground for dark surfaces; leave it alone.
+      el.textContent = `:root { ${parts.join(" ")} }`;
     }
   }, [branding.primary_color, branding.accent_color, branding.ink_color]);
 

@@ -236,7 +236,7 @@ function PaymentSuccessPage() {
           "Reserving your leads",
           "Preparing your invoice",
         ]}
-        systemLabel="LYRADATA · PCI-DSS"
+        systemLabel="EMAILSLY · PCI-DSS"
         label="LOADING"
       />
     );

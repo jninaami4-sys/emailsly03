@@ -12,7 +12,7 @@ export type SourceKey = (typeof SOURCES)[number];
 
 export type ParsedCsv = {
   headers: string[];
-  rows: Record<string, string>[];
+  rows: Record<string, string | number | boolean>[];
 };
 
 export type SampleDatasetConfig = {

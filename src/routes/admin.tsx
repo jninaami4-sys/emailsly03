@@ -124,6 +124,7 @@ function AdminPage() {
   const [covers, setCovers] = useState<Record<string, string | null>>({});
   const [selectedId, setSelectedId] = useState<string>(PRODUCTS[0]?.id ?? "");
   const [query, setQuery] = useState("");
+  const [tourOpen, setTourOpen] = useState(false);
 
   // Load persisted covers
   useEffect(() => {

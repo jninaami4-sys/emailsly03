@@ -3,7 +3,9 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 
-export type SiteContentMap = Record<string, Record<string, string | number | boolean | null | unknown[] | Record<string, unknown>>>;
+// JSON value type used for serializable server-fn return
+type JsonValue = string | number | boolean | null | JsonValue[] | { [k: string]: JsonValue };
+export type SiteContentMap = { [section: string]: { [k: string]: JsonValue } };
 
 export const listSiteContent = createServerFn({ method: "GET" }).handler(async () => {
   const key = process.env.SUPABASE_PUBLISHABLE_KEY!;

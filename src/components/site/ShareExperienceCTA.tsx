@@ -111,7 +111,7 @@ export function ShareExperienceCTA({ variant = "footer", className = "" }: Props
               </span>
             </div>
 
-            <h3 className="mt-3 font-display text-2xl font-bold leading-[1.05] tracking-tight text-white sm:mt-5 sm:text-3xl md:text-4xl">
+            <h3 className="mt-3 font-display text-2xl font-bold leading-[1.05] tracking-tight text-white sm:mt-5 sm:text-4xl">
               Share your experience —{" "}
               <span className="relative inline-block bg-gradient-to-r from-violet via-neon-blue to-violet bg-[length:200%_100%] bg-clip-text text-transparent [animation:shimmer_6s_linear_infinite]">
                 get featured

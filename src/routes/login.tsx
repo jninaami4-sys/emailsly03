@@ -38,6 +38,9 @@ type FieldErrors = { email?: string; password?: string };
 function AuthPage() {
   const search = useSearch({ from: "/login" });
   const { user, loading } = useAuth();
+  const branding = useSiteContent("branding");
+  const siteName = branding.site_name || "EmailsLy";
+  const logoUrl = (branding.logo_url || "").trim();
   const [mode, setMode] = useState<"signin" | "signup" | "forgot">(search.mode ?? "signup");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

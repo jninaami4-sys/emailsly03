@@ -93,6 +93,9 @@ function scorePassword(pw: string) {
 }
 
 function ResetPasswordPage() {
+  const branding = useSiteContent("branding");
+  const siteName = branding.site_name || "EmailsLy";
+  const logoUrl = (branding.logo_url || "").trim();
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [showPassword, setShowPassword] = useState(false);

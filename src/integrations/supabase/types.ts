@@ -17,6 +17,7 @@ export type Database = {
       announcements: {
         Row: {
           accent: string
+          audience: string
           badge: string
           body: string
           created_at: string
@@ -26,11 +27,13 @@ export type Database = {
           id: string
           image_style: string
           image_url: string
+          path_patterns: string[]
           title: string
           updated_at: string
         }
         Insert: {
           accent?: string
+          audience?: string
           badge?: string
           body?: string
           created_at?: string
@@ -40,11 +43,13 @@ export type Database = {
           id?: string
           image_style?: string
           image_url?: string
+          path_patterns?: string[]
           title: string
           updated_at?: string
         }
         Update: {
           accent?: string
+          audience?: string
           badge?: string
           body?: string
           created_at?: string
@@ -54,6 +59,7 @@ export type Database = {
           id?: string
           image_style?: string
           image_url?: string
+          path_patterns?: string[]
           title?: string
           updated_at?: string
         }

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Megaphone, Plus, Save, Trash2, Eye, EyeOff, Loader2, Upload, ImageIcon, ImageOff } from "lucide-react";
+import { Megaphone, Plus, Save, Trash2, Eye, EyeOff, Loader2, Upload, ImageIcon, ImageOff, Monitor, Smartphone } from "lucide-react";
 import {
   listAnnouncements,
   upsertAnnouncement,
@@ -9,6 +9,7 @@ import {
   type Announcement,
   type AnnouncementImageStyle,
 } from "@/lib/announcements.functions";
+import { AnnouncementPreview } from "@/components/site/AnnouncementModal";
 import { supabase } from "@/integrations/supabase/client";
 
 const emptyDraft = {

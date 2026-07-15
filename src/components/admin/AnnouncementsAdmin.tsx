@@ -400,6 +400,74 @@ export function AnnouncementsAdmin() {
         </div>
       </div>
 
+      {/* Live preview */}
+      <div className="border-t border-border p-4 sm:p-6">
+        <div className="mb-3 flex items-center justify-between gap-3">
+          <div>
+            <h3 className="font-display text-sm font-bold">Live preview</h3>
+            <p className="mt-0.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+              Exactly what visitors see
+            </p>
+          </div>
+          <div className="inline-flex rounded-xl border border-border bg-background p-1">
+            <button
+              type="button"
+              onClick={() => setDevice("desktop")}
+              className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-wider transition-colors ${
+                device === "desktop" ? "bg-violet text-white" : "text-muted-foreground hover:bg-secondary"
+              }`}
+            >
+              <Monitor className="size-3" /> Desktop
+            </button>
+            <button
+              type="button"
+              onClick={() => setDevice("mobile")}
+              className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-wider transition-colors ${
+                device === "mobile" ? "bg-violet text-white" : "text-muted-foreground hover:bg-secondary"
+              }`}
+            >
+              <Smartphone className="size-3" /> Mobile
+            </button>
+          </div>
+        </div>
+
+        {!draft.title.trim() ? (
+          <div className="flex h-64 items-center justify-center rounded-2xl border border-dashed border-border bg-background/50 text-xs text-muted-foreground">
+            Add a title to see the live preview
+          </div>
+        ) : (
+          <div className="flex justify-center">
+            <div
+              className={`relative overflow-hidden rounded-[2rem] border-4 border-foreground/10 bg-black/80 shadow-2xl transition-all ${
+                device === "mobile" ? "h-[720px] w-[360px]" : "h-[560px] w-full max-w-[1000px]"
+              }`}
+            >
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,hsl(var(--violet)/0.25),transparent_60%),radial-gradient(circle_at_70%_80%,hsl(var(--emerald)/0.2),transparent_60%)]" />
+              <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+              <div className="relative h-full w-full overflow-auto">
+                <AnnouncementPreview
+                  a={{
+                    id: draft.id ?? "preview",
+                    enabled: draft.enabled,
+                    title: draft.title,
+                    body: draft.body,
+                    cta_label: draft.cta_label,
+                    cta_url: draft.cta_url,
+                    image_url: draft.image_url,
+                    image_style: draft.image_style,
+                    badge: draft.badge,
+                    accent: draft.accent,
+                    updated_at: new Date().toISOString(),
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+
+
       <style>{`
         .input {
           width: 100%;

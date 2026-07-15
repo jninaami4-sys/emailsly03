@@ -186,6 +186,7 @@ function AdminPage() {
 
         <div className="mb-10 space-y-6">
           <SiteContentAdmin />
+          <SampleDatasetsAdmin />
           <OrdersAdmin />
           <ReferralsAdmin />
           <StripeEventsAdmin />

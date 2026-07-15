@@ -229,9 +229,9 @@ export function Header() {
                 <Link
                   to="/dashboard"
                   onClick={() => setMobileOpen(false)}
-                  className={`flex items-center gap-2 rounded-md bg-secondary px-3 py-2 text-sm font-semibold text-ink transition-colors hover:bg-violet/10 hover:text-violet ${focusRing}`}
+                  className={`flex items-center gap-2 rounded-md bg-violet/10 px-3 py-2 text-sm font-semibold text-violet transition-colors hover:bg-violet hover:text-white ${focusRing}`}
                 >
-                  <PremiumUser className="size-4 text-violet" aria-hidden="true" />
+                  <PremiumUser className="size-4" aria-hidden="true" />
                   Dashboard
                 </Link>
                 <button
@@ -240,7 +240,7 @@ export function Header() {
                     setMobileOpen(false);
                     handleSignOut();
                   }}
-                  className={`flex items-center gap-2 rounded-md bg-ink px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-violet ${focusRing}`}
+                  className={`flex items-center gap-2 rounded-md bg-violet px-3 py-2 text-sm font-semibold text-white transition-colors hover:brightness-110 ${focusRing}`}
                 >
                   <PremiumLogOut className="size-4" aria-hidden="true" />
                   Sign out
@@ -251,9 +251,9 @@ export function Header() {
                 <Link
                   to="/login"
                   onClick={() => setMobileOpen(false)}
-                  className={`flex items-center gap-2 rounded-md bg-secondary px-3 py-2 text-sm font-semibold text-ink transition-colors hover:bg-violet/10 hover:text-violet ${focusRing}`}
+                  className={`flex items-center gap-2 rounded-md bg-violet/10 px-3 py-2 text-sm font-semibold text-violet transition-colors hover:bg-violet hover:text-white ${focusRing}`}
                 >
-                  <PremiumUser className="size-4 text-violet" aria-hidden="true" />
+                  <PremiumUser className="size-4" aria-hidden="true" />
                   Sign in
                 </Link>
               </div>

@@ -55,6 +55,13 @@ export function Header() {
 
   const cartLabel = count > 0 ? `Open cart, ${count} item${count === 1 ? "" : "s"}` : "Open cart";
 
+  function handleLogoClick(e: React.MouseEvent<HTMLAnchorElement>) {
+    if (pathname === "/") {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }
+
   return (
     <>
       <a
@@ -70,8 +77,9 @@ export function Header() {
             className="relative mx-auto flex h-12 w-full max-w-6xl items-center justify-between rounded-full border border-white/40 bg-white/85 px-5 text-ink shadow-[0_4px_24px_rgba(0,0,0,0.06),inset_0_0.5px_0_0_rgba(255,255,255,0.72),inset_0_-0.5px_0_0_rgba(0,0,0,0.05)] backdrop-blur-2xl backdrop-saturate-[180%]"
           >
             <div className="z-10 flex items-center gap-8">
-              <a
-                href="/"
+              <Link
+                to="/"
+                onClick={handleLogoClick}
                 aria-label={`${siteName} home`}
                 className={`flex items-center gap-2 rounded-md font-display text-xl font-bold tracking-tight ${focusRing}`}
               >
@@ -83,7 +91,7 @@ export function Header() {
                     <span>{siteName}</span>
                   </>
                 )}
-              </a>
+              </Link>
               <ul className="hidden items-center gap-1 text-sm font-medium lg:flex">
                 {NAV_ITEMS.map((item) => {
                   const isActive =

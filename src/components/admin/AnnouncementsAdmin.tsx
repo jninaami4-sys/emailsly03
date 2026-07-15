@@ -26,7 +26,31 @@ const emptyDraft = {
   accent: "violet",
   path_patterns: ["*"] as string[],
   audience: "all" as AnnouncementAudience,
+  start_at: "" as string,
+  end_at: "" as string,
 };
+
+function toDatetimeLocal(iso: string | null): string {
+  if (!iso) return "";
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "";
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+function formatSchedule(a: Announcement, now: Date): { label: string; tone: "live" | "scheduled" | "ended" | "always" } {
+  const start = a.start_at ? new Date(a.start_at) : null;
+  const end = a.end_at ? new Date(a.end_at) : null;
+  if (end && end < now) return { label: `Ended ${end.toLocaleString()}`, tone: "ended" };
+  if (start && start > now) return { label: `Starts ${start.toLocaleString()}`, tone: "scheduled" };
+  if (start || end) {
+    const parts: string[] = [];
+    if (start) parts.push(`from ${start.toLocaleString()}`);
+    if (end) parts.push(`until ${end.toLocaleString()}`);
+    return { label: `Live · ${parts.join(" ")}`, tone: "live" };
+  }
+  return { label: "Always on", tone: "always" };
+}
 
 const ACCENTS = ["violet", "emerald", "amber", "rose", "sky"] as const;
 

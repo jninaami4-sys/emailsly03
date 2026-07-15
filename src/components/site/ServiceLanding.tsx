@@ -1,19 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { SiteShell } from "./SiteShell";
 import { AddOns } from "./AddOns";
-import {
-  ArrowRight,
-  CheckCircle2,
-  Sparkles,
-  Star,
-  ShieldCheck,
-  Zap,
-  Database,
-  Rocket,
-  Headphones,
-  Lock,
-  TrendingUp,
-} from "lucide-react";
+import { ArrowRight, CheckCircle2, Star, ShieldCheck, Zap, Database, Rocket, Headphones, Lock, TrendingUp } from "lucide-react";
+import { PremiumSparkles as Sparkles } from "@/components/site/PremiumIcons";
 import type { ComponentType, SVGProps } from "react";
 
 export type ServicePageProps = {

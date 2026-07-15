@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteShell } from "@/components/site/SiteShell";
 import { BLOG_POSTS, formatPublishedAt } from "@/lib/blog-posts";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import { PremiumSparkles as Sparkles } from "@/components/site/PremiumIcons";
 
 export const Route = createFileRoute("/blog")({
   head: () => ({

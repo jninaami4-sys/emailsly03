@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { PenSquare, Star, Sparkles, ShieldCheck, ArrowRight, Gem } from "lucide-react";
+import { PenSquare, Star, ShieldCheck, ArrowRight, Gem } from "lucide-react";
+import { PremiumSparkles as Sparkles } from "@/components/site/PremiumIcons";
 import { ReviewSubmitModal } from "@/components/site/ReviewSubmitModal";
 
 type Variant = "footer" | "dashboard";

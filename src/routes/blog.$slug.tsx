@@ -1,7 +1,8 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { SiteShell } from "@/components/site/SiteShell";
 import { BLOG_POSTS, formatPublishedAt, getPostBySlug, type PostBlock } from "@/lib/blog-posts";
-import { ArrowLeft, ArrowRight, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import { PremiumSparkles as Sparkles } from "@/components/site/PremiumIcons";
 
 export const Route = createFileRoute("/blog/$slug")({
   loader: ({ params }) => {

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Sparkles, MousePointer2 } from "lucide-react";
+import { ArrowRight, MousePointer2 } from "lucide-react";
+import { PremiumSparkles as Sparkles } from "@/components/site/PremiumIcons";
 
 export const Route = createFileRoute("/shader-lab")({
   head: () => ({

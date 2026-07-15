@@ -2,7 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useRouterState } from "@tanstack/react-router";
-import { X, Sparkles } from "lucide-react";
+import { X } from "lucide-react";
+import { PremiumSparkles as Sparkles } from "@/components/site/PremiumIcons";
 import { listActiveAnnouncements, type Announcement } from "@/lib/announcements.functions";
 import { supabase } from "@/integrations/supabase/client";
 

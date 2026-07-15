@@ -70,8 +70,8 @@ export const SITE_CONTENT_DEFAULTS = {
     favicon_url: "/__l5e/assets-v1/4548c299-341d-4948-8810-9290b093f96d/emailsly-favicon.png",
     tagline: "Verified B2B Data Platform",
     primary_color: "#7C3AED",
-    accent_color: "#22C55E",
-    ink_color: "#0F172A",
+    accent_color: "#D946EF",
+    ink_color: "#0A0A1F",
   },
   contact: {
     email: "hello@emailsly.com",

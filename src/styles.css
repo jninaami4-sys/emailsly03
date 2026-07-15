@@ -41,10 +41,14 @@
   /* Brand accents */
   --color-violet: var(--violet);
   --color-violet-soft: var(--violet-soft);
+  --color-magenta: var(--magenta);
+  --color-magenta-soft: var(--magenta-soft);
   --color-coral: var(--coral);
   --color-coral-soft: var(--coral-soft);
   --color-emerald: var(--emerald);
   --color-emerald-soft: var(--emerald-soft);
+  --color-amber: var(--amber);
+  --color-amber-soft: var(--amber-soft);
   --color-ink: var(--ink);
   --color-paper: var(--paper);
 
@@ -69,58 +73,75 @@
 :root {
   --radius: 0.75rem;
 
-  --paper: oklch(0.985 0.002 240);
-  --ink: oklch(0.18 0.02 260);
+  /* ---------- EmailsLy locked brand palette ----------
+   * Primary  Violet     #7C3AED   (logo mark + wordmark accent)
+   * Accent   Magenta    #D946EF   (Ly gradient tail, highlights, links)
+   * Success  Emerald    #10B981
+   * Warning  Amber      #F59E0B
+   * Danger   Rose       #F43F5E
+   * Ink      Near-black #0A0A1F   (wordmark, headings, body)
+   * Paper    Off-white  #FAFAFC   (canvas)
+   */
 
-  --background: oklch(0.985 0.002 240);
-  --foreground: oklch(0.18 0.02 260);
+  --paper: oklch(0.985 0.003 275);
+  --ink: oklch(0.14 0.03 275);
+
+  --background: oklch(0.985 0.003 275);
+  --foreground: oklch(0.14 0.03 275);
 
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.18 0.02 260);
+  --card-foreground: oklch(0.14 0.03 275);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.18 0.02 260);
+  --popover-foreground: oklch(0.14 0.03 275);
 
+  /* Primary = violet (locked) */
   --primary: oklch(0.52 0.24 293);
   --primary-foreground: oklch(1 0 0);
 
-  --secondary: oklch(0.96 0.005 260);
-  --secondary-foreground: oklch(0.18 0.02 260);
+  /* Secondary = magenta wash surface (subtle, for chips/badges) */
+  --secondary: oklch(0.96 0.02 305);
+  --secondary-foreground: oklch(0.14 0.03 275);
 
-  --muted: oklch(0.96 0.005 260);
-  --muted-foreground: oklch(0.5 0.02 260);
+  --muted: oklch(0.965 0.006 275);
+  --muted-foreground: oklch(0.48 0.02 275);
 
-  --accent: oklch(0.96 0.005 260);
-  --accent-foreground: oklch(0.18 0.02 260);
+  /* Accent = magenta (Ly tail) — used for highlights, focus rings sparingly */
+  --accent: oklch(0.66 0.28 328);
+  --accent-foreground: oklch(1 0 0);
 
-  --destructive: oklch(0.6 0.22 25);
+  --destructive: oklch(0.63 0.24 15);
   --destructive-foreground: oklch(1 0 0);
 
-  --border: oklch(0.18 0.02 260 / 0.08);
-  --input: oklch(0.18 0.02 260 / 0.12);
+  --border: oklch(0.14 0.03 275 / 0.09);
+  --input: oklch(0.14 0.03 275 / 0.14);
   --ring: oklch(0.52 0.24 293);
 
-  /* Vibrant accents */
-  --violet: oklch(0.52 0.24 293);        /* #7C3AED */
+  /* Vibrant brand accents (semantic aliases used across the app) */
+  --violet: oklch(0.52 0.24 293);            /* #7C3AED */
   --violet-soft: oklch(0.52 0.24 293 / 0.1);
-  --coral: oklch(0.7 0.19 34);           /* #FF6B4A */
-  --coral-soft: oklch(0.7 0.19 34 / 0.12);
-  --emerald: oklch(0.65 0.16 162);       /* #10B981 */
-  --emerald-soft: oklch(0.65 0.16 162 / 0.12);
+  --magenta: oklch(0.66 0.28 328);           /* #D946EF */
+  --magenta-soft: oklch(0.66 0.28 328 / 0.12);
+  --coral: oklch(0.66 0.28 328);             /* legacy alias → magenta */
+  --coral-soft: oklch(0.66 0.28 328 / 0.12);
+  --emerald: oklch(0.68 0.16 162);           /* #10B981 */
+  --emerald-soft: oklch(0.68 0.16 162 / 0.12);
+  --amber: oklch(0.79 0.16 78);              /* #F59E0B */
+  --amber-soft: oklch(0.79 0.16 78 / 0.15);
 
-  /* Midnight Indigo palette */
-  --midnight: oklch(0.14 0.03 275);
-  --midnight-surface: oklch(0.19 0.05 275);
-  --midnight-elev: oklch(0.26 0.09 275);
+  /* Midnight Indigo palette (dark theme surfaces) */
+  --midnight: oklch(0.13 0.03 280);
+  --midnight-surface: oklch(0.18 0.05 280);
+  --midnight-elev: oklch(0.25 0.09 280);
   --midnight-line: oklch(1 0 0 / 0.08);
-  --indigo: oklch(0.62 0.22 275);
-  --indigo-soft: oklch(0.62 0.22 275 / 0.15);
+  --indigo: oklch(0.62 0.22 285);
+  --indigo-soft: oklch(0.62 0.22 285 / 0.15);
 
-  /* Neon Orange Peel */
-  --neon-orange: oklch(0.78 0.2 55);           /* vivid #FF9F1C-ish */
+  /* Neon Orange Peel (retained for legacy references) */
+  --neon-orange: oklch(0.78 0.2 55);
   --neon-orange-soft: oklch(0.78 0.2 55 / 0.18);
 
-  /* Neon Blue */
-  --neon-blue: oklch(0.72 0.22 250);           /* vivid electric blue */
+  /* Neon Blue (retained for legacy references) */
+  --neon-blue: oklch(0.72 0.22 250);
   --neon-blue-soft: oklch(0.72 0.22 250 / 0.18);
 }
 

@@ -379,7 +379,55 @@ export function AnnouncementsAdmin() {
                   </div>
                 </Field>
               </div>
+
+              <div className="mt-4 border-t border-border pt-4">
+                <div className="mb-3 flex items-center gap-2">
+                  <CalendarClock className="size-3.5 text-violet" />
+                  <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                    Schedule (optional)
+                  </span>
+                </div>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <Field label="Start showing">
+                    <input
+                      type="datetime-local"
+                      value={draft.start_at}
+                      onChange={(e) => setDraft({ ...draft, start_at: e.target.value })}
+                      className="input"
+                    />
+                  </Field>
+                  <Field label="Stop showing">
+                    <input
+                      type="datetime-local"
+                      value={draft.end_at}
+                      onChange={(e) => setDraft({ ...draft, end_at: e.target.value })}
+                      className="input"
+                    />
+                  </Field>
+                </div>
+                {(draft.start_at || draft.end_at) && (
+                  <div className="mt-2 flex flex-wrap items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setDraft({ ...draft, start_at: "", end_at: "" })}
+                      className="font-mono text-[10px] font-bold uppercase tracking-wider text-rose-500 hover:underline"
+                    >
+                      Clear schedule
+                    </button>
+                    {draft.start_at && draft.end_at && new Date(draft.end_at) <= new Date(draft.start_at) && (
+                      <span className="rounded-md bg-rose-500/10 px-2 py-0.5 text-[10px] text-rose-500">
+                        End must be after start
+                      </span>
+                    )}
+                  </div>
+                )}
+                <p className="mt-2 text-[10px] text-muted-foreground">
+                  Leave both empty to run as soon as the toggle is on. Times use your local timezone.
+                </p>
+              </div>
             </div>
+
+
 
 
             <div className="rounded-xl border border-border bg-background/50 p-4">

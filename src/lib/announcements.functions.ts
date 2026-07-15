@@ -3,6 +3,8 @@ import { createClient } from "@supabase/supabase-js";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import type { Database } from "@/integrations/supabase/types";
 
+export type AnnouncementImageStyle = "cover" | "thumbnail" | "none";
+
 export type Announcement = {
   id: string;
   enabled: boolean;
@@ -11,6 +13,7 @@ export type Announcement = {
   cta_label: string;
   cta_url: string;
   image_url: string;
+  image_style: AnnouncementImageStyle;
   badge: string;
   accent: string;
   created_at: string;

@@ -122,7 +122,7 @@ export function ShareExperienceCTA({ variant = "footer", className = "" }: Props
             </p>
 
             {/* Stat pills */}
-            <div className="mt-5 flex flex-wrap items-center justify-center gap-2 md:justify-start">
+            <div className="mt-5 hidden flex-wrap items-center justify-center gap-2 sm:flex md:justify-start">
               <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5">
                 <div className="flex items-center gap-0.5 text-violet">
                   {Array.from({ length: 5 }).map((_, i) => (

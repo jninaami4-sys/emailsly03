@@ -78,6 +78,8 @@ function Home() {
             <div className="absolute left-1/2 top-[-10%] size-[900px] -translate-x-1/2 rounded-full bg-indigo/25 blur-[140px]" />
             <div className="absolute right-[-10%] top-[30%] size-[500px] rounded-full bg-coral/10 blur-[120px]" />
             <div className="absolute inset-0 opacity-[0.06] [background-image:linear-gradient(to_right,white_1px,transparent_1px),linear-gradient(to_bottom,white_1px,transparent_1px)] [background-size:56px_56px] [mask-image:radial-gradient(ellipse_at_top,black,transparent_70%)]" />
+            {/* Bottom blend into next section */}
+            <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-background via-background/70 to-transparent" />
           </div>
 
           <div className="mx-auto max-w-7xl">

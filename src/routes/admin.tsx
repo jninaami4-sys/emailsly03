@@ -337,6 +337,7 @@ function AdminPage() {
           </aside>
         </div>
       </main>
+      <AdminWalkthrough open={tourOpen} onClose={() => setTourOpen(false)} steps={ADMIN_WALKTHROUGH_STEPS} />
       <Footer />
     </div>
   );

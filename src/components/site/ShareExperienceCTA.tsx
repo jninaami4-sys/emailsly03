@@ -151,9 +151,6 @@ export function ShareExperienceCTA({ variant = "footer", className = "" }: Props
               <div className="pointer-events-none absolute inset-0 -m-4 rounded-full bg-gradient-to-tr from-violet/40 via-transparent to-neon-blue/40 opacity-70 blur-xl" />
               <div className="relative grid size-16 place-items-center rounded-2xl border border-white/15 bg-gradient-to-br from-white/10 to-white/[0.02] shadow-[inset_0_1px_0_rgba(255,255,255,0.15)]">
                 <PenSquare className="size-6 text-white" />
-                <span className="absolute -right-1 -top-1 grid size-5 place-items-center rounded-full bg-gradient-to-br from-violet to-neon-blue text-white shadow-md">
-                  <Sparkles className="size-3" />
-                </span>
               </div>
             </div>
 

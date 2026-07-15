@@ -60,7 +60,7 @@ export const listActiveAnnouncements = createServerFn({ method: "GET" }).handler
       .from("announcements")
       .select("*")
       .eq("enabled", true)
-      .order("updated_at", { ascending: false })
+      .order("priority", { ascending: false }).order("updated_at", { ascending: false })
       .limit(20);
     if (error) {
       console.error("listActiveAnnouncements", error);
@@ -78,7 +78,7 @@ export const getActiveAnnouncement = createServerFn({ method: "GET" }).handler(
       .from("announcements")
       .select("*")
       .eq("enabled", true)
-      .order("updated_at", { ascending: false })
+      .order("priority", { ascending: false }).order("updated_at", { ascending: false })
       .limit(1)
       .maybeSingle();
     if (error) {
@@ -98,7 +98,7 @@ export const listAnnouncements = createServerFn({ method: "GET" })
     const { data, error } = await supabaseAdmin
       .from("announcements")
       .select("*")
-      .order("updated_at", { ascending: false });
+      .order("priority", { ascending: false }).order("updated_at", { ascending: false });
     if (error) throw new Error(error.message);
     return (data ?? []) as Announcement[];
   });

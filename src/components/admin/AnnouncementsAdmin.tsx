@@ -643,19 +643,51 @@ export function AnnouncementsAdmin() {
                         className="hidden"
                         onChange={(e) => {
                           const f = e.target.files?.[0];
-                          if (f) handleUpload(f);
+                          if (f) handleFilePicked(f);
                         }}
                       />
-                      <button
-                        type="button"
-                        onClick={() => fileRef.current?.click()}
-                        disabled={uploading}
-                        className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-semibold hover:bg-secondary disabled:opacity-50"
-                      >
-                        {uploading ? <Loader2 className="size-3.5 animate-spin" /> : <Upload className="size-3.5" />}
-                        {uploading ? "Uploading…" : "Upload image"}
-                      </button>
-                      <p className="text-[10px] text-muted-foreground">PNG/JPG/WebP, max 5MB</p>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => fileRef.current?.click()}
+                          disabled={uploading}
+                          className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-semibold hover:bg-secondary disabled:opacity-50"
+                        >
+                          {uploading ? <Loader2 className="size-3.5 animate-spin" /> : <Upload className="size-3.5" />}
+                          {uploading ? "Uploading…" : "Upload image"}
+                        </button>
+                        {draft.image_url && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              // Re-crop existing image URL by fetching it into a File
+                              fetch(draft.image_url)
+                                .then((r) => r.blob())
+                                .then((b) => {
+                                  const ext = (b.type.split("/")[1] || "png").split("+")[0];
+                                  const file = new File([b], `image.${ext}`, { type: b.type || "image/png" });
+                                  setPendingFile(file);
+                                })
+                                .catch(() => setStatus("Could not load image for cropping"));
+                            }}
+                            className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-semibold hover:bg-secondary"
+                          >
+                            <CropIcon className="size-3.5" /> Re-crop
+                          </button>
+                        )}
+                        <label className="ml-auto inline-flex items-center gap-1.5 text-[11px] font-semibold text-muted-foreground">
+                          <input
+                            type="checkbox"
+                            checked={lockAspect}
+                            onChange={(e) => setLockAspect(e.target.checked)}
+                            className="size-3.5 accent-violet"
+                          />
+                          Lock {cropAspectLabel}
+                        </label>
+                      </div>
+                      <p className="text-[10px] text-muted-foreground">
+                        PNG/JPG/WebP, max 5MB. {lockAspect ? `Uploads open a cropper locked to ${cropAspectLabel}.` : "Aspect lock is off — uploads use the original file."}
+                      </p>
                     </div>
                   </div>
                   <input
@@ -667,6 +699,7 @@ export function AnnouncementsAdmin() {
                 </div>
               )}
             </div>
+
 
 
             {status && (

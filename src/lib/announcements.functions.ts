@@ -21,6 +21,7 @@ export type Announcement = {
   audience: AnnouncementAudience;
   start_at: string | null;
   end_at: string | null;
+  priority: number;
   created_at: string;
   updated_at: string;
 };

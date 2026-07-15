@@ -69,6 +69,9 @@ export const SITE_CONTENT_DEFAULTS = {
     logo_url: "",
     favicon_url: "",
     tagline: "Verified B2B Data Platform",
+    primary_color: "#7C3AED",
+    accent_color: "#22C55E",
+    ink_color: "#0F172A",
   },
   contact: {
     email: "hello@emailsly.com",

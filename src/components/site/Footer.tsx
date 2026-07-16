@@ -4,6 +4,7 @@ import { PremiumSparkles, PremiumShieldCheck, PremiumArrowRight } from "./Premiu
 import { SocialIcons } from "./SocialIcons";
 import { ShareExperienceCTA } from "./ShareExperienceCTA";
 import { openConsentPreferences } from "@/lib/consent";
+import { useSiteContent } from "@/hooks/use-site-content";
 
 const productLinks = [
   { to: "/store", label: "Lead Store" },

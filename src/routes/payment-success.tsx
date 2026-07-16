@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { CheckCircle2, Download, Printer, ArrowRight, Mail, ShieldCheck, Clock } from "lucide-react";
 import { PremiumSparkles as Sparkles } from "@/components/site/PremiumIcons";
 import { PremiumLogoMark } from "@/components/site/PremiumIcons";
-import { Loader713Panel } from "@/components/site/Loader713";
+import { EmailslyLoaderInline } from "@/components/site/EmailslyLoaderInline";
 import { useServerFn } from "@tanstack/react-start";
 import { recordMyOrder } from "@/lib/orders.functions";
 import { useAuth } from "@/hooks/use-auth";
@@ -226,20 +226,7 @@ function PaymentSuccessPage() {
 
 
   if (loading)
-    return (
-      <Loader713Panel
-        chip="Secure Checkout"
-        title="Confirming your payment"
-        subtitle="Sit tight — we're locking in your order."
-        steps={[
-          "Authorizing transaction",
-          "Reserving your leads",
-          "Preparing your invoice",
-        ]}
-        systemLabel="EMAILSLY · PCI-DSS"
-        label="LOADING"
-      />
-    );
+    return <EmailslyLoaderInline label="Confirming your payment" />;
 
   return (
     <div className="relative min-h-[calc(100vh-4rem)] overflow-hidden bg-background px-3 py-10 sm:px-4 sm:py-12 md:py-20">

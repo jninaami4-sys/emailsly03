@@ -28,7 +28,7 @@ import { SupportTicketsAdmin } from "@/components/admin/SupportTicketsAdmin";
 import { whoAmIAdmin } from "@/lib/announcements.functions";
 import { useAuth } from "@/hooks/use-auth";
 import { Upload, X, Search, ShieldAlert, Lock } from "@/components/admin/AdminIcons";
-import { Loader713Panel } from "@/components/site/Loader713";
+import { EmailslyLoaderInline } from "@/components/site/EmailslyLoaderInline";
 import { AdminWalkthrough, ADMIN_WALKTHROUGH_STEPS } from "@/components/admin/AdminWalkthrough";
 
 export const Route = createFileRoute("/admin")({
@@ -57,16 +57,7 @@ function AdminGate() {
       <div className="theme-midnight min-h-screen bg-background text-foreground">
         <Header />
         <AuroraBackdrop>
-          <Loader713Panel
-            chip="Admin_Gate"
-            title="Checking access"
-            subtitle="Verifying your admin credentials."
-            steps={[
-              "Reading session",
-              "Matching admin role",
-              "Unlocking control panel",
-            ]}
-          />
+          <EmailslyLoaderInline label="Checking access" />
         </AuroraBackdrop>
       </div>
     );

@@ -57,16 +57,7 @@ function AdminGate() {
       <div className="theme-midnight min-h-screen bg-background text-foreground">
         <Header />
         <AuroraBackdrop>
-          <Loader713Panel
-            chip="Admin_Gate"
-            title="Checking access"
-            subtitle="Verifying your admin credentials."
-            steps={[
-              "Reading session",
-              "Matching admin role",
-              "Unlocking control panel",
-            ]}
-          />
+          <EmailslyLoaderInline label="Checking access" />
         </AuroraBackdrop>
       </div>
     );

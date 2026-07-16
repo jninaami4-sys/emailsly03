@@ -1,0 +1,1 @@
+ALTER TABLE public.pricing_settings ADD COLUMN IF NOT EXISTS published boolean NOT NULL DEFAULT true;

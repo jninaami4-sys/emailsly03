@@ -103,9 +103,14 @@ export function Footer() {
               className="inline-flex items-center gap-2"
               aria-label="EmailsLy home"
             >
+            <Link
+              to="/"
+              className="inline-flex items-center gap-2"
+              aria-label={`${siteName} home`}
+            >
               <img
-                src="/__l5e/assets-v1/cefa0fcb-c63a-417d-9b6c-f4b799342926/emailsly-logo-trim.png"
-                alt="EmailsLy"
+                src={logoUrl}
+                alt={siteName}
                 className="block h-8 sm:h-9 w-auto max-w-[160px] object-contain shrink-0 select-none p-0 m-0"
                 draggable={false}
               />

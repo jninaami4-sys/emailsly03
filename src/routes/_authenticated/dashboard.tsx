@@ -40,14 +40,18 @@ function DashboardPage() {
   const [tab, setTab] = useState<Tab>("orders");
   const listFn = useServerFn(listMyOrders);
   const orders = useQuery({ queryKey: ["my-orders"], queryFn: () => listFn() });
+  const profileFn = useServerFn(getMyProfile);
+  const profile = useQuery({ queryKey: ["my-profile"], queryFn: () => profileFn() });
 
   const data = orders.data ?? [];
   const stats = useMemo(() => summarize(data), [data]);
   const first = user?.email?.[0]?.toUpperCase() ?? "L";
   const displayName =
+    (profile.data?.full_name as string | undefined)?.split(" ")?.[0] ??
     (user?.user_metadata as any)?.full_name?.split(" ")?.[0] ??
     user?.email?.split("@")?.[0] ??
     "there";
+  const avatarUrl = profile.data?.avatar_url ?? null;
 
   return (
     <SiteShell>
@@ -67,9 +71,17 @@ function DashboardPage() {
           <section className="mb-6 flex flex-col gap-5 sm:mb-8 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex min-w-0 items-center gap-3 sm:gap-4">
               <div className="relative shrink-0">
-                <div className="grid size-12 place-items-center rounded-2xl bg-gradient-to-br from-violet to-neon-orange font-display text-lg font-bold text-white shadow-lg shadow-violet/30 sm:size-14 sm:text-xl">
-                  {first}
-                </div>
+                {avatarUrl ? (
+                  <img
+                    src={avatarUrl}
+                    alt={displayName}
+                    className="size-12 rounded-2xl object-cover shadow-lg shadow-violet/30 ring-1 ring-white/10 sm:size-14"
+                  />
+                ) : (
+                  <div className="grid size-12 place-items-center rounded-2xl bg-gradient-to-br from-violet to-neon-orange font-display text-lg font-bold text-white shadow-lg shadow-violet/30 sm:size-14 sm:text-xl">
+                    {first}
+                  </div>
+                )}
                 <span className="absolute -bottom-1 -right-1 grid size-5 place-items-center rounded-full border-2 border-background bg-emerald">
                   <CheckCircle2 className="size-3 text-white" />
                 </span>

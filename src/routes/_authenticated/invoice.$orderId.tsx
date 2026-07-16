@@ -5,6 +5,7 @@ import { useRef, useState } from "react";
 import { getMyOrder } from "@/lib/orders.functions";
 import { Loader2, Printer, Download } from "lucide-react";
 import emailslyLogo from "@/assets/emailsly-logo-trim.png.asset.json";
+import { useSiteContent } from "@/hooks/use-site-content";
 
 const BRAND = {
   violet: "#7C3AED",

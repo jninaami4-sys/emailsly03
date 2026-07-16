@@ -46,6 +46,18 @@ export function AdminShell({
 }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const active = groups.flatMap((g) => g.items).find((i) => i.id === activeId);
+  const activeGroupId =
+    groups.find((g) => g.items.some((i) => i.id === activeId))?.id ?? groups[0]?.id;
+  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>(() => ({
+    [activeGroupId ?? ""]: true,
+  }));
+
+  // Keep the group containing the active view expanded
+  useEffect(() => {
+    if (activeGroupId) {
+      setOpenGroups((prev) => (prev[activeGroupId] ? prev : { ...prev, [activeGroupId]: true }));
+    }
+  }, [activeGroupId]);
 
   // Close mobile nav on selection
   useEffect(() => {
@@ -135,9 +147,23 @@ export function AdminShell({
           <nav className="flex-1 space-y-5 overflow-y-auto px-3 pb-6">
             {groups.map((g) => (
               <div key={g.id}>
-                <p className="px-3 py-1.5 font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-white/30">
-                  {g.label}
-                </p>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setOpenGroups((prev) => ({ ...prev, [g.id]: !prev[g.id] }))
+                  }
+                  className="flex w-full items-center gap-2 px-3 py-1.5 font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-white/40 transition-colors hover:text-white/70"
+                  aria-expanded={!!openGroups[g.id]}
+                >
+                  <ChevronRight
+                    className={`size-3 transition-transform ${
+                      openGroups[g.id] ? "rotate-90" : ""
+                    }`}
+                  />
+                  <span className="flex-1 text-left">{g.label}</span>
+                  <span className="text-white/25">{g.items.length}</span>
+                </button>
+                {openGroups[g.id] && (
                 <ul className="mt-0.5 space-y-0.5">
                   {g.items.map((item) => {
                     const Icon = item.icon;
@@ -167,6 +193,7 @@ export function AdminShell({
                     );
                   })}
                 </ul>
+                )}
               </div>
             ))}
           </nav>

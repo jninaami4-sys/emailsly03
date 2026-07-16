@@ -123,3 +123,35 @@ export const setPricingPublished = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return normalize(row as Record<string, unknown>);
   });
+
+export type PricingAuditEntry = {
+  id: string;
+  service_id: string;
+  service_name: string | null;
+  changed_by: string | null;
+  changed_by_email: string | null;
+  changes: Record<string, { old: unknown; new: unknown }>;
+  changed_at: string;
+};
+
+export const getPricingAudit = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }): Promise<PricingAuditEntry[]> => {
+    assertAdmin((context.claims as { email?: string }).email);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data, error } = await supabaseAdmin
+      .from("pricing_settings_audit")
+      .select("id, service_id, service_name, changed_by, changed_by_email, changes, changed_at")
+      .order("changed_at", { ascending: false })
+      .limit(100);
+    if (error) throw new Error(error.message);
+    return (data ?? []).map((r) => ({
+      id: String(r.id),
+      service_id: String(r.service_id),
+      service_name: (r.service_name as string | null) ?? null,
+      changed_by: (r.changed_by as string | null) ?? null,
+      changed_by_email: (r.changed_by_email as string | null) ?? null,
+      changes: (r.changes ?? {}) as PricingAuditEntry["changes"],
+      changed_at: String(r.changed_at),
+    }));
+  });

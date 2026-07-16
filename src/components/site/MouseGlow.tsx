@@ -13,13 +13,11 @@ function StaticAmbientGlow() {
 }
 
 export function MouseGlow() {
-  const glowRef = useRef<HTMLDivElement | null>(null);
-  const trailRef = useRef<HTMLDivElement | null>(null);
-  const dotRef = useRef<HTMLDivElement | null>(null);
+  const auraRef = useRef<HTMLDivElement | null>(null);
+  const haloRef = useRef<HTMLDivElement | null>(null);
   const target = useRef({ x: 0, y: 0 });
-  const glow = useRef({ x: 0, y: 0 });
-  const trail = useRef({ x: 0, y: 0 });
-  const dot = useRef({ x: 0, y: 0 });
+  const aura = useRef({ x: 0, y: 0 });
+  const halo = useRef({ x: 0, y: 0 });
   const rafRef = useRef<number | null>(null);
   const [visible, setVisible] = useState(false);
   const [mode, setMode] = useState<"interactive" | "static">("interactive");
@@ -41,45 +39,34 @@ export function MouseGlow() {
     }
 
     target.current = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
-    glow.current = { ...target.current };
-    trail.current = { ...target.current };
-    dot.current = { ...target.current };
+    aura.current = { ...target.current };
+    halo.current = { ...target.current };
 
     const handleMove = (e: MouseEvent) => {
       target.current.x = e.clientX;
       target.current.y = e.clientY;
       if (!visible) setVisible(true);
     };
-
     const handleLeave = () => setVisible(false);
     const handleEnter = () => setVisible(true);
 
     const tick = () => {
-      // Different easings for a layered, silky feel
-      glow.current.x += (target.current.x - glow.current.x) * 0.08;
-      glow.current.y += (target.current.y - glow.current.y) * 0.08;
+      // Silky layered easing — no visible cursor artifact
+      aura.current.x += (target.current.x - aura.current.x) * 0.06;
+      aura.current.y += (target.current.y - aura.current.y) * 0.06;
+      halo.current.x += (target.current.x - halo.current.x) * 0.14;
+      halo.current.y += (target.current.y - halo.current.y) * 0.14;
 
-      trail.current.x += (target.current.x - trail.current.x) * 0.18;
-      trail.current.y += (target.current.y - trail.current.y) * 0.18;
-
-      dot.current.x += (target.current.x - dot.current.x) * 0.35;
-      dot.current.y += (target.current.y - dot.current.y) * 0.35;
-
-      if (glowRef.current) {
-        glowRef.current.style.transform = `translate3d(${glow.current.x}px, ${glow.current.y}px, 0) translate(-50%, -50%)`;
+      if (auraRef.current) {
+        auraRef.current.style.transform = `translate3d(${aura.current.x}px, ${aura.current.y}px, 0) translate(-50%, -50%)`;
       }
-      if (trailRef.current) {
-        trailRef.current.style.transform = `translate3d(${trail.current.x}px, ${trail.current.y}px, 0) translate(-50%, -50%)`;
+      if (haloRef.current) {
+        haloRef.current.style.transform = `translate3d(${halo.current.x}px, ${halo.current.y}px, 0) translate(-50%, -50%)`;
       }
-      if (dotRef.current) {
-        dotRef.current.style.transform = `translate3d(${dot.current.x}px, ${dot.current.y}px, 0) translate(-50%, -50%)`;
-      }
-
       rafRef.current = requestAnimationFrame(tick);
     };
 
     rafRef.current = requestAnimationFrame(tick);
-
     window.addEventListener("mousemove", handleMove, { passive: true });
     document.addEventListener("mouseleave", handleLeave);
     document.addEventListener("mouseenter", handleEnter);
@@ -97,23 +84,32 @@ export function MouseGlow() {
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none fixed inset-0 z-30 transition-opacity duration-500"
+      className="pointer-events-none fixed inset-0 z-30 transition-opacity duration-700"
       style={{ opacity: visible ? 1 : 0 }}
     >
-      {/* Soft ambient glow — lags farthest behind */}
+      {/* Wide ambient aura — brand violet, deeply blurred */}
       <div
-        ref={glowRef}
-        className="pointer-events-none absolute left-0 top-0 size-[600px] rounded-full bg-[radial-gradient(circle_at_center,var(--violet)_0%,transparent_70%)] opacity-[0.10] blur-3xl will-change-transform"
+        ref={auraRef}
+        className="pointer-events-none absolute left-0 top-0 size-[720px] rounded-full will-change-transform"
+        style={{
+          background:
+            "radial-gradient(circle at center, color-mix(in oklab, var(--violet) 55%, transparent) 0%, transparent 65%)",
+          opacity: 0.14,
+          filter: "blur(80px)",
+          mixBlendMode: "screen",
+        }}
       />
-      {/* Mid trail — subtle secondary hue */}
+      {/* Tighter halo — subtle accent shimmer */}
       <div
-        ref={trailRef}
-        className="pointer-events-none absolute left-0 top-0 size-[220px] rounded-full bg-[radial-gradient(circle_at_center,rgba(139,92,246,0.35)_0%,transparent_65%)] opacity-40 blur-2xl will-change-transform"
-      />
-      {/* Crisp cursor dot — nearly 1:1 with pointer */}
-      <div
-        ref={dotRef}
-        className="pointer-events-none absolute left-0 top-0 size-2 rounded-full bg-white/70 shadow-[0_0_18px_rgba(255,255,255,0.6)] will-change-transform"
+        ref={haloRef}
+        className="pointer-events-none absolute left-0 top-0 size-[320px] rounded-full will-change-transform"
+        style={{
+          background:
+            "radial-gradient(circle at center, color-mix(in oklab, var(--violet) 70%, transparent) 0%, transparent 70%)",
+          opacity: 0.18,
+          filter: "blur(40px)",
+          mixBlendMode: "screen",
+        }}
       />
     </div>
   );

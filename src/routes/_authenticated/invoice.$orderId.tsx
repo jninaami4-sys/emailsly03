@@ -29,6 +29,9 @@ function InvoicePage() {
   const { orderId } = Route.useParams();
   const getFn = useServerFn(getMyOrder);
   const { data, isLoading } = useQuery({ queryKey: ["my-order", orderId], queryFn: () => getFn({ data: { id: orderId } }) });
+  const branding = useSiteContent("branding");
+  const brandName = branding.site_name || "EmailsLy";
+  const brandLogo = (branding.logo_url || "").trim() || emailslyLogo.url;
   const invoiceRef = useRef<HTMLDivElement>(null);
   const [downloading, setDownloading] = useState(false);
 

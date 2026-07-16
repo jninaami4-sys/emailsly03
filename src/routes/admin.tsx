@@ -28,7 +28,7 @@ import { SupportTicketsAdmin } from "@/components/admin/SupportTicketsAdmin";
 import { whoAmIAdmin } from "@/lib/announcements.functions";
 import { useAuth } from "@/hooks/use-auth";
 import { Upload, X, Search, ShieldAlert, Lock } from "@/components/admin/AdminIcons";
-import { Loader713Panel } from "@/components/site/Loader713";
+import { EmailslyLoaderInline } from "@/components/site/EmailslyLoaderInline";
 import { AdminWalkthrough, ADMIN_WALKTHROUGH_STEPS } from "@/components/admin/AdminWalkthrough";
 
 export const Route = createFileRoute("/admin")({

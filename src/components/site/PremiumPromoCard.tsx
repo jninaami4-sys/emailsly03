@@ -32,7 +32,7 @@ export interface PremiumPromoCardProps {
     onClick?: () => void;
   };
   className?: string;
-  children?: React.ReactNode;
+  children?: ReactNode;
 }
 
 interface AccentPalette {

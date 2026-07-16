@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { CheckCircle2, Download, Printer, ArrowRight, Mail, ShieldCheck, Clock } from "lucide-react";
 import { PremiumSparkles as Sparkles } from "@/components/site/PremiumIcons";
 import { PremiumLogoMark } from "@/components/site/PremiumIcons";
-import { Loader713Panel } from "@/components/site/Loader713";
+import { EmailslyLoaderInline } from "@/components/site/EmailslyLoaderInline";
 import { useServerFn } from "@tanstack/react-start";
 import { recordMyOrder } from "@/lib/orders.functions";
 import { useAuth } from "@/hooks/use-auth";

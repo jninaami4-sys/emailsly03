@@ -6,6 +6,8 @@ import {
   getPricingSettings,
   updatePricingSetting,
   setPricingPublished,
+  getPricingAudit,
+  type PricingAuditEntry,
   type PricingSetting,
 } from "@/lib/pricing-settings.functions";
 
@@ -20,10 +22,16 @@ export function PricingAdmin() {
   const getFn = useServerFn(getPricingSettings);
   const updateFn = useServerFn(updatePricingSetting);
   const publishFn = useServerFn(setPricingPublished);
+  const auditFn = useServerFn(getPricingAudit);
   const qc = useQueryClient();
   const { data, isLoading, isError, error: queryError, refetch, isFetching } = useQuery({
     queryKey: ["pricing-settings"],
     queryFn: () => getFn(),
+  });
+  const auditQuery = useQuery({
+    queryKey: ["pricing-audit"],
+    queryFn: () => auditFn(),
+    staleTime: 15_000,
   });
 
   const [drafts, setDrafts] = useState<Record<string, Draft>>({});
@@ -62,6 +70,7 @@ export function PricingAdmin() {
         },
       });
       await qc.invalidateQueries({ queryKey: ["pricing-settings"] });
+      await qc.invalidateQueries({ queryKey: ["pricing-audit"] });
       setSavedId(row.service_id);
       setTimeout(() => setSavedId((s) => (s === row.service_id ? null : s)), 1500);
     } catch (e) {
@@ -77,6 +86,7 @@ export function PricingAdmin() {
     try {
       await publishFn({ data: { service_id: row.service_id, published: next } });
       await qc.invalidateQueries({ queryKey: ["pricing-settings"] });
+      await qc.invalidateQueries({ queryKey: ["pricing-audit"] });
     } catch (e) {
       setError(e instanceof Error ? e.message : "Failed to update visibility");
     } finally {

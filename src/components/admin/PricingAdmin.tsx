@@ -19,7 +19,7 @@ export function PricingAdmin() {
   const getFn = useServerFn(getPricingSettings);
   const updateFn = useServerFn(updatePricingSetting);
   const qc = useQueryClient();
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, error: queryError, refetch, isFetching } = useQuery({
     queryKey: ["pricing-settings"],
     queryFn: () => getFn(),
   });
@@ -89,7 +89,48 @@ export function PricingAdmin() {
       )}
 
       {isLoading ? (
-        <p className="text-sm text-muted-foreground">Loading…</p>
+        <div className="flex items-center gap-2 rounded-xl border border-dashed border-border bg-muted/30 px-4 py-6 text-sm text-muted-foreground">
+          <Loader2 className="size-4 animate-spin" />
+          Loading pricing settings…
+        </div>
+      ) : isError ? (
+        <div className="rounded-xl border border-rose-500/30 bg-rose-500/10 p-4 text-sm">
+          <div className="font-semibold text-rose-600">Couldn't load pricing</div>
+          <p className="mt-1 text-xs text-rose-600/80">
+            {queryError instanceof Error ? queryError.message : "Unknown error while fetching pricing settings."}
+          </p>
+          <p className="mt-2 text-xs text-muted-foreground">
+            Check that you're signed in as an admin and that the backend is reachable, then retry.
+          </p>
+          <button
+            type="button"
+            onClick={() => refetch()}
+            disabled={isFetching}
+            className="mt-3 inline-flex items-center gap-1.5 rounded-lg bg-violet px-3 py-1.5 text-xs font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-50"
+          >
+            {isFetching ? <Loader2 className="size-3.5 animate-spin" /> : null}
+            {isFetching ? "Retrying" : "Retry"}
+          </button>
+        </div>
+      ) : !data || (data as PricingSetting[]).length === 0 ? (
+        <div className="rounded-xl border border-dashed border-border bg-muted/30 p-4 text-sm">
+          <div className="font-semibold">No pricing rows yet</div>
+          <p className="mt-1 text-xs text-muted-foreground">
+            The <code className="font-mono">pricing_settings</code> table is empty, so the public
+            calculator falls back to hard-coded defaults and nothing is editable here. Seed the 10
+            default services (Apollo, ZoomInfo, LinkedIn, Manual, Mobile, Pixel, Ads, Tracking,
+            Logo, Webdesign) from the database, then click Retry.
+          </p>
+          <button
+            type="button"
+            onClick={() => refetch()}
+            disabled={isFetching}
+            className="mt-3 inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-semibold transition-colors hover:bg-muted disabled:opacity-50"
+          >
+            {isFetching ? <Loader2 className="size-3.5 animate-spin" /> : null}
+            {isFetching ? "Checking" : "Retry"}
+          </button>
+        </div>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full min-w-[720px] text-sm">

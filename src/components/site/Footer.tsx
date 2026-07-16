@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { PaymentLogos } from "./PaymentLogos";
 import { PremiumSparkles, PremiumShieldCheck, PremiumArrowRight } from "./PremiumIcons";
 import { SocialIcons } from "./SocialIcons";
-import { ShareExperienceCTA } from "./ShareExperienceCTA";
+
 import { openConsentPreferences } from "@/lib/consent";
 import { useSiteContent } from "@/hooks/use-site-content";
 
@@ -133,11 +133,6 @@ export function Footer() {
             <FooterColumn heading="Company" links={companyLinks} />
             <FooterColumn heading="Legal" links={legalLinks} />
           </div>
-        </div>
-
-        {/* Share experience CTA */}
-        <div className="pb-10">
-          <ShareExperienceCTA variant="footer" />
         </div>
 
         {/* Payment methods */}

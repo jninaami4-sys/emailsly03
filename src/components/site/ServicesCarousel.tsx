@@ -289,29 +289,21 @@ export function ServicesCarousel() {
             loop
             slidesPerView="auto"
             spaceBetween={isMobile ? 16 : 0}
-            speed={isMobile ? 500 : 600}
-            resistanceRatio={0.72}
-            touchReleaseOnEdges
-            threshold={4}
-            touchAngle={40}
-            touchRatio={1.35}
-            longSwipesRatio={0.18}
-            longSwipesMs={200}
+            speed={isMobile ? 450 : 600}
+            resistanceRatio={0.6}
+            threshold={5}
+            touchAngle={35}
+            touchRatio={1.15}
+            longSwipesRatio={0.15}
+            longSwipesMs={220}
+            shortSwipes
             followFinger
-            freeMode={
-              isMobile
-                ? {
-                    enabled: true,
-                    momentum: true,
-                    momentumRatio: 0.85,
-                    momentumVelocityRatio: 0.9,
-                    momentumBounce: true,
-                    momentumBounceRatio: 0.6,
-                    minimumVelocity: 0.02,
-                    sticky: true,
-                  }
-                : false
-            }
+            slideToClickedSlide
+            watchSlidesProgress
+            /* Snap-based navigation guarantees each release lands on a fully centered card
+               (no partial visibility). FreeMode momentum is disabled because it can leave
+               a card half-in / half-out of the viewport. */
+            freeMode={false}
             mousewheel={{ forceToAxis: true, sensitivity: 0.6, thresholdDelta: 12 }}
             autoplay={{ delay: 3200, disableOnInteraction: false, pauseOnMouseEnter: true }}
             coverflowEffect={{ rotate: 22, stretch: 0, depth: 140, modifier: 1.1, slideShadows: false }}

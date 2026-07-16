@@ -12,6 +12,7 @@ const empty = {
   custom_head_html: "",
   tawk_enabled: true,
   tawk_position: "br" as TawkPosition,
+  support_show_category: false,
 };
 
 export function TrackingAdmin() {
@@ -38,6 +39,7 @@ export function TrackingAdmin() {
         custom_head_html: data.custom_head_html,
         tawk_enabled: data.tawk_enabled ?? true,
         tawk_position: (data.tawk_position ?? "br") as TawkPosition,
+        support_show_category: data.support_show_category ?? false,
       });
     }
   }, [data]);

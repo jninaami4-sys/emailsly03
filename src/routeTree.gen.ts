@@ -26,6 +26,7 @@ import { Route as PaymentFailedRouteImport } from './routes/payment-failed'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as ManualLeadResearchRouteImport } from './routes/manual-lead-research'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as LoadingRouteImport } from './routes/loading'
 import { Route as LoaderPreviewRouteImport } from './routes/loader-preview'
 import { Route as LinkedinSalesNavigatorLeadsRouteImport } from './routes/linkedin-sales-navigator-leads'
 import { Route as ContactRouteImport } from './routes/contact'
@@ -130,6 +131,11 @@ const ManualLeadResearchRoute = ManualLeadResearchRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoadingRoute = LoadingRouteImport.update({
+  id: '/loading',
+  path: '/loading',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoaderPreviewRoute = LoaderPreviewRouteImport.update({
@@ -247,6 +253,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/linkedin-sales-navigator-leads': typeof LinkedinSalesNavigatorLeadsRoute
   '/loader-preview': typeof LoaderPreviewRoute
+  '/loading': typeof LoadingRoute
   '/login': typeof LoginRoute
   '/manual-lead-research': typeof ManualLeadResearchRoute
   '/mcp': typeof McpRoute
@@ -285,6 +292,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/linkedin-sales-navigator-leads': typeof LinkedinSalesNavigatorLeadsRoute
   '/loader-preview': typeof LoaderPreviewRoute
+  '/loading': typeof LoadingRoute
   '/login': typeof LoginRoute
   '/manual-lead-research': typeof ManualLeadResearchRoute
   '/mcp': typeof McpRoute
@@ -325,6 +333,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/linkedin-sales-navigator-leads': typeof LinkedinSalesNavigatorLeadsRoute
   '/loader-preview': typeof LoaderPreviewRoute
+  '/loading': typeof LoadingRoute
   '/login': typeof LoginRoute
   '/manual-lead-research': typeof ManualLeadResearchRoute
   '/mcp': typeof McpRoute
@@ -365,6 +374,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/linkedin-sales-navigator-leads'
     | '/loader-preview'
+    | '/loading'
     | '/login'
     | '/manual-lead-research'
     | '/mcp'
@@ -403,6 +413,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/linkedin-sales-navigator-leads'
     | '/loader-preview'
+    | '/loading'
     | '/login'
     | '/manual-lead-research'
     | '/mcp'
@@ -442,6 +453,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/linkedin-sales-navigator-leads'
     | '/loader-preview'
+    | '/loading'
     | '/login'
     | '/manual-lead-research'
     | '/mcp'
@@ -482,6 +494,7 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   LinkedinSalesNavigatorLeadsRoute: typeof LinkedinSalesNavigatorLeadsRoute
   LoaderPreviewRoute: typeof LoaderPreviewRoute
+  LoadingRoute: typeof LoadingRoute
   LoginRoute: typeof LoginRoute
   ManualLeadResearchRoute: typeof ManualLeadResearchRoute
   McpRoute: typeof McpRoute
@@ -628,6 +641,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/loading': {
+      id: '/loading'
+      path: '/loading'
+      fullPath: '/loading'
+      preLoaderRoute: typeof LoadingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/loader-preview': {
@@ -806,6 +826,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   LinkedinSalesNavigatorLeadsRoute: LinkedinSalesNavigatorLeadsRoute,
   LoaderPreviewRoute: LoaderPreviewRoute,
+  LoadingRoute: LoadingRoute,
   LoginRoute: LoginRoute,
   ManualLeadResearchRoute: ManualLeadResearchRoute,
   McpRoute: McpRoute,

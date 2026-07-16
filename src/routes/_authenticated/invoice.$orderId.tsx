@@ -122,8 +122,8 @@ function InvoicePage() {
           >
             <div className="flex items-center gap-3">
               <img
-                src={emailslyLogo.url}
-                alt="EmailsLy"
+                src={brandLogo}
+                alt={brandName}
                 crossOrigin="anonymous"
                 className="block h-9 w-auto max-w-[160px] object-contain shrink-0 select-none p-0 m-0"
                 draggable={false}

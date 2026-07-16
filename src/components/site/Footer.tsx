@@ -101,11 +101,6 @@ export function Footer() {
             <Link
               to="/"
               className="inline-flex items-center gap-2"
-              aria-label="EmailsLy home"
-            >
-            <Link
-              to="/"
-              className="inline-flex items-center gap-2"
               aria-label={`${siteName} home`}
             >
               <img

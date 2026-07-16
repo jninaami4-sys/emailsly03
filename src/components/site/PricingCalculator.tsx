@@ -1,6 +1,6 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { usePricingOverrides } from "@/hooks/use-pricing-overrides";
+import { filterPublished, usePricingOverrides } from "@/hooks/use-pricing-overrides";
 
 export type PriceService = {
   id: string;
@@ -30,15 +30,26 @@ export function PricingCalculator({ compact = false, defaultId }: { compact?: bo
   const overrides = usePricingOverrides();
   const services = useMemo<PriceService[]>(
     () =>
-      SERVICES.map((s) => {
+      filterPublished(SERVICES, overrides).map((s) => {
         const o = overrides.get(s.id);
         return o ? { ...s, rate: o.rate, minQty: o.minQty, minOrder: o.minOrder, helper: o.helper ?? s.helper } : s;
       }),
     [overrides],
   );
   const [sourceId, setSourceId] = useState(defaultId ?? "apollo");
-  const source = services.find((s) => s.id === sourceId)!;
-  const [quantity, setQuantity] = useState(source.minQty);
+  const source = services.find((s) => s.id === sourceId) ?? services[0];
+  useEffect(() => {
+    if (source && source.id !== sourceId) setSourceId(source.id);
+  }, [source, sourceId]);
+  const [quantity, setQuantity] = useState(source?.minQty ?? 1);
+
+  if (!source) {
+    return (
+      <div className={`rounded-2xl border border-border bg-card p-6 text-sm text-muted-foreground ${compact ? "" : "shadow-lg"}`}>
+        No services are currently available. Please check back soon.
+      </div>
+    );
+  }
 
   const total = useMemo(() => {
     if (source.fixed) return source.minOrder;

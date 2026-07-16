@@ -8,6 +8,7 @@ import { Palette, Save, Loader2, RefreshCw } from "@/components/admin/AdminIcons
 type BrandingValues = {
   site_name: string;
   logo_url: string;
+  footer_logo_url: string;
   favicon_url: string;
   tagline: string;
   primary_color: string;

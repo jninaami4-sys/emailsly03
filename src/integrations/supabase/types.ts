@@ -660,6 +660,7 @@ export type Database = {
           min_order: number
           min_qty: number
           name: string
+          published: boolean
           rate: number
           service_id: string
           sort_order: number
@@ -673,6 +674,7 @@ export type Database = {
           min_order?: number
           min_qty?: number
           name: string
+          published?: boolean
           rate: number
           service_id: string
           sort_order?: number
@@ -686,6 +688,7 @@ export type Database = {
           min_order?: number
           min_qty?: number
           name?: string
+          published?: boolean
           rate?: number
           service_id?: string
           sort_order?: number

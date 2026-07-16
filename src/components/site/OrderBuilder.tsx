@@ -89,7 +89,10 @@ export function OrderBuilder() {
   const overrides = usePricingOverrides();
   const services = useMemo<Service[]>(
     () =>
-      SERVICES.map((s) => {
+      SERVICES.filter((s) => {
+        const o = overrides.get(s.id);
+        return !o || o.published;
+      }).map((s) => {
         const o = overrides.get(s.id);
         return o ? { ...s, rate: o.rate, minQty: o.minQty, minOrder: o.minOrder, helper: o.helper ?? s.helper } : s;
       }),
@@ -97,7 +100,10 @@ export function OrderBuilder() {
   );
   const [step, setStep] = useState(1);
   const [serviceId, setServiceId] = useState("apollo");
-  const service = services.find((s) => s.id === serviceId)!;
+  const service = services.find((s) => s.id === serviceId) ?? services[0] ?? SERVICES[0];
+  useEffect(() => {
+    if (service && service.id !== serviceId) setServiceId(service.id);
+  }, [service, serviceId]);
   const [mobileGroup, setMobileGroup] = useState<"data" | "growth" | "design">(service.group);
   const [quantity, setQuantity] = useState(service.minQty);
   const [extraUrls, setExtraUrls] = useState(1);

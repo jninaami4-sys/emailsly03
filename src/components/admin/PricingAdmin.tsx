@@ -5,6 +5,7 @@ import { DollarSign, Save, Loader2, Check } from "@/components/admin/AdminIcons"
 import {
   getPricingSettings,
   updatePricingSetting,
+  setPricingPublished,
   type PricingSetting,
 } from "@/lib/pricing-settings.functions";
 
@@ -18,6 +19,7 @@ type Draft = {
 export function PricingAdmin() {
   const getFn = useServerFn(getPricingSettings);
   const updateFn = useServerFn(updatePricingSetting);
+  const publishFn = useServerFn(setPricingPublished);
   const qc = useQueryClient();
   const { data, isLoading, isError, error: queryError, refetch, isFetching } = useQuery({
     queryKey: ["pricing-settings"],
@@ -27,6 +29,7 @@ export function PricingAdmin() {
   const [drafts, setDrafts] = useState<Record<string, Draft>>({});
   const [savingId, setSavingId] = useState<string | null>(null);
   const [savedId, setSavedId] = useState<string | null>(null);
+  const [togglingId, setTogglingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -65,6 +68,19 @@ export function PricingAdmin() {
       setError(e instanceof Error ? e.message : "Failed to save");
     } finally {
       setSavingId(null);
+    }
+  };
+
+  const togglePublished = async (row: PricingSetting, next: boolean) => {
+    setTogglingId(row.service_id);
+    setError(null);
+    try {
+      await publishFn({ data: { service_id: row.service_id, published: next } });
+      await qc.invalidateQueries({ queryKey: ["pricing-settings"] });
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Failed to update visibility");
+    } finally {
+      setTogglingId(null);
     }
   };
 
@@ -137,6 +153,7 @@ export function PricingAdmin() {
             <thead>
               <tr className="border-b border-border text-left font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
                 <th className="py-2 pr-2">Service</th>
+                <th className="py-2 pr-2">Visible</th>
                 <th className="py-2 pr-2">Rate</th>
                 <th className="py-2 pr-2">Min qty</th>
                 <th className="py-2 pr-2">Min order ($)</th>
@@ -151,6 +168,7 @@ export function PricingAdmin() {
                 const isFixed = row.fixed;
                 const isSaving = savingId === row.service_id;
                 const isSaved = savedId === row.service_id;
+                const isToggling = togglingId === row.service_id;
                 return (
                   <tr key={row.service_id} className="border-b border-border/60 last:border-0">
                     <td className="py-3 pr-2 align-top">
@@ -158,6 +176,29 @@ export function PricingAdmin() {
                       <div className="mt-0.5 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
                         {row.service_id} · per {row.unit}
                         {isFixed && " · fixed"}
+                        {!row.published && " · hidden"}
+                      </div>
+                    </td>
+                    <td className="py-3 pr-2 align-top">
+                      <button
+                        type="button"
+                        role="switch"
+                        aria-checked={row.published}
+                        disabled={isToggling}
+                        onClick={() => togglePublished(row, !row.published)}
+                        className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors disabled:opacity-50 ${
+                          row.published ? "bg-emerald" : "bg-muted"
+                        }`}
+                        title={row.published ? "Visible on storefront — click to hide" : "Hidden — click to publish"}
+                      >
+                        <span
+                          className={`inline-block size-5 transform rounded-full bg-white shadow transition-transform ${
+                            row.published ? "translate-x-5" : "translate-x-0.5"
+                          }`}
+                        />
+                      </button>
+                      <div className="mt-1 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+                        {isToggling ? "Saving…" : row.published ? "Published" : "Hidden"}
                       </div>
                     </td>
                     <td className="py-3 pr-2 align-top">

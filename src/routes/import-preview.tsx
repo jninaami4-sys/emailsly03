@@ -1,7 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import * as XLSX from "xlsx";
-import { UploadCloud, FileSpreadsheet, X, CheckCircle2, AlertTriangle } from "lucide-react";
+import { UploadCloud, FileSpreadsheet, X, CheckCircle2, AlertTriangle, Link2, Loader2 } from "lucide-react";
+import { fetchPublicDriveFile } from "@/lib/import-preview.functions";
 
 export const Route = createFileRoute("/import-preview")({
   head: () => ({
@@ -67,12 +69,39 @@ async function parseFile(file: File): Promise<Parsed> {
   return { fileName: file.name, sheetName, columns, rows: rows.slice(0, MAX_PREVIEW_ROWS), totalRows: rows.length };
 }
 
+function base64ToBytes(b64: string): Uint8Array {
+  const bin = atob(b64);
+  const out = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+  return out;
+}
+
+async function parseFromBytes(fileName: string, contentType: string, bytes: Uint8Array): Promise<Parsed> {
+  const isCsv = contentType.includes("csv") || /\.csv$/i.test(fileName);
+  if (isCsv) {
+    const text = new TextDecoder("utf-8").decode(bytes);
+    const { columns, rows } = parseCsv(text);
+    const cols = columns.map((c, i) => c || `col_${i + 1}`);
+    const mapped = rows.map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] ?? ""])));
+    return { fileName, columns: cols, rows: mapped.slice(0, MAX_PREVIEW_ROWS), totalRows: mapped.length };
+  }
+  const wb = XLSX.read(bytes, { type: "array" });
+  const sheetName = wb.SheetNames[0];
+  const ws = wb.Sheets[sheetName];
+  const json = XLSX.utils.sheet_to_json<Record<string, unknown>>(ws, { defval: "", raw: false });
+  const columns = json.length ? Object.keys(json[0]) : [];
+  const rows = json.map((r) => Object.fromEntries(columns.map((c) => [c, String(r[c] ?? "")])));
+  return { fileName, sheetName, columns, rows: rows.slice(0, MAX_PREVIEW_ROWS), totalRows: rows.length };
+}
+
 function ImportPreviewPage() {
   const [data, setData] = useState<Parsed | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [dragOver, setDragOver] = useState(false);
   const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [driveUrl, setDriveUrl] = useState("");
+  const fetchDrive = useServerFn(fetchPublicDriveFile);
 
   const columnStats = useMemo(() => {
     if (!data) return [];
@@ -98,6 +127,22 @@ function ImportPreviewPage() {
     }
   }
 
+  async function handleDriveUrl(url: string) {
+    setError(null); setBusy(true);
+    try {
+      const res = await fetchDrive({ data: { url } });
+      const bytes = base64ToBytes(res.base64);
+      const guessedName = res.contentType.includes("csv") ? `drive-${res.fileId}.csv` : `drive-${res.fileId}.xlsx`;
+      const parsed = await parseFromBytes(guessedName, res.contentType, bytes);
+      setData(parsed);
+      setSelected(new Set(parsed.columns));
+    } catch (e) {
+      setError((e as Error).message || "Could not load Drive file");
+    } finally {
+      setBusy(false);
+    }
+  }
+
   function toggleCol(name: string) {
     setSelected((prev) => {
       const next = new Set(prev);
@@ -116,6 +161,7 @@ function ImportPreviewPage() {
       </header>
 
       {!data && (
+        <>
         <label
           onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
           onDragLeave={() => setDragOver(false)}
@@ -141,6 +187,38 @@ function ImportPreviewPage() {
             </p>
           )}
         </label>
+
+        <div className="my-4 flex items-center gap-3">
+          <div className="h-px flex-1 bg-border" />
+          <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">or</span>
+          <div className="h-px flex-1 bg-border" />
+        </div>
+
+        <div className="rounded-2xl border border-border bg-card p-4">
+          <label className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">
+            <Link2 className="size-3.5" /> Load from a public Google Drive URL
+          </label>
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <input
+              type="url"
+              value={driveUrl}
+              onChange={(e) => setDriveUrl(e.target.value)}
+              placeholder="https://drive.google.com/file/d/…/view"
+              className="flex-1 rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-violet"
+            />
+            <button
+              onClick={() => driveUrl && void handleDriveUrl(driveUrl)}
+              disabled={busy || !driveUrl}
+              className="inline-flex items-center justify-center gap-2 rounded-lg bg-violet px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
+            >
+              {busy ? <Loader2 className="size-4 animate-spin" /> : <Link2 className="size-4" />} Preview
+            </button>
+          </div>
+          <p className="mt-2 text-[11px] text-muted-foreground">
+            The file must be shared as "Anyone with the link". Supports CSV and Excel.
+          </p>
+        </div>
+        </>
       )}
 
       {data && (

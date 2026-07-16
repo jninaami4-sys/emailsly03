@@ -5,6 +5,8 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import { PremiumSparkles as Sparkles } from "@/components/site/PremiumIcons";
 import { ogImageMeta, OG_IMAGES } from "@/lib/og-images";
 import { getBlogSeoOverride } from "@/lib/blog-seo.functions";
+import { BlogAnalyticsTracker } from "@/components/site/BlogAnalyticsTracker";
+import { ClientOnly } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/blog/$slug")({
   loader: async ({ params }) => {
@@ -85,6 +87,9 @@ function BlogPost() {
 
   return (
     <SiteShell>
+      <ClientOnly fallback={null}>
+        <BlogAnalyticsTracker slug={post.slug} />
+      </ClientOnly>
       {/* Header */}
       <section className="relative overflow-hidden border-b border-border px-6 pt-16 pb-16 lg:pt-20">
         <div className="pointer-events-none absolute left-1/2 top-0 -z-10 h-[500px] w-[900px] -translate-x-1/2 bg-[radial-gradient(circle_at_center,var(--violet-soft),transparent_70%)] opacity-60" />
@@ -226,12 +231,14 @@ function BlogPost() {
           <div className="mt-10 flex flex-wrap justify-center gap-3">
             <Link
               to="/store"
+              data-blog-cta="cta_footer_store"
               className="inline-flex items-center gap-2 rounded-full bg-white px-8 py-4 text-base font-bold text-violet shadow-xl transition-transform hover:-translate-y-0.5"
             >
               Browse the store <ArrowRight className="size-4" />
             </Link>
             <Link
               to="/contact"
+              data-blog-cta="cta_footer_contact"
               className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-transparent px-8 py-4 text-base font-bold text-white transition-colors hover:bg-white/10"
             >
               Talk to sales

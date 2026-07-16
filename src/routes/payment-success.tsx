@@ -226,20 +226,7 @@ function PaymentSuccessPage() {
 
 
   if (loading)
-    return (
-      <Loader713Panel
-        chip="Secure Checkout"
-        title="Confirming your payment"
-        subtitle="Sit tight — we're locking in your order."
-        steps={[
-          "Authorizing transaction",
-          "Reserving your leads",
-          "Preparing your invoice",
-        ]}
-        systemLabel="EMAILSLY · PCI-DSS"
-        label="LOADING"
-      />
-    );
+    return <EmailslyLoaderInline label="Confirming your payment" />;
 
   return (
     <div className="relative min-h-[calc(100vh-4rem)] overflow-hidden bg-background px-3 py-10 sm:px-4 sm:py-12 md:py-20">

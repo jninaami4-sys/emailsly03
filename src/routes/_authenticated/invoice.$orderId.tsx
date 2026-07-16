@@ -121,7 +121,8 @@ function InvoicePage() {
                 src={emailslyLogo.url}
                 alt="EmailsLy"
                 crossOrigin="anonymous"
-                className="h-9 w-auto"
+                className="block h-9 w-auto max-w-[160px] object-contain shrink-0 select-none p-0 m-0"
+                draggable={false}
               />
               <div
                 className="ml-1 hidden border-l pl-3 text-[11px] sm:block"

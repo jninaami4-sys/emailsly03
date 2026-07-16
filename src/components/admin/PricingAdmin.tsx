@@ -283,6 +283,106 @@ export function PricingAdmin() {
           </table>
         </div>
       )}
+
+      <AuditHistory
+        entries={auditQuery.data ?? []}
+        loading={auditQuery.isLoading}
+        error={auditQuery.isError ? (auditQuery.error instanceof Error ? auditQuery.error.message : "Failed to load history") : null}
+        onRefresh={() => auditQuery.refetch()}
+        refreshing={auditQuery.isFetching}
+      />
     </section>
+  );
+}
+
+function formatValue(v: unknown): string {
+  if (v === null || v === undefined) return "—";
+  if (typeof v === "boolean") return v ? "on" : "off";
+  return String(v);
+}
+
+function formatWhen(iso: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return iso;
+  return d.toLocaleString();
+}
+
+function AuditHistory({
+  entries,
+  loading,
+  error,
+  onRefresh,
+  refreshing,
+}: {
+  entries: PricingAuditEntry[];
+  loading: boolean;
+  error: string | null;
+  onRefresh: () => void;
+  refreshing: boolean;
+}) {
+  return (
+    <div className="mt-6 rounded-2xl border border-border bg-background/60 p-4 sm:p-5">
+      <header className="mb-3 flex items-center justify-between gap-2">
+        <div>
+          <h3 className="font-display text-sm font-bold">Change history</h3>
+          <p className="text-[11px] text-muted-foreground">
+            Last 100 edits — who changed what, and when.
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={onRefresh}
+          disabled={refreshing}
+          className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-2.5 py-1 text-[11px] font-semibold transition-colors hover:bg-muted disabled:opacity-50"
+        >
+          {refreshing ? <Loader2 className="size-3 animate-spin" /> : null}
+          Refresh
+        </button>
+      </header>
+
+      {loading ? (
+        <p className="text-xs text-muted-foreground">Loading history…</p>
+      ) : error ? (
+        <p className="text-xs text-rose-600">{error}</p>
+      ) : entries.length === 0 ? (
+        <p className="text-xs text-muted-foreground">
+          No edits recorded yet. Changes you make above will show up here.
+        </p>
+      ) : (
+        <ol className="space-y-2">
+          {entries.map((e) => {
+            const fields = Object.entries(e.changes);
+            return (
+              <li
+                key={e.id}
+                className="rounded-lg border border-border/60 bg-card px-3 py-2 text-xs"
+              >
+                <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+                  <div className="font-semibold">
+                    {e.service_name ?? e.service_id}
+                    <span className="ml-1.5 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+                      {e.service_id}
+                    </span>
+                  </div>
+                  <div className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+                    {formatWhen(e.changed_at)} · {e.changed_by_email ?? (e.changed_by ? e.changed_by.slice(0, 8) : "system")}
+                  </div>
+                </div>
+                <ul className="mt-1.5 flex flex-wrap gap-x-3 gap-y-1">
+                  {fields.map(([field, diff]) => (
+                    <li key={field} className="font-mono text-[11px]">
+                      <span className="text-muted-foreground">{field}:</span>{" "}
+                      <span className="text-rose-600 line-through">{formatValue(diff.old)}</span>
+                      {" → "}
+                      <span className="text-emerald">{formatValue(diff.new)}</span>
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            );
+          })}
+        </ol>
+      )}
+    </div>
   );
 }

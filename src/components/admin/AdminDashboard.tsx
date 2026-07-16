@@ -29,7 +29,7 @@ export function AdminDashboard({
   return (
     <div className="space-y-8">
       {/* Hero card */}
-      <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-[oklch(0.18_0_0)] p-6 sm:p-8">
+      <div className="relative overflow-hidden rounded-2xl border border-white/[0.06] bg-[#0e131c] p-6 sm:p-8">
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 opacity-[0.06]"
@@ -40,8 +40,8 @@ export function AdminDashboard({
           }}
         />
         <div className="relative">
-          <div className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-white/60">
-            <span className="size-1.5 rounded-full bg-white/70" />
+          <div className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-emerald-300">
+            <span className="size-1.5 rounded-full bg-emerald-400" />
             All systems operational
           </div>
           <h2 className="font-display text-2xl font-bold sm:text-3xl">
@@ -57,7 +57,7 @@ export function AdminDashboard({
             <button
               type="button"
               onClick={() => onSelect("site-content")}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-white px-4 py-2 text-sm font-semibold text-black hover:bg-white/90"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-[#3b82f6] px-4 py-2 text-sm font-semibold text-white hover:bg-[#2563eb]"
             >
               <Sparkles className="size-4" />
               Edit site content
@@ -65,7 +65,7 @@ export function AdminDashboard({
             <button
               type="button"
               onClick={() => onSelect("orders")}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white hover:border-white/20 hover:bg-white/10"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-white/[0.08] bg-white/[0.03] px-4 py-2 text-sm font-medium text-white/80 hover:border-white/20 hover:bg-white/[0.06] hover:text-white"
             >
               View orders
               <ArrowRight className="size-3.5" />
@@ -93,9 +93,9 @@ export function AdminDashboard({
                   key={item.id}
                   type="button"
                   onClick={() => onSelect(item.id)}
-                  className="group relative flex items-center gap-3 overflow-hidden rounded-xl border border-white/10 bg-white/[0.03] p-4 text-left transition-all hover:-translate-y-0.5 hover:border-white/25 hover:bg-white/[0.06]"
+                  className="group relative flex items-center gap-3 overflow-hidden rounded-xl border border-white/[0.06] bg-[#0e131c] p-4 text-left transition-all hover:-translate-y-0.5 hover:border-[#3b82f6]/40 hover:bg-[#111826]"
                 >
-                  <div className="flex size-10 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/[0.05] text-white/80">
+                  <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-[#3b82f6]/12 text-[#60a5fa] ring-1 ring-[#3b82f6]/25 transition-colors group-hover:bg-[#3b82f6]/20">
                     <Icon className="size-5" />
                   </div>
                   <div className="min-w-0 flex-1">
@@ -106,7 +106,7 @@ export function AdminDashboard({
                       {item.desc}
                     </p>
                   </div>
-                  <ArrowRight className="size-4 shrink-0 text-white/40 transition-all group-hover:translate-x-0.5 group-hover:text-white" />
+                  <ArrowRight className="size-4 shrink-0 text-white/40 transition-all group-hover:translate-x-0.5 group-hover:text-[#60a5fa]" />
                 </button>
               );
             })}
@@ -145,9 +145,9 @@ export function AdminDashboard({
                     key={item.id}
                     type="button"
                     onClick={() => onSelect(item.id)}
-                    className="group relative flex items-start gap-3 overflow-hidden rounded-xl border border-white/10 bg-white/[0.02] p-4 text-left transition-all hover:-translate-y-0.5 hover:border-white/25 hover:bg-white/[0.04]"
+                    className="group relative flex items-start gap-3 overflow-hidden rounded-xl border border-white/[0.06] bg-[#0e131c] p-4 text-left transition-all hover:-translate-y-0.5 hover:border-[#3b82f6]/40 hover:bg-[#111826]"
                   >
-                    <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-white/[0.04] text-white/70 transition-colors group-hover:bg-white/10 group-hover:text-white">
+                    <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-white/[0.04] text-white/70 transition-colors group-hover:bg-[#3b82f6]/15 group-hover:text-[#60a5fa]">
                       <Icon className="size-4" />
                     </div>
                     <div className="min-w-0 flex-1">
@@ -158,7 +158,7 @@ export function AdminDashboard({
                         {item.desc}
                       </p>
                     </div>
-                    <ArrowRight className="size-3.5 shrink-0 text-white/30 transition-all group-hover:translate-x-0.5 group-hover:text-white" />
+                    <ArrowRight className="size-3.5 shrink-0 text-white/30 transition-all group-hover:translate-x-0.5 group-hover:text-[#60a5fa]" />
                   </button>
                 );
               })}
@@ -167,7 +167,7 @@ export function AdminDashboard({
         ))}
 
       {/* Keyboard tips */}
-      <div className="rounded-xl border border-white/5 bg-white/[0.02] p-5">
+      <div className="rounded-xl border border-white/[0.06] bg-[#0e131c] p-5">
         <p className="mb-3 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-white/40">
           Power-user shortcuts
         </p>

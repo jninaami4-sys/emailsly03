@@ -72,7 +72,7 @@ export function AdminShell({
   }, [activeId]);
 
   return (
-    <div className="min-h-screen bg-[#0b0f17] text-foreground">
+    <div className="admin-theme min-h-screen bg-[#0b0f17] text-foreground">
       {/* Mobile top bar */}
       <div className="sticky top-0 z-30 flex items-center gap-2 border-b border-white/5 bg-[#0b0f17]/95 px-4 py-3 backdrop-blur lg:hidden">
         <button

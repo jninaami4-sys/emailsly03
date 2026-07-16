@@ -697,6 +697,36 @@ export type Database = {
         }
         Relationships: []
       }
+      pricing_settings_audit: {
+        Row: {
+          changed_at: string
+          changed_by: string | null
+          changed_by_email: string | null
+          changes: Json
+          id: string
+          service_id: string
+          service_name: string | null
+        }
+        Insert: {
+          changed_at?: string
+          changed_by?: string | null
+          changed_by_email?: string | null
+          changes: Json
+          id?: string
+          service_id: string
+          service_name?: string | null
+        }
+        Update: {
+          changed_at?: string
+          changed_by?: string | null
+          changed_by_email?: string | null
+          changes?: Json
+          id?: string
+          service_id?: string
+          service_name?: string | null
+        }
+        Relationships: []
+      }
       product_details: {
         Row: {
           created_at: string

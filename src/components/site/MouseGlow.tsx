@@ -1,5 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 
+function StaticAmbientGlow() {
+  return (
+    <div
+      aria-hidden="true"
+      className="pointer-events-none fixed inset-0 z-30 overflow-hidden"
+    >
+      <div className="pointer-events-none absolute left-1/2 top-[30%] size-[70vw] max-w-[720px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle_at_center,var(--violet)_0%,transparent_70%)] opacity-[0.08] blur-3xl" />
+      <div className="pointer-events-none absolute right-[-10%] bottom-[-10%] size-[60vw] max-w-[540px] rounded-full bg-[radial-gradient(circle_at_center,rgba(139,92,246,0.35)_0%,transparent_65%)] opacity-25 blur-3xl" />
+    </div>
+  );
+}
+
 export function MouseGlow() {
   const glowRef = useRef<HTMLDivElement | null>(null);
   const trailRef = useRef<HTMLDivElement | null>(null);
@@ -10,9 +22,17 @@ export function MouseGlow() {
   const dot = useRef({ x: 0, y: 0 });
   const rafRef = useRef<number | null>(null);
   const [visible, setVisible] = useState(false);
+  const [mode, setMode] = useState<"interactive" | "static">("interactive");
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+    const isCoarse = window.matchMedia?.("(pointer: coarse)")?.matches;
+    const noHover = window.matchMedia?.("(hover: none)")?.matches;
+    if (isCoarse || noHover) setMode("static");
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || mode !== "interactive") return;
 
     const isCoarse = window.matchMedia?.("(pointer: coarse)")?.matches;
     const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;

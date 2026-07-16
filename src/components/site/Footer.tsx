@@ -102,7 +102,8 @@ export function Footer() {
               <img
                 src="/__l5e/assets-v1/cefa0fcb-c63a-417d-9b6c-f4b799342926/emailsly-logo-trim.png"
                 alt="EmailsLy"
-                className="h-9 w-auto"
+                className="block h-8 sm:h-9 w-auto max-w-[160px] object-contain shrink-0 select-none p-0 m-0"
+                draggable={false}
               />
             </Link>
             <p className="mt-5 max-w-sm text-sm leading-relaxed text-white/50">

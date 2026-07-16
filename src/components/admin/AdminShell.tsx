@@ -65,9 +65,9 @@ export function AdminShell({
   }, [activeId]);
 
   return (
-    <div className="min-h-screen bg-[oklch(0.14_0.01_260)] text-foreground">
+    <div className="min-h-screen bg-[oklch(0.16_0_0)] text-foreground">
       {/* Mobile top bar */}
-      <div className="sticky top-0 z-30 flex items-center gap-2 border-b border-white/5 bg-[oklch(0.12_0.01_260)]/95 px-4 py-3 backdrop-blur lg:hidden">
+      <div className="sticky top-0 z-30 flex items-center gap-2 border-b border-white/5 bg-[oklch(0.14_0_0)]/95 px-4 py-3 backdrop-blur lg:hidden">
         <button
           type="button"
           onClick={() => setMobileOpen(true)}
@@ -79,7 +79,7 @@ export function AdminShell({
           </svg>
         </button>
         <div className="flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-widest">
-          <span className="size-2 rounded-full bg-violet shadow-[0_0_12px] shadow-violet" />
+          <span className="size-2 rounded-full bg-white/60" />
           Emailsly Admin
         </div>
         <button
@@ -97,7 +97,7 @@ export function AdminShell({
         <aside
           className={`${
             mobileOpen ? "translate-x-0" : "-translate-x-full"
-          } fixed inset-y-0 left-0 z-40 flex h-screen w-72 flex-col border-r border-white/5 bg-[oklch(0.11_0.01_260)] transition-transform lg:sticky lg:top-0 lg:translate-x-0`}
+          } fixed inset-y-0 left-0 z-40 flex h-screen w-72 flex-col border-r border-white/5 bg-[oklch(0.13_0_0)] transition-transform lg:sticky lg:top-0 lg:translate-x-0`}
         >
           {/* Brand */}
           <div className="flex items-center justify-between border-b border-white/5 px-5 py-4">
@@ -106,8 +106,8 @@ export function AdminShell({
               className="flex items-center gap-2.5"
               onClick={() => onSelect("overview")}
             >
-              <div className="relative flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-violet to-[oklch(0.55_0.22_310)] shadow-[0_0_20px_-4px_oklch(0.52_0.24_293/0.6)]">
-                <Sparkles className="size-4 text-white" />
+              <div className="relative flex size-8 items-center justify-center rounded-lg border border-white/10 bg-white/[0.06]">
+                <Sparkles className="size-4 text-white/80" />
               </div>
               <div>
                 <p className="font-display text-sm font-bold leading-none">Emailsly</p>
@@ -175,18 +175,18 @@ export function AdminShell({
                           onClick={() => onSelect(item.id)}
                           className={`group flex w-full items-center gap-2.5 rounded-lg px-3 py-1.5 text-left text-[13px] transition-colors ${
                             isActive
-                              ? "bg-white/[0.08] text-white shadow-[inset_0_0_0_1px_oklch(0.52_0.24_293/0.4)]"
+                              ? "bg-white/[0.08] text-white shadow-[inset_0_0_0_1px_rgb(255_255_255_/_0.12)]"
                               : "text-white/60 hover:bg-white/[0.04] hover:text-white"
                           }`}
                         >
                           <Icon
                             className={`size-4 shrink-0 ${
-                              isActive ? "text-violet" : "text-white/40 group-hover:text-white/70"
+                              isActive ? "text-white" : "text-white/40 group-hover:text-white/70"
                             }`}
                           />
                           <span className="truncate font-medium">{item.label}</span>
                           {isActive && (
-                            <span className="ml-auto size-1.5 rounded-full bg-violet shadow-[0_0_8px] shadow-violet" />
+                            <span className="ml-auto size-1.5 rounded-full bg-white/70" />
                           )}
                         </button>
                       </li>
@@ -201,14 +201,14 @@ export function AdminShell({
           {/* Footer */}
           <div className="border-t border-white/5 p-3">
             <div className="flex items-center gap-2.5 rounded-lg bg-white/[0.03] p-2.5">
-              <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-violet to-emerald text-[11px] font-bold text-white">
+              <div className="flex size-8 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/10 text-[11px] font-bold text-white/90">
                 {userEmail?.[0]?.toUpperCase() ?? "A"}
               </div>
               <div className="min-w-0 flex-1">
                 <p className="truncate text-[11px] font-semibold text-white/90">
                   {userEmail ?? "Admin"}
                 </p>
-                <p className="font-mono text-[9px] uppercase tracking-widest text-emerald">
+                <p className="font-mono text-[9px] uppercase tracking-widest text-white/40">
                   ● Online
                 </p>
               </div>
@@ -237,7 +237,7 @@ export function AdminShell({
         {/* Main */}
         <div className="min-w-0 flex-1">
           {/* Top bar (desktop) */}
-          <header className="sticky top-0 z-20 hidden items-center gap-3 border-b border-white/5 bg-[oklch(0.14_0.01_260)]/85 px-6 py-3 backdrop-blur lg:flex">
+          <header className="sticky top-0 z-20 hidden items-center gap-3 border-b border-white/5 bg-[oklch(0.16_0_0)]/85 px-6 py-3 backdrop-blur lg:flex">
             <div className="flex items-center gap-1.5 font-mono text-[11px] text-white/40">
               <span className="text-white/30">Admin</span>
               <ChevronRight className="size-3" />

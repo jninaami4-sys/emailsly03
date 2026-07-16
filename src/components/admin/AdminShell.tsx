@@ -86,7 +86,7 @@ export function AdminShell({
           </svg>
         </button>
         <div className="flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-widest">
-          <span className="size-2 rounded-full bg-[#3b82f6]" />
+          <span className="size-2 rounded-full bg-[#facc15]" />
           Emailsly Admin
         </div>
         <button
@@ -113,8 +113,8 @@ export function AdminShell({
               className="flex items-center gap-2.5"
               onClick={() => selectItem("overview")}
             >
-              <div className="relative flex size-8 items-center justify-center rounded-lg bg-[#3b82f6]/15 ring-1 ring-[#3b82f6]/30">
-                <Sparkles className="size-4 text-[#60a5fa]" />
+              <div className="relative flex size-8 items-center justify-center rounded-lg bg-[#facc15]/15 ring-1 ring-[#facc15]/30">
+                <Sparkles className="size-4 text-[#facc15]" />
               </div>
               <div>
                 <p className="font-display text-sm font-bold leading-none">Emailsly</p>
@@ -183,13 +183,13 @@ export function AdminShell({
                           onClick={() => selectItem(item.id)}
                           className={`group flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left text-[13px] transition-colors ${
                             isActive
-                              ? "bg-[#3b82f6]/15 text-[#60a5fa]"
+                              ? "bg-[#facc15]/15 text-[#facc15]"
                               : "text-white/55 hover:bg-white/[0.04] hover:text-white"
                           }`}
                         >
                           <Icon
                             className={`size-4 shrink-0 ${
-                              isActive ? "text-[#60a5fa]" : "text-white/45 group-hover:text-white/80"
+                              isActive ? "text-[#facc15]" : "text-white/45 group-hover:text-white/80"
                             }`}
                           />
                           <span className="truncate font-medium">{item.label}</span>
@@ -206,7 +206,7 @@ export function AdminShell({
           {/* Footer */}
           <div className="border-t border-white/5 p-3">
             <div className="flex items-center gap-2.5 rounded-lg bg-white/[0.03] p-2.5">
-              <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[#3b82f6]/20 ring-1 ring-[#3b82f6]/30 text-[11px] font-bold text-[#93c5fd]">
+              <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[#facc15]/20 ring-1 ring-[#facc15]/30 text-[11px] font-bold text-[#fde68a]">
                 {userEmail?.[0]?.toUpperCase() ?? "A"}
               </div>
               <div className="min-w-0 flex-1">
@@ -214,7 +214,7 @@ export function AdminShell({
                   {userEmail ?? "Admin"}
                 </p>
                 <p className="font-mono text-[9px] uppercase tracking-widest text-white/40">
-                  <span className="text-emerald-400">●</span> Online
+                  <span className="text-[#facc15]">●</span> Online
                 </p>
               </div>
               {onSignOut && (

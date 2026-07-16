@@ -1,5 +1,16 @@
 import { ArrowRight, Sparkles } from "@/components/admin/AdminIcons";
-import type { NavGroup } from "@/components/admin/AdminShell";
+import type { NavGroup, NavItem } from "@/components/admin/AdminShell";
+
+// The handful of tools most admins reach for daily. Rendered as a big,
+// obvious "Start here" row so the deck doesn't feel overwhelming.
+const PINNED_IDS = [
+  "orders",
+  "site-content",
+  "pricing",
+  "reviews",
+  "support",
+  "announcements",
+] as const;
 
 export function AdminDashboard({
   groups,
@@ -10,6 +21,11 @@ export function AdminDashboard({
   onSelect: (id: string) => void;
   userEmail?: string | null;
 }) {
+  const allItems = groups.flatMap((g) => g.items);
+  const pinned: NavItem[] = PINNED_IDS
+    .map((id) => allItems.find((i) => i.id === id))
+    .filter((i): i is NavItem => !!i);
+
   return (
     <div className="space-y-8">
       {/* Hero card */}
@@ -33,9 +49,10 @@ export function AdminDashboard({
             Welcome back{userEmail ? `, ${userEmail.split("@")[0]}` : ""}.
           </h2>
           <p className="mt-2 max-w-xl text-sm text-white/60">
-            Your entire site, in one deck. Jump anywhere with{" "}
-            <kbd className="rounded border border-white/10 bg-white/10 px-1.5 py-0.5 font-mono text-[10px]">⌘K</kbd>
-            , or pick a workspace below.
+            Pick a tool below to get started. Everything is grouped by what it
+            does — no need to memorize where things live. Press{" "}
+            <kbd className="rounded border border-white/10 bg-white/10 px-1.5 py-0.5 font-mono text-[10px]">⌘K</kbd>{" "}
+            any time to jump straight to a section.
           </p>
           <div className="mt-5 flex flex-wrap gap-2">
             <button
@@ -58,7 +75,57 @@ export function AdminDashboard({
         </div>
       </div>
 
-      {/* Workspaces */}
+      {/* Start here — pinned everyday tools */}
+      {pinned.length > 0 && (
+        <section>
+          <div className="mb-3 flex items-baseline justify-between">
+            <h3 className="font-display text-base font-semibold text-white">
+              Start here
+            </h3>
+            <span className="font-mono text-[10px] text-white/40">
+              Most used
+            </span>
+          </div>
+          <div className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
+            {pinned.map((item) => {
+              const Icon = item.icon;
+              return (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => onSelect(item.id)}
+                  className="group relative flex items-center gap-3 overflow-hidden rounded-xl border border-violet/25 bg-violet/[0.06] p-4 text-left transition-all hover:-translate-y-0.5 hover:border-violet/60 hover:bg-violet/[0.1] hover:shadow-[0_10px_30px_-15px_oklch(0.52_0.24_293/0.6)]"
+                >
+                  <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-violet/20 text-violet">
+                    <Icon className="size-5" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-semibold text-white">
+                      {item.label}
+                    </p>
+                    <p className="mt-0.5 line-clamp-1 text-[11px] text-white/60">
+                      {item.desc}
+                    </p>
+                  </div>
+                  <ArrowRight className="size-4 shrink-0 text-white/40 transition-all group-hover:translate-x-0.5 group-hover:text-violet" />
+                </button>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
+      {/* Everything else, grouped by purpose */}
+      <div>
+        <div className="mb-3 flex items-baseline justify-between">
+          <h3 className="font-display text-base font-semibold text-white">
+            All tools
+          </h3>
+          <span className="font-mono text-[10px] text-white/40">
+            Grouped by purpose
+          </span>
+        </div>
+      </div>
       {groups
         .filter((g) => g.id !== "overview")
         .map((g) => (

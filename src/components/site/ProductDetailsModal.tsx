@@ -25,6 +25,9 @@ export function ProductDetailsModal({
     staleTime: 60_000,
   });
 
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
@@ -39,7 +42,7 @@ export function ProductDetailsModal({
     };
   }, [open, onClose]);
 
-  if (!open) return null;
+  if (!open || !mounted) return null;
 
   const hasExtra =
     !!data &&

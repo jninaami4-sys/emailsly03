@@ -1,11 +1,11 @@
 {
-  "version": 1,
   "asset_id": "cefa0fcb-c63a-417d-9b6c-f4b799342926",
-  "project_id": "26e4654d-0a2b-43bd-b470-d2c1191bfc4e",
-  "url": "/__l5e/assets-v1/cefa0fcb-c63a-417d-9b6c-f4b799342926/emailsly-logo-trim.png",
-  "r2_key": "a/v1/26e4654d-0a2b-43bd-b470-d2c1191bfc4e/cefa0fcb-c63a-417d-9b6c-f4b799342926/emailsly-logo-trim.png",
-  "original_filename": "emailsly-logo-trim.png",
-  "size": 265800,
   "content_type": "image/png",
-  "created_at": "2026-07-16T10:10:16Z"
+  "created_at": "2026-07-16T10:10:16Z",
+  "original_filename": "emailsly-logo-trim.png",
+  "project_id": "32240cf7-2352-4658-a0f4-a49112cc6df3",
+  "r2_key": "a/v1/32240cf7-2352-4658-a0f4-a49112cc6df3/cefa0fcb-c63a-417d-9b6c-f4b799342926/emailsly-logo-trim.png",
+  "size": 265800,
+  "url": "/__l5e/assets-v1/cefa0fcb-c63a-417d-9b6c-f4b799342926/emailsly-logo-trim.png",
+  "version": 1
 }

@@ -67,6 +67,7 @@ export const SITE_CONTENT_DEFAULTS = {
   branding: {
     site_name: "EmailsLy",
     logo_url: "/__l5e/assets-v1/cefa0fcb-c63a-417d-9b6c-f4b799342926/emailsly-logo-trim.png",
+    footer_logo_url: "/__l5e/assets-v1/13871748-4ee2-4ddc-9e8b-f37e91287305/emailsly-logo-white.png",
     favicon_url: "/__l5e/assets-v1/ea57d947-a4da-451d-9133-ccca76f30438/emailsly-favicon.png",
     tagline: "Verified B2B Data Platform",
     primary_color: "#7C3AED",

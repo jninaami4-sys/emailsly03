@@ -4,28 +4,44 @@ import { BLOG_POSTS, formatPublishedAt, getPostBySlug, type PostBlock } from "@/
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { PremiumSparkles as Sparkles } from "@/components/site/PremiumIcons";
 import { ogImageMeta, OG_IMAGES } from "@/lib/og-images";
+import { getBlogSeoOverride } from "@/lib/blog-seo.functions";
 
 export const Route = createFileRoute("/blog/$slug")({
-  loader: ({ params }) => {
+  loader: async ({ params }) => {
     const post = getPostBySlug(params.slug);
     if (!post) throw notFound();
-    return { post };
+    let seo = null as Awaited<ReturnType<typeof getBlogSeoOverride>>;
+    try {
+      seo = await getBlogSeoOverride({ data: { slug: params.slug } });
+    } catch {
+      seo = null;
+    }
+    return { post, seo };
   },
   head: ({ loaderData }) => {
     const post = loaderData?.post;
     if (!post) {
       return { meta: [{ title: "Post not found | EmailsLy Blog" }] };
     }
-    const image = (post as { coverImage?: string }).coverImage ?? OG_IMAGES.blog;
+    const seo = loaderData?.seo;
+    const image =
+      seo?.og_image ||
+      (post as { coverImage?: string }).coverImage ||
+      OG_IMAGES.blog;
+    const socialTitle = seo?.social_title || post.title;
+    const description = seo?.meta_description || post.excerpt;
+    const canonical = seo?.canonical_url || `/blog/${post.slug}`;
     return {
       meta: [
         { title: `${post.title} | EmailsLy Blog` },
-        { name: "description", content: post.excerpt },
-        { property: "og:title", content: post.title },
-        { property: "og:description", content: post.excerpt },
+        { name: "description", content: description },
+        { property: "og:title", content: socialTitle },
+        { property: "og:description", content: description },
         { property: "og:type", content: "article" },
+        { property: "og:url", content: canonical },
         ...ogImageMeta(image),
       ],
+      links: [{ rel: "canonical", href: canonical }],
     };
   },
   notFoundComponent: () => (

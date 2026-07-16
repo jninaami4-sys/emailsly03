@@ -96,12 +96,14 @@ export function Footer() {
           <div>
             <Link
               to="/"
-              className="inline-flex items-center gap-2 font-display text-2xl font-bold tracking-tight text-white"
+              className="inline-flex items-center gap-2"
+              aria-label="EmailsLy home"
             >
-              <span className="grid size-7 place-items-center rounded-md bg-violet">
-                <span className="size-2 rounded-full bg-white" />
-              </span>
-              Emails<span className="text-violet">Ly</span>
+              <img
+                src="/__l5e/assets-v1/e31f3c89-eab1-46bb-b6eb-33d7370024d0/emailsly-logo-trim.png"
+                alt="EmailsLy"
+                className="h-9 w-auto"
+              />
             </Link>
             <p className="mt-5 max-w-sm text-sm leading-relaxed text-white/50">
               Verified B2B leads delivered to your CRM in 24 hours. Priced by the lead, never by the seat.

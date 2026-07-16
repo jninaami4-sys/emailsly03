@@ -84,7 +84,12 @@ export function Header() {
                 className={`flex items-center gap-2 rounded-md font-display text-xl font-bold tracking-tight ${focusRing}`}
               >
                 {logoUrl ? (
-                  <img src={logoUrl} alt={`${siteName} logo`} className="h-8 w-auto object-contain" />
+                  <img
+                    src={logoUrl}
+                    alt={`${siteName} logo`}
+                    className="block h-7 sm:h-8 w-auto max-w-[140px] object-contain shrink-0 select-none p-0 m-0"
+                    draggable={false}
+                  />
                 ) : (
                   <>
                     <PremiumLogoMark className="size-6" aria-hidden="true" />

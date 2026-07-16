@@ -218,14 +218,14 @@ export function ServicesCarousel() {
             }
             mousewheel={{ forceToAxis: true, sensitivity: 0.6, thresholdDelta: 12 }}
             autoplay={{ delay: 3200, disableOnInteraction: false, pauseOnMouseEnter: true }}
-            coverflowEffect={{ rotate: 28, stretch: 0, depth: 180, modifier: 1.4, slideShadows: false }}
+            coverflowEffect={{ rotate: 22, stretch: 0, depth: 140, modifier: 1.1, slideShadows: false }}
             pagination={{ clickable: true, dynamicBullets: isMobile }}
             modules={[EffectCoverflow, Autoplay, Pagination, FreeMode, Mousewheel]}
             className="!pb-16 services-swiper"
           >
 
             {services.map((s) => (
-              <SwiperSlide key={s.serviceId} className="!w-[280px] !h-auto sm:!w-[360px] md:!w-[420px]">
+              <SwiperSlide key={s.serviceId} className="!w-[86vw] max-[380px]:!w-[92vw] !h-auto sm:!w-[340px] md:!w-[400px] lg:!w-[420px]" style={{ maxWidth: "420px" }}>
                 <button
                   type="button"
                   onClick={() => openOrderDrawer(s.serviceId)}

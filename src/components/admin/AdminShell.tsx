@@ -1,5 +1,6 @@
 import { useEffect, useState, type ReactElement, type ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
+import { haptic } from "@/lib/haptics";
 import {
   Search, ChevronRight, ExternalLink, Layout, BarChart3, Boxes, Package,
   Users, MessageSquare, Palette, Database, LineChart, Sparkles, HelpCircle,
@@ -52,6 +53,12 @@ export function AdminShell({
     [activeGroupId ?? ""]: true,
   }));
 
+  const selectItem = (id: string) => {
+    if (id !== activeId) haptic("select");
+    onSelect(id);
+  };
+  const tap = () => haptic("tap");
+
   // Keep the group containing the active view expanded
   useEffect(() => {
     if (activeGroupId) {
@@ -70,7 +77,7 @@ export function AdminShell({
       <div className="sticky top-0 z-30 flex items-center gap-2 border-b border-white/5 bg-[#0b0f17]/95 px-4 py-3 backdrop-blur lg:hidden">
         <button
           type="button"
-          onClick={() => setMobileOpen(true)}
+          onClick={() => { tap(); setMobileOpen(true); }}
           className="rounded-lg border border-white/10 bg-white/5 p-2"
           aria-label="Open navigation"
         >
@@ -84,7 +91,7 @@ export function AdminShell({
         </div>
         <button
           type="button"
-          onClick={onOpenPalette}
+          onClick={() => { tap(); onOpenPalette(); }}
           className="ml-auto rounded-lg border border-white/10 bg-white/5 p-2"
           aria-label="Open command palette"
         >
@@ -104,7 +111,7 @@ export function AdminShell({
             <Link
               to="/admin"
               className="flex items-center gap-2.5"
-              onClick={() => onSelect("overview")}
+              onClick={() => selectItem("overview")}
             >
               <div className="relative flex size-8 items-center justify-center rounded-lg bg-[#3b82f6]/15 ring-1 ring-[#3b82f6]/30">
                 <Sparkles className="size-4 text-[#60a5fa]" />
@@ -118,7 +125,7 @@ export function AdminShell({
             </Link>
             <button
               type="button"
-              onClick={() => setMobileOpen(false)}
+              onClick={() => { tap(); setMobileOpen(false); }}
               className="rounded-lg p-1.5 text-white/60 hover:bg-white/5 lg:hidden"
               aria-label="Close navigation"
             >
@@ -132,7 +139,7 @@ export function AdminShell({
           <div className="px-3 py-3">
             <button
               type="button"
-              onClick={onOpenPalette}
+              onClick={() => { tap(); onOpenPalette(); }}
               className="group flex w-full items-center gap-2 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-left text-xs text-white/50 transition-colors hover:border-white/20 hover:bg-white/[0.06]"
             >
               <Search className="size-3.5" />
@@ -149,9 +156,10 @@ export function AdminShell({
               <div key={g.id}>
                 <button
                   type="button"
-                  onClick={() =>
-                    setOpenGroups((prev) => ({ ...prev, [g.id]: !prev[g.id] }))
-                  }
+                  onClick={() => {
+                    tap();
+                    setOpenGroups((prev) => ({ ...prev, [g.id]: !prev[g.id] }));
+                  }}
                   className="flex w-full items-center gap-2 px-3 py-1.5 font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-white/40 transition-colors hover:text-white/70"
                   aria-expanded={!!openGroups[g.id]}
                 >
@@ -172,7 +180,7 @@ export function AdminShell({
                       <li key={item.id}>
                         <button
                           type="button"
-                          onClick={() => onSelect(item.id)}
+                          onClick={() => selectItem(item.id)}
                           className={`group flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left text-[13px] transition-colors ${
                             isActive
                               ? "bg-[#3b82f6]/15 text-[#60a5fa]"
@@ -212,7 +220,7 @@ export function AdminShell({
               {onSignOut && (
                 <button
                   type="button"
-                  onClick={onSignOut}
+                  onClick={() => { haptic("warn"); onSignOut(); }}
                   className="rounded p-1.5 text-white/40 hover:bg-white/5 hover:text-white"
                   aria-label="Sign out"
                   title="Sign out"
@@ -253,7 +261,7 @@ export function AdminShell({
               </a>
               <button
                 type="button"
-                onClick={onOpenPalette}
+                onClick={() => { tap(); onOpenPalette(); }}
                 className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs font-medium text-white/70 hover:border-white/20 hover:text-white"
               >
                 <Search className="size-3.5" /> Search
@@ -266,7 +274,7 @@ export function AdminShell({
 
           <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
             {active && (
-              <div className="mb-6">
+              <div key={`h-${activeId}`} className="mb-6 animate-fade-in">
                 <h1 className="font-display text-2xl font-bold sm:text-3xl">
                   {active.label}
                 </h1>
@@ -275,7 +283,9 @@ export function AdminShell({
                 </p>
               </div>
             )}
-            {children}
+            <div key={activeId} className="animate-fade-in">
+              {children}
+            </div>
           </main>
         </div>
       </div>

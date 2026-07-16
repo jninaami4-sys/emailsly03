@@ -4,7 +4,6 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { PRODUCTS, type Product } from "@/lib/products";
 import { Header } from "@/components/site/Header";
-import { Footer } from "@/components/site/Footer";
 import { ProductCard } from "@/components/site/ProductCard";
 import { AnnouncementsAdmin } from "@/components/admin/AnnouncementsAdmin";
 import { TrackingAdmin } from "@/components/admin/TrackingAdmin";
@@ -27,9 +26,16 @@ import { SampleDatasetsAdmin, SampleDatasetAuditLog } from "@/components/admin/S
 import { SupportTicketsAdmin } from "@/components/admin/SupportTicketsAdmin";
 import { whoAmIAdmin } from "@/lib/announcements.functions";
 import { useAuth } from "@/hooks/use-auth";
-import { Upload, X, Search, ShieldAlert, Lock } from "@/components/admin/AdminIcons";
+import {
+  Upload, X, Search, ShieldAlert, Lock,
+  Layout, BarChart3, Boxes, Package, Users, MessageSquare, Palette,
+  Database, LineChart, Sparkles, HelpCircle, ShieldCheck, Megaphone,
+  Globe, PanelBottom, ImageIcon, Webhook, Server, Mail,
+} from "@/components/admin/AdminIcons";
 import { EmailslyLoaderInline } from "@/components/site/EmailslyLoaderInline";
-import { AdminWalkthrough, ADMIN_WALKTHROUGH_STEPS } from "@/components/admin/AdminWalkthrough";
+import { AdminShell, type NavGroup } from "@/components/admin/AdminShell";
+import { CommandPalette } from "@/components/admin/CommandPalette";
+import { AdminDashboard } from "@/components/admin/AdminDashboard";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
@@ -113,10 +119,12 @@ function AdminGate() {
 const coverKey = (id: string) => `product-cover:${id}`;
 
 function AdminPage() {
+  const { user, signOut } = useAuth();
   const [covers, setCovers] = useState<Record<string, string | null>>({});
   const [selectedId, setSelectedId] = useState<string>(PRODUCTS[0]?.id ?? "");
   const [query, setQuery] = useState("");
-  const [tourOpen, setTourOpen] = useState(false);
+  const [activeId, setActiveId] = useState<string>("overview");
+  const [paletteOpen, setPaletteOpen] = useState(false);
 
   // Load persisted covers
   useEffect(() => {
@@ -130,6 +138,23 @@ function AdminPage() {
     }
     setCovers(initial);
   }, []);
+
+  // Keyboard: ⌘K / Ctrl+K opens palette
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setPaletteOpen((v) => !v);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
+  // Scroll to top when switching views
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
+  }, [activeId]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -158,99 +183,12 @@ function AdminPage() {
     reader.readAsDataURL(file);
   };
 
-  // Product for live preview with in-memory cover override
   const previewProduct: Product | undefined = selected
     ? { ...selected, coverImage: covers[selected.id] ?? selected.coverImage }
     : undefined;
 
-  return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      <main id="main-content" className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-        <header className="mb-8 flex flex-wrap items-start justify-between gap-4">
-          <div>
-            <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-violet">
-              Admin
-            </span>
-            <h1 className="mt-1 font-display text-3xl font-bold sm:text-4xl">
-              Site control panel
-            </h1>
-            <p className="mt-2 max-w-2xl text-muted-foreground">
-              Manage marketing announcements shown to visitors and product covers on the storefront.
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={() => setTourOpen(true)}
-            className="rounded-xl bg-violet px-4 py-2.5 text-sm font-semibold text-white shadow-[0_10px_30px_-10px_oklch(0.52_0.24_293/0.6)] transition-transform hover:-translate-y-0.5"
-          >
-            Start guided walkthrough
-          </button>
-        </header>
-
-        <AdminSections
-          sections={[
-            {
-              id: "content",
-              label: "Content & Branding",
-              hint: "Site copy, brand identity, product descriptions, announcements",
-              groups: [
-                { title: "Brand identity", desc: "Logo, colors, and global brand tokens.", node: <div id="wt-brand-settings"><BrandSettingsAdmin /></div> },
-                { title: "Site content", desc: "Editable copy for landing pages and marketing sections.", node: <div id="wt-site-content"><SiteContentAdmin /></div> },
-                { title: "Product details", desc: "Long descriptions, extra info, hero images, and CTAs per product.", node: <div id="wt-product-details"><ProductDetailsAdmin /></div> },
-                { title: "Announcements", desc: "Marketing banners and modals shown to visitors.", node: <div id="wt-announcements"><AnnouncementsAdmin /></div> },
-                { title: "Reviews", desc: "Curate customer testimonials.", node: <div id="wt-reviews"><ReviewsAdmin /></div> },
-                { title: "Social links", desc: "Footer and header social profile URLs.", node: <div id="wt-social-links"><SocialLinksAdmin /></div> },
-              ],
-            },
-            {
-              id: "commerce",
-              label: "Commerce",
-              hint: "Orders, pricing, product covers, payments, referrals",
-              groups: [
-                { title: "Orders", desc: "Review orders, statuses, and fulfilment.", node: <div id="wt-orders"><OrdersAdmin /></div> },
-                { title: "Pricing", desc: "Per-service rates, minimums, and helper text.", node: <div id="wt-pricing"><PricingAdmin /></div> },
-                { title: "Stripe events", desc: "Recent webhook events from Stripe.", node: <div id="wt-stripe-events"><StripeEventsAdmin /></div> },
-                { title: "Referrals", desc: "Referral codes, clicks, and conversions.", node: <div id="wt-referrals"><ReferralsAdmin /></div> },
-              ],
-            },
-            {
-              id: "data",
-              label: "Data",
-              hint: "Sample datasets, import/export, audit log",
-              groups: [
-                { title: "Sample datasets", desc: "Manage seeded demo datasets shown across the site.", node: <div id="wt-sample-datasets"><SampleDatasetsAdmin /></div> },
-                { title: "Sample dataset audit log", desc: "History of sample dataset changes.", node: <div id="wt-sample-audit"><SampleDatasetAuditLog /></div> },
-                { title: "Import / Export", desc: "Bulk import or export data via CSV/JSON.", node: <div id="wt-import-export"><ImportExportAdmin /></div> },
-              ],
-            },
-            {
-              id: "support",
-              label: "Support",
-              hint: "Tickets, contact leads, chatbot",
-              groups: [
-                { title: "Support tickets", desc: "Reply to customer tickets and change status.", node: <div id="wt-support"><SupportTicketsAdmin /></div> },
-                { title: "Contact leads", desc: "Inbound contact form submissions.", node: <div id="wt-contact-leads"><ContactLeadsAdmin /></div> },
-                { title: "Chatbot", desc: "Configure the AI chatbot knowledge base and behavior.", node: <div id="wt-chatbot"><ChatbotAdmin /></div> },
-              ],
-            },
-            {
-              id: "tracking",
-              label: "Tracking & Debug",
-              hint: "Analytics tags, conversion events, server tracking, debug mode",
-              groups: [
-                { title: "Tracking scripts", desc: "GA / Meta / custom pixel snippets injected site-wide.", node: <div id="wt-tracking"><TrackingAdmin /></div> },
-                { title: "Conversion events", desc: "Define named events for analytics providers.", node: <div id="wt-conversion-events"><ConversionEventsAdmin /></div> },
-                { title: "Server tracking", desc: "Server-side event forwarding configuration.", node: <div id="wt-server-tracking"><ServerTrackingAdmin /></div> },
-                { title: "Debug mode", desc: "Toggle verbose logging and on-screen debug tools.", node: <div id="wt-debug"><DebugModeAdmin /></div> },
-              ],
-            },
-          ]}
-        />
-
-        <h2 className="mb-4 font-display text-xl font-bold">Product cover editor</h2>
-
-        <div id="wt-product-covers" className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
+  const productCoverEditor = (
+    <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
           {/* LIST */}
           <section className="rounded-2xl border border-border bg-card">
             <div className="flex items-center gap-2 border-b border-border p-3">
@@ -366,10 +304,113 @@ function AdminPage() {
             )}
           </aside>
         </div>
-      </main>
-      <AdminWalkthrough open={tourOpen} onClose={() => setTourOpen(false)} steps={ADMIN_WALKTHROUGH_STEPS} />
-      <Footer />
-    </div>
+  );
+
+  const groups: NavGroup[] = [
+    {
+      id: "overview",
+      label: "Home",
+      items: [
+        { id: "overview", label: "Overview", desc: "Dashboard, activity, and quick jumps.", icon: Layout, keywords: "home dashboard" },
+      ],
+    },
+    {
+      id: "revenue",
+      label: "Revenue",
+      items: [
+        { id: "orders", label: "Orders", desc: "Review orders, update status, and fulfilment.", icon: Package, keywords: "orders fulfilment" },
+        { id: "pricing", label: "Pricing", desc: "Per-service rates, minimums, and helper text.", icon: BarChart3, keywords: "pricing rates" },
+        { id: "stripe", label: "Stripe Events", desc: "Recent Stripe webhook events.", icon: Webhook, keywords: "stripe payments webhook" },
+        { id: "referrals", label: "Referrals", desc: "Referral codes, clicks, and conversions.", icon: Sparkles, keywords: "referrals codes" },
+      ],
+    },
+    {
+      id: "content",
+      label: "Content & Site",
+      items: [
+        { id: "site-content", label: "Site Content", desc: "Editable copy for every landing section.", icon: Globe, keywords: "hero faq footer copy" },
+        { id: "brand", label: "Brand Identity", desc: "Logo, colors, and global brand tokens.", icon: Palette, keywords: "logo brand color" },
+        { id: "product-details", label: "Product Details", desc: "Long descriptions and hero images per product.", icon: Boxes, keywords: "product descriptions" },
+        { id: "product-covers", label: "Product Covers", desc: "Upload storefront cover images.", icon: ImageIcon, keywords: "product covers images" },
+        { id: "announcements", label: "Announcements", desc: "Marketing banners and popups.", icon: Megaphone, keywords: "banner popup" },
+        { id: "reviews", label: "Reviews", desc: "Curate customer testimonials.", icon: ShieldCheck, keywords: "reviews testimonials" },
+        { id: "social", label: "Social Links", desc: "Header and footer social profiles.", icon: PanelBottom, keywords: "social links" },
+      ],
+    },
+    {
+      id: "customers",
+      label: "Customers & Support",
+      items: [
+        { id: "support", label: "Support Tickets", desc: "Reply to customer tickets and change status.", icon: MessageSquare, keywords: "support tickets" },
+        { id: "leads", label: "Contact Leads", desc: "Inbound contact form submissions.", icon: Mail, keywords: "leads contact" },
+        { id: "chatbot", label: "Chatbot", desc: "AI chatbot knowledge base and behavior.", icon: HelpCircle, keywords: "chatbot ai" },
+      ],
+    },
+    {
+      id: "analytics",
+      label: "Analytics & Tracking",
+      items: [
+        { id: "tracking", label: "Tracking Scripts", desc: "GA / Meta / custom pixel snippets.", icon: LineChart, keywords: "ga meta pixel tracking" },
+        { id: "conversion", label: "Conversion Events", desc: "Named events for analytics providers.", icon: BarChart3, keywords: "conversion events" },
+        { id: "server-tracking", label: "Server Tracking", desc: "Server-side event forwarding config.", icon: Server, keywords: "server tracking" },
+        { id: "debug", label: "Debug Mode", desc: "Toggle verbose logging and on-screen tools.", icon: ShieldAlert, keywords: "debug logs" },
+      ],
+    },
+    {
+      id: "data",
+      label: "Data",
+      items: [
+        { id: "datasets", label: "Sample Datasets", desc: "Seeded demo datasets shown across the site.", icon: Database, keywords: "sample datasets" },
+        { id: "audit", label: "Audit Log", desc: "History of sample dataset changes.", icon: Server, keywords: "audit history" },
+        { id: "import-export", label: "Import / Export", desc: "Bulk import or export data via CSV/JSON.", icon: Users, keywords: "import export csv" },
+      ],
+    },
+  ];
+
+  const views: Record<string, React.ReactNode> = {
+    overview: <AdminDashboard groups={groups} onSelect={setActiveId} userEmail={user?.email} />,
+    orders: <OrdersAdmin />,
+    pricing: <PricingAdmin />,
+    stripe: <StripeEventsAdmin />,
+    referrals: <ReferralsAdmin />,
+    "site-content": <SiteContentAdmin />,
+    brand: <BrandSettingsAdmin />,
+    "product-details": <ProductDetailsAdmin />,
+    "product-covers": productCoverEditor,
+    announcements: <AnnouncementsAdmin />,
+    reviews: <ReviewsAdmin />,
+    social: <SocialLinksAdmin />,
+    support: <SupportTicketsAdmin />,
+    leads: <ContactLeadsAdmin />,
+    chatbot: <ChatbotAdmin />,
+    tracking: <TrackingAdmin />,
+    conversion: <ConversionEventsAdmin />,
+    "server-tracking": <ServerTrackingAdmin />,
+    debug: <DebugModeAdmin />,
+    datasets: <SampleDatasetsAdmin />,
+    audit: <SampleDatasetAuditLog />,
+    "import-export": <ImportExportAdmin />,
+  };
+
+  return (
+    <>
+      <AdminShell
+        groups={groups}
+        activeId={activeId}
+        onSelect={setActiveId}
+        onOpenPalette={() => setPaletteOpen(true)}
+        userEmail={user?.email}
+        onSignOut={() => { void signOut(); }}
+      >
+        {views[activeId] ?? views.overview}
+      </AdminShell>
+      <CommandPalette
+        open={paletteOpen}
+        onClose={() => setPaletteOpen(false)}
+        groups={groups}
+        onNavigate={setActiveId}
+      />
+    </>
   );
 }
 
@@ -434,66 +475,3 @@ function AuroraBackdrop({ children }: { children: React.ReactNode }) {
   );
 }
 
-type AdminGroup = { title: string; desc: string; node: React.ReactNode };
-type AdminSection = { id: string; label: string; hint: string; groups: AdminGroup[] };
-
-function AdminSections({ sections }: { sections: AdminSection[] }) {
-  const [activeId, setActiveId] = useState(sections[0]?.id ?? "");
-  const active = sections.find((s) => s.id === activeId) ?? sections[0];
-  return (
-    <div className="mb-10 grid gap-6 lg:grid-cols-[240px_minmax(0,1fr)]">
-      <nav className="lg:sticky lg:top-20 h-max rounded-2xl border border-border bg-card p-2">
-        <p className="px-3 pb-2 pt-2 font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-          Sections
-        </p>
-        <ul className="space-y-1">
-          {sections.map((s) => {
-            const isActive = s.id === active?.id;
-            return (
-              <li key={s.id}>
-                <button
-                  type="button"
-                  onClick={() => setActiveId(s.id)}
-                  className={`w-full rounded-xl px-3 py-2 text-left text-sm transition-colors ${
-                    isActive
-                      ? "bg-violet text-white shadow-[0_10px_30px_-12px_oklch(0.52_0.24_293/0.5)]"
-                      : "text-foreground hover:bg-secondary"
-                  }`}
-                >
-                  <span className="block font-semibold">{s.label}</span>
-                  <span
-                    className={`mt-0.5 block text-[11px] ${
-                      isActive ? "text-white/80" : "text-muted-foreground"
-                    }`}
-                  >
-                    {s.groups.length} tools
-                  </span>
-                </button>
-              </li>
-            );
-          })}
-        </ul>
-      </nav>
-
-      <div className="space-y-6">
-        {active && (
-          <div className="rounded-2xl border border-border bg-gradient-to-br from-violet/10 to-transparent p-5">
-            <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-violet">
-              {active.label}
-            </span>
-            <p className="mt-1 text-sm text-muted-foreground">{active.hint}</p>
-          </div>
-        )}
-        {active?.groups.map((g, i) => (
-          <section key={i} className="rounded-2xl border border-border bg-card">
-            <header className="flex flex-wrap items-baseline justify-between gap-2 border-b border-border px-5 py-3">
-              <h3 className="font-display text-base font-bold">{g.title}</h3>
-              <p className="text-xs text-muted-foreground">{g.desc}</p>
-            </header>
-            <div className="p-4">{g.node}</div>
-          </section>
-        ))}
-      </div>
-    </div>
-  );
-}

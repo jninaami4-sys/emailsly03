@@ -124,13 +124,14 @@ export const setPricingPublished = createServerFn({ method: "POST" })
     return normalize(row as Record<string, unknown>);
   });
 
+export type PricingAuditChange = { old: string | number | boolean | null; new: string | number | boolean | null };
 export type PricingAuditEntry = {
   id: string;
   service_id: string;
   service_name: string | null;
   changed_by: string | null;
   changed_by_email: string | null;
-  changes: Record<string, { old: unknown; new: unknown }>;
+  changes: Record<string, PricingAuditChange>;
   changed_at: string;
 };
 

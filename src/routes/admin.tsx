@@ -25,6 +25,7 @@ import { PricingAdmin } from "@/components/admin/PricingAdmin";
 import { SampleDatasetsAdmin, SampleDatasetAuditLog } from "@/components/admin/SampleDatasetsAdmin";
 import { SupportTicketsAdmin } from "@/components/admin/SupportTicketsAdmin";
 import { BlogSeoAdmin } from "@/components/admin/BlogSeoAdmin";
+import { BlogAnalyticsAdmin } from "@/components/admin/BlogAnalyticsAdmin";
 import { whoAmIAdmin } from "@/lib/announcements.functions";
 import { useAuth } from "@/hooks/use-auth";
 import {
@@ -354,6 +355,7 @@ function AdminPage() {
       items: [
         { id: "tracking", label: "Tracking Scripts", desc: "GA / Meta / custom pixel snippets.", icon: LineChart, keywords: "ga meta pixel tracking" },
         { id: "conversion", label: "Conversion Events", desc: "Named events for analytics providers.", icon: BarChart3, keywords: "conversion events" },
+        { id: "blog-analytics", label: "Blog Analytics", desc: "Views, scroll depth, CTA clicks, and conversions per post.", icon: LineChart, keywords: "blog analytics views scroll cta" },
         { id: "server-tracking", label: "Server Tracking", desc: "Server-side event forwarding config.", icon: Server, keywords: "server tracking" },
         { id: "debug", label: "Debug Mode", desc: "Toggle verbose logging and on-screen tools.", icon: ShieldAlert, keywords: "debug logs" },
       ],
@@ -388,6 +390,7 @@ function AdminPage() {
     chatbot: <ChatbotAdmin />,
     tracking: <TrackingAdmin />,
     conversion: <ConversionEventsAdmin />,
+    "blog-analytics": <BlogAnalyticsAdmin />,
     "server-tracking": <ServerTrackingAdmin />,
     debug: <DebugModeAdmin />,
     datasets: <SampleDatasetsAdmin />,

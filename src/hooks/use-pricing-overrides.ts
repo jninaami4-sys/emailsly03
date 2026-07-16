@@ -8,6 +8,7 @@ export type PricingOverride = {
   minQty: number;
   minOrder: number;
   helper?: string | null;
+  published: boolean;
 };
 
 export function usePricingOverrides() {
@@ -25,10 +26,26 @@ export function usePricingOverrides() {
         minQty: row.min_qty,
         minOrder: row.min_order,
         helper: row.helper,
+        published: row.published,
       });
     }
     return map;
   }, [data]);
+}
+
+/**
+ * Filter a service list against the admin "published" flag. Services with no
+ * matching row in `pricing_settings` are treated as published (fall back to
+ * the in-code defaults) so the storefront never goes empty on a fresh DB.
+ */
+export function filterPublished<T extends { id: string }>(
+  services: T[],
+  overrides: Map<string, PricingOverride>,
+): T[] {
+  return services.filter((s) => {
+    const o = overrides.get(s.id);
+    return !o || o.published;
+  });
 }
 
 export function applyOverride<T extends { id: string; rate: number; minQty: number; minOrder: number; helper?: string }>(

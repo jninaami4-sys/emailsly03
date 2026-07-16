@@ -40,8 +40,8 @@ export function AdminDashboard({
           }}
         />
         <div className="relative">
-          <div className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-emerald-300">
-            <span className="size-1.5 rounded-full bg-emerald-400" />
+          <div className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-[#facc15]/25 bg-[#facc15]/10 px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-[#fde68a]">
+            <span className="size-1.5 rounded-full bg-[#facc15]" />
             All systems operational
           </div>
           <h2 className="font-display text-2xl font-bold sm:text-3xl">
@@ -57,7 +57,7 @@ export function AdminDashboard({
             <button
               type="button"
               onClick={() => onSelect("site-content")}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-[#3b82f6] px-4 py-2 text-sm font-semibold text-white hover:bg-[#2563eb]"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-[#facc15] px-4 py-2 text-sm font-bold text-black hover:bg-[#eab308]"
             >
               <Sparkles className="size-4" />
               Edit site content
@@ -93,9 +93,9 @@ export function AdminDashboard({
                   key={item.id}
                   type="button"
                   onClick={() => onSelect(item.id)}
-                  className="group relative flex items-center gap-3 overflow-hidden rounded-xl border border-white/[0.06] bg-[#0e131c] p-4 text-left transition-all hover:-translate-y-0.5 hover:border-[#3b82f6]/40 hover:bg-[#111826]"
+                  className="group relative flex items-center gap-3 overflow-hidden rounded-xl border border-white/[0.06] bg-[#0e131c] p-4 text-left transition-all hover:-translate-y-0.5 hover:border-[#facc15]/40 hover:bg-[#111826]"
                 >
-                  <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-[#3b82f6]/12 text-[#60a5fa] ring-1 ring-[#3b82f6]/25 transition-colors group-hover:bg-[#3b82f6]/20">
+                  <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-[#facc15]/12 text-[#facc15] ring-1 ring-[#facc15]/25 transition-colors group-hover:bg-[#facc15]/20">
                     <Icon className="size-5" />
                   </div>
                   <div className="min-w-0 flex-1">
@@ -106,7 +106,7 @@ export function AdminDashboard({
                       {item.desc}
                     </p>
                   </div>
-                  <ArrowRight className="size-4 shrink-0 text-white/40 transition-all group-hover:translate-x-0.5 group-hover:text-[#60a5fa]" />
+                  <ArrowRight className="size-4 shrink-0 text-white/40 transition-all group-hover:translate-x-0.5 group-hover:text-[#facc15]" />
                 </button>
               );
             })}
@@ -145,9 +145,9 @@ export function AdminDashboard({
                     key={item.id}
                     type="button"
                     onClick={() => onSelect(item.id)}
-                    className="group relative flex items-start gap-3 overflow-hidden rounded-xl border border-white/[0.06] bg-[#0e131c] p-4 text-left transition-all hover:-translate-y-0.5 hover:border-[#3b82f6]/40 hover:bg-[#111826]"
+                    className="group relative flex items-start gap-3 overflow-hidden rounded-xl border border-white/[0.06] bg-[#0e131c] p-4 text-left transition-all hover:-translate-y-0.5 hover:border-[#facc15]/40 hover:bg-[#111826]"
                   >
-                    <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-white/[0.04] text-white/70 transition-colors group-hover:bg-[#3b82f6]/15 group-hover:text-[#60a5fa]">
+                    <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-white/[0.04] text-white/70 transition-colors group-hover:bg-[#facc15]/15 group-hover:text-[#facc15]">
                       <Icon className="size-4" />
                     </div>
                     <div className="min-w-0 flex-1">
@@ -158,7 +158,7 @@ export function AdminDashboard({
                         {item.desc}
                       </p>
                     </div>
-                    <ArrowRight className="size-3.5 shrink-0 text-white/30 transition-all group-hover:translate-x-0.5 group-hover:text-[#60a5fa]" />
+                    <ArrowRight className="size-3.5 shrink-0 text-white/30 transition-all group-hover:translate-x-0.5 group-hover:text-[#facc15]" />
                   </button>
                 );
               })}

@@ -28,7 +28,25 @@ export const adminListOrders = createServerFn({ method: "GET" })
     if (data.search) q = q.or(`email.ilike.%${data.search}%,service_label.ilike.%${data.search}%,promo_code.ilike.%${data.search}%`);
     const { data: rows, error } = await q;
     if (error) throw new Error(error.message);
-    return rows ?? [];
+    const list = (rows ?? []) as Array<Record<string, unknown> & { id: string; user_id: string | null }>;
+    // Enrich with profile display name where available so the admin table can
+    // show the customer's name (not just their email) and a stable short ID.
+    const userIds = Array.from(new Set(list.map((r) => r.user_id).filter(Boolean))) as string[];
+    const nameByUser = new Map<string, string>();
+    if (userIds.length) {
+      const { data: profs } = await sb
+        .from("profiles")
+        .select("user_id, full_name")
+        .in("user_id", userIds);
+      for (const p of profs ?? []) {
+        if (p.full_name) nameByUser.set(p.user_id as string, p.full_name as string);
+      }
+    }
+    return list.map((r) => ({
+      ...r,
+      short_id: `ORD-${String(r.id).slice(0, 8).toUpperCase()}`,
+      customer_name: r.user_id ? nameByUser.get(r.user_id) ?? null : null,
+    }));
   });
 
 export const adminOrderStats = createServerFn({ method: "GET" })

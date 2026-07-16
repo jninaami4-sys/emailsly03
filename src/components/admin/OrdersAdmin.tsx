@@ -101,8 +101,9 @@ export function OrdersAdmin() {
         <table className="w-full text-left text-sm">
           <thead className="bg-secondary/60 text-xs uppercase tracking-wider text-muted-foreground">
             <tr>
+              <th className="p-2.5">Order ID</th>
               <th className="p-2.5">Date</th>
-              <th className="p-2.5">Client</th>
+              <th className="p-2.5">Customer</th>
               <th className="p-2.5">Service</th>
               <th className="p-2.5">Amount</th>
               <th className="p-2.5">Status</th>
@@ -113,23 +114,27 @@ export function OrdersAdmin() {
           <tbody>
             {orders.isLoading && (
               <tr>
-                <td colSpan={7} className="p-6 text-center text-muted-foreground">
+                <td colSpan={8} className="p-6 text-center text-muted-foreground">
                   <Loader2 className="mx-auto size-4 animate-spin" />
                 </td>
               </tr>
             )}
             {!orders.isLoading && rows.length === 0 && (
               <tr>
-                <td colSpan={7} className="p-6 text-center text-muted-foreground">
+                <td colSpan={8} className="p-6 text-center text-muted-foreground">
                   No orders match.
                 </td>
               </tr>
             )}
             {rows.map((o: any) => (
               <tr key={o.id} className="border-t border-border">
+                <td className="p-2.5 font-mono text-xs font-bold text-[#facc15]">
+                  {o.short_id ?? `ORD-${String(o.id).slice(0, 8).toUpperCase()}`}
+                </td>
                 <td className="p-2.5 text-xs text-muted-foreground">{new Date(o.created_at).toLocaleDateString()}</td>
                 <td className="p-2.5">
-                  <div className="font-medium">{o.email}</div>
+                  <div className="font-semibold">{o.customer_name || o.email?.split("@")[0] || "Guest"}</div>
+                  <div className="text-[11px] text-muted-foreground">{o.email}</div>
                   {o.promo_code && <div className="text-[10px] uppercase text-muted-foreground">promo {o.promo_code}</div>}
                 </td>
                 <td className="p-2.5">
@@ -217,8 +222,15 @@ function DeliverDialog({ order, onClose, onDone }: { order: any; onClose: () => 
       onClose();
     },
   });
+  const shortId = order.short_id ?? `ORD-${String(order.id).slice(0, 8).toUpperCase()}`;
+  const customer = order.customer_name || order.email?.split("@")[0] || "Guest";
   return (
-    <Modal onClose={onClose} title="Deliver order">
+    <Modal onClose={onClose} title={`Deliver ${shortId}`}>
+      <div className="mb-3 rounded-lg border border-border bg-background/50 p-2.5 text-xs">
+        <div className="font-bold text-foreground">{customer}</div>
+        <div className="text-muted-foreground">{order.email}</div>
+        <div className="mt-1 text-muted-foreground">{order.service_label} · qty {order.quantity}</div>
+      </div>
       <p className="mb-3 text-xs text-muted-foreground">
         Paste the Google Drive share URL. The client will see this on their dashboard.
       </p>
@@ -265,8 +277,14 @@ function CancelDialog({ order, onClose, onDone }: { order: any; onClose: () => v
       onClose();
     },
   });
+  const shortId = order.short_id ?? `ORD-${String(order.id).slice(0, 8).toUpperCase()}`;
+  const customer = order.customer_name || order.email?.split("@")[0] || "Guest";
   return (
-    <Modal onClose={onClose} title="Cancel order">
+    <Modal onClose={onClose} title={`Cancel ${shortId}`}>
+      <div className="mb-3 rounded-lg border border-border bg-background/50 p-2.5 text-xs">
+        <div className="font-bold text-foreground">{customer}</div>
+        <div className="text-muted-foreground">{order.email}</div>
+      </div>
       <label className="mb-1 block text-xs font-semibold">Reason (shown to client)</label>
       <textarea
         value={reason}

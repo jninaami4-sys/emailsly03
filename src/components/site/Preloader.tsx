@@ -328,7 +328,7 @@ function EmailslyLogoMark({
 
       {/* Sparkle */}
       <motion.g
-        style={{ transformOrigin: "104px 22px", transformBox: "fill-box" as unknown as string }}
+        style={{ transformOrigin: "104px 22px" }}
         initial={{ opacity: 0, scale: 0, rotate: -45 }}
         animate={{ opacity: [0, 1, 0.9], scale: [0, 1.2, 1], rotate: 0 }}
         transition={{ duration: T.sparkle, delay: T.sparkleDelay, ease: EASE }}

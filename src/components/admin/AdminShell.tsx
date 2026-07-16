@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactElement, type ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 import {
   Search, ChevronRight, ExternalLink, Layout, BarChart3, Boxes, Package,
@@ -11,7 +11,7 @@ export type NavItem = {
   id: string;
   label: string;
   desc: string;
-  icon: (p: { className?: string }) => JSX.Element;
+  icon: (p: { className?: string }) => ReactElement;
   keywords?: string;
 };
 

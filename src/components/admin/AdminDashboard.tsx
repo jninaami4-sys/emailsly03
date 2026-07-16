@@ -57,7 +57,7 @@ export function AdminDashboard({
             <button
               type="button"
               onClick={() => onSelect("site-content")}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-[#facc15] px-4 py-2 text-sm font-semibold text-white hover:bg-[#eab308]"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-[#facc15] px-4 py-2 text-sm font-bold text-black hover:bg-[#eab308]"
             >
               <Sparkles className="size-4" />
               Edit site content

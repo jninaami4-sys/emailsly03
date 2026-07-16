@@ -895,7 +895,18 @@ function ProfileTab() {
 
   const save = useMutation({
     mutationFn: () => updateFn({ data: { ...form, avatar_url: avatarUrl ?? null } }),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["my-profile"] }),
+    onSuccess: async () => {
+      // Keep auth.user_metadata in sync so components that read it
+      // (chatbot prefill, review modal, etc.) reflect the new name/avatar.
+      try {
+        await supabase.auth.updateUser({
+          data: { full_name: form.full_name, avatar_url: avatarUrl ?? null },
+        });
+      } catch {
+        /* non-fatal — profile row is the source of truth */
+      }
+      qc.invalidateQueries({ queryKey: ["my-profile"] });
+    },
   });
 
   async function handleFile(file: File) {
@@ -920,6 +931,13 @@ function ProfileTab() {
       setAvatarUrl(signed.signedUrl);
       // Persist immediately so the header/other places see the new avatar.
       await updateFn({ data: { ...form, avatar_url: signed.signedUrl } });
+      try {
+        await supabase.auth.updateUser({
+          data: { full_name: form.full_name, avatar_url: signed.signedUrl },
+        });
+      } catch {
+        /* non-fatal */
+      }
       qc.invalidateQueries({ queryKey: ["my-profile"] });
       const compressedKB = Math.round(compressed.bytes / 1024);
       setUploadState({ status: "idle", savedKB: Math.max(0, originalKB - compressedKB) });
@@ -933,6 +951,11 @@ function ProfileTab() {
     setAvatarUrl(null);
     try {
       await updateFn({ data: { ...form, avatar_url: null } });
+      try {
+        await supabase.auth.updateUser({ data: { avatar_url: null } });
+      } catch {
+        /* non-fatal */
+      }
       qc.invalidateQueries({ queryKey: ["my-profile"] });
     } catch {
       /* ignore — UI already reflects removal */

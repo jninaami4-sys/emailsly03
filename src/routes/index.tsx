@@ -21,6 +21,7 @@ import {
   PremiumGlobe,
 } from "@/components/site/PremiumIcons";
 import { Testimonials } from "@/components/site/Testimonials";
+import { ShareExperienceCTA } from "@/components/site/ShareExperienceCTA";
 import { ServicesCarousel } from "@/components/site/ServicesCarousel";
 import { useSiteContent } from "@/hooks/use-site-content";
 
@@ -311,6 +312,14 @@ function Home() {
         </section>
 
         <Testimonials />
+
+        {/* Share your experience — placed right after testimonials so happy
+            customers can add their own voice while it's top of mind. */}
+        <section className="border-t border-white/10 px-6 py-16">
+          <div className="mx-auto max-w-4xl">
+            <ShareExperienceCTA variant="footer" />
+          </div>
+        </section>
 
         {/* FAQ */}
         <section className="border-t border-white/10 px-6 py-24">

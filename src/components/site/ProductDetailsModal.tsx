@@ -53,7 +53,7 @@ export function ProductDetailsModal({
 
   const heroImage = data?.image_url?.trim() || product.coverImage || null;
 
-  return (
+  return createPortal(
     <div
       className="fixed inset-0 z-[100] flex items-end justify-center bg-black/70 p-0 backdrop-blur-sm sm:items-center sm:p-4"
       onClick={onClose}

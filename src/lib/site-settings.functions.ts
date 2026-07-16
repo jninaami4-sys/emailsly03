@@ -13,6 +13,7 @@ export type SiteSettings = {
   custom_head_html: string;
   tawk_enabled: boolean;
   tawk_position: TawkPosition;
+  support_show_category: boolean;
   updated_at: string;
 };
 
@@ -24,6 +25,7 @@ const EMPTY: SiteSettings = {
   custom_head_html: "",
   tawk_enabled: true,
   tawk_position: "br",
+  support_show_category: false,
   updated_at: "",
 };
 
@@ -59,7 +61,7 @@ export const getSiteSettings = createServerFn({ method: "GET" }).handler(
     const { data, error } = await supabase
       .from("site_settings")
       .select(
-        "gtm_id, ga4_id, fb_pixel_id, tiktok_pixel_id, custom_head_html, tawk_enabled, tawk_position, updated_at",
+        "gtm_id, ga4_id, fb_pixel_id, tiktok_pixel_id, custom_head_html, tawk_enabled, tawk_position, support_show_category, updated_at",
       )
       .eq("id", true)
       .maybeSingle();
@@ -79,6 +81,7 @@ type UpdateInput = {
   custom_head_html: string;
   tawk_enabled: boolean;
   tawk_position: TawkPosition;
+  support_show_category?: boolean;
 };
 
 export const updateSiteSettings = createServerFn({ method: "POST" })
@@ -99,6 +102,7 @@ export const updateSiteSettings = createServerFn({ method: "POST" })
       custom_head_html: String(data.custom_head_html || "").slice(0, 8000),
       tawk_enabled: Boolean(data.tawk_enabled),
       tawk_position: position,
+      support_show_category: Boolean(data.support_show_category),
     };
     const { data: row, error } = await supabaseAdmin
       .from("site_settings")

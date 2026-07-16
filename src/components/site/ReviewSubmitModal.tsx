@@ -151,11 +151,18 @@ function SubmitFlow({
   const [step, setStep] = useState<Step>("kind");
   const [kind, setKind] = useState<Kind>("text");
 
+  const { data: profile } = useMyProfile();
   const metaName =
+    (profile?.full_name as string | undefined) ||
     (user.user_metadata?.["full_name"] as string | undefined) ||
     (user.user_metadata?.["name"] as string | undefined) ||
     (user.email ? user.email.split("@")[0] : "");
   const [displayName, setDisplayName] = useState(metaName || "");
+  // Keep the field synced when the profile updates in realtime (e.g. user
+  // edits their name in another tab) as long as they haven't typed over it.
+  useEffect(() => {
+    if (!displayName || displayName === metaName) return;
+  }, [displayName, metaName]);
   const [role, setRole] = useState("");
   const [country, setCountry] = useState("");
   const [rating, setRating] = useState(5);

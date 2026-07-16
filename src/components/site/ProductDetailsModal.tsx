@@ -51,14 +51,14 @@ export function ProductDetailsModal({
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-[100] flex items-end justify-center bg-black/70 p-0 backdrop-blur-sm sm:items-center sm:p-4"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
       aria-label={product.title}
     >
       <div
-        className="relative flex max-h-[90vh] w-full max-w-3xl flex-col overflow-hidden rounded-3xl border border-border bg-card shadow-2xl"
+        className="relative flex max-h-[95dvh] min-h-0 w-full max-w-3xl flex-col overflow-hidden rounded-t-3xl border border-border bg-card shadow-2xl sm:max-h-[88dvh] sm:rounded-3xl"
         onClick={(e) => e.stopPropagation()}
       >
         <button
@@ -70,12 +70,12 @@ export function ProductDetailsModal({
         </button>
 
         {heroImage && (
-          <div className="relative aspect-[16/7] w-full overflow-hidden bg-secondary">
+          <div className="relative aspect-[16/6] max-h-[22vh] w-full shrink-0 overflow-hidden bg-secondary sm:max-h-[28vh]">
             <img src={heroImage} alt={product.title} className="h-full w-full object-cover" />
           </div>
         )}
 
-        <div className="flex-1 overflow-y-auto p-6 sm:p-8">
+        <div className="min-h-0 flex-1 overflow-y-auto p-5 sm:p-8">
           <span className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-violet">
             {product.category}
           </span>
@@ -160,7 +160,7 @@ export function ProductDetailsModal({
           </div>
         </div>
 
-        <div className="flex flex-col-reverse items-stretch gap-3 border-t border-border bg-card/70 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
+        <div className="flex shrink-0 flex-col-reverse items-stretch gap-3 border-t border-border bg-card/90 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] backdrop-blur sm:flex-row sm:items-center sm:justify-between sm:p-5 sm:pb-5">
           <div className="flex items-baseline gap-2">
             <span className="font-display text-2xl font-bold">${product.price}</span>
             {product.compareAtPrice && (

@@ -29,7 +29,7 @@ export function AdminDashboard({
   return (
     <div className="space-y-8">
       {/* Hero card */}
-      <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-[oklch(0.18_0.02_280)] via-[oklch(0.14_0.01_260)] to-[oklch(0.16_0.05_290)] p-6 sm:p-8">
+      <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-[oklch(0.18_0_0)] p-6 sm:p-8">
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 opacity-[0.06]"
@@ -39,10 +39,9 @@ export function AdminDashboard({
             backgroundSize: "32px 32px",
           }}
         />
-        <div className="absolute -right-16 -top-16 size-64 rounded-full bg-violet/20 blur-3xl" />
         <div className="relative">
           <div className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-white/60">
-            <span className="size-1.5 rounded-full bg-emerald shadow-[0_0_8px] shadow-emerald" />
+            <span className="size-1.5 rounded-full bg-white/70" />
             All systems operational
           </div>
           <h2 className="font-display text-2xl font-bold sm:text-3xl">
@@ -58,7 +57,7 @@ export function AdminDashboard({
             <button
               type="button"
               onClick={() => onSelect("site-content")}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-violet px-4 py-2 text-sm font-semibold text-white shadow-[0_10px_30px_-10px_oklch(0.52_0.24_293/0.6)] hover:brightness-110"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-white px-4 py-2 text-sm font-semibold text-black hover:bg-white/90"
             >
               <Sparkles className="size-4" />
               Edit site content
@@ -94,9 +93,9 @@ export function AdminDashboard({
                   key={item.id}
                   type="button"
                   onClick={() => onSelect(item.id)}
-                  className="group relative flex items-center gap-3 overflow-hidden rounded-xl border border-violet/25 bg-violet/[0.06] p-4 text-left transition-all hover:-translate-y-0.5 hover:border-violet/60 hover:bg-violet/[0.1] hover:shadow-[0_10px_30px_-15px_oklch(0.52_0.24_293/0.6)]"
+                  className="group relative flex items-center gap-3 overflow-hidden rounded-xl border border-white/10 bg-white/[0.03] p-4 text-left transition-all hover:-translate-y-0.5 hover:border-white/25 hover:bg-white/[0.06]"
                 >
-                  <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-violet/20 text-violet">
+                  <div className="flex size-10 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/[0.05] text-white/80">
                     <Icon className="size-5" />
                   </div>
                   <div className="min-w-0 flex-1">
@@ -107,7 +106,7 @@ export function AdminDashboard({
                       {item.desc}
                     </p>
                   </div>
-                  <ArrowRight className="size-4 shrink-0 text-white/40 transition-all group-hover:translate-x-0.5 group-hover:text-violet" />
+                  <ArrowRight className="size-4 shrink-0 text-white/40 transition-all group-hover:translate-x-0.5 group-hover:text-white" />
                 </button>
               );
             })}
@@ -146,9 +145,9 @@ export function AdminDashboard({
                     key={item.id}
                     type="button"
                     onClick={() => onSelect(item.id)}
-                    className="group relative flex items-start gap-3 overflow-hidden rounded-xl border border-white/10 bg-white/[0.02] p-4 text-left transition-all hover:-translate-y-0.5 hover:border-violet/40 hover:bg-white/[0.04] hover:shadow-[0_10px_30px_-15px_oklch(0.52_0.24_293/0.5)]"
+                    className="group relative flex items-start gap-3 overflow-hidden rounded-xl border border-white/10 bg-white/[0.02] p-4 text-left transition-all hover:-translate-y-0.5 hover:border-white/25 hover:bg-white/[0.04]"
                   >
-                    <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-white/[0.04] text-white/70 transition-colors group-hover:bg-violet/15 group-hover:text-violet">
+                    <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-white/[0.04] text-white/70 transition-colors group-hover:bg-white/10 group-hover:text-white">
                       <Icon className="size-4" />
                     </div>
                     <div className="min-w-0 flex-1">
@@ -159,7 +158,7 @@ export function AdminDashboard({
                         {item.desc}
                       </p>
                     </div>
-                    <ArrowRight className="size-3.5 shrink-0 text-white/30 transition-all group-hover:translate-x-0.5 group-hover:text-violet" />
+                    <ArrowRight className="size-3.5 shrink-0 text-white/30 transition-all group-hover:translate-x-0.5 group-hover:text-white" />
                   </button>
                 );
               })}

@@ -150,6 +150,10 @@ const services: Service[] = [
 
 export function ServicesCarousel() {
   const [isMobile, setIsMobile] = useState(false);
+  const [debug, setDebug] = useState(false);
+  const [viewport, setViewport] = useState({ w: 0, h: 0 });
+  const [overflowCount, setOverflowCount] = useState(0);
+
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 640px)");
     const update = () => setIsMobile(mq.matches);
@@ -157,8 +161,100 @@ export function ServicesCarousel() {
     mq.addEventListener("change", update);
     return () => mq.removeEventListener("change", update);
   }, []);
+
+  // Toggle: ?debug-carousel=1, localStorage flag, or Alt+Shift+D
+  useEffect(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("debug-carousel") === "1" || localStorage.getItem("debug-carousel") === "1") {
+        setDebug(true);
+      }
+    } catch { /* ignore */ }
+    const onKey = (e: KeyboardEvent) => {
+      if (e.altKey && e.shiftKey && (e.key === "D" || e.key === "d")) {
+        setDebug((v) => {
+          const next = !v;
+          try { localStorage.setItem("debug-carousel", next ? "1" : "0"); } catch { /* ignore */ }
+          return next;
+        });
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
+  // Scan slides for clipping/overflow while debug is on
+  useEffect(() => {
+    if (!debug) return;
+    const scan = () => {
+      setViewport({ w: window.innerWidth, h: window.innerHeight });
+      const slides = document.querySelectorAll<HTMLElement>(".services-swiper .swiper-slide");
+      let count = 0;
+      slides.forEach((slide) => {
+        slide.removeAttribute("data-overflow");
+        const inner = slide.firstElementChild as HTMLElement | null;
+        if (!inner) return;
+        const overflowsX = inner.scrollWidth - inner.clientWidth > 1;
+        const overflowsY = inner.scrollHeight - inner.clientHeight > 1;
+        const rect = slide.getBoundingClientRect();
+        const offViewport = rect.right > window.innerWidth + 1 || rect.left < -1;
+        if (overflowsX || overflowsY || offViewport) {
+          slide.setAttribute(
+            "data-overflow",
+            [overflowsX && "x", overflowsY && "y", offViewport && "viewport"].filter(Boolean).join(","),
+          );
+          count += 1;
+        }
+      });
+      setOverflowCount(count);
+    };
+    scan();
+    const ro = new ResizeObserver(scan);
+    ro.observe(document.body);
+    window.addEventListener("resize", scan);
+    const interval = window.setInterval(scan, 800);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", scan);
+      window.clearInterval(interval);
+    };
+  }, [debug]);
+
+  const bp = viewport.w >= 1024 ? "lg" : viewport.w >= 768 ? "md" : viewport.w >= 640 ? "sm" : "xs";
+
   return (
-    <section className="relative overflow-hidden border-t border-white/10 px-4 py-24 sm:px-6">
+    <section
+      className={`relative overflow-hidden border-t border-white/10 px-4 py-24 sm:px-6 ${debug ? "carousel-debug" : ""}`}
+    >
+      {debug && (
+        <div className="pointer-events-auto fixed bottom-4 right-4 z-[9999] w-64 rounded-2xl border border-white/20 bg-black/85 p-3 font-mono text-[11px] text-white shadow-2xl backdrop-blur">
+          <div className="mb-2 flex items-center justify-between">
+            <span className="font-bold uppercase tracking-widest text-emerald-400">Carousel debug</span>
+            <button
+              type="button"
+              onClick={() => {
+                setDebug(false);
+                try { localStorage.setItem("debug-carousel", "0"); } catch { /* ignore */ }
+              }}
+              className="rounded bg-white/10 px-1.5 py-0.5 text-[10px] hover:bg-white/20"
+            >
+              ×
+            </button>
+          </div>
+          <ul className="space-y-1">
+            <li>viewport: <span className="text-emerald-300">{viewport.w}×{viewport.h}</span></li>
+            <li>breakpoint: <span className="text-emerald-300">{bp}</span></li>
+            <li>
+              clipped/overflowing:{" "}
+              <span className={overflowCount > 0 ? "text-red-400" : "text-emerald-300"}>{overflowCount}</span>
+            </li>
+          </ul>
+          <p className="mt-2 text-[10px] leading-snug text-white/60">
+            Slides with issues are outlined in red with an X/Y/viewport tag. Alt+Shift+D to toggle.
+          </p>
+        </div>
+      )}
+
       {/* Ambient glow */}
       <div className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute left-1/2 top-1/2 size-[1000px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-indigo/10 blur-[160px]" />

@@ -90,7 +90,9 @@ export function MouseGlow() {
       document.removeEventListener("mouseleave", handleLeave);
       document.removeEventListener("mouseenter", handleEnter);
     };
-  }, [visible]);
+  }, [visible, mode]);
+
+  if (mode === "static") return <StaticAmbientGlow />;
 
   return (
     <div

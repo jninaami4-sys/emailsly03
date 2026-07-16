@@ -13,6 +13,7 @@ export type PricingSetting = {
   fixed: boolean;
   helper: string | null;
   sort_order: number;
+  published: boolean;
   updated_at: string;
 };
 
@@ -53,6 +54,7 @@ function normalize(row: Record<string, unknown>): PricingSetting {
     fixed: Boolean(row.fixed),
     helper: (row.helper as string | null) ?? null,
     sort_order: Number(row.sort_order ?? 0),
+    published: row.published === undefined || row.published === null ? true : Boolean(row.published),
     updated_at: String(row.updated_at ?? ""),
   };
 }
@@ -62,7 +64,7 @@ export const getPricingSettings = createServerFn({ method: "GET" }).handler(
     const supabase = serverAnonClient();
     const { data, error } = await supabase
       .from("pricing_settings")
-      .select("service_id, name, rate, unit, min_qty, min_order, fixed, helper, sort_order, updated_at")
+      .select("service_id, name, rate, unit, min_qty, min_order, fixed, helper, sort_order, published, updated_at")
       .order("sort_order", { ascending: true });
     if (error) {
       console.error("getPricingSettings", error);
@@ -78,6 +80,7 @@ type UpdateInput = {
   min_qty: number;
   min_order: number;
   helper?: string | null;
+  published?: boolean;
 };
 
 export const updatePricingSetting = createServerFn({ method: "POST" })
@@ -91,6 +94,7 @@ export const updatePricingSetting = createServerFn({ method: "POST" })
       min_qty: Math.max(1, Math.floor(Number(data.min_qty) || 1)),
       min_order: Math.max(0, Number(data.min_order) || 0),
       helper: data.helper?.toString().slice(0, 200) ?? null,
+      ...(typeof data.published === "boolean" ? { published: data.published } : {}),
     };
     const { data: row, error } = await supabaseAdmin
       .from("pricing_settings")

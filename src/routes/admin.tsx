@@ -24,6 +24,7 @@ import { ImportExportAdmin } from "@/components/admin/ImportExportAdmin";
 import { PricingAdmin } from "@/components/admin/PricingAdmin";
 import { SampleDatasetsAdmin, SampleDatasetAuditLog } from "@/components/admin/SampleDatasetsAdmin";
 import { SupportTicketsAdmin } from "@/components/admin/SupportTicketsAdmin";
+import { BlogSeoAdmin } from "@/components/admin/BlogSeoAdmin";
 import { whoAmIAdmin } from "@/lib/announcements.functions";
 import { useAuth } from "@/hooks/use-auth";
 import {
@@ -334,6 +335,7 @@ function AdminPage() {
         { id: "product-covers", label: "Product Covers", desc: "Upload storefront cover images.", icon: ImageIcon, keywords: "product covers images" },
         { id: "announcements", label: "Announcements", desc: "Marketing banners and popups.", icon: Megaphone, keywords: "banner popup" },
         { id: "reviews", label: "Reviews", desc: "Curate customer testimonials.", icon: ShieldCheck, keywords: "reviews testimonials" },
+        { id: "blog-seo", label: "Blog SEO", desc: "Per-post meta description, canonical, OG image, and social title.", icon: Globe, keywords: "blog seo meta og canonical" },
         { id: "social", label: "Social Links", desc: "Header and footer social profiles.", icon: PanelBottom, keywords: "social links" },
       ],
     },
@@ -379,6 +381,7 @@ function AdminPage() {
     "product-covers": productCoverEditor,
     announcements: <AnnouncementsAdmin />,
     reviews: <ReviewsAdmin />,
+    "blog-seo": <BlogSeoAdmin />,
     social: <SocialLinksAdmin />,
     support: <SupportTicketsAdmin />,
     leads: <ContactLeadsAdmin />,

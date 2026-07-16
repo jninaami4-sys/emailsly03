@@ -74,6 +74,36 @@ export type Database = {
         }
         Relationships: []
       }
+      blog_seo_overrides: {
+        Row: {
+          canonical_url: string | null
+          meta_description: string | null
+          og_image: string | null
+          slug: string
+          social_title: string | null
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          canonical_url?: string | null
+          meta_description?: string | null
+          og_image?: string | null
+          slug: string
+          social_title?: string | null
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          canonical_url?: string | null
+          meta_description?: string | null
+          og_image?: string | null
+          slug?: string
+          social_title?: string | null
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       chatbot_config: {
         Row: {
           enabled: boolean

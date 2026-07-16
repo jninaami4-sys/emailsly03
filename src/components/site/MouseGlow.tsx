@@ -34,9 +34,11 @@ export function MouseGlow() {
   useEffect(() => {
     if (typeof window === "undefined" || mode !== "interactive") return;
 
-    const isCoarse = window.matchMedia?.("(pointer: coarse)")?.matches;
     const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
-    if (isCoarse || reduced) return;
+    if (reduced) {
+      setMode("static");
+      return;
+    }
 
     target.current = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
     glow.current = { ...target.current };

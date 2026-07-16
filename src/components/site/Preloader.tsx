@@ -114,7 +114,7 @@ export function Preloader({
           }}
           initial={{ opacity: 1 }}
           exit={{ opacity: 0, clipPath: "inset(0 0 100% 0)" }}
-          transition={{ duration: 0.9, ease: EASE }}
+          transition={{ duration: 1.2, ease: EASE }}
         >
           {/* Ambient violet glow */}
           <div

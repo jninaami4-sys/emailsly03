@@ -133,13 +133,23 @@ export function BrandSettingsAdmin() {
               />
             </FieldRow>
 
-            <FieldRow label="Logo URL" hint="Direct link to a transparent PNG or SVG. Leave blank to use the wordmark.">
+            <FieldRow label="Logo URL" hint="Direct link to a transparent PNG or SVG. Used on light backgrounds (header, emails, invoices).">
               <input
                 type="url"
                 value={values.logo_url}
                 onChange={(e) => set("logo_url", e.target.value)}
                 className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-violet"
                 placeholder="https://…/logo.png"
+              />
+            </FieldRow>
+
+            <FieldRow label="Footer logo URL" hint="Light version for the dark footer. Falls back to the main logo if empty.">
+              <input
+                type="url"
+                value={values.footer_logo_url}
+                onChange={(e) => set("footer_logo_url", e.target.value)}
+                className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-violet"
+                placeholder="https://…/logo-white.png"
               />
             </FieldRow>
 

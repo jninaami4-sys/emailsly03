@@ -174,32 +174,55 @@
  * inherits a consistent readable look without touching each component.
  */
 .admin-theme {
-  --background: oklch(0.16 0.015 250);        /* #0b0f17 */
-  --foreground: oklch(0.97 0.01 250);
-  --card: oklch(0.19 0.017 250);              /* #0e131c */
-  --card-foreground: oklch(0.97 0.01 250);
-  --popover: oklch(0.19 0.017 250);
-  --popover-foreground: oklch(0.97 0.01 250);
-  --muted: oklch(0.22 0.015 250);
-  --muted-foreground: oklch(0.68 0.02 250);
-  --secondary: oklch(0.22 0.015 250);
-  --secondary-foreground: oklch(0.97 0.01 250);
-  --accent: oklch(0.24 0.02 250);
-  --accent-foreground: oklch(0.97 0.01 250);
-  --border: oklch(1 0 0 / 0.06);
-  --input: oklch(1 0 0 / 0.08);
-  --primary: oklch(0.63 0.19 258);            /* #3b82f6 */
-  --primary-foreground: oklch(1 0 0);
-  --ring: oklch(0.63 0.19 258);
-  /* Remap legacy brand accents so old markup blends in with the new theme */
-  --violet: oklch(0.63 0.19 258);
-  --violet-soft: oklch(0.63 0.19 258 / 0.15);
-  --magenta: oklch(0.63 0.19 258);
-  --magenta-soft: oklch(0.63 0.19 258 / 0.15);
-  --coral: oklch(0.63 0.19 258);
-  --coral-soft: oklch(0.63 0.19 258 / 0.15);
+  /* Minimal admin palette: near-black surface, high-contrast white text,
+     yellow for accent/active, red for destructive. Aggressive weight for
+     readability. */
+  --background: oklch(0.14 0 0);              /* near-black */
+  --foreground: oklch(0.99 0 0);              /* white */
+  --card: oklch(0.17 0 0);
+  --card-foreground: oklch(0.99 0 0);
+  --popover: oklch(0.17 0 0);
+  --popover-foreground: oklch(0.99 0 0);
+  --muted: oklch(0.21 0 0);
+  --muted-foreground: oklch(0.78 0 0);        /* brighter for readability */
+  --secondary: oklch(0.21 0 0);
+  --secondary-foreground: oklch(0.99 0 0);
+  --accent: oklch(0.23 0 0);
+  --accent-foreground: oklch(0.99 0 0);
+  --border: oklch(1 0 0 / 0.14);
+  --input: oklch(1 0 0 / 0.14);
+  --primary: oklch(0.99 0 0);                 /* white primary */
+  --primary-foreground: oklch(0.14 0 0);      /* black on white */
+  --ring: oklch(0.88 0.18 92);                /* yellow ring */
+  --destructive: oklch(0.63 0.24 27);         /* red */
+  --destructive-foreground: oklch(1 0 0);
+  /* Remap legacy brand accents so old markup adopts the minimal palette */
+  --violet: oklch(0.88 0.18 92);              /* yellow */
+  --violet-soft: oklch(0.88 0.18 92 / 0.18);
+  --magenta: oklch(0.63 0.24 27);             /* red */
+  --magenta-soft: oklch(0.63 0.24 27 / 0.15);
+  --coral: oklch(0.63 0.24 27);
+  --coral-soft: oklch(0.63 0.24 27 / 0.15);
+  --emerald: oklch(0.88 0.18 92);             /* yellow success */
+  --emerald-soft: oklch(0.88 0.18 92 / 0.18);
+  --amber: oklch(0.88 0.18 92);
+  --amber-soft: oklch(0.88 0.18 92 / 0.18);
   color-scheme: dark;
 }
+
+/* Bolder default type inside admin for punchy readability */
+.admin-theme,
+.admin-theme p,
+.admin-theme span,
+.admin-theme td,
+.admin-theme label,
+.admin-theme button,
+.admin-theme a { font-weight: 600; }
+.admin-theme h1,
+.admin-theme h2,
+.admin-theme h3,
+.admin-theme h4 { font-weight: 800; letter-spacing: -0.02em; }
+.admin-theme .text-muted-foreground { color: oklch(0.82 0 0); font-weight: 600; }
 
 /* Table primitives: uniform header, row dividers, hover, striping */
 .admin-theme table {
@@ -209,26 +232,26 @@
   font-size: 13px;
 }
 .admin-theme thead th {
-  background: oklch(0.17 0.015 250);
-  color: oklch(0.72 0.02 250);
-  font-weight: 600;
+  background: oklch(0.19 0 0);
+  color: oklch(0.99 0 0);
+  font-weight: 800;
   font-size: 11px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   padding: 10px 14px;
   text-align: left;
-  border-bottom: 1px solid oklch(1 0 0 / 0.06);
+  border-bottom: 1px solid oklch(1 0 0 / 0.18);
   position: sticky;
   top: 0;
 }
 .admin-theme tbody td {
   padding: 12px 14px;
-  border-bottom: 1px solid oklch(1 0 0 / 0.04);
-  color: oklch(0.9 0.01 250);
+  border-bottom: 1px solid oklch(1 0 0 / 0.08);
+  color: oklch(0.97 0 0);
   vertical-align: middle;
 }
 .admin-theme tbody tr:hover td {
-  background: oklch(1 0 0 / 0.025);
+  background: oklch(0.88 0.18 92 / 0.06);
 }
 .admin-theme tbody tr:last-child td {
   border-bottom: none;
@@ -238,21 +261,22 @@
 .admin-theme input:not([type="checkbox"]):not([type="radio"]),
 .admin-theme select,
 .admin-theme textarea {
-  background: oklch(0.19 0.017 250);
-  border: 1px solid oklch(1 0 0 / 0.08);
-  color: oklch(0.97 0.01 250);
+  background: oklch(0.17 0 0);
+  border: 1px solid oklch(1 0 0 / 0.16);
+  color: oklch(0.99 0 0);
+  font-weight: 600;
   border-radius: 8px;
 }
 .admin-theme input:focus,
 .admin-theme select:focus,
 .admin-theme textarea:focus {
   outline: none;
-  border-color: oklch(0.63 0.19 258 / 0.6);
-  box-shadow: 0 0 0 2px oklch(0.63 0.19 258 / 0.2);
+  border-color: oklch(0.88 0.18 92 / 0.8);
+  box-shadow: 0 0 0 2px oklch(0.88 0.18 92 / 0.28);
 }
 .admin-theme input::placeholder,
 .admin-theme textarea::placeholder {
-  color: oklch(0.55 0.02 250);
+  color: oklch(0.7 0 0);
 }
 
 @layer base {

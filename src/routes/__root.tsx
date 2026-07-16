@@ -26,6 +26,7 @@ import { CacheJanitor } from "@/components/site/CacheJanitor";
 import { TvNotFound } from "@/components/site/TvNotFound";
 import { ReferralCapture } from "@/components/site/ReferralCapture";
 import { BrandingApplier } from "@/components/site/BrandingApplier";
+import { ProfileRealtimeSync } from "@/hooks/use-my-profile";
 
 function NotFoundComponent() {
   return (
@@ -137,6 +138,7 @@ function RootComponent() {
           <CrispChat />
           <ReferralCapture />
           <BrandingApplier />
+          <ProfileRealtimeSync />
         </CartProvider>
       </AuthProvider>
     </QueryClientProvider>

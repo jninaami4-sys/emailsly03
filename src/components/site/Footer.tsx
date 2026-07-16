@@ -29,6 +29,9 @@ const legalLinks = [
 ] as const;
 
 export function Footer() {
+  const branding = useSiteContent("branding");
+  const logoUrl = (branding.logo_url || "").trim() || "/__l5e/assets-v1/cefa0fcb-c63a-417d-9b6c-f4b799342926/emailsly-logo-trim.png";
+  const siteName = branding.site_name || "EmailsLy";
   return (
     <footer data-site-footer className="relative overflow-hidden bg-ink text-white/70">
       {/* soft violet glow, matches homepage editorial system */}

@@ -8,7 +8,8 @@ import {
   adminUpdateSupportTicket,
   type SupportTicketStatus,
 } from "@/lib/support-tickets.functions";
-import { Loader2, LifeBuoy, Send, X, ChevronLeft, Search } from "lucide-react";
+import { getSiteSettings, updateSiteSettings } from "@/lib/site-settings.functions";
+import { Loader2, LifeBuoy, Send, X, ChevronLeft, Search, Eye, EyeOff } from "lucide-react";
 
 const STATUSES: (SupportTicketStatus | "all")[] = [
   "all",
@@ -32,6 +33,35 @@ export function SupportTicketsAdmin() {
   const [search, setSearch] = useState("");
   const [openId, setOpenId] = useState<string | null>(null);
   const listFn = useServerFn(adminListSupportTickets);
+  const getSettingsFn = useServerFn(getSiteSettings);
+  const setSettingsFn = useServerFn(updateSiteSettings);
+  const qc = useQueryClient();
+
+  const { data: settings } = useQuery({
+    queryKey: ["site-settings", "admin"],
+    queryFn: () => getSettingsFn(),
+    retry: false,
+  });
+  const showCategory = settings?.support_show_category ?? false;
+  const toggleCategory = useMutation({
+    mutationFn: (next: boolean) =>
+      setSettingsFn({
+        data: {
+          gtm_id: settings?.gtm_id ?? "",
+          ga4_id: settings?.ga4_id ?? "",
+          fb_pixel_id: settings?.fb_pixel_id ?? "",
+          tiktok_pixel_id: settings?.tiktok_pixel_id ?? "",
+          custom_head_html: settings?.custom_head_html ?? "",
+          tawk_enabled: settings?.tawk_enabled ?? true,
+          tawk_position: settings?.tawk_position ?? "br",
+          support_show_category: next,
+        },
+      }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["site-settings"] });
+      qc.invalidateQueries({ queryKey: ["site-settings", "admin"] });
+    },
+  });
 
   const { data = [], isLoading, error, refetch } = useQuery({
     queryKey: ["admin-support-tickets", status, search],
@@ -64,6 +94,40 @@ export function SupportTicketsAdmin() {
           <Pill tone="violet">{stats.in_progress ?? 0} in progress</Pill>
           <Pill tone="amber">{stats.waiting_customer ?? 0} awaiting customer</Pill>
         </div>
+      </div>
+
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border bg-background/60 p-3">
+        <div className="flex items-start gap-3">
+          {showCategory ? (
+            <Eye className="mt-0.5 size-4 text-violet" />
+          ) : (
+            <EyeOff className="mt-0.5 size-4 text-muted-foreground" />
+          )}
+          <div>
+            <div className="text-sm font-semibold">Category picker on ticket form</div>
+            <div className="mt-0.5 text-xs text-muted-foreground">
+              When hidden, customers only fill in Subject, Priority, and Describe the issue.
+            </div>
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick={() => toggleCategory.mutate(!showCategory)}
+          disabled={toggleCategory.isPending || !settings}
+          className={`inline-flex items-center gap-2 rounded-lg border px-3 py-1.5 text-xs font-semibold transition ${
+            showCategory
+              ? "border-violet bg-violet text-white"
+              : "border-border bg-card text-foreground hover:border-violet/40"
+          } disabled:cursor-not-allowed disabled:opacity-60`}
+        >
+          {toggleCategory.isPending ? (
+            <Loader2 className="size-3.5 animate-spin" />
+          ) : showCategory ? (
+            "Visible"
+          ) : (
+            "Hidden"
+          )}
+        </button>
       </div>
 
       <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">

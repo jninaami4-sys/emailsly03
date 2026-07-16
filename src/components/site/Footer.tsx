@@ -4,6 +4,7 @@ import { PremiumSparkles, PremiumShieldCheck, PremiumArrowRight } from "./Premiu
 import { SocialIcons } from "./SocialIcons";
 import { ShareExperienceCTA } from "./ShareExperienceCTA";
 import { openConsentPreferences } from "@/lib/consent";
+import { useSiteContent } from "@/hooks/use-site-content";
 
 const productLinks = [
   { to: "/store", label: "Lead Store" },
@@ -28,6 +29,9 @@ const legalLinks = [
 ] as const;
 
 export function Footer() {
+  const branding = useSiteContent("branding");
+  const logoUrl = (branding.logo_url || "").trim() || "/__l5e/assets-v1/cefa0fcb-c63a-417d-9b6c-f4b799342926/emailsly-logo-trim.png";
+  const siteName = branding.site_name || "EmailsLy";
   return (
     <footer data-site-footer className="relative overflow-hidden bg-ink text-white/70">
       {/* soft violet glow, matches homepage editorial system */}
@@ -97,11 +101,11 @@ export function Footer() {
             <Link
               to="/"
               className="inline-flex items-center gap-2"
-              aria-label="EmailsLy home"
+              aria-label={`${siteName} home`}
             >
               <img
-                src="/__l5e/assets-v1/cefa0fcb-c63a-417d-9b6c-f4b799342926/emailsly-logo-trim.png"
-                alt="EmailsLy"
+                src={logoUrl}
+                alt={siteName}
                 className="block h-8 sm:h-9 w-auto max-w-[160px] object-contain shrink-0 select-none p-0 m-0"
                 draggable={false}
               />

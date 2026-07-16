@@ -5,6 +5,7 @@ import { useRef, useState } from "react";
 import { getMyOrder } from "@/lib/orders.functions";
 import { Loader2, Printer, Download } from "lucide-react";
 import emailslyLogo from "@/assets/emailsly-logo-trim.png.asset.json";
+import { useSiteContent } from "@/hooks/use-site-content";
 
 const BRAND = {
   violet: "#7C3AED",
@@ -28,6 +29,9 @@ function InvoicePage() {
   const { orderId } = Route.useParams();
   const getFn = useServerFn(getMyOrder);
   const { data, isLoading } = useQuery({ queryKey: ["my-order", orderId], queryFn: () => getFn({ data: { id: orderId } }) });
+  const branding = useSiteContent("branding");
+  const brandName = branding.site_name || "EmailsLy";
+  const brandLogo = (branding.logo_url || "").trim() || emailslyLogo.url;
   const invoiceRef = useRef<HTMLDivElement>(null);
   const [downloading, setDownloading] = useState(false);
 
@@ -118,8 +122,8 @@ function InvoicePage() {
           >
             <div className="flex items-center gap-3">
               <img
-                src={emailslyLogo.url}
-                alt="EmailsLy"
+                src={brandLogo}
+                alt={brandName}
                 crossOrigin="anonymous"
                 className="block h-9 w-auto max-w-[160px] object-contain shrink-0 select-none p-0 m-0"
                 draggable={false}

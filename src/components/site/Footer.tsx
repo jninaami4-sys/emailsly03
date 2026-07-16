@@ -100,7 +100,7 @@ export function Footer() {
               aria-label="EmailsLy home"
             >
               <img
-                src="/__l5e/assets-v1/e31f3c89-eab1-46bb-b6eb-33d7370024d0/emailsly-logo-trim.png"
+                src="/__l5e/assets-v1/cefa0fcb-c63a-417d-9b6c-f4b799342926/emailsly-logo-trim.png"
                 alt="EmailsLy"
                 className="h-9 w-auto"
               />

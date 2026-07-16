@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { createSupportTicket } from "@/lib/support-tickets.functions";
+import { getSiteSettings } from "@/lib/site-settings.functions";
 import { X, LifeBuoy, Loader2, AlertCircle, CheckCircle2 } from "lucide-react";
 
 type Category = "payment" | "delivery" | "quality" | "refund" | "account" | "other";
@@ -37,6 +38,13 @@ export function SupportTicketModal({
   const [message, setMessage] = useState("");
   const qc = useQueryClient();
   const createFn = useServerFn(createSupportTicket);
+  const settingsFn = useServerFn(getSiteSettings);
+  const { data: settings } = useQuery({
+    queryKey: ["site-settings"],
+    queryFn: () => settingsFn(),
+    staleTime: 60_000,
+  });
+  const showCategory = settings?.support_show_category ?? false;
 
   useEffect(() => {
     if (open) {
@@ -105,28 +113,30 @@ export function SupportTicketModal({
           }}
           className="grid gap-4 px-5 py-5"
         >
-          <div>
-            <label className="mb-1.5 block font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-              Category
-            </label>
-            <div className="grid grid-cols-2 gap-2">
-              {CATS.map((c) => (
-                <button
-                  key={c.value}
-                  type="button"
-                  onClick={() => setCategory(c.value)}
-                  className={`rounded-xl border p-3 text-left transition-all ${
-                    category === c.value
-                      ? "border-violet bg-violet/10 shadow-sm"
-                      : "border-border bg-card hover:border-violet/40"
-                  }`}
-                >
-                  <div className="text-sm font-semibold">{c.label}</div>
-                  <div className="mt-0.5 text-[11px] text-muted-foreground">{c.hint}</div>
-                </button>
-              ))}
+          {showCategory && (
+            <div>
+              <label className="mb-1.5 block font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                Category
+              </label>
+              <div className="grid grid-cols-2 gap-2">
+                {CATS.map((c) => (
+                  <button
+                    key={c.value}
+                    type="button"
+                    onClick={() => setCategory(c.value)}
+                    className={`rounded-xl border p-3 text-left transition-all ${
+                      category === c.value
+                        ? "border-violet bg-violet/10 shadow-sm"
+                        : "border-border bg-card hover:border-violet/40"
+                    }`}
+                  >
+                    <div className="text-sm font-semibold">{c.label}</div>
+                    <div className="mt-0.5 text-[11px] text-muted-foreground">{c.hint}</div>
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           <div className="grid gap-2">
             <label className="font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">

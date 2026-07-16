@@ -255,7 +255,12 @@ function ResetPasswordPage() {
             <div className="relative">
               <Link to="/" aria-label={`${siteName} home`} className="inline-flex items-center gap-2 font-display text-xl font-bold tracking-tight">
                 {logoUrl ? (
-                  <img src={logoUrl} alt={`${siteName} logo`} className="h-9 w-auto object-contain" />
+                <img
+                  src={logoUrl}
+                  alt={`${siteName} logo`}
+                  className="block h-8 sm:h-9 w-auto max-w-[160px] object-contain shrink-0 select-none p-0 m-0"
+                  draggable={false}
+                />
                 ) : (
                   <>
                     <span className="grid size-6 place-items-center rounded-md bg-gradient-to-br from-violet to-magenta shadow-sm shadow-violet/25">

@@ -355,7 +355,12 @@ function AuthPage() {
           <div className="mx-auto flex max-w-md flex-col items-center text-center">
             <Link to="/" aria-label={`${siteName} home`} className="inline-flex items-center gap-2 font-display text-lg font-bold tracking-tight">
               {logoUrl ? (
-                <img src={logoUrl} alt={`${siteName} logo`} className="h-8 w-auto object-contain" />
+              <img
+                src={logoUrl}
+                alt={`${siteName} logo`}
+                className="block h-7 sm:h-8 w-auto max-w-[140px] object-contain shrink-0 select-none p-0 m-0"
+                draggable={false}
+              />
               ) : (
                 <>
                   <span className="grid size-6 place-items-center rounded-md bg-gradient-to-br from-violet to-magenta shadow-sm shadow-violet/25">
@@ -394,7 +399,12 @@ function AuthPage() {
         <div className="hidden lg:block">
           <Link to="/" aria-label={`${siteName} home`} className="inline-flex items-center gap-2 font-display text-xl font-bold tracking-tight">
             {logoUrl ? (
-              <img src={logoUrl} alt={`${siteName} logo`} className="h-9 w-auto object-contain" />
+            <img
+              src={logoUrl}
+              alt={`${siteName} logo`}
+              className="block h-8 sm:h-9 w-auto max-w-[160px] object-contain shrink-0 select-none p-0 m-0"
+              draggable={false}
+            />
             ) : (
               <>
                 <span className="grid size-6 place-items-center rounded-md bg-gradient-to-br from-violet to-magenta shadow-sm shadow-violet/25">

@@ -452,6 +452,51 @@ export function ServicesCarousel() {
           border-radius: 999px;
           box-shadow: 0 0 20px oklch(0.62 0.22 275 / 0.6);
         }
+        /* Responsive debug mode */
+        .carousel-debug .services-swiper .swiper-slide {
+          outline: 1px dashed rgba(16, 185, 129, 0.7);
+          outline-offset: -2px;
+          position: relative;
+        }
+        .carousel-debug .services-swiper .swiper-slide::before {
+          content: attr(class);
+          position: absolute;
+          top: 4px;
+          left: 4px;
+          z-index: 50;
+          padding: 2px 6px;
+          border-radius: 4px;
+          background: rgba(16, 185, 129, 0.85);
+          color: #000;
+          font-family: ui-monospace, SFMono-Regular, monospace;
+          font-size: 9px;
+          font-weight: 700;
+          max-width: 90%;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          pointer-events: none;
+        }
+        .carousel-debug .services-swiper .swiper-slide[data-overflow] {
+          outline: 2px solid #ef4444 !important;
+          outline-offset: -2px;
+          box-shadow: 0 0 0 9999px rgba(239, 68, 68, 0.06) inset;
+        }
+        .carousel-debug .services-swiper .swiper-slide[data-overflow]::after {
+          content: "⚠ overflow: " attr(data-overflow);
+          position: absolute;
+          bottom: 4px;
+          right: 4px;
+          z-index: 50;
+          padding: 2px 6px;
+          border-radius: 4px;
+          background: #ef4444;
+          color: #fff;
+          font-family: ui-monospace, SFMono-Regular, monospace;
+          font-size: 10px;
+          font-weight: 700;
+          pointer-events: none;
+        }
       `}</style>
     </section>
   );

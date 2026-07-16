@@ -105,3 +105,21 @@ export const updatePricingSetting = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return normalize(row as Record<string, unknown>);
   });
+
+type PublishInput = { service_id: string; published: boolean };
+
+export const setPricingPublished = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: PublishInput) => data)
+  .handler(async ({ data, context }): Promise<PricingSetting> => {
+    assertAdmin((context.claims as { email?: string }).email);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: row, error } = await supabaseAdmin
+      .from("pricing_settings")
+      .update({ published: Boolean(data.published) })
+      .eq("service_id", data.service_id)
+      .select("*")
+      .single();
+    if (error) throw new Error(error.message);
+    return normalize(row as Record<string, unknown>);
+  });

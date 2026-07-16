@@ -100,7 +100,7 @@ export function OrderBuilder() {
   );
   const [step, setStep] = useState(1);
   const [serviceId, setServiceId] = useState("apollo");
-  const service = services.find((s) => s.id === serviceId) ?? services[0];
+  const service = services.find((s) => s.id === serviceId) ?? services[0] ?? SERVICES[0];
   useEffect(() => {
     if (service && service.id !== serviceId) setServiceId(service.id);
   }, [service, serviceId]);

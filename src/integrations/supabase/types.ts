@@ -74,6 +74,42 @@ export type Database = {
         }
         Relationships: []
       }
+      blog_analytics_events: {
+        Row: {
+          created_at: string
+          event_type: string
+          id: string
+          meta: Json
+          path: string | null
+          referrer: string | null
+          session_id: string | null
+          slug: string
+          user_agent: string | null
+        }
+        Insert: {
+          created_at?: string
+          event_type: string
+          id?: string
+          meta?: Json
+          path?: string | null
+          referrer?: string | null
+          session_id?: string | null
+          slug: string
+          user_agent?: string | null
+        }
+        Update: {
+          created_at?: string
+          event_type?: string
+          id?: string
+          meta?: Json
+          path?: string | null
+          referrer?: string | null
+          session_id?: string | null
+          slug?: string
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       blog_seo_overrides: {
         Row: {
           canonical_url: string | null

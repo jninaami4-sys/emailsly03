@@ -4,13 +4,12 @@ import { Footer } from "./Footer";
 import { AuthGate } from "./AuthGate";
 import { MouseGlow } from "./MouseGlow";
 import { OrderDrawer } from "./OrderDrawer";
-import { FloatingOrderButton } from "./FloatingOrderButton";
 import { MobileBottomNav } from "./MobileBottomNav";
 import { Preloader } from "./Preloader";
 
 export function SiteShell({ children }: { children: ReactNode }) {
   return (
-    <div className="theme-midnight flex min-h-screen flex-col bg-background text-foreground pb-[calc(6rem+env(safe-area-inset-bottom))] md:pb-0">
+    <div className="theme-midnight flex min-h-screen flex-col bg-background text-foreground pb-[calc(6rem+env(safe-area-inset-bottom))]">
       <Preloader />
       <MouseGlow />
       <Header />
@@ -18,10 +17,10 @@ export function SiteShell({ children }: { children: ReactNode }) {
         <AuthGate>{children}</AuthGate>
       </main>
       <Footer />
-      <FloatingOrderButton />
       <OrderDrawer />
       <MobileBottomNav />
     </div>
   );
 }
+
 

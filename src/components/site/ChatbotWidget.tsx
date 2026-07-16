@@ -157,7 +157,8 @@ export function ChatbotWidget() {
       .catch(() => setKb([]));
   }, [cfgFn, kbFn]);
 
-  // Prefill from Supabase auth (logged-in visitors skip the lead form)
+  // Prefill from Supabase auth + live profile row (reacts to realtime edits)
+  const { data: profile } = useMyProfile();
   useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -167,7 +168,11 @@ export function ChatbotWidget() {
         if (!cancelled && u?.email) {
           const meta = (u.user_metadata || {}) as Record<string, string>;
           const displayName =
-            meta.full_name || meta.name || meta.display_name || u.email.split("@")[0];
+            (profile?.full_name as string | undefined) ||
+            meta.full_name ||
+            meta.name ||
+            meta.display_name ||
+            u.email.split("@")[0];
           if (!name) setName(displayName);
           if (!email) setEmail(u.email);
         }
@@ -177,7 +182,7 @@ export function ChatbotWidget() {
     return () => {
       cancelled = true;
     };
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [profile?.full_name]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Bootstrap session on open
   useEffect(() => {

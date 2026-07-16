@@ -20,3 +20,4 @@ export function RouteTransition({ children }: { children: ReactNode }) {
   }, [pathname]);
 
   return <div id="route-content">{children}</div>;
+}

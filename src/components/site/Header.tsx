@@ -225,6 +225,7 @@ export function Header() {
                 { to: "/apollo-leads-export", label: "Services" },
                 { to: "/track-order", label: "Track Order" },
                 { to: "/blog", label: "Blog" },
+                { to: "/about", label: "About" },
                 { to: "/contact", label: "Contact" },
               ].map((item) => (
                 <li key={item.to}>

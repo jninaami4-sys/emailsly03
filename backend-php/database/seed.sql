@@ -6,7 +6,7 @@
 INSERT INTO users (id, email, password_hash, email_verified) VALUES
   ('11111111-1111-1111-1111-111111111111',
    'admin@emailsly.com',
-   '$2y$12$3zq3B0OQ7oQ8Nq3fVjQmXeUlH0kQb9Yq0Zv5c8lJmXeE1YfV6R4fS',
+   '$2b$12$4qJwKBHZU2i5qdhA35XXLu5RabAocVoZ1E6AnEmnUb.n5ygaBfKdO',
    1);
 
 INSERT INTO profiles (user_id, email, full_name, referral_code) VALUES

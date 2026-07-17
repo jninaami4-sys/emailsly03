@@ -124,6 +124,16 @@ export const Route = createFileRoute("/blog/$slug")({
 function BlogPost() {
   const { post } = Route.useLoaderData();
   const related = BLOG_POSTS.filter((p) => p.slug !== post.slug).slice(0, 3);
+  const headingSlug = (text: string) =>
+    text
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, "")
+      .trim()
+      .replace(/\s+/g, "-")
+      .slice(0, 60);
+  const toc = post.content
+    .filter((b): b is Extract<PostBlock, { type: "h2" }> => b.type === "h2")
+    .map((b) => ({ text: b.text, id: headingSlug(b.text) }));
 
   return (
     <SiteShell>
@@ -184,9 +194,34 @@ function BlogPost() {
 
       {/* Body */}
       <section className="px-6 py-16">
+        {toc.length > 1 && (
+          <nav
+            aria-label="Table of contents"
+            className="mx-auto mb-10 max-w-3xl rounded-2xl border border-border bg-card p-5"
+          >
+            <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-violet">
+              On this page
+            </p>
+            <ol className="mt-3 space-y-1.5 text-sm">
+              {toc.map((t, i) => (
+                <li key={t.id}>
+                  <a
+                    href={`#${t.id}`}
+                    className="font-semibold text-foreground/85 transition-colors hover:text-violet"
+                  >
+                    <span className="mr-2 font-mono text-[10px] text-muted-foreground">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    {t.text}
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </nav>
+        )}
         <article className="prose-blog mx-auto max-w-3xl">
           {post.content.map((block: PostBlock, i: number) => (
-            <Block key={i} block={block} />
+            <Block key={i} block={block} slugify={headingSlug} />
           ))}
         </article>
 
@@ -290,7 +325,13 @@ function BlogPost() {
   );
 }
 
-function Block({ block }: { block: PostBlock }) {
+function Block({
+  block,
+  slugify,
+}: {
+  block: PostBlock;
+  slugify: (t: string) => string;
+}) {
   switch (block.type) {
     case "p":
       return (
@@ -298,13 +339,19 @@ function Block({ block }: { block: PostBlock }) {
       );
     case "h2":
       return (
-        <h2 className="mt-14 mb-4 font-display text-2xl font-bold tracking-tight text-foreground md:text-3xl">
+        <h2
+          id={slugify(block.text)}
+          className="mt-14 mb-4 scroll-mt-24 font-display text-2xl font-bold tracking-tight text-foreground md:text-3xl"
+        >
           {block.text}
         </h2>
       );
     case "h3":
       return (
-        <h3 className="mt-10 mb-3 font-display text-xl font-bold tracking-tight text-foreground">
+        <h3
+          id={slugify(block.text)}
+          className="mt-10 mb-3 scroll-mt-24 font-display text-xl font-bold tracking-tight text-foreground"
+        >
           {block.text}
         </h3>
       );

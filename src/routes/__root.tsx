@@ -27,6 +27,7 @@ import { TvNotFound } from "@/components/site/TvNotFound";
 import { ReferralCapture } from "@/components/site/ReferralCapture";
 import { BrandingApplier } from "@/components/site/BrandingApplier";
 import { ProfileRealtimeSync } from "@/hooks/use-my-profile";
+import { CursorGlow } from "@/components/site/CursorGlow";
 
 function NotFoundComponent() {
   return (
@@ -140,6 +141,7 @@ function RootComponent() {
           <ReferralCapture />
           <BrandingApplier />
           <ProfileRealtimeSync />
+          <CursorGlow />
         </CartProvider>
       </AuthProvider>
     </QueryClientProvider>

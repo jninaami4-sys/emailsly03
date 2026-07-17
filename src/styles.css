@@ -302,25 +302,6 @@
   color-scheme: dark;
 }
 
-/* Order builder — brighter surface so the multi-step form is easy to read */
-.order-bright {
-  --background: oklch(0.985 0.005 265);
-  --foreground: oklch(0.18 0.03 265);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.18 0.03 265);
-  --muted: oklch(0.96 0.01 265);
-  --muted-foreground: oklch(0.48 0.03 265);
-  --secondary: oklch(0.96 0.01 265);
-  --secondary-foreground: oklch(0.22 0.03 265);
-  --border: oklch(0.90 0.015 265);
-  --input: oklch(0.92 0.015 265);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.18 0.03 265);
-  --ink: oklch(0.20 0.03 265);
-  --color-ink: oklch(0.20 0.03 265);
-  color-scheme: light;
-}
-
 @layer base {
   * {
     border-color: var(--color-border);

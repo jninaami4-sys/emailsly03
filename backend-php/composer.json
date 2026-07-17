@@ -1,0 +1,13 @@
+{
+  "name": "emailsly/backend",
+  "description": "Emailsly REST API backend (PHP 8.4 + MySQL 8)",
+  "require": {
+    "php": ">=8.1",
+    "firebase/php-jwt": "^6.10"
+  },
+  "autoload": {
+    "psr-4": {
+      "Emailsly\\": "src/"
+    }
+  }
+}

@@ -1,7 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { ogImageMeta, OG_IMAGES } from "@/lib/og-images";
 import { SiteShell } from "@/components/site/SiteShell";
-import { BLOG_POSTS, formatPublishedAt } from "@/lib/blog-posts";
+import { BLOG_POSTS, formatPublishedAt, type BlogPost } from "@/lib/blog-posts";
+import { listPublishedBlogPosts } from "@/lib/blog-cms.functions";
 import { ArrowRight } from "lucide-react";
 import { PremiumSparkles as Sparkles } from "@/components/site/PremiumIcons";
 
@@ -26,8 +29,19 @@ export const Route = createFileRoute("/blog")({
 });
 
 function BlogList() {
-  const featured = BLOG_POSTS.find((p) => p.featured) ?? BLOG_POSTS[0];
-  const rest = BLOG_POSTS.filter((p) => p.slug !== featured.slug);
+  const listFn = useServerFn(listPublishedBlogPosts);
+  const { data: dbPosts } = useQuery({
+    queryKey: ["public-blog-posts"],
+    queryFn: () => listFn(),
+  });
+  // Merge DB posts with static playbook posts; DB slugs win on conflict.
+  const dbSlugs = new Set((dbPosts ?? []).map((p) => p.slug));
+  const merged: BlogPost[] = [
+    ...(dbPosts ?? []),
+    ...BLOG_POSTS.filter((p) => !dbSlugs.has(p.slug)),
+  ];
+  const featured = merged.find((p) => p.featured) ?? merged[0];
+  const rest = merged.filter((p) => p.slug !== featured.slug);
 
   return (
     <SiteShell>

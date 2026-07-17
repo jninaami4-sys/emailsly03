@@ -8,8 +8,12 @@ import {
   adminCancelOrder,
   adminSetStatus,
   adminSendMagicLink,
+  adminCreateOrder,
+  adminUpdateOrder,
+  adminDeleteOrder,
 } from "@/lib/admin-orders.functions";
 import { Loader2, Package, DollarSign, RefreshCcw, Send, Ban, CheckCircle2, Mail } from "@/components/admin/AdminIcons";
+import { Plus, Pencil, Trash2 } from "lucide-react";
 
 const STATUSES = ["all", "pending", "in_progress", "delivered", "cancelled", "refunded", "revision_requested"];
 
@@ -32,6 +36,9 @@ export function OrdersAdmin() {
 
   const [deliverFor, setDeliverFor] = useState<any | null>(null);
   const [cancelFor, setCancelFor] = useState<any | null>(null);
+  const [editFor, setEditFor] = useState<any | null>(null);
+  const [creating, setCreating] = useState(false);
+  const [deleteFor, setDeleteFor] = useState<any | null>(null);
 
   const refresh = () => {
     qc.invalidateQueries({ queryKey: ["admin-orders"] });
@@ -48,12 +55,20 @@ export function OrdersAdmin() {
           <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-violet">Orders</span>
           <h2 className="font-display text-xl font-bold">Orders &amp; Revenue</h2>
         </div>
-        <button
-          onClick={refresh}
-          className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-semibold hover:bg-secondary"
-        >
-          <RefreshCcw className="size-3.5" /> Refresh
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setCreating(true)}
+            className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-bold text-primary-foreground hover:opacity-90"
+          >
+            <Plus className="size-3.5" /> New order
+          </button>
+          <button
+            onClick={refresh}
+            className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-semibold hover:bg-secondary"
+          >
+            <RefreshCcw className="size-3.5" /> Refresh
+          </button>
+        </div>
       </div>
 
       {/* Stats */}
@@ -156,11 +171,25 @@ export function OrdersAdmin() {
                       <Send className="inline size-3" /> Deliver
                     </button>
                     <button
+                      onClick={() => setEditFor(o)}
+                      className="rounded-md border border-border bg-background px-2 py-1 text-[11px] font-semibold hover:bg-primary/10 hover:text-primary"
+                      title="Edit order"
+                    >
+                      <Pencil className="inline size-3" /> Edit
+                    </button>
+                    <button
                       onClick={() => setCancelFor(o)}
                       className="rounded-md border border-border bg-background px-2 py-1 text-[11px] font-semibold hover:bg-rose-500/10 hover:text-rose-500"
                       title="Cancel / refund"
                     >
                       <Ban className="inline size-3" /> Cancel
+                    </button>
+                    <button
+                      onClick={() => setDeleteFor(o)}
+                      className="rounded-md border border-border bg-background px-2 py-1 text-[11px] font-semibold hover:bg-rose-500/10 hover:text-rose-500"
+                      title="Delete order"
+                    >
+                      <Trash2 className="inline size-3" />
                     </button>
                     <MagicLinkButton email={o.email} />
                   </div>
@@ -173,6 +202,11 @@ export function OrdersAdmin() {
 
       {deliverFor && <DeliverDialog order={deliverFor} onClose={() => setDeliverFor(null)} onDone={refresh} />}
       {cancelFor && <CancelDialog order={cancelFor} onClose={() => setCancelFor(null)} onDone={refresh} />}
+      {creating && <OrderFormDialog onClose={() => setCreating(false)} onDone={refresh} />}
+      {editFor && (
+        <OrderFormDialog order={editFor} onClose={() => setEditFor(null)} onDone={refresh} />
+      )}
+      {deleteFor && <DeleteDialog order={deleteFor} onClose={() => setDeleteFor(null)} onDone={refresh} />}
     </section>
   );
 }
@@ -333,10 +367,183 @@ function MagicLinkButton({ email }: { email: string }) {
 function Modal({ children, title, onClose }: { children: React.ReactNode; title: string; onClose: () => void }) {
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4" onClick={onClose}>
-      <div className="w-full max-w-md rounded-2xl border border-border bg-card p-5 shadow-xl" onClick={(e) => e.stopPropagation()}>
+      <div className="max-h-[90vh] w-full max-w-md overflow-y-auto rounded-2xl border border-border bg-card p-5 shadow-xl" onClick={(e) => e.stopPropagation()}>
         <h3 className="mb-3 font-display text-lg font-bold">{title}</h3>
         {children}
       </div>
     </div>
+  );
+}
+
+function toLocalDT(iso?: string | null) {
+  if (!iso) return "";
+  const d = new Date(iso);
+  const tz = d.getTime() - d.getTimezoneOffset() * 60000;
+  return new Date(tz).toISOString().slice(0, 16);
+}
+
+function OrderFormDialog({
+  order,
+  onClose,
+  onDone,
+}: {
+  order?: any;
+  onClose: () => void;
+  onDone: () => void;
+}) {
+  const isEdit = !!order;
+  const createFn = useServerFn(adminCreateOrder);
+  const updateFn = useServerFn(adminUpdateOrder);
+  const [form, setForm] = useState({
+    email: order?.email ?? "",
+    service_label: order?.service_label ?? "",
+    service_id: order?.service_id ?? "",
+    quantity: order?.quantity ?? 1,
+    subtotal: ((order?.subtotal_cents ?? 0) / 100).toString(),
+    discount: ((order?.discount_cents ?? 0) / 100).toString(),
+    total: ((order?.total_cents ?? 0) / 100).toString(),
+    currency: order?.currency ?? "USD",
+    promo_code: order?.promo_code ?? "",
+    status: order?.status ?? "pending",
+    payment_status: order?.payment_status ?? "paid",
+    payment_provider: order?.payment_provider ?? "manual",
+    payment_ref: order?.payment_ref ?? "",
+    delivery_url: order?.delivery_url ?? "",
+    delivery_notes: order?.delivery_notes ?? "",
+    created_at: toLocalDT(order?.created_at) || toLocalDT(new Date().toISOString()),
+  });
+  const set = (k: keyof typeof form, v: any) => setForm((f) => ({ ...f, [k]: v }));
+
+  const m = useMutation({
+    mutationFn: async () => {
+      const payload = {
+        email: form.email.trim(),
+        service_label: form.service_label.trim(),
+        service_id: form.service_id.trim() || null,
+        quantity: Number(form.quantity) || 1,
+        subtotal_cents: Math.round(Number(form.subtotal) * 100) || 0,
+        discount_cents: Math.round(Number(form.discount) * 100) || 0,
+        total_cents: Math.round(Number(form.total) * 100) || 0,
+        currency: form.currency.trim().toUpperCase() || "USD",
+        promo_code: form.promo_code.trim() || null,
+        status: form.status,
+        payment_status: form.payment_status,
+        payment_provider: form.payment_provider.trim() || null,
+        payment_ref: form.payment_ref.trim() || null,
+        delivery_url: form.delivery_url.trim() || null,
+        delivery_notes: form.delivery_notes.trim() || null,
+        created_at: form.created_at ? new Date(form.created_at).toISOString() : undefined,
+      };
+      if (isEdit) return updateFn({ data: { id: order.id, patch: payload } });
+      return createFn({ data: payload });
+    },
+    onSuccess: () => {
+      onDone();
+      onClose();
+    },
+  });
+
+  return (
+    <Modal onClose={onClose} title={isEdit ? `Edit ${order.short_id ?? "order"}` : "Create order"}>
+      <div className="grid gap-2.5 text-xs">
+        <Field label="Customer email" required>
+          <input value={form.email} onChange={(e) => set("email", e.target.value)} type="email" className={inp} placeholder="client@example.com" />
+        </Field>
+        <div className="grid grid-cols-2 gap-2">
+          <Field label="Service label" required>
+            <input value={form.service_label} onChange={(e) => set("service_label", e.target.value)} className={inp} placeholder="Apollo Leads" />
+          </Field>
+          <Field label="Service ID">
+            <input value={form.service_id} onChange={(e) => set("service_id", e.target.value)} className={inp} placeholder="apollo" />
+          </Field>
+        </div>
+        <div className="grid grid-cols-4 gap-2">
+          <Field label="Qty"><input type="number" min={1} value={form.quantity} onChange={(e) => set("quantity", e.target.value)} className={inp} /></Field>
+          <Field label="Subtotal"><input value={form.subtotal} onChange={(e) => set("subtotal", e.target.value)} className={inp} /></Field>
+          <Field label="Discount"><input value={form.discount} onChange={(e) => set("discount", e.target.value)} className={inp} /></Field>
+          <Field label="Total"><input value={form.total} onChange={(e) => set("total", e.target.value)} className={inp} /></Field>
+        </div>
+        <div className="grid grid-cols-2 gap-2">
+          <Field label="Currency"><input value={form.currency} onChange={(e) => set("currency", e.target.value)} className={inp} /></Field>
+          <Field label="Promo code"><input value={form.promo_code} onChange={(e) => set("promo_code", e.target.value)} className={inp} /></Field>
+        </div>
+        <div className="grid grid-cols-2 gap-2">
+          <Field label="Status">
+            <select value={form.status} onChange={(e) => set("status", e.target.value)} className={inp}>
+              {["pending", "in_progress", "delivered", "cancelled", "refunded", "revision_requested"].map((s) => (
+                <option key={s} value={s}>{s}</option>
+              ))}
+            </select>
+          </Field>
+          <Field label="Payment status">
+            <select value={form.payment_status} onChange={(e) => set("payment_status", e.target.value)} className={inp}>
+              {["paid", "unpaid", "pending", "refunded", "failed"].map((s) => (
+                <option key={s} value={s}>{s}</option>
+              ))}
+            </select>
+          </Field>
+        </div>
+        <div className="grid grid-cols-2 gap-2">
+          <Field label="Payment provider"><input value={form.payment_provider} onChange={(e) => set("payment_provider", e.target.value)} className={inp} placeholder="stripe/manual" /></Field>
+          <Field label="Payment ref"><input value={form.payment_ref} onChange={(e) => set("payment_ref", e.target.value)} className={inp} placeholder="cs_..." /></Field>
+        </div>
+        <Field label="Order date"><input type="datetime-local" value={form.created_at} onChange={(e) => set("created_at", e.target.value)} className={inp} /></Field>
+        <Field label="Delivery URL"><input value={form.delivery_url} onChange={(e) => set("delivery_url", e.target.value)} className={inp} placeholder="https://drive.google.com/..." /></Field>
+        <Field label="Delivery notes"><textarea rows={2} value={form.delivery_notes} onChange={(e) => set("delivery_notes", e.target.value)} className={inp} /></Field>
+      </div>
+      {m.error && <p className="mt-2 text-xs text-rose-500">{(m.error as Error).message}</p>}
+      <div className="mt-4 flex justify-end gap-2">
+        <button onClick={onClose} className="rounded-lg border border-border bg-background px-3 py-1.5 text-xs">Cancel</button>
+        <button
+          disabled={m.isPending || !form.email || !form.service_label}
+          onClick={() => m.mutate()}
+          className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-bold text-primary-foreground disabled:opacity-50"
+        >
+          {m.isPending ? <Loader2 className="size-3 animate-spin" /> : <CheckCircle2 className="size-3" />}
+          {isEdit ? "Save changes" : "Create order"}
+        </button>
+      </div>
+    </Modal>
+  );
+}
+
+const inp = "w-full rounded-lg border border-border bg-background px-2.5 py-1.5 text-sm outline-none focus:border-primary";
+
+function Field({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) {
+  return (
+    <label className="block">
+      <span className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+        {label}{required && <span className="text-rose-500"> *</span>}
+      </span>
+      {children}
+    </label>
+  );
+}
+
+function DeleteDialog({ order, onClose, onDone }: { order: any; onClose: () => void; onDone: () => void }) {
+  const fn = useServerFn(adminDeleteOrder);
+  const m = useMutation({
+    mutationFn: () => fn({ data: { id: order.id } }),
+    onSuccess: () => { onDone(); onClose(); },
+  });
+  const shortId = order.short_id ?? `ORD-${String(order.id).slice(0, 8).toUpperCase()}`;
+  return (
+    <Modal onClose={onClose} title={`Delete ${shortId}?`}>
+      <p className="mb-4 text-xs text-muted-foreground">
+        This permanently removes the order and its events/messages. This cannot be undone.
+      </p>
+      {m.error && <p className="mb-2 text-xs text-rose-500">{(m.error as Error).message}</p>}
+      <div className="flex justify-end gap-2">
+        <button onClick={onClose} className="rounded-lg border border-border bg-background px-3 py-1.5 text-xs">Cancel</button>
+        <button
+          disabled={m.isPending}
+          onClick={() => m.mutate()}
+          className="inline-flex items-center gap-1.5 rounded-lg bg-rose-500 px-3 py-1.5 text-xs font-bold text-white disabled:opacity-50"
+        >
+          {m.isPending ? <Loader2 className="size-3 animate-spin" /> : <Trash2 className="size-3" />}
+          Delete
+        </button>
+      </div>
+    </Modal>
   );
 }

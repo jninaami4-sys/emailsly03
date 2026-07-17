@@ -198,3 +198,126 @@ export const adminSendMagicLink = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { ok: true };
   });
+
+const orderInputSchema = z.object({
+  email: z.string().email(),
+  service_label: z.string().trim().min(1).max(200),
+  service_id: z.string().trim().max(80).optional().nullable(),
+  quantity: z.number().int().min(1).default(1),
+  subtotal_cents: z.number().int().min(0),
+  discount_cents: z.number().int().min(0).default(0),
+  total_cents: z.number().int().min(0),
+  currency: z.string().trim().min(3).max(6).default("USD"),
+  promo_code: z.string().trim().max(60).optional().nullable(),
+  status: z
+    .enum(["pending", "in_progress", "delivered", "cancelled", "refunded", "revision_requested"])
+    .default("pending"),
+  payment_status: z.enum(["unpaid", "paid", "refunded", "failed", "pending"]).default("paid"),
+  payment_provider: z.string().trim().max(40).optional().nullable(),
+  payment_ref: z.string().trim().max(200).optional().nullable(),
+  delivery_url: z.string().url().optional().nullable().or(z.literal("")),
+  delivery_notes: z.string().max(2000).optional().nullable(),
+  created_at: z.string().datetime().optional(),
+  imported_from: z.string().trim().max(40).optional().nullable(),
+  external_id: z.string().trim().max(120).optional().nullable(),
+});
+
+export const adminCreateOrder = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d) => orderInputSchema.parse(d))
+  .handler(async ({ context, data }) => {
+    assertAdmin((context.claims as { email?: string }).email);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const sb = supabaseAdmin as any;
+    // Try to link to an existing user by email
+    let userId: string | null = null;
+    const { data: prof } = await sb
+      .from("profiles")
+      .select("user_id")
+      .ilike("email", data.email)
+      .maybeSingle();
+    if (prof?.user_id) userId = prof.user_id;
+
+    const insert: Record<string, unknown> = {
+      user_id: userId,
+      email: data.email,
+      service_id: data.service_id ?? null,
+      service_label: data.service_label,
+      quantity: data.quantity,
+      subtotal_cents: data.subtotal_cents,
+      discount_cents: data.discount_cents,
+      total_cents: data.total_cents,
+      currency: data.currency,
+      promo_code: data.promo_code ?? null,
+      status: data.status,
+      payment_status: data.payment_status,
+      payment_provider: data.payment_provider ?? "manual",
+      payment_ref: data.payment_ref ?? null,
+      delivery_url: data.delivery_url || null,
+      delivery_notes: data.delivery_notes ?? null,
+      imported_from: data.imported_from ?? "admin_manual",
+      external_id: data.external_id ?? null,
+    };
+    if (data.created_at) {
+      insert.created_at = data.created_at;
+      insert.updated_at = data.created_at;
+    }
+    if (data.status === "delivered") {
+      insert.delivered_at = data.created_at ?? new Date().toISOString();
+      insert.delivered_by = context.userId;
+    }
+
+    const { data: row, error } = await sb.from("orders").insert(insert).select("id").single();
+    if (error) throw new Error(error.message);
+
+    await sb.from("order_events").insert({
+      order_id: row.id,
+      actor_id: context.userId,
+      actor_role: "admin",
+      event_type: "created",
+      message: "Order created by admin",
+      metadata: { backdated: !!data.created_at },
+    });
+    return { ok: true, id: row.id };
+  });
+
+export const adminUpdateOrder = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d) =>
+    z
+      .object({
+        id: z.string().uuid(),
+        patch: orderInputSchema.partial(),
+      })
+      .parse(d),
+  )
+  .handler(async ({ context, data }) => {
+    assertAdmin((context.claims as { email?: string }).email);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const sb = supabaseAdmin as any;
+    const patch: Record<string, unknown> = { ...data.patch };
+    if (patch.delivery_url === "") patch.delivery_url = null;
+    const { error } = await sb.from("orders").update(patch).eq("id", data.id);
+    if (error) throw new Error(error.message);
+    await sb.from("order_events").insert({
+      order_id: data.id,
+      actor_id: context.userId,
+      actor_role: "admin",
+      event_type: "edited",
+      message: "Order edited by admin",
+      metadata: { fields: Object.keys(data.patch) },
+    });
+    return { ok: true };
+  });
+
+export const adminDeleteOrder = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d) => z.object({ id: z.string().uuid() }).parse(d))
+  .handler(async ({ context, data }) => {
+    assertAdmin((context.claims as { email?: string }).email);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const sb = supabaseAdmin as any;
+    const { error } = await sb.from("orders").delete().eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });

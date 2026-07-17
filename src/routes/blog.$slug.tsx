@@ -1,16 +1,25 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { SiteShell } from "@/components/site/SiteShell";
-import { BLOG_POSTS, formatPublishedAt, getPostBySlug, type PostBlock } from "@/lib/blog-posts";
+import { BLOG_POSTS, formatPublishedAt, getPostBySlug, type PostBlock, type BlogPost } from "@/lib/blog-posts";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { PremiumSparkles as Sparkles } from "@/components/site/PremiumIcons";
 import { ogImageMeta, OG_IMAGES } from "@/lib/og-images";
 import { getBlogSeoOverride } from "@/lib/blog-seo.functions";
+import { getPublishedBlogPost } from "@/lib/blog-cms.functions";
+import { extractFaqPairs } from "@/lib/blog-markdown";
 import { BlogAnalyticsTracker } from "@/components/site/BlogAnalyticsTracker";
 import { ClientOnly } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/blog/$slug")({
   loader: async ({ params }) => {
-    const post = getPostBySlug(params.slug);
+    // Prefer DB-managed post; fall back to static playbook posts.
+    let post: BlogPost | null | undefined = null;
+    try {
+      post = await getPublishedBlogPost({ data: { slug: params.slug } });
+    } catch {
+      post = null;
+    }
+    if (!post) post = getPostBySlug(params.slug) ?? null;
     if (!post) throw notFound();
     let seo = null as Awaited<ReturnType<typeof getBlogSeoOverride>>;
     try {
@@ -33,6 +42,36 @@ export const Route = createFileRoute("/blog/$slug")({
     const socialTitle = seo?.social_title || post.title;
     const description = seo?.meta_description || post.excerpt;
     const canonical = seo?.canonical_url || `/blog/${post.slug}`;
+    // Build JSON-LD: Article + optional FAQPage from question-style h3s.
+    const scripts: Array<{ type: string; children: string }> = [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Article",
+          headline: post.title,
+          description,
+          datePublished: post.publishedAt,
+          author: { "@type": "Person", name: post.author.name },
+          image,
+        }),
+      },
+    ];
+    const faqs = extractFaqPairs(post.content);
+    if (faqs.length > 0) {
+      scripts.push({
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: faqs.map((f) => ({
+            "@type": "Question",
+            name: f.q,
+            acceptedAnswer: { "@type": "Answer", text: f.a },
+          })),
+        }),
+      });
+    }
     return {
       meta: [
         { title: `${post.title} | EmailsLy Blog` },
@@ -44,6 +83,7 @@ export const Route = createFileRoute("/blog/$slug")({
         ...ogImageMeta(image),
       ],
       links: [{ rel: "canonical", href: canonical }],
+      scripts,
     };
   },
   notFoundComponent: () => (

@@ -21,6 +21,7 @@ import {
   PackageSearch,
   Newspaper,
   Mail,
+  Building2,
 } from "lucide-react";
 
 const NAV_ITEMS = [
@@ -29,6 +30,7 @@ const NAV_ITEMS = [
   { to: "/apollo-leads-export", label: "Services", icon: Briefcase },
   { to: "/track-order", label: "Track Order", icon: PackageSearch },
   { to: "/blog", label: "Blog", icon: Newspaper },
+  { to: "/about", label: "About", icon: Building2 },
   { to: "/contact", label: "Contact", icon: Mail },
 ] as const;
 
@@ -223,6 +225,7 @@ export function Header() {
                 { to: "/apollo-leads-export", label: "Services" },
                 { to: "/track-order", label: "Track Order" },
                 { to: "/blog", label: "Blog" },
+                { to: "/about", label: "About" },
                 { to: "/contact", label: "Contact" },
               ].map((item) => (
                 <li key={item.to}>

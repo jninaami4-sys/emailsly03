@@ -20,6 +20,7 @@ export type Database = {
           audience: string
           badge: string
           body: string
+          card_style: string
           created_at: string
           cta_label: string
           cta_url: string
@@ -32,6 +33,7 @@ export type Database = {
           priority: number
           start_at: string | null
           title: string
+          title_emoji: string
           updated_at: string
         }
         Insert: {
@@ -39,6 +41,7 @@ export type Database = {
           audience?: string
           badge?: string
           body?: string
+          card_style?: string
           created_at?: string
           cta_label?: string
           cta_url?: string
@@ -51,6 +54,7 @@ export type Database = {
           priority?: number
           start_at?: string | null
           title: string
+          title_emoji?: string
           updated_at?: string
         }
         Update: {
@@ -58,6 +62,7 @@ export type Database = {
           audience?: string
           badge?: string
           body?: string
+          card_style?: string
           created_at?: string
           cta_label?: string
           cta_url?: string
@@ -70,6 +75,7 @@ export type Database = {
           priority?: number
           start_at?: string | null
           title?: string
+          title_emoji?: string
           updated_at?: string
         }
         Relationships: []

@@ -8,8 +8,12 @@ import {
   adminCancelOrder,
   adminSetStatus,
   adminSendMagicLink,
+  adminCreateOrder,
+  adminUpdateOrder,
+  adminDeleteOrder,
 } from "@/lib/admin-orders.functions";
 import { Loader2, Package, DollarSign, RefreshCcw, Send, Ban, CheckCircle2, Mail } from "@/components/admin/AdminIcons";
+import { Plus, Pencil, Trash2 } from "lucide-react";
 
 const STATUSES = ["all", "pending", "in_progress", "delivered", "cancelled", "refunded", "revision_requested"];
 
@@ -32,6 +36,9 @@ export function OrdersAdmin() {
 
   const [deliverFor, setDeliverFor] = useState<any | null>(null);
   const [cancelFor, setCancelFor] = useState<any | null>(null);
+  const [editFor, setEditFor] = useState<any | null>(null);
+  const [creating, setCreating] = useState(false);
+  const [deleteFor, setDeleteFor] = useState<any | null>(null);
 
   const refresh = () => {
     qc.invalidateQueries({ queryKey: ["admin-orders"] });
@@ -48,12 +55,20 @@ export function OrdersAdmin() {
           <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-violet">Orders</span>
           <h2 className="font-display text-xl font-bold">Orders &amp; Revenue</h2>
         </div>
-        <button
-          onClick={refresh}
-          className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-semibold hover:bg-secondary"
-        >
-          <RefreshCcw className="size-3.5" /> Refresh
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setCreating(true)}
+            className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-bold text-primary-foreground hover:opacity-90"
+          >
+            <Plus className="size-3.5" /> New order
+          </button>
+          <button
+            onClick={refresh}
+            className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-semibold hover:bg-secondary"
+          >
+            <RefreshCcw className="size-3.5" /> Refresh
+          </button>
+        </div>
       </div>
 
       {/* Stats */}
@@ -156,11 +171,25 @@ export function OrdersAdmin() {
                       <Send className="inline size-3" /> Deliver
                     </button>
                     <button
+                      onClick={() => setEditFor(o)}
+                      className="rounded-md border border-border bg-background px-2 py-1 text-[11px] font-semibold hover:bg-primary/10 hover:text-primary"
+                      title="Edit order"
+                    >
+                      <Pencil className="inline size-3" /> Edit
+                    </button>
+                    <button
                       onClick={() => setCancelFor(o)}
                       className="rounded-md border border-border bg-background px-2 py-1 text-[11px] font-semibold hover:bg-rose-500/10 hover:text-rose-500"
                       title="Cancel / refund"
                     >
                       <Ban className="inline size-3" /> Cancel
+                    </button>
+                    <button
+                      onClick={() => setDeleteFor(o)}
+                      className="rounded-md border border-border bg-background px-2 py-1 text-[11px] font-semibold hover:bg-rose-500/10 hover:text-rose-500"
+                      title="Delete order"
+                    >
+                      <Trash2 className="inline size-3" />
                     </button>
                     <MagicLinkButton email={o.email} />
                   </div>
@@ -173,6 +202,11 @@ export function OrdersAdmin() {
 
       {deliverFor && <DeliverDialog order={deliverFor} onClose={() => setDeliverFor(null)} onDone={refresh} />}
       {cancelFor && <CancelDialog order={cancelFor} onClose={() => setCancelFor(null)} onDone={refresh} />}
+      {creating && <OrderFormDialog onClose={() => setCreating(false)} onDone={refresh} />}
+      {editFor && (
+        <OrderFormDialog order={editFor} onClose={() => setEditFor(null)} onDone={refresh} />
+      )}
+      {deleteFor && <DeleteDialog order={deleteFor} onClose={() => setDeleteFor(null)} onDone={refresh} />}
     </section>
   );
 }

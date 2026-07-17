@@ -4,6 +4,8 @@ import { useServerFn } from "@tanstack/react-start";
 import { useRouterState } from "@tanstack/react-router";
 import { X } from "lucide-react";
 import { listActiveAnnouncements, type Announcement } from "@/lib/announcements.functions";
+
+type ExtendedAnnouncement = Announcement & { card_style?: string; title_emoji?: string };
 import { supabase } from "@/integrations/supabase/client";
 
 const DISMISS_PREFIX = "lyra_announce_dismissed:";
@@ -198,6 +200,17 @@ function ModalContent({ a, onClose, preview = false }: { a: Announcement; onClos
     },
   };
   const p = palette[a.accent] ?? palette.violet;
+  const ext = a as ExtendedAnnouncement;
+  const cardStyle = (ext.card_style || "glass") as "glass" | "solid" | "gradient" | "minimal";
+  const titleEmoji = ext.title_emoji || "";
+
+  const cardClassByStyle: Record<typeof cardStyle, string> = {
+    glass:
+      `bg-gradient-to-b from-card to-[oklch(0.13_0.01_260)] ring-1 ring-white/5 border border-white/10 ${p.shadow}`,
+    solid: `bg-card border border-white/10 ${p.shadow}`,
+    gradient: `${p.bg} text-white border border-white/15 ${p.shadow}`,
+    minimal: "bg-background border border-white/10",
+  };
 
   return (
     <div
@@ -217,7 +230,7 @@ function ModalContent({ a, onClose, preview = false }: { a: Announcement; onClos
         />
       )}
       <div
-        className={`relative w-full max-w-lg overflow-hidden rounded-[28px] border border-white/10 bg-gradient-to-b from-card to-[oklch(0.13_0.01_260)] ${p.shadow} ring-1 ring-white/5 animate-in fade-in zoom-in-95 before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-px ${p.hairline}`}
+        className={`relative w-full max-w-lg overflow-hidden rounded-[28px] animate-in fade-in zoom-in-95 before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-px ${p.hairline} ${cardClassByStyle[cardStyle]}`}
       >
         {!preview && (
           <button
@@ -275,6 +288,7 @@ function ModalContent({ a, onClose, preview = false }: { a: Announcement; onClos
             id="announcement-title"
             className="mt-4 font-display text-[26px] font-bold leading-[1.1] tracking-tight sm:text-[32px]"
           >
+            {titleEmoji ? <span className="mr-2 align-middle">{titleEmoji}</span> : null}
             {a.title}
           </h2>
           {a.body && (

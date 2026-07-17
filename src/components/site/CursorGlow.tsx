@@ -23,47 +23,113 @@ export function CursorGlow() {
     let mouseY = window.innerHeight / 2;
     let glowX = mouseX;
     let glowY = mouseY;
+    let dotX = mouseX;
+    let dotY = mouseY;
+    let interactive = false;
+    let prevInteractive: boolean | null = null;
+    let visible = false;
     let raf = 0;
+    let running = false;
+    let idleTimer = 0;
+    let lastOverTs = 0;
+
+    // Idle threshold: if the pointer stops and the glow has caught up,
+    // stop the RAF loop entirely so scroll / interactions are not taxed.
+    const stopWhenSettled = () => {
+      const dx = mouseX - glowX;
+      const dy = mouseY - glowY;
+      if (dx * dx + dy * dy < 0.25) {
+        running = false;
+        cancelAnimationFrame(raf);
+      }
+    };
+
+    const tick = () => {
+      // Glow lerp
+      glowX += (mouseX - glowX) * 0.15;
+      glowY += (mouseY - glowY) * 0.15;
+      glow.style.transform = `translate3d(${glowX - 200}px, ${glowY - 200}px, 0)`;
+
+      // Dot follows the pointer 1:1, but written inside RAF (one style
+      // write per frame regardless of mousemove frequency).
+      dot.style.transform = `translate3d(${dotX - 4}px, ${dotY - 4}px, 0)`;
+
+      if (prevInteractive !== interactive) {
+        prevInteractive = interactive;
+        dot.style.width = interactive ? "28px" : "8px";
+        dot.style.height = interactive ? "28px" : "8px";
+        dot.style.marginLeft = interactive ? "-14px" : "-4px";
+        dot.style.marginTop = interactive ? "-14px" : "-4px";
+        dot.style.borderColor = interactive
+          ? "rgba(217, 70, 239, 0.9)"
+          : "rgba(255,255,255,0.85)";
+      }
+
+      if (running) {
+        raf = requestAnimationFrame(tick);
+      } else {
+        stopWhenSettled();
+      }
+    };
+
+    const start = () => {
+      if (running) return;
+      running = true;
+      raf = requestAnimationFrame(tick);
+    };
 
     const onMove = (e: MouseEvent) => {
       mouseX = e.clientX;
       mouseY = e.clientY;
-      dot.style.transform = `translate3d(${mouseX - 4}px, ${mouseY - 4}px, 0)`;
-      glow.style.opacity = "1";
-    };
-    const onLeave = () => {
-      glow.style.opacity = "0";
-      dot.style.opacity = "0";
-    };
-    const onEnter = () => {
-      dot.style.opacity = "1";
-    };
-
-    const tick = () => {
-      glowX += (mouseX - glowX) * 0.15;
-      glowY += (mouseY - glowY) * 0.15;
-      glow.style.transform = `translate3d(${glowX - 200}px, ${glowY - 200}px, 0)`;
-      raf = requestAnimationFrame(tick);
+      dotX = mouseX;
+      dotY = mouseY;
+      if (!visible) {
+        visible = true;
+        glow.style.opacity = "1";
+        dot.style.opacity = "1";
+      }
+      start();
+      // Debounce a "settle" check so we don't keep the RAF alive forever
+      // when the pointer is stationary.
+      if (idleTimer) window.clearTimeout(idleTimer);
+      idleTimer = window.setTimeout(() => {
+        running = false;
+      }, 120);
     };
 
     const onOver = (e: MouseEvent) => {
+      // Throttle to ~60ms — hover-target detection doesn't need every event.
+      const now = e.timeStamp;
+      if (now - lastOverTs < 60) return;
+      lastOverTs = now;
       const t = e.target as HTMLElement | null;
-      const interactive = !!t?.closest("a,button,[role='button'],input,textarea,select,label,summary");
-      dot.style.width = interactive ? "28px" : "8px";
-      dot.style.height = interactive ? "28px" : "8px";
-      dot.style.marginLeft = interactive ? "-14px" : "-4px";
-      dot.style.marginTop = interactive ? "-14px" : "-4px";
-      dot.style.borderColor = interactive ? "rgba(217, 70, 239, 0.9)" : "rgba(255,255,255,0.85)";
+      interactive = !!t?.closest(
+        "a,button,[role='button'],input,textarea,select,label,summary",
+      );
+    };
+
+    const onLeave = () => {
+      visible = false;
+      glow.style.opacity = "0";
+      dot.style.opacity = "0";
+      running = false;
+      cancelAnimationFrame(raf);
+    };
+    const onEnter = () => {
+      visible = true;
+      dot.style.opacity = "1";
+      glow.style.opacity = "1";
+      start();
     };
 
     window.addEventListener("mousemove", onMove, { passive: true });
     window.addEventListener("mouseover", onOver, { passive: true });
     document.addEventListener("mouseleave", onLeave);
     document.addEventListener("mouseenter", onEnter);
-    raf = requestAnimationFrame(tick);
 
     return () => {
       cancelAnimationFrame(raf);
+      if (idleTimer) window.clearTimeout(idleTimer);
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("mouseover", onOver);
       document.removeEventListener("mouseleave", onLeave);

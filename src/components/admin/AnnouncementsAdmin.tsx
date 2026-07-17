@@ -9,6 +9,7 @@ import {
   type Announcement,
   type AnnouncementImageStyle,
   type AnnouncementAudience,
+  type AnnouncementCardStyle,
 } from "@/lib/announcements.functions";
 import { AnnouncementPreview } from "@/components/site/AnnouncementModal";
 import { ImageCropperModal } from "@/components/admin/ImageCropperModal";
@@ -25,6 +26,8 @@ const emptyDraft = {
   image_style: "cover" as AnnouncementImageStyle,
   badge: "",
   accent: "violet",
+  card_style: "glass" as AnnouncementCardStyle,
+  title_emoji: "",
   path_patterns: ["*"] as string[],
   audience: "all" as AnnouncementAudience,
   start_at: "" as string,
@@ -54,7 +57,16 @@ function formatSchedule(a: Announcement, now: Date): { label: string; tone: "liv
   return { label: "Always on", tone: "always" };
 }
 
-const ACCENTS = ["violet", "emerald", "amber", "rose", "sky"] as const;
+const ACCENTS = ["violet", "emerald", "amber", "rose", "sky", "blue", "fuchsia", "teal", "orange", "slate"] as const;
+
+const CARD_STYLES: { value: AnnouncementCardStyle; label: string; hint: string }[] = [
+  { value: "glass", label: "Glass", hint: "Frosted blur + soft glow" },
+  { value: "solid", label: "Solid", hint: "Clean flat card" },
+  { value: "gradient", label: "Gradient", hint: "Bold color wash" },
+  { value: "minimal", label: "Minimal", hint: "Text-forward, thin border" },
+];
+
+const EMOJI_QUICK = ["🎉", "🔥", "✨", "🚀", "💎", "⚡", "🎁", "💥", "🏆", "📣", "❤️", "⭐", "🛒", "💡", "🎯", "🕒"];
 
 const AUDIENCE_OPTIONS: { value: AnnouncementAudience; label: string; hint: string }[] = [
   { value: "all", label: "Everyone", hint: "Signed in or not" },
@@ -101,6 +113,8 @@ export function AnnouncementsAdmin() {
       image_style: (a.image_style || "cover") as AnnouncementImageStyle,
       badge: a.badge,
       accent: a.accent || "violet",
+      card_style: ((a.card_style as AnnouncementCardStyle) || "glass"),
+      title_emoji: a.title_emoji || "",
       path_patterns: a.path_patterns && a.path_patterns.length ? a.path_patterns : ["*"],
       audience: (a.audience || "all") as AnnouncementAudience,
       start_at: toDatetimeLocal(a.start_at),
@@ -194,6 +208,8 @@ export function AnnouncementsAdmin() {
           image_style: (a.image_style || "cover") as AnnouncementImageStyle,
           badge: a.badge,
           accent: a.accent || "violet",
+          card_style: ((a.card_style as AnnouncementCardStyle) || "glass"),
+          title_emoji: a.title_emoji || "",
           path_patterns: a.path_patterns?.length ? a.path_patterns : ["*"],
           audience: (a.audience || "all") as AnnouncementAudience,
           start_at: a.start_at,

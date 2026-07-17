@@ -933,3 +933,37 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
     </label>
   );
 }
+
+function EmojiRow({ onPick }: { onPick: (emoji: string) => void }) {
+  return (
+    <div className="mt-1 flex flex-wrap gap-1">
+      {EMOJI_QUICK.map((e) => (
+        <button
+          key={e}
+          type="button"
+          onClick={() => onPick(e)}
+          className="rounded-md border border-border bg-background px-1.5 py-0.5 text-sm hover:bg-secondary"
+          aria-label={`Insert ${e}`}
+        >
+          {e}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function accentSwatch(name: string): string {
+  const map: Record<string, string> = {
+    violet: "oklch(0.52 0.24 293)",
+    emerald: "oklch(0.66 0.16 165)",
+    amber: "oklch(0.75 0.16 75)",
+    rose: "oklch(0.65 0.22 15)",
+    sky: "oklch(0.7 0.16 235)",
+    blue: "oklch(0.6 0.2 255)",
+    fuchsia: "oklch(0.6 0.28 320)",
+    teal: "oklch(0.65 0.14 195)",
+    orange: "oklch(0.72 0.19 55)",
+    slate: "oklch(0.55 0.03 260)",
+  };
+  return map[name] ?? map.violet;
+}

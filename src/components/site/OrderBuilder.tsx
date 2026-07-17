@@ -1182,11 +1182,18 @@ function AddonToggle({
     >
       <div className="flex min-w-0 flex-1 items-start gap-2.5 sm:gap-3">
         <span
-          className={`mt-0.5 grid size-5 shrink-0 place-items-center rounded-full border ${
-            active ? `border-transparent ${dotColor}` : "border-input bg-background"
+          aria-hidden="true"
+          className={`mt-0.5 grid size-5 shrink-0 place-items-center rounded-md border-2 transition-colors ${
+            active
+              ? `border-transparent ${dotColor} text-white`
+              : "border-foreground/40 bg-background/60"
           }`}
         >
-          {active && <span className="size-2 rounded-full bg-white" />}
+          {active ? (
+            <svg viewBox="0 0 20 20" fill="none" className="size-3.5" aria-hidden="true">
+              <path d="M5 10.5l3.2 3.2L15 7" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          ) : null}
         </span>
         <div className="min-w-0 flex-1">
           <div className="text-sm font-semibold leading-snug text-foreground">{title}</div>

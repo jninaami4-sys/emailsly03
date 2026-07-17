@@ -234,7 +234,7 @@ export function OrderBuilder() {
   const goPrev = () => setStep((s) => Math.max(1, s - 1));
 
   return (
-    <section id="order" className="relative overflow-hidden px-4 py-6 sm:px-6 sm:py-10 lg:py-12">
+    <section id="order" className="order-bright relative overflow-hidden bg-background text-foreground px-4 py-6 sm:px-6 sm:py-10 lg:py-12">
       {/* Ambient background */}
       <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 mx-auto h-[360px] max-w-7xl bg-[radial-gradient(ellipse_at_top,var(--violet-soft),transparent_70%)] sm:h-[560px]" />
       <div className="pointer-events-none absolute bottom-0 right-0 -z-10 h-64 w-64 rounded-full bg-coral-soft blur-3xl sm:h-96 sm:w-96" />

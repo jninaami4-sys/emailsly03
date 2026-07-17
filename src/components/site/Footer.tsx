@@ -15,6 +15,7 @@ const productLinks = [
 ] as const;
 
 const companyLinks = [
+  { to: "/about", label: "About" },
   { to: "/pricing", label: "Pricing" },
   { to: "/website-design", label: "Website Design" },
   { to: "/blog", label: "Blog" },

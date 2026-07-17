@@ -40,7 +40,9 @@ function AuthPage() {
   const { user, loading } = useAuth();
   const branding = useSiteContent("branding");
   const siteName = branding.site_name || "EmailsLy";
-  const logoUrl = (branding.logo_url || "").trim();
+  const logoUrl =
+    (branding.footer_logo_url || "").trim() ||
+    (branding.logo_url || "").trim();
   const [mode, setMode] = useState<"signin" | "signup" | "forgot">(search.mode ?? "signup");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

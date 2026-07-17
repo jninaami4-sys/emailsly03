@@ -275,12 +275,19 @@ export function AdminShell({
           <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
             {active && (
               <div key={`h-${activeId}`} className="mb-6 animate-fade-in">
-                <h1 className="font-display text-2xl font-bold sm:text-3xl">
+                <span className="admin-eyebrow">
+                  {groups.find((g) => g.items.some((i) => i.id === active.id))?.label ?? "Admin"}
+                </span>
+                <h1 className="admin-title mt-1 font-display text-3xl sm:text-4xl lg:text-[42px] lg:leading-[1.05]">
                   {active.label}
                 </h1>
-                <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
+                <p className="mt-2 max-w-2xl text-sm text-white/60">
                   {active.desc}
                 </p>
+                <div
+                  aria-hidden
+                  className="mt-4 h-[2px] w-16 rounded-full bg-gradient-to-r from-[#facc15] via-[#f59e0b] to-transparent"
+                />
               </div>
             )}
             <div key={activeId} className="animate-fade-in">

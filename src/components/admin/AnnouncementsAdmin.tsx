@@ -821,6 +821,8 @@ export function AnnouncementsAdmin() {
                     priority: draft.priority,
                     updated_at: new Date().toISOString(),
                     created_at: new Date().toISOString(),
+                    card_style: draft.card_style,
+                    title_emoji: draft.title_emoji,
                   }}
                 />
               </div>

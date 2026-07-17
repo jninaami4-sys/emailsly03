@@ -359,7 +359,6 @@ function QuickAction({
     </Link>
   );
 }
-}
 
 function TabBtn({
   active,

@@ -1,17 +1,51 @@
-Options -MultiViews
+# ============================================================
+# Front-controller .htaccess — sits inside backend-php/public/.
+# This is the ONLY .htaccess that needs to be active if your
+# domain / subdomain document root points at backend-php/public/.
+# ============================================================
+
+Options -Indexes -MultiViews
 RewriteEngine On
 
-# Route all requests to index.php
+# --- Force HTTPS (cPanel + AutoSSL / Let's Encrypt) ---
+RewriteCond %{HTTPS} !=on
+RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+# --- Preserve Authorization header for JWT auth ---
+# Some cPanel PHP-FPM setups strip it before it reaches PHP.
+RewriteCond %{HTTP:Authorization} .+
+RewriteRule ^ - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+# --- Route everything through index.php ---
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^ index.php [QSA,L]
 
-# Security headers
-Header always set X-Content-Type-Options "nosniff"
-Header always set X-Frame-Options "DENY"
-Header always set Referrer-Policy "strict-origin-when-cross-origin"
+# --- Security headers ---
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "DENY"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains" env=HTTPS
+</IfModule>
 
-# Block access to dotfiles
+# --- Block dotfiles ---
 <FilesMatch "^\.">
   Require all denied
 </FilesMatch>
+
+# --- Cache uploads for a year (immutable filenames) ---
+<IfModule mod_expires.c>
+  ExpiresActive On
+  <FilesMatch "\.(jpg|jpeg|png|webp|gif|svg|ico|woff2?)$">
+    ExpiresDefault "access plus 1 year"
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+</IfModule>
+
+# --- gzip / brotli ---
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE application/json text/plain text/css application/javascript
+</IfModule>

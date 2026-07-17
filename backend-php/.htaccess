@@ -1,0 +1,39 @@
+# ============================================================
+# Root-level .htaccess for shared cPanel hosting.
+#
+# Use this ONLY when you cannot point the domain / subdomain
+# document root at backend-php/public/ directly. It:
+#   1. blocks direct browser access to app code, .env, vendor/,
+#      database/ etc.
+#   2. rewrites every request to public/index.php so the API
+#      still works when the whole backend-php/ folder sits
+#      under public_html.
+#
+# If you configured api.emailsly.com to point at
+#   /home/<cpanel-user>/backend-php/public
+# directly (recommended), delete this file — you don't need it.
+# ============================================================
+
+Options -Indexes -MultiViews
+RewriteEngine On
+
+# --- Block access to everything except /public and /uploads ---
+RewriteRule ^\.env                     - [F,L]
+RewriteRule ^composer\.(json|lock)$    - [F,L]
+RewriteRule ^(src|vendor|database|migrate)(/|$) - [F,L]
+
+# --- Forward every request into public/index.php ---
+RewriteCond %{REQUEST_URI} !^/public/
+RewriteCond %{REQUEST_URI} !^/uploads/
+RewriteRule ^(.*)$ public/index.php [QSA,L]
+
+# --- Basic security headers (mirrored in public/.htaccess) ---
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "DENY"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+<FilesMatch "^\.">
+  Require all denied
+</FilesMatch>

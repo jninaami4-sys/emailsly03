@@ -3,7 +3,7 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { Lock, ShieldCheck, Zap, Clock } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 
-const PUBLIC_ROUTES = ["/", "/login", "/privacy-policy", "/terms", "/refund-policy", "/pricing", "/contact", "/blog", "/sample-data"];
+const PUBLIC_ROUTES = ["/", "/login", "/privacy-policy", "/terms", "/refund-policy", "/pricing", "/contact", "/blog", "/sample-data", "/about"];
 
 export function AuthGate({ children }: { children: ReactNode }) {
   const { user, loading } = useAuth();

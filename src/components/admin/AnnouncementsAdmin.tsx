@@ -9,6 +9,7 @@ import {
   type Announcement,
   type AnnouncementImageStyle,
   type AnnouncementAudience,
+  type AnnouncementCardStyle,
 } from "@/lib/announcements.functions";
 import { AnnouncementPreview } from "@/components/site/AnnouncementModal";
 import { ImageCropperModal } from "@/components/admin/ImageCropperModal";
@@ -25,6 +26,8 @@ const emptyDraft = {
   image_style: "cover" as AnnouncementImageStyle,
   badge: "",
   accent: "violet",
+  card_style: "glass" as AnnouncementCardStyle,
+  title_emoji: "",
   path_patterns: ["*"] as string[],
   audience: "all" as AnnouncementAudience,
   start_at: "" as string,
@@ -54,7 +57,16 @@ function formatSchedule(a: Announcement, now: Date): { label: string; tone: "liv
   return { label: "Always on", tone: "always" };
 }
 
-const ACCENTS = ["violet", "emerald", "amber", "rose", "sky"] as const;
+const ACCENTS = ["violet", "emerald", "amber", "rose", "sky", "blue", "fuchsia", "teal", "orange", "slate"] as const;
+
+const CARD_STYLES: { value: AnnouncementCardStyle; label: string; hint: string }[] = [
+  { value: "glass", label: "Glass", hint: "Frosted blur + soft glow" },
+  { value: "solid", label: "Solid", hint: "Clean flat card" },
+  { value: "gradient", label: "Gradient", hint: "Bold color wash" },
+  { value: "minimal", label: "Minimal", hint: "Text-forward, thin border" },
+];
+
+const EMOJI_QUICK = ["🎉", "🔥", "✨", "🚀", "💎", "⚡", "🎁", "💥", "🏆", "📣", "❤️", "⭐", "🛒", "💡", "🎯", "🕒"];
 
 const AUDIENCE_OPTIONS: { value: AnnouncementAudience; label: string; hint: string }[] = [
   { value: "all", label: "Everyone", hint: "Signed in or not" },
@@ -101,6 +113,8 @@ export function AnnouncementsAdmin() {
       image_style: (a.image_style || "cover") as AnnouncementImageStyle,
       badge: a.badge,
       accent: a.accent || "violet",
+      card_style: ((a.card_style as AnnouncementCardStyle) || "glass"),
+      title_emoji: a.title_emoji || "",
       path_patterns: a.path_patterns && a.path_patterns.length ? a.path_patterns : ["*"],
       audience: (a.audience || "all") as AnnouncementAudience,
       start_at: toDatetimeLocal(a.start_at),
@@ -194,6 +208,8 @@ export function AnnouncementsAdmin() {
           image_style: (a.image_style || "cover") as AnnouncementImageStyle,
           badge: a.badge,
           accent: a.accent || "violet",
+          card_style: ((a.card_style as AnnouncementCardStyle) || "glass"),
+          title_emoji: a.title_emoji || "",
           path_patterns: a.path_patterns?.length ? a.path_patterns : ["*"],
           audience: (a.audience || "all") as AnnouncementAudience,
           start_at: a.start_at,
@@ -395,6 +411,7 @@ export function AnnouncementsAdmin() {
                   placeholder="Limited time"
                   className="input"
                 />
+                <EmojiRow onPick={(e) => setDraft((d) => ({ ...d, badge: (d.badge + " " + e).trim().slice(0, 40) }))} />
               </Field>
               <Field label="Accent color">
                 <select
@@ -408,6 +425,66 @@ export function AnnouncementsAdmin() {
                     </option>
                   ))}
                 </select>
+                <div className="mt-1 flex flex-wrap gap-1.5">
+                  {ACCENTS.map((c) => (
+                    <button
+                      key={c}
+                      type="button"
+                      onClick={() => setDraft({ ...draft, accent: c })}
+                      title={c}
+                      aria-label={c}
+                      className={`size-6 rounded-full border-2 transition-transform hover:scale-110 ${
+                        draft.accent === c ? "border-foreground scale-110" : "border-white/20"
+                      }`}
+                      style={{ background: accentSwatch(c) }}
+                    />
+                  ))}
+                </div>
+              </Field>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field label="Card style">
+                <div className="grid grid-cols-2 gap-2">
+                  {CARD_STYLES.map((s) => {
+                    const active = draft.card_style === s.value;
+                    return (
+                      <button
+                        key={s.value}
+                        type="button"
+                        onClick={() => setDraft({ ...draft, card_style: s.value })}
+                        className={`flex flex-col items-start gap-1 rounded-xl border p-2.5 text-left transition-colors ${
+                          active
+                            ? "border-violet bg-violet/5"
+                            : "border-border bg-background hover:bg-secondary/50"
+                        }`}
+                      >
+                        <span className="text-xs font-semibold">{s.label}</span>
+                        <span className="text-[10px] text-muted-foreground">{s.hint}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </Field>
+              <Field label="Title emoji">
+                <div className="flex items-center gap-2">
+                  <input
+                    value={draft.title_emoji}
+                    onChange={(e) => setDraft({ ...draft, title_emoji: e.target.value.slice(0, 8) })}
+                    placeholder="e.g. 🎉"
+                    className="input w-24 text-center text-lg"
+                  />
+                  {draft.title_emoji && (
+                    <button
+                      type="button"
+                      onClick={() => setDraft({ ...draft, title_emoji: "" })}
+                      className="font-mono text-[10px] font-bold uppercase tracking-wider text-rose-500 hover:underline"
+                    >
+                      Clear
+                    </button>
+                  )}
+                </div>
+                <EmojiRow onPick={(e) => setDraft((d) => ({ ...d, title_emoji: e }))} />
               </Field>
             </div>
 
@@ -805,6 +882,8 @@ export function AnnouncementsAdmin() {
                     priority: draft.priority,
                     updated_at: new Date().toISOString(),
                     created_at: new Date().toISOString(),
+                    card_style: draft.card_style,
+                    title_emoji: draft.title_emoji,
                   }}
                 />
               </div>
@@ -853,4 +932,38 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
       {children}
     </label>
   );
+}
+
+function EmojiRow({ onPick }: { onPick: (emoji: string) => void }) {
+  return (
+    <div className="mt-1 flex flex-wrap gap-1">
+      {EMOJI_QUICK.map((e) => (
+        <button
+          key={e}
+          type="button"
+          onClick={() => onPick(e)}
+          className="rounded-md border border-border bg-background px-1.5 py-0.5 text-sm hover:bg-secondary"
+          aria-label={`Insert ${e}`}
+        >
+          {e}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function accentSwatch(name: string): string {
+  const map: Record<string, string> = {
+    violet: "oklch(0.52 0.24 293)",
+    emerald: "oklch(0.66 0.16 165)",
+    amber: "oklch(0.75 0.16 75)",
+    rose: "oklch(0.65 0.22 15)",
+    sky: "oklch(0.7 0.16 235)",
+    blue: "oklch(0.6 0.2 255)",
+    fuchsia: "oklch(0.6 0.28 320)",
+    teal: "oklch(0.65 0.14 195)",
+    orange: "oklch(0.72 0.19 55)",
+    slate: "oklch(0.55 0.03 260)",
+  };
+  return map[name] ?? map.violet;
 }

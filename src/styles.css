@@ -163,10 +163,13 @@
   --primary: oklch(0.63 0.19 253);         /* electric blue */
   --primary-foreground: oklch(1 0 0);
   --ring: oklch(0.63 0.19 253);
-  --violet: oklch(0.50 0.20 268);          /* indigo */
-  --violet-soft: oklch(0.50 0.20 268 / 0.15);
-  --magenta: oklch(0.63 0.19 253);
-  --magenta-soft: oklch(0.63 0.19 253 / 0.15);
+  /* Brand accents on public site — violet → magenta identity */
+  --violet: oklch(0.55 0.25 293);          /* #7C3AED */
+  --violet-soft: oklch(0.55 0.25 293 / 0.15);
+  --magenta: oklch(0.68 0.28 328);         /* #D946EF */
+  --magenta-soft: oklch(0.68 0.28 328 / 0.15);
+  --coral: oklch(0.68 0.28 328);
+  --coral-soft: oklch(0.68 0.28 328 / 0.15);
   color-scheme: dark;
 }
 

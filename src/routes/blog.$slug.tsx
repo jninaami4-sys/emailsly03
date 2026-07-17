@@ -1,16 +1,25 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { SiteShell } from "@/components/site/SiteShell";
-import { BLOG_POSTS, formatPublishedAt, getPostBySlug, type PostBlock } from "@/lib/blog-posts";
+import { BLOG_POSTS, formatPublishedAt, getPostBySlug, type PostBlock, type BlogPost } from "@/lib/blog-posts";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { PremiumSparkles as Sparkles } from "@/components/site/PremiumIcons";
 import { ogImageMeta, OG_IMAGES } from "@/lib/og-images";
 import { getBlogSeoOverride } from "@/lib/blog-seo.functions";
+import { getPublishedBlogPost } from "@/lib/blog-cms.functions";
+import { extractFaqPairs } from "@/lib/blog-markdown";
 import { BlogAnalyticsTracker } from "@/components/site/BlogAnalyticsTracker";
 import { ClientOnly } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/blog/$slug")({
   loader: async ({ params }) => {
-    const post = getPostBySlug(params.slug);
+    // Prefer DB-managed post; fall back to static playbook posts.
+    let post: BlogPost | null | undefined = null;
+    try {
+      post = await getPublishedBlogPost({ data: { slug: params.slug } });
+    } catch {
+      post = null;
+    }
+    if (!post) post = getPostBySlug(params.slug) ?? null;
     if (!post) throw notFound();
     let seo = null as Awaited<ReturnType<typeof getBlogSeoOverride>>;
     try {
@@ -33,6 +42,36 @@ export const Route = createFileRoute("/blog/$slug")({
     const socialTitle = seo?.social_title || post.title;
     const description = seo?.meta_description || post.excerpt;
     const canonical = seo?.canonical_url || `/blog/${post.slug}`;
+    // Build JSON-LD: Article + optional FAQPage from question-style h3s.
+    const scripts: Array<{ type: string; children: string }> = [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Article",
+          headline: post.title,
+          description,
+          datePublished: post.publishedAt,
+          author: { "@type": "Person", name: post.author.name },
+          image,
+        }),
+      },
+    ];
+    const faqs = extractFaqPairs(post.content);
+    if (faqs.length > 0) {
+      scripts.push({
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: faqs.map((f) => ({
+            "@type": "Question",
+            name: f.q,
+            acceptedAnswer: { "@type": "Answer", text: f.a },
+          })),
+        }),
+      });
+    }
     return {
       meta: [
         { title: `${post.title} | EmailsLy Blog` },
@@ -44,6 +83,7 @@ export const Route = createFileRoute("/blog/$slug")({
         ...ogImageMeta(image),
       ],
       links: [{ rel: "canonical", href: canonical }],
+      scripts,
     };
   },
   notFoundComponent: () => (
@@ -84,6 +124,21 @@ export const Route = createFileRoute("/blog/$slug")({
 function BlogPost() {
   const { post } = Route.useLoaderData();
   const related = BLOG_POSTS.filter((p) => p.slug !== post.slug).slice(0, 3);
+  const headingSlug = (text: string) =>
+    text
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, "")
+      .trim()
+      .replace(/\s+/g, "-")
+      .slice(0, 60);
+  const toc = (post.content as PostBlock[])
+    .filter(
+      (b: PostBlock): b is Extract<PostBlock, { type: "h2" }> => b.type === "h2",
+    )
+    .map((b: Extract<PostBlock, { type: "h2" }>) => ({
+      text: b.text,
+      id: headingSlug(b.text),
+    }));
 
   return (
     <SiteShell>
@@ -144,9 +199,34 @@ function BlogPost() {
 
       {/* Body */}
       <section className="px-6 py-16">
+        {toc.length > 1 && (
+          <nav
+            aria-label="Table of contents"
+            className="mx-auto mb-10 max-w-3xl rounded-2xl border border-border bg-card p-5"
+          >
+            <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-violet">
+              On this page
+            </p>
+            <ol className="mt-3 space-y-1.5 text-sm">
+              {toc.map((t: { text: string; id: string }, i: number) => (
+                <li key={t.id}>
+                  <a
+                    href={`#${t.id}`}
+                    className="font-semibold text-foreground/85 transition-colors hover:text-violet"
+                  >
+                    <span className="mr-2 font-mono text-[10px] text-muted-foreground">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    {t.text}
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </nav>
+        )}
         <article className="prose-blog mx-auto max-w-3xl">
           {post.content.map((block: PostBlock, i: number) => (
-            <Block key={i} block={block} />
+            <Block key={i} block={block} slugify={headingSlug} />
           ))}
         </article>
 
@@ -250,7 +330,13 @@ function BlogPost() {
   );
 }
 
-function Block({ block }: { block: PostBlock }) {
+function Block({
+  block,
+  slugify,
+}: {
+  block: PostBlock;
+  slugify: (t: string) => string;
+}) {
   switch (block.type) {
     case "p":
       return (
@@ -258,13 +344,19 @@ function Block({ block }: { block: PostBlock }) {
       );
     case "h2":
       return (
-        <h2 className="mt-14 mb-4 font-display text-2xl font-bold tracking-tight text-foreground md:text-3xl">
+        <h2
+          id={slugify(block.text)}
+          className="mt-14 mb-4 scroll-mt-24 font-display text-2xl font-bold tracking-tight text-foreground md:text-3xl"
+        >
           {block.text}
         </h2>
       );
     case "h3":
       return (
-        <h3 className="mt-10 mb-3 font-display text-xl font-bold tracking-tight text-foreground">
+        <h3
+          id={slugify(block.text)}
+          className="mt-10 mb-3 scroll-mt-24 font-display text-xl font-bold tracking-tight text-foreground"
+        >
           {block.text}
         </h3>
       );

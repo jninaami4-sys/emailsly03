@@ -116,6 +116,81 @@ export type Database = {
         }
         Relationships: []
       }
+      blog_posts: {
+        Row: {
+          author_initials: string
+          author_name: string
+          author_role: string
+          category: string
+          content_blocks: Json
+          content_md: string
+          cover_eyebrow: string
+          cover_image: string | null
+          cover_kicker: string
+          created_at: string
+          created_by: string | null
+          excerpt: string
+          featured: boolean
+          id: string
+          published: boolean
+          published_at: string
+          reading_minutes: number
+          seo_faq: Json
+          slug: string
+          title: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          author_initials?: string
+          author_name?: string
+          author_role?: string
+          category?: string
+          content_blocks?: Json
+          content_md?: string
+          cover_eyebrow?: string
+          cover_image?: string | null
+          cover_kicker?: string
+          created_at?: string
+          created_by?: string | null
+          excerpt?: string
+          featured?: boolean
+          id?: string
+          published?: boolean
+          published_at?: string
+          reading_minutes?: number
+          seo_faq?: Json
+          slug: string
+          title: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          author_initials?: string
+          author_name?: string
+          author_role?: string
+          category?: string
+          content_blocks?: Json
+          content_md?: string
+          cover_eyebrow?: string
+          cover_image?: string | null
+          cover_kicker?: string
+          created_at?: string
+          created_by?: string | null
+          excerpt?: string
+          featured?: boolean
+          id?: string
+          published?: boolean
+          published_at?: string
+          reading_minutes?: number
+          seo_faq?: Json
+          slug?: string
+          title?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       blog_seo_overrides: {
         Row: {
           canonical_url: string | null

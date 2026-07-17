@@ -337,12 +337,14 @@ function AuthPage() {
     "w-full rounded-xl border bg-input/50 py-2.5 pl-10 pr-10 text-sm text-foreground placeholder:text-muted-foreground/60 outline-none transition-all focus:bg-background focus:ring-2";
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-gradient-to-br from-background to-muted text-foreground">
+    <main className="relative min-h-screen overflow-hidden bg-gradient-to-br from-muted via-card to-background text-foreground">
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute left-1/2 top-1/2 size-[60rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary opacity-[0.04] blur-[120px]" />
+        <div className="absolute left-1/4 top-1/3 size-[50rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet opacity-[0.12] blur-[120px]" />
+        <div className="absolute right-1/4 bottom-1/3 size-[50rem] translate-x-1/2 translate-y-1/2 rounded-full bg-magenta opacity-[0.10] blur-[120px]" />
+        <div className="absolute left-1/2 top-1/2 size-[40rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary opacity-[0.08] blur-[100px]" />
       </div>
       <div
-        className="pointer-events-none absolute inset-0 opacity-[0.04]"
+        className="pointer-events-none absolute inset-0 opacity-[0.08]"
         style={{
           backgroundImage:
             "linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px)",

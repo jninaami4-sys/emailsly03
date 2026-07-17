@@ -27,6 +27,7 @@ import { TvNotFound } from "@/components/site/TvNotFound";
 import { ReferralCapture } from "@/components/site/ReferralCapture";
 import { BrandingApplier } from "@/components/site/BrandingApplier";
 import { ProfileRealtimeSync } from "@/hooks/use-my-profile";
+import { ThemeProvider } from "@/hooks/use-theme";
 
 function NotFoundComponent() {
   return (
@@ -123,6 +124,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
+        <ThemeProvider>
         <CartProvider>
           <RouteTransition>
             <Outlet />
@@ -140,6 +142,7 @@ function RootComponent() {
           <BrandingApplier />
           <ProfileRealtimeSync />
         </CartProvider>
+        </ThemeProvider>
       </AuthProvider>
     </QueryClientProvider>
   );

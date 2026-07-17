@@ -174,6 +174,73 @@
 }
 
 /*
+ * Light theme — activated when <html> has `.site-light` (toggled from the
+ * header ThemeToggle via useTheme()). Overrides the .theme-midnight tokens
+ * so the entire public site (SiteShell uses .theme-midnight) flips to a
+ * bright surface while keeping the violet → magenta brand accents.
+ */
+html.site-light .theme-midnight,
+html.site-light body {
+  --background: oklch(0.985 0.003 265);   /* near-white */
+  --foreground: oklch(0.22 0.03 265);     /* dark navy ink */
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.20 0.03 265);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.20 0.03 265);
+  --muted: oklch(0.96 0.005 265);
+  --muted-foreground: oklch(0.45 0.02 265);
+  --secondary: oklch(0.95 0.005 265);
+  --secondary-foreground: oklch(0.22 0.03 265);
+  --border: oklch(0.86 0.01 265 / 0.7);
+  --input: oklch(0.86 0.01 265 / 0.8);
+  --primary: oklch(0.55 0.25 293);        /* violet stays primary */
+  --primary-foreground: oklch(1 0 0);
+  --ring: oklch(0.55 0.25 293);
+  --ink: oklch(0.20 0.03 265);
+  --paper: oklch(0.99 0.003 265);
+  color-scheme: light;
+}
+
+/* ---------- Header dark/light toggle (Uiverse.io / Creatlydev inspired) ----------
+ * Horizontal pill scaled to fit the 48px header. Original was a vertical
+ * 60×155 pill; we keep the sliding-circle motion and green "on" state.
+ */
+.theme-toggle {
+  position: relative;
+  width: 44px;
+  height: 22px;
+  border-radius: 999px;
+  padding: 2px;
+  background-color: hsl(0, 0%, 78%);
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  transition: background-color 300ms 200ms ease;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.15);
+  flex-shrink: 0;
+}
+.theme-toggle__circle {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background-color: hsl(0, 0%, 97%);
+  margin-left: 0;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+  transition: margin-left 420ms cubic-bezier(0.65, 0, 0.35, 1);
+}
+.theme-toggle.is-on {
+  background-color: #41a63c;
+}
+.theme-toggle.is-on .theme-toggle__circle {
+  margin-left: calc(44px - (2px * 2) - 18px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .theme-toggle,
+  .theme-toggle__circle { transition: none !important; }
+}
+
+/*
  * Admin panel theme — deep navy surface with blue accent (matches the
  * Order Management reference). Applied via `.admin-theme` on AdminShell so
  * every admin table, card, input, and button that uses semantic tokens

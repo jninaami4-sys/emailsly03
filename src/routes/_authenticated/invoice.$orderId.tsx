@@ -138,8 +138,8 @@ function InvoicePage() {
             <div className="text-right text-[11px]" style={{ color: BRAND.muted }}>
               <div>hello@emailsly.com</div>
               <div>emailsly.com</div>
-              <div>1007 N Orange St, 4th Floor</div>
-              <div>Wilmington, DE 19801, USA</div>
+              <div>House 42, Road 11, Banani</div>
+              <div>Dhaka 1213, Bangladesh</div>
             </div>
           </div>
 
@@ -229,7 +229,7 @@ function InvoicePage() {
               #{o.id.slice(0, 8).toUpperCase()}.
             </p>
             <p className="mt-3 text-center text-neutral-400">
-              EmailsLy · 1007 N Orange St, 4th Floor, Wilmington, DE 19801, USA · emailsly.com
+              EmailsLy · House 42, Road 11, Banani, Dhaka 1213, Bangladesh · emailsly.com
             </p>
           </div>
         </div>

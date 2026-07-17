@@ -52,8 +52,8 @@
   --color-ink: var(--ink);
   --color-paper: var(--paper);
 
-  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Sora", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
 
   /* Midnight Indigo scale */
@@ -73,96 +73,100 @@
 :root {
   --radius: 0.75rem;
 
-  /* ---------- EmailsLy locked brand palette ----------
-   * Primary  Violet     #7C3AED   (logo mark + wordmark accent)
-   * Accent   Magenta    #D946EF   (Ly gradient tail, highlights, links)
-   * Success  Emerald    #10B981
-   * Warning  Amber      #F59E0B
-   * Danger   Rose       #F43F5E
-   * Ink      Near-black #0A0A1F   (wordmark, headings, body)
-   * Paper    Off-white  #FAFAFC   (canvas)
+  /* ---------- Emailsly dark-navy brand palette ----------
+   * Background   #0a0b14   near-black navy (page bg)
+   * Surface      #0B1220   card/panel bg (slightly elevated)
+   * Border       #1E2536   hairline on dark cards
+   * Primary      #3B82F6   electric blue  (hsl 214 86% 60%)
+   * Primary-alt  #3B5BDB   indigo (buttons/pills)
+   * Success      #059669   emerald
+   * Warning      #F59E0B   amber
+   * Danger       #F43F5E   rose
+   * Text         #E5E7EB   body on dark
+   * Muted        #6B7280   secondary
+   * Heading      #FFFFFF   white
    */
 
-  --paper: oklch(0.985 0.003 275);
-  --ink: oklch(0.14 0.03 275);
+  --paper: oklch(0.10 0.02 265);
+  --ink: oklch(0.92 0.005 265);
 
-  --background: oklch(0.985 0.003 275);
-  --foreground: oklch(0.14 0.03 275);
+  --background: oklch(0.10 0.02 265);      /* #0a0b14 */
+  --foreground: oklch(0.92 0.005 265);     /* #E5E7EB */
 
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.14 0.03 275);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.14 0.03 275);
+  --card: oklch(0.15 0.03 265);            /* #0B1220 */
+  --card-foreground: oklch(0.98 0 0);
+  --popover: oklch(0.15 0.03 265);
+  --popover-foreground: oklch(0.98 0 0);
 
-  /* Primary = violet (locked) */
-  --primary: oklch(0.52 0.24 293);
+  /* Primary = electric blue (spec) */
+  --primary: oklch(0.63 0.19 253);         /* #3B82F6 */
   --primary-foreground: oklch(1 0 0);
 
-  /* Secondary = magenta wash surface (subtle, for chips/badges) */
-  --secondary: oklch(0.96 0.02 305);
-  --secondary-foreground: oklch(0.14 0.03 275);
+  --secondary: oklch(0.20 0.03 265);
+  --secondary-foreground: oklch(0.98 0 0);
 
-  --muted: oklch(0.965 0.006 275);
-  --muted-foreground: oklch(0.48 0.02 275);
+  --muted: oklch(0.20 0.03 265);
+  --muted-foreground: oklch(0.65 0.02 265); /* ~#9ca3af readable on dark */
 
-  /* Accent = magenta (Ly tail) — used for highlights, focus rings sparingly */
-  --accent: oklch(0.66 0.28 328);
+  --accent: oklch(0.50 0.20 268);          /* #3B5BDB indigo */
   --accent-foreground: oklch(1 0 0);
 
-  --destructive: oklch(0.63 0.24 15);
+  --destructive: oklch(0.62 0.24 15);      /* rose */
   --destructive-foreground: oklch(1 0 0);
 
-  --border: oklch(0.14 0.03 275 / 0.09);
-  --input: oklch(0.14 0.03 275 / 0.14);
-  --ring: oklch(0.52 0.24 293);
+  --border: oklch(0.30 0.03 265 / 0.6);    /* ~#1E2536 hairline */
+  --input: oklch(0.30 0.03 265 / 0.7);
+  --ring: oklch(0.63 0.19 253);
 
-  /* Vibrant brand accents (semantic aliases used across the app) */
-  --violet: oklch(0.52 0.24 293);            /* #7C3AED */
-  --violet-soft: oklch(0.52 0.24 293 / 0.1);
-  --magenta: oklch(0.66 0.28 328);           /* #D946EF */
-  --magenta-soft: oklch(0.66 0.28 328 / 0.12);
-  --coral: oklch(0.66 0.28 328);             /* legacy alias → magenta */
-  --coral-soft: oklch(0.66 0.28 328 / 0.12);
-  --emerald: oklch(0.68 0.16 162);           /* #10B981 */
-  --emerald-soft: oklch(0.68 0.16 162 / 0.12);
-  --amber: oklch(0.79 0.16 78);              /* #F59E0B */
+  /* Semantic brand aliases (legacy names remapped to the new palette) */
+  --violet: oklch(0.50 0.20 268);          /* indigo #3B5BDB */
+  --violet-soft: oklch(0.50 0.20 268 / 0.15);
+  --magenta: oklch(0.63 0.19 253);         /* electric blue */
+  --magenta-soft: oklch(0.63 0.19 253 / 0.15);
+  --coral: oklch(0.63 0.19 253);
+  --coral-soft: oklch(0.63 0.19 253 / 0.15);
+  --emerald: oklch(0.58 0.14 158);         /* #059669 */
+  --emerald-soft: oklch(0.58 0.14 158 / 0.15);
+  --amber: oklch(0.79 0.16 78);            /* #F59E0B */
   --amber-soft: oklch(0.79 0.16 78 / 0.15);
 
-  /* Midnight Indigo palette (dark theme surfaces) */
-  --midnight: oklch(0.13 0.03 280);
-  --midnight-surface: oklch(0.18 0.05 280);
-  --midnight-elev: oklch(0.25 0.09 280);
-  --midnight-line: oklch(1 0 0 / 0.08);
-  --indigo: oklch(0.62 0.22 285);
-  --indigo-soft: oklch(0.62 0.22 285 / 0.15);
+  /* Midnight palette kept as aliases so legacy .theme-midnight users still work */
+  --midnight: oklch(0.10 0.02 265);
+  --midnight-surface: oklch(0.15 0.03 265);
+  --midnight-elev: oklch(0.20 0.03 265);
+  --midnight-line: oklch(0.30 0.03 265 / 0.6);
+  --indigo: oklch(0.50 0.20 268);
+  --indigo-soft: oklch(0.50 0.20 268 / 0.18);
 
-  /* Neon Orange Peel (retained for legacy references) */
   --neon-orange: oklch(0.78 0.2 55);
   --neon-orange-soft: oklch(0.78 0.2 55 / 0.18);
+  --neon-blue: oklch(0.63 0.19 253);
+  --neon-blue-soft: oklch(0.63 0.19 253 / 0.18);
 
-  /* Neon Blue (retained for legacy references) */
-  --neon-blue: oklch(0.72 0.22 250);
-  --neon-blue-soft: oklch(0.72 0.22 250 / 0.18);
+  color-scheme: dark;
 }
 
 
 
 .theme-midnight {
-  --background: var(--midnight);
-  --foreground: oklch(0.97 0.01 275);
-  --card: var(--midnight-surface);
-  --card-foreground: oklch(0.97 0.01 275);
-  --muted: oklch(0.24 0.05 275);
-  --muted-foreground: oklch(0.72 0.03 275);
-  --secondary: oklch(0.22 0.05 275);
-  --secondary-foreground: oklch(0.97 0.01 275);
-  --border: oklch(1 0 0 / 0.08);
-  --input: oklch(1 0 0 / 0.14);
-  --primary: var(--indigo);
+  /* Public site surface — exact spec values */
+  --background: oklch(0.10 0.02 265);      /* #0a0b14 */
+  --foreground: oklch(0.92 0.005 265);     /* #E5E7EB */
+  --card: oklch(0.15 0.03 265);            /* #0B1220 */
+  --card-foreground: oklch(0.98 0 0);
+  --muted: oklch(0.20 0.03 265);
+  --muted-foreground: oklch(0.65 0.02 265);
+  --secondary: oklch(0.20 0.03 265);
+  --secondary-foreground: oklch(0.98 0 0);
+  --border: oklch(0.30 0.03 265 / 0.6);    /* ~#1E2536 */
+  --input: oklch(0.30 0.03 265 / 0.7);
+  --primary: oklch(0.63 0.19 253);         /* electric blue */
   --primary-foreground: oklch(1 0 0);
-  --ring: var(--indigo);
-  --violet: var(--indigo);
-  --violet-soft: var(--indigo-soft);
+  --ring: oklch(0.63 0.19 253);
+  --violet: oklch(0.50 0.20 268);          /* indigo */
+  --violet-soft: oklch(0.50 0.20 268 / 0.15);
+  --magenta: oklch(0.63 0.19 253);
+  --magenta-soft: oklch(0.63 0.19 253 / 0.15);
   color-scheme: dark;
 }
 
@@ -174,39 +178,38 @@
  * inherits a consistent readable look without touching each component.
  */
 .admin-theme {
-  /* Minimal admin palette: near-black surface, high-contrast white text,
-     yellow for accent/active, red for destructive. Aggressive weight for
-     readability. */
-  --background: oklch(0.14 0 0);              /* near-black */
-  --foreground: oklch(0.99 0 0);              /* white */
-  --card: oklch(0.17 0 0);
-  --card-foreground: oklch(0.99 0 0);
-  --popover: oklch(0.17 0 0);
-  --popover-foreground: oklch(0.99 0 0);
-  --muted: oklch(0.21 0 0);
-  --muted-foreground: oklch(0.78 0 0);        /* brighter for readability */
-  --secondary: oklch(0.21 0 0);
-  --secondary-foreground: oklch(0.99 0 0);
-  --accent: oklch(0.23 0 0);
-  --accent-foreground: oklch(0.99 0 0);
-  --border: oklch(1 0 0 / 0.14);
-  --input: oklch(1 0 0 / 0.14);
-  --primary: oklch(0.99 0 0);                 /* white primary */
-  --primary-foreground: oklch(0.14 0 0);      /* black on white */
-  --ring: oklch(0.88 0.18 92);                /* yellow ring */
-  --destructive: oklch(0.63 0.24 27);         /* red */
+  /* Admin surface — dark navy, electric-blue accent, emerald for success,
+     rose for destructive. Matches the public site's spec palette. */
+  --background: oklch(0.10 0.02 265);         /* #0a0b14 */
+  --foreground: oklch(0.98 0 0);              /* near-white */
+  --card: oklch(0.15 0.03 265);               /* #0B1220 */
+  --card-foreground: oklch(0.98 0 0);
+  --popover: oklch(0.15 0.03 265);
+  --popover-foreground: oklch(0.98 0 0);
+  --muted: oklch(0.20 0.03 265);
+  --muted-foreground: oklch(0.72 0.02 265);
+  --secondary: oklch(0.20 0.03 265);
+  --secondary-foreground: oklch(0.98 0 0);
+  --accent: oklch(0.50 0.20 268);             /* indigo */
+  --accent-foreground: oklch(1 0 0);
+  --border: oklch(0.30 0.03 265 / 0.6);       /* ~#1E2536 */
+  --input: oklch(0.30 0.03 265 / 0.7);
+  --primary: oklch(0.63 0.19 253);            /* electric blue */
+  --primary-foreground: oklch(1 0 0);
+  --ring: oklch(0.63 0.19 253);
+  --destructive: oklch(0.62 0.24 15);         /* rose */
   --destructive-foreground: oklch(1 0 0);
-  /* Remap legacy brand accents so old markup adopts the minimal palette */
-  --violet: oklch(0.88 0.18 92);              /* yellow */
-  --violet-soft: oklch(0.88 0.18 92 / 0.18);
-  --magenta: oklch(0.63 0.24 27);             /* red */
-  --magenta-soft: oklch(0.63 0.24 27 / 0.15);
-  --coral: oklch(0.63 0.24 27);
-  --coral-soft: oklch(0.63 0.24 27 / 0.15);
-  --emerald: oklch(0.88 0.18 92);             /* yellow success */
-  --emerald-soft: oklch(0.88 0.18 92 / 0.18);
-  --amber: oklch(0.88 0.18 92);
-  --amber-soft: oklch(0.88 0.18 92 / 0.18);
+  /* Remap legacy brand accents so old markup inherits navy/indigo/emerald */
+  --violet: oklch(0.50 0.20 268);
+  --violet-soft: oklch(0.50 0.20 268 / 0.18);
+  --magenta: oklch(0.63 0.19 253);
+  --magenta-soft: oklch(0.63 0.19 253 / 0.15);
+  --coral: oklch(0.63 0.19 253);
+  --coral-soft: oklch(0.63 0.19 253 / 0.15);
+  --emerald: oklch(0.58 0.14 158);            /* #059669 */
+  --emerald-soft: oklch(0.58 0.14 158 / 0.15);
+  --amber: oklch(0.79 0.16 78);
+  --amber-soft: oklch(0.79 0.16 78 / 0.18);
   color-scheme: dark;
 }
 
@@ -232,7 +235,7 @@
   font-size: 13px;
 }
 .admin-theme thead th {
-  background: oklch(0.19 0 0);
+  background: oklch(0.18 0.03 265);
   color: oklch(0.99 0 0);
   font-weight: 800;
   font-size: 11px;
@@ -240,18 +243,18 @@
   text-transform: uppercase;
   padding: 10px 14px;
   text-align: left;
-  border-bottom: 1px solid oklch(1 0 0 / 0.18);
+  border-bottom: 1px solid oklch(0.30 0.03 265 / 0.7);
   position: sticky;
   top: 0;
 }
 .admin-theme tbody td {
   padding: 12px 14px;
-  border-bottom: 1px solid oklch(1 0 0 / 0.08);
+  border-bottom: 1px solid oklch(1 0 0 / 0.06);
   color: oklch(0.97 0 0);
   vertical-align: middle;
 }
 .admin-theme tbody tr:hover td {
-  background: oklch(0.88 0.18 92 / 0.06);
+  background: oklch(0.63 0.19 253 / 0.08);
 }
 .admin-theme tbody tr:last-child td {
   border-bottom: none;
@@ -261,8 +264,8 @@
 .admin-theme input:not([type="checkbox"]):not([type="radio"]),
 .admin-theme select,
 .admin-theme textarea {
-  background: oklch(0.17 0 0);
-  border: 1px solid oklch(1 0 0 / 0.16);
+  background: oklch(0.15 0.03 265);
+  border: 1px solid oklch(0.30 0.03 265 / 0.7);
   color: oklch(0.99 0 0);
   font-weight: 600;
   border-radius: 8px;
@@ -271,8 +274,8 @@
 .admin-theme select:focus,
 .admin-theme textarea:focus {
   outline: none;
-  border-color: oklch(0.88 0.18 92 / 0.8);
-  box-shadow: 0 0 0 2px oklch(0.88 0.18 92 / 0.28);
+  border-color: oklch(0.63 0.19 253 / 0.8);
+  box-shadow: 0 0 0 2px oklch(0.63 0.19 253 / 0.28);
 }
 .admin-theme input::placeholder,
 .admin-theme textarea::placeholder {

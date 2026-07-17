@@ -87,13 +87,20 @@ function DashboardPage() {
                 </span>
               </div>
               <div className="min-w-0">
-                <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-violet">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-violet/25 bg-violet/10 px-2.5 py-0.5 font-mono text-[10px] font-black uppercase tracking-[0.22em] text-violet">
+                  <span className="relative flex size-1.5">
+                    <span className="absolute inset-0 animate-ping rounded-full bg-violet/70" />
+                    <span className="relative size-1.5 rounded-full bg-violet" />
+                  </span>
                   Member workspace
                 </span>
-                <h1 className="mt-0.5 truncate font-display text-2xl font-bold sm:text-3xl lg:text-4xl">
-                  Welcome back, {displayName}
+                <h1 className="mt-1.5 truncate font-display text-3xl font-black leading-[1.05] tracking-tight sm:text-4xl lg:text-[44px]">
+                  Welcome back,{" "}
+                  <span className="bg-gradient-to-r from-violet via-magenta to-neon-orange bg-clip-text text-transparent">
+                    {displayName}
+                  </span>
                 </h1>
-                <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
+                <p className="mt-1.5 text-xs font-medium text-muted-foreground sm:text-sm">
                   Track orders, grab deliveries, and reorder in one click.
                 </p>
               </div>
@@ -267,10 +274,12 @@ function SectionHeading({ eyebrow, title }: { eyebrow: string; title: string }) 
   return (
     <div className="mb-3 flex items-baseline justify-between">
       <div>
-        <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-violet">
+        <span className="font-mono text-[10px] font-black uppercase tracking-[0.22em] text-violet">
           {eyebrow}
         </span>
-        <h2 className="mt-0.5 font-display text-lg font-semibold">{title}</h2>
+        <h2 className="mt-0.5 font-display text-xl font-black tracking-tight">
+          {title}
+        </h2>
       </div>
     </div>
   );
@@ -289,27 +298,34 @@ function StatCard({
   icon: React.ReactNode;
   accent: "violet" | "emerald" | "orange" | "indigo";
 }) {
-  const accents: Record<string, string> = {
-    violet: "from-violet/20 to-transparent text-violet",
-    emerald: "from-emerald/20 to-transparent text-emerald",
-    orange: "from-neon-orange/25 to-transparent text-neon-orange",
-    indigo: "from-indigo/25 to-transparent text-indigo",
+  const accents: Record<string, { glow: string; text: string; grad: string }> = {
+    violet:  { glow: "from-violet/25",      text: "text-violet",      grad: "from-violet to-magenta" },
+    emerald: { glow: "from-emerald/25",     text: "text-emerald",     grad: "from-emerald to-teal-400" },
+    orange:  { glow: "from-neon-orange/30", text: "text-neon-orange", grad: "from-neon-orange to-magenta" },
+    indigo:  { glow: "from-indigo/25",      text: "text-indigo",      grad: "from-indigo to-violet" },
   };
+  const a = accents[accent];
   return (
-    <div className="group relative overflow-hidden rounded-2xl border border-border bg-card p-4 transition-colors hover:border-violet/40">
+    <div className="group relative overflow-hidden rounded-2xl border border-border bg-card p-4 transition-all hover:-translate-y-0.5 hover:border-violet/40 hover:shadow-lg hover:shadow-violet/10">
       <div
-        className={`pointer-events-none absolute -right-6 -top-6 size-24 rounded-full bg-gradient-to-br ${accents[accent]} opacity-60 blur-2xl`}
+        className={`pointer-events-none absolute -right-10 -top-10 size-32 rounded-full bg-gradient-to-br ${a.glow} to-transparent opacity-70 blur-2xl transition-opacity group-hover:opacity-100`}
       />
       <div className="relative flex items-center justify-between">
-        <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+        <span className="font-mono text-[10px] font-black uppercase tracking-[0.22em] text-muted-foreground">
           {label}
         </span>
-        <span className={`grid size-7 place-items-center rounded-lg bg-secondary ${accents[accent].split(" ").pop()}`}>
+        <span className={`grid size-8 place-items-center rounded-lg bg-secondary ring-1 ring-border ${a.text}`}>
           {icon}
         </span>
       </div>
-      <div className="relative mt-3 font-display text-2xl font-bold sm:text-3xl">{value}</div>
-      <div className="relative mt-0.5 text-xs text-muted-foreground">{hint}</div>
+      <div
+        className={`relative mt-3 bg-gradient-to-r ${a.grad} bg-clip-text font-display text-3xl font-black tracking-tight text-transparent tabular-nums sm:text-4xl`}
+      >
+        {value}
+      </div>
+      <div className="relative mt-1 text-[11px] font-medium text-muted-foreground">
+        {hint}
+      </div>
     </div>
   );
 }
@@ -328,16 +344,21 @@ function QuickAction({
   return (
     <Link
       to={to as any}
-      className="group relative overflow-hidden rounded-2xl border border-border bg-card p-4 transition-all hover:-translate-y-0.5 hover:border-violet/40 hover:shadow-lg hover:shadow-violet/10"
+      className="group relative overflow-hidden rounded-2xl border border-border bg-card p-4 transition-all hover:-translate-y-0.5 hover:border-violet/40 hover:shadow-lg hover:shadow-violet/15"
     >
-      <div className="mb-3 grid size-9 place-items-center rounded-xl bg-violet/10 text-violet transition-colors group-hover:bg-violet group-hover:text-white">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -right-8 -top-8 size-24 rounded-full bg-violet/20 opacity-0 blur-2xl transition-opacity group-hover:opacity-100"
+      />
+      <div className="relative mb-3 grid size-10 place-items-center rounded-xl bg-violet/10 text-violet ring-1 ring-violet/20 transition-all group-hover:scale-105 group-hover:bg-violet group-hover:text-white group-hover:ring-violet">
         {icon}
       </div>
-      <div className="text-sm font-semibold">{label}</div>
-      <div className="mt-0.5 text-[11px] text-muted-foreground">{sub}</div>
-      <ArrowUpRight className="absolute right-3 top-3 size-3.5 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
+      <div className="relative text-sm font-black uppercase tracking-tight">{label}</div>
+      <div className="relative mt-0.5 text-[11px] font-medium text-muted-foreground">{sub}</div>
+      <ArrowUpRight className="absolute right-3 top-3 size-3.5 text-violet opacity-0 transition-opacity group-hover:opacity-100" />
     </Link>
   );
+}
 }
 
 function TabBtn({

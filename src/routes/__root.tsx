@@ -28,6 +28,7 @@ import { ReferralCapture } from "@/components/site/ReferralCapture";
 import { BrandingApplier } from "@/components/site/BrandingApplier";
 import { ProfileRealtimeSync } from "@/hooks/use-my-profile";
 import { ThemeProvider } from "@/hooks/use-theme";
+import { ThemeToggle } from "@/components/site/ThemeToggle";
 
 function NotFoundComponent() {
   return (
@@ -141,6 +142,9 @@ function RootComponent() {
           <ReferralCapture />
           <BrandingApplier />
           <ProfileRealtimeSync />
+          <div className="fixed right-4 top-1/2 z-[60] -translate-y-1/2 hidden md:block">
+            <ThemeToggle />
+          </div>
         </CartProvider>
         </ThemeProvider>
       </AuthProvider>

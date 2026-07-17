@@ -337,14 +337,14 @@ function AuthPage() {
     "w-full rounded-xl border bg-input/50 py-2.5 pl-10 pr-10 text-sm text-foreground placeholder:text-muted-foreground/60 outline-none transition-all focus:bg-background focus:ring-2";
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-gradient-to-br from-muted via-card to-background text-foreground">
+    <main className="login-bright relative min-h-screen overflow-hidden bg-[radial-gradient(ellipse_120%_80%_at_50%_-10%,var(--card)_0%,var(--muted)_45%,var(--background)_100%)] text-foreground">
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute left-1/4 top-1/3 size-[50rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet opacity-[0.12] blur-[120px]" />
-        <div className="absolute right-1/4 bottom-1/3 size-[50rem] translate-x-1/2 translate-y-1/2 rounded-full bg-magenta opacity-[0.10] blur-[120px]" />
-        <div className="absolute left-1/2 top-1/2 size-[40rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary opacity-[0.08] blur-[100px]" />
+        <div className="absolute left-1/4 top-1/3 size-[50rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet/[0.07] blur-[140px]" />
+        <div className="absolute right-1/4 bottom-1/3 size-[50rem] translate-x-1/2 translate-y-1/2 rounded-full bg-magenta/[0.05] blur-[140px]" />
+        <div className="absolute left-1/2 top-1/2 size-[44rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/[0.04] blur-[120px]" />
       </div>
       <div
-        className="pointer-events-none absolute inset-0 opacity-[0.08]"
+        className="pointer-events-none absolute inset-0 opacity-[0.06]"
         style={{
           backgroundImage:
             "linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px)",
@@ -455,11 +455,11 @@ function AuthPage() {
         <div className="w-full">
           <div className="relative mx-auto max-w-md">
             <div
-              className="relative animate-fade-in rounded-3xl border border-border bg-card/80 p-5 shadow-xl backdrop-blur-xl sm:rounded-[1.75rem] sm:p-8"
+              className="relative animate-fade-in rounded-3xl border border-border bg-card/95 p-5 shadow-2xl shadow-black/20 backdrop-blur-xl sm:rounded-[1.75rem] sm:p-8"
               style={{ backdropFilter: "blur(24px) saturate(140%)" }}
             >
               <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-3xl sm:rounded-[1.75rem]">
-                <div className="absolute -top-1/2 left-0 h-full w-full rotate-12 bg-gradient-to-b from-white/60 via-transparent to-transparent opacity-50" />
+                <div className="absolute -top-1/2 left-0 h-full w-full rotate-12 bg-gradient-to-b from-white/30 via-transparent to-transparent opacity-25" />
               </div>
 
               <div className="relative">

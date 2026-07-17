@@ -285,6 +285,23 @@
   color: oklch(0.7 0 0);
 }
 
+/* Login page — brighter surface that keeps the form readable and in focus */
+.login-bright {
+  --background: oklch(0.13 0.025 265);
+  --foreground: oklch(0.97 0 0);
+  --card: oklch(0.20 0.035 265);
+  --card-foreground: oklch(1 0 0);
+  --muted: oklch(0.27 0.035 265);
+  --muted-foreground: oklch(0.78 0.02 265);
+  --border: oklch(0.38 0.04 265 / 0.55);
+  --input: oklch(0.38 0.04 265 / 0.65);
+  --secondary: oklch(0.27 0.035 265);
+  --secondary-foreground: oklch(0.98 0 0);
+  --primary: oklch(0.65 0.20 253);
+  --ring: oklch(0.65 0.20 253);
+  color-scheme: dark;
+}
+
 @layer base {
   * {
     border-color: var(--color-border);

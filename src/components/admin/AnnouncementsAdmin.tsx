@@ -411,6 +411,7 @@ export function AnnouncementsAdmin() {
                   placeholder="Limited time"
                   className="input"
                 />
+                <EmojiRow onPick={(e) => setDraft((d) => ({ ...d, badge: (d.badge + " " + e).trim().slice(0, 40) }))} />
               </Field>
               <Field label="Accent color">
                 <select
@@ -424,6 +425,66 @@ export function AnnouncementsAdmin() {
                     </option>
                   ))}
                 </select>
+                <div className="mt-1 flex flex-wrap gap-1.5">
+                  {ACCENTS.map((c) => (
+                    <button
+                      key={c}
+                      type="button"
+                      onClick={() => setDraft({ ...draft, accent: c })}
+                      title={c}
+                      aria-label={c}
+                      className={`size-6 rounded-full border-2 transition-transform hover:scale-110 ${
+                        draft.accent === c ? "border-foreground scale-110" : "border-white/20"
+                      }`}
+                      style={{ background: accentSwatch(c) }}
+                    />
+                  ))}
+                </div>
+              </Field>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field label="Card style">
+                <div className="grid grid-cols-2 gap-2">
+                  {CARD_STYLES.map((s) => {
+                    const active = draft.card_style === s.value;
+                    return (
+                      <button
+                        key={s.value}
+                        type="button"
+                        onClick={() => setDraft({ ...draft, card_style: s.value })}
+                        className={`flex flex-col items-start gap-1 rounded-xl border p-2.5 text-left transition-colors ${
+                          active
+                            ? "border-violet bg-violet/5"
+                            : "border-border bg-background hover:bg-secondary/50"
+                        }`}
+                      >
+                        <span className="text-xs font-semibold">{s.label}</span>
+                        <span className="text-[10px] text-muted-foreground">{s.hint}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </Field>
+              <Field label="Title emoji">
+                <div className="flex items-center gap-2">
+                  <input
+                    value={draft.title_emoji}
+                    onChange={(e) => setDraft({ ...draft, title_emoji: e.target.value.slice(0, 8) })}
+                    placeholder="e.g. 🎉"
+                    className="input w-24 text-center text-lg"
+                  />
+                  {draft.title_emoji && (
+                    <button
+                      type="button"
+                      onClick={() => setDraft({ ...draft, title_emoji: "" })}
+                      className="font-mono text-[10px] font-bold uppercase tracking-wider text-rose-500 hover:underline"
+                    >
+                      Clear
+                    </button>
+                  )}
+                </div>
+                <EmojiRow onPick={(e) => setDraft((d) => ({ ...d, title_emoji: e }))} />
               </Field>
             </div>
 

@@ -131,9 +131,14 @@ function BlogPost() {
       .trim()
       .replace(/\s+/g, "-")
       .slice(0, 60);
-  const toc = post.content
-    .filter((b): b is Extract<PostBlock, { type: "h2" }> => b.type === "h2")
-    .map((b) => ({ text: b.text, id: headingSlug(b.text) }));
+  const toc = (post.content as PostBlock[])
+    .filter(
+      (b: PostBlock): b is Extract<PostBlock, { type: "h2" }> => b.type === "h2",
+    )
+    .map((b: Extract<PostBlock, { type: "h2" }>) => ({
+      text: b.text,
+      id: headingSlug(b.text),
+    }));
 
   return (
     <SiteShell>
@@ -203,7 +208,7 @@ function BlogPost() {
               On this page
             </p>
             <ol className="mt-3 space-y-1.5 text-sm">
-              {toc.map((t, i) => (
+              {toc.map((t: { text: string; id: string }, i: number) => (
                 <li key={t.id}>
                   <a
                     href={`#${t.id}`}

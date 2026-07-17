@@ -5,6 +5,7 @@ import type { Database } from "@/integrations/supabase/types";
 
 export type AnnouncementImageStyle = "cover" | "thumbnail" | "none";
 export type AnnouncementAudience = "all" | "guests" | "authenticated" | "admins";
+export type AnnouncementCardStyle = "glass" | "solid" | "gradient" | "minimal";
 
 export type Announcement = {
   id: string;
@@ -17,6 +18,8 @@ export type Announcement = {
   image_style: AnnouncementImageStyle;
   badge: string;
   accent: string;
+  card_style: AnnouncementCardStyle;
+  title_emoji: string;
   path_patterns: string[];
   audience: AnnouncementAudience;
   start_at: string | null;
@@ -114,6 +117,8 @@ type UpsertInput = {
   image_style: AnnouncementImageStyle;
   badge: string;
   accent: string;
+  card_style: AnnouncementCardStyle;
+  title_emoji: string;
   path_patterns: string[];
   audience: AnnouncementAudience;
   start_at: string | null;
@@ -135,6 +140,10 @@ export const upsertAnnouncement = createServerFn({ method: "POST" })
     const audience: AnnouncementAudience = allowedAudiences.includes(data.audience)
       ? data.audience
       : "all";
+    const allowedCardStyles: AnnouncementCardStyle[] = ["glass", "solid", "gradient", "minimal"];
+    const card_style: AnnouncementCardStyle = allowedCardStyles.includes(data.card_style)
+      ? data.card_style
+      : "glass";
     const cleanedPatterns = Array.from(
       new Set(
         (Array.isArray(data.path_patterns) ? data.path_patterns : [])
@@ -155,6 +164,8 @@ export const upsertAnnouncement = createServerFn({ method: "POST" })
       image_style,
       badge: String(data.badge || "").slice(0, 40),
       accent: String(data.accent || "violet").slice(0, 40),
+      card_style,
+      title_emoji: String(data.title_emoji || "").slice(0, 8),
       path_patterns,
       audience,
       start_at: data.start_at && data.start_at.trim() ? new Date(data.start_at).toISOString() : null,

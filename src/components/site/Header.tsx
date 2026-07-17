@@ -110,7 +110,7 @@ export function Header() {
                         to={item.to}
                         aria-current={isActive ? "page" : undefined}
                         className={`relative inline-flex items-center rounded-full px-3 py-1.5 transition-colors ${
-                          isActive ? "text-violet" : "text-ink/70 hover:text-ink"
+                          isActive ? "text-violet" : "text-ink/90 hover:text-ink"
                         } ${focusRing}`}
                       >
                         <span className="relative z-10">{item.label}</span>

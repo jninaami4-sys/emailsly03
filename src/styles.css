@@ -106,7 +106,7 @@
   --secondary-foreground: oklch(0.98 0 0);
 
   --muted: oklch(0.20 0.03 265);
-  --muted-foreground: oklch(0.65 0.02 265); /* ~#9ca3af readable on dark */
+  --muted-foreground: oklch(0.78 0.02 265); /* brighter for AA contrast on dark */
 
   --accent: oklch(0.50 0.20 268);          /* #3B5BDB indigo */
   --accent-foreground: oklch(1 0 0);
@@ -155,7 +155,7 @@
   --card: oklch(0.15 0.03 265);            /* #0B1220 */
   --card-foreground: oklch(0.98 0 0);
   --muted: oklch(0.20 0.03 265);
-  --muted-foreground: oklch(0.65 0.02 265);
+  --muted-foreground: oklch(0.78 0.02 265);
   --secondary: oklch(0.20 0.03 265);
   --secondary-foreground: oklch(0.98 0 0);
   --border: oklch(0.30 0.03 265 / 0.6);    /* ~#1E2536 */

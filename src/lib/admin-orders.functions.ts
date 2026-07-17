@@ -212,7 +212,7 @@ const orderInputSchema = z.object({
   status: z
     .enum(["pending", "in_progress", "delivered", "cancelled", "refunded", "revision_requested"])
     .default("pending"),
-  payment_status: z.enum(["unpaid", "paid", "refunded", "failed"]).default("paid"),
+  payment_status: z.enum(["unpaid", "paid", "refunded", "failed", "pending"]).default("paid"),
   payment_provider: z.string().trim().max(40).optional().nullable(),
   payment_ref: z.string().trim().max(200).optional().nullable(),
   delivery_url: z.string().url().optional().nullable().or(z.literal("")),

@@ -110,10 +110,10 @@ function Home() {
               <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
                 <button
                   onClick={openOrderDrawer}
-                  className="group inline-flex w-full items-center justify-center gap-2 rounded-full bg-indigo px-8 py-4 text-base font-semibold text-white shadow-[0_20px_50px_-15px_rgba(79,70,229,0.8)] transition-all hover:-translate-y-0.5 sm:w-auto"
+                  className="group inline-flex w-full items-center justify-center gap-3 rounded-full bg-indigo px-8 py-4 font-sans text-xl font-black tracking-tight text-white shadow-[0_20px_50px_-15px_rgba(79,70,229,0.8)] transition-all hover:-translate-y-0.5 sm:w-auto md:text-2xl lg:text-3xl"
                 >
                   Build your order
-                  <PremiumArrowUpRight className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  <PremiumArrowUpRight className="size-5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 md:size-6" />
                 </button>
                 <Link
                   to="/store"

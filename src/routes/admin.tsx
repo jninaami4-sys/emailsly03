@@ -26,6 +26,7 @@ import { SampleDatasetsAdmin, SampleDatasetAuditLog } from "@/components/admin/S
 import { SupportTicketsAdmin } from "@/components/admin/SupportTicketsAdmin";
 import { BlogSeoAdmin } from "@/components/admin/BlogSeoAdmin";
 import { BlogAnalyticsAdmin } from "@/components/admin/BlogAnalyticsAdmin";
+import { BlogPostsAdmin } from "@/components/admin/BlogPostsAdmin";
 import { whoAmIAdmin } from "@/lib/announcements.functions";
 import { useAuth } from "@/hooks/use-auth";
 import {
@@ -336,6 +337,7 @@ function AdminPage() {
         { id: "product-covers", label: "Product Covers", desc: "Upload storefront cover images.", icon: ImageIcon, keywords: "product covers images" },
         { id: "announcements", label: "Announcements", desc: "Marketing banners and popups.", icon: Megaphone, keywords: "banner popup" },
         { id: "reviews", label: "Reviews", desc: "Curate customer testimonials.", icon: ShieldCheck, keywords: "reviews testimonials" },
+        { id: "blog-posts", label: "Blog Posts", desc: "Write, edit, and publish blog articles.", icon: Layout, keywords: "blog posts articles write editor" },
         { id: "blog-seo", label: "Blog SEO", desc: "Per-post meta description, canonical, OG image, and social title.", icon: Globe, keywords: "blog seo meta og canonical" },
         { id: "social", label: "Social Links", desc: "Header and footer social profiles.", icon: PanelBottom, keywords: "social links" },
       ],
@@ -384,6 +386,7 @@ function AdminPage() {
     announcements: <AnnouncementsAdmin />,
     reviews: <ReviewsAdmin />,
     "blog-seo": <BlogSeoAdmin />,
+    "blog-posts": <BlogPostsAdmin />,
     social: <SocialLinksAdmin />,
     support: <SupportTicketsAdmin />,
     leads: <ContactLeadsAdmin />,

@@ -87,91 +87,91 @@
    * Heading      #FFFFFF   white
    */
 
-  --paper: oklch(0.10 0.02 265);
-  --ink: oklch(0.92 0.005 265);
+  --paper: oklch(0.11 0.012 275);
+  --ink: oklch(0.95 0.004 275);
 
-  --background: oklch(0.10 0.02 265);      /* #0a0b14 */
-  --foreground: oklch(0.92 0.005 265);     /* #E5E7EB */
+  --background: oklch(0.11 0.012 275);     /* #0e0f15 */
+  --foreground: oklch(0.95 0.004 275);     /* #f0f1f5 */
 
-  --card: oklch(0.15 0.03 265);            /* #0B1220 */
-  --card-foreground: oklch(0.98 0 0);
-  --popover: oklch(0.15 0.03 265);
-  --popover-foreground: oklch(0.98 0 0);
+  --card: oklch(0.155 0.015 275);          /* #14161f */
+  --card-foreground: oklch(0.95 0.004 275);
+  --popover: oklch(0.155 0.015 275);
+  --popover-foreground: oklch(0.95 0.004 275);
 
-  /* Primary = electric blue (spec) */
-  --primary: oklch(0.63 0.19 253);         /* #3B82F6 */
+  /* Primary = electric blue #418df1 (reference) */
+  --primary: oklch(0.66 0.17 254);
   --primary-foreground: oklch(1 0 0);
 
-  --secondary: oklch(0.20 0.03 265);
-  --secondary-foreground: oklch(0.98 0 0);
+  --secondary: oklch(0.19 0.02 275);
+  --secondary-foreground: oklch(0.95 0.004 275);
 
-  --muted: oklch(0.20 0.03 265);
-  --muted-foreground: oklch(0.78 0.02 265); /* brighter for AA contrast on dark */
+  --muted: oklch(0.19 0.02 275);
+  --muted-foreground: oklch(0.61 0.02 265); /* #7e859a */
 
-  --accent: oklch(0.50 0.20 268);          /* #3B5BDB indigo */
+  --accent: oklch(0.66 0.17 254);          /* same blue accent */
   --accent-foreground: oklch(1 0 0);
 
-  --destructive: oklch(0.62 0.24 15);      /* rose */
+  --destructive: oklch(0.62 0.24 15);
   --destructive-foreground: oklch(1 0 0);
 
-  --border: oklch(0.30 0.03 265 / 0.6);    /* ~#1E2536 hairline */
-  --input: oklch(0.30 0.03 265 / 0.7);
-  --ring: oklch(0.63 0.19 253);
+  --border: oklch(1 0 0 / 0.07);           /* hairline white 7% */
+  --input: oklch(1 0 0 / 0.09);
+  --ring: oklch(0.66 0.17 254);
 
-  /* Semantic brand aliases — original violet→magenta identity restored */
-  --violet: oklch(0.55 0.25 293);          /* #7C3AED violet */
-  --violet-soft: oklch(0.55 0.25 293 / 0.15);
-  --magenta: oklch(0.68 0.28 328);         /* #D946EF magenta */
-  --magenta-soft: oklch(0.68 0.28 328 / 0.15);
-  --coral: oklch(0.68 0.28 328);           /* magenta pink for gradients */
-  --coral-soft: oklch(0.68 0.28 328 / 0.15);
-  --emerald: oklch(0.58 0.14 158);         /* #059669 */
-  --emerald-soft: oklch(0.58 0.14 158 / 0.15);
-  --amber: oklch(0.79 0.16 78);            /* #F59E0B */
+  /* Semantic brand aliases — collapsed to the single-blue reference identity */
+  --violet: oklch(0.66 0.17 254);
+  --violet-soft: oklch(0.66 0.17 254 / 0.12);
+  --magenta: oklch(0.66 0.17 254);
+  --magenta-soft: oklch(0.66 0.17 254 / 0.10);
+  --coral: oklch(0.66 0.17 254);
+  --coral-soft: oklch(0.66 0.17 254 / 0.10);
+  --emerald: oklch(0.72 0.15 165);
+  --emerald-soft: oklch(0.72 0.15 165 / 0.15);
+  --amber: oklch(0.79 0.16 78);
   --amber-soft: oklch(0.79 0.16 78 / 0.15);
 
   /* Midnight palette kept as aliases so legacy .theme-midnight users still work */
-  --midnight: oklch(0.10 0.02 265);
-  --midnight-surface: oklch(0.15 0.03 265);
-  --midnight-elev: oklch(0.20 0.03 265);
-  --midnight-line: oklch(0.30 0.03 265 / 0.6);
-  --indigo: oklch(0.50 0.20 268);
-  --indigo-soft: oklch(0.50 0.20 268 / 0.18);
+  --midnight: oklch(0.11 0.012 275);
+  --midnight-surface: oklch(0.155 0.015 275);
+  --midnight-elev: oklch(0.19 0.02 275);
+  --midnight-line: oklch(1 0 0 / 0.07);
+  --indigo: oklch(0.66 0.17 254);
+  --indigo-soft: oklch(0.66 0.17 254 / 0.14);
 
   --neon-orange: oklch(0.78 0.2 55);
   --neon-orange-soft: oklch(0.78 0.2 55 / 0.18);
-  --neon-blue: oklch(0.63 0.19 253);
-  --neon-blue-soft: oklch(0.63 0.19 253 / 0.18);
+  --neon-blue: oklch(0.66 0.17 254);
+  --neon-blue-soft: oklch(0.66 0.17 254 / 0.18);
 
   color-scheme: dark;
 }
+
 
 
 
 .theme-midnight {
-  /* Public site surface — exact spec values */
-  --background: oklch(0.10 0.02 265);      /* #0a0b14 */
-  --foreground: oklch(0.92 0.005 265);     /* #E5E7EB */
-  --card: oklch(0.15 0.03 265);            /* #0B1220 */
-  --card-foreground: oklch(0.98 0 0);
-  --muted: oklch(0.20 0.03 265);
-  --muted-foreground: oklch(0.78 0.02 265);
-  --secondary: oklch(0.20 0.03 265);
-  --secondary-foreground: oklch(0.98 0 0);
-  --border: oklch(0.30 0.03 265 / 0.6);    /* ~#1E2536 */
-  --input: oklch(0.30 0.03 265 / 0.7);
-  --primary: oklch(0.63 0.19 253);         /* electric blue */
+  --background: oklch(0.11 0.012 275);
+  --foreground: oklch(0.95 0.004 275);
+  --card: oklch(0.155 0.015 275);
+  --card-foreground: oklch(0.95 0.004 275);
+  --muted: oklch(0.19 0.02 275);
+  --muted-foreground: oklch(0.61 0.02 265);
+  --secondary: oklch(0.19 0.02 275);
+  --secondary-foreground: oklch(0.95 0.004 275);
+  --border: oklch(1 0 0 / 0.07);
+  --input: oklch(1 0 0 / 0.09);
+  --primary: oklch(0.66 0.17 254);
   --primary-foreground: oklch(1 0 0);
-  --ring: oklch(0.63 0.19 253);
-  /* Brand accents on public site — violet → magenta identity */
-  --violet: oklch(0.55 0.25 293);          /* #7C3AED */
-  --violet-soft: oklch(0.55 0.25 293 / 0.15);
-  --magenta: oklch(0.68 0.28 328);         /* #D946EF */
-  --magenta-soft: oklch(0.68 0.28 328 / 0.15);
-  --coral: oklch(0.68 0.28 328);
-  --coral-soft: oklch(0.68 0.28 328 / 0.15);
+  --ring: oklch(0.66 0.17 254);
+  --violet: oklch(0.66 0.17 254);
+  --violet-soft: oklch(0.66 0.17 254 / 0.12);
+  --magenta: oklch(0.66 0.17 254);
+  --magenta-soft: oklch(0.66 0.17 254 / 0.10);
+  --coral: oklch(0.66 0.17 254);
+  --coral-soft: oklch(0.66 0.17 254 / 0.10);
   color-scheme: dark;
 }
+
 
 /*
  * Admin panel theme — deep navy surface with blue accent (matches the
@@ -183,38 +183,38 @@
 .admin-theme {
   /* Admin surface — dark navy, electric-blue accent, emerald for success,
      rose for destructive. Matches the public site's spec palette. */
-  --background: oklch(0.10 0.02 265);         /* #0a0b14 */
-  --foreground: oklch(0.98 0 0);              /* near-white */
-  --card: oklch(0.15 0.03 265);               /* #0B1220 */
-  --card-foreground: oklch(0.98 0 0);
-  --popover: oklch(0.15 0.03 265);
-  --popover-foreground: oklch(0.98 0 0);
-  --muted: oklch(0.20 0.03 265);
-  --muted-foreground: oklch(0.72 0.02 265);
-  --secondary: oklch(0.20 0.03 265);
-  --secondary-foreground: oklch(0.98 0 0);
-  --accent: oklch(0.50 0.20 268);             /* indigo */
+  --background: oklch(0.11 0.012 275);
+  --foreground: oklch(0.95 0.004 275);
+  --card: oklch(0.155 0.015 275);
+  --card-foreground: oklch(0.95 0.004 275);
+  --popover: oklch(0.155 0.015 275);
+  --popover-foreground: oklch(0.95 0.004 275);
+  --muted: oklch(0.19 0.02 275);
+  --muted-foreground: oklch(0.61 0.02 265);
+  --secondary: oklch(0.19 0.02 275);
+  --secondary-foreground: oklch(0.95 0.004 275);
+  --accent: oklch(0.66 0.17 254);
   --accent-foreground: oklch(1 0 0);
-  --border: oklch(0.30 0.03 265 / 0.6);       /* ~#1E2536 */
-  --input: oklch(0.30 0.03 265 / 0.7);
-  --primary: oklch(0.63 0.19 253);            /* electric blue */
+  --border: oklch(1 0 0 / 0.07);
+  --input: oklch(1 0 0 / 0.09);
+  --primary: oklch(0.66 0.17 254);
   --primary-foreground: oklch(1 0 0);
-  --ring: oklch(0.63 0.19 253);
-  --destructive: oklch(0.62 0.24 15);         /* rose */
+  --ring: oklch(0.66 0.17 254);
+  --destructive: oklch(0.62 0.24 15);
   --destructive-foreground: oklch(1 0 0);
-  /* Remap legacy brand accents so old markup inherits navy/indigo/emerald */
-  --violet: oklch(0.50 0.20 268);
-  --violet-soft: oklch(0.50 0.20 268 / 0.18);
-  --magenta: oklch(0.63 0.19 253);
-  --magenta-soft: oklch(0.63 0.19 253 / 0.15);
-  --coral: oklch(0.63 0.19 253);
-  --coral-soft: oklch(0.63 0.19 253 / 0.15);
-  --emerald: oklch(0.58 0.14 158);            /* #059669 */
-  --emerald-soft: oklch(0.58 0.14 158 / 0.15);
+  --violet: oklch(0.66 0.17 254);
+  --violet-soft: oklch(0.66 0.17 254 / 0.14);
+  --magenta: oklch(0.66 0.17 254);
+  --magenta-soft: oklch(0.66 0.17 254 / 0.12);
+  --coral: oklch(0.66 0.17 254);
+  --coral-soft: oklch(0.66 0.17 254 / 0.12);
+  --emerald: oklch(0.72 0.15 165);
+  --emerald-soft: oklch(0.72 0.15 165 / 0.15);
   --amber: oklch(0.79 0.16 78);
   --amber-soft: oklch(0.79 0.16 78 / 0.18);
   color-scheme: dark;
 }
+
 
 /* Bolder default type inside admin for punchy readability */
 .admin-theme,

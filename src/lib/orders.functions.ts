@@ -88,6 +88,16 @@ export const requestRevision = createServerFn({ method: "POST" })
   )
   .handler(async ({ context, data }) => {
     const supabase = context.supabase as any;
+    // Ownership check — verify caller actually owns the parent order before writing.
+    const { data: owned, error: ownErr } = await supabase
+      .from("orders")
+      .select("id")
+      .eq("id", data.order_id)
+      .eq("user_id", context.userId)
+      .maybeSingle();
+    if (ownErr) throw new Error(ownErr.message);
+    if (!owned) throw new Error("Order not found");
+
     const { error: e1 } = await supabase.from("order_events").insert({
       order_id: data.order_id,
       actor_id: context.userId,
@@ -141,12 +151,38 @@ export const recordMyOrder = createServerFn({ method: "POST" })
       .maybeSingle();
     if (existing) return { ok: true, id: existing.id, duplicate: true, credit_spent_cents: 0 };
 
+    // Server-side price floor — recompute base from the canonical catalog and
+    // reject any client subtotal that undercuts it. Extras (rush, verifier,
+    // tip, extra URLs) can only add to the base, never reduce it, so a
+    // subtotal below the catalog base means the client tampered with pricing.
+    const { SERVICE_CATALOG } = await import("@/lib/service-catalog");
+    const catalogEntry = data.service_id ? SERVICE_CATALOG[data.service_id] : undefined;
+    if (catalogEntry) {
+      const qty = catalogEntry.fixed ? 1 : Math.max(data.quantity, catalogEntry.minQty);
+      const baseCents = Math.round(
+        (catalogEntry.fixed
+          ? catalogEntry.minOrder
+          : Math.max(qty * catalogEntry.rate, catalogEntry.minOrder)) * 100,
+      );
+      if (data.subtotal_cents < baseCents) {
+        throw new Error("Invalid subtotal for selected service");
+      }
+    }
+
     // Re-validate promo server-side; never trust client-supplied discount amount.
     const { discountCents: trustedDiscount, normalizedCode } = computePromoDiscountCents(
       data.promo_code ?? null,
       data.subtotal_cents,
     );
     const cappedDiscount = Math.min(trustedDiscount, data.subtotal_cents);
+
+    // Re-derive minimum acceptable total: subtotal − trusted discount − client credit.
+    // Reject totals below this floor (client can add fees, never subtract more).
+    const minTotalCents = Math.max(
+      0,
+      data.subtotal_cents - cappedDiscount - data.credit_applied_cents,
+    );
+    const safeTotalCents = Math.max(data.total_cents, minTotalCents);
 
     const { data: row, error } = await sb
       .from("orders")
@@ -159,7 +195,7 @@ export const recordMyOrder = createServerFn({ method: "POST" })
         subtotal_cents: data.subtotal_cents,
         discount_cents: cappedDiscount,
         promo_code: normalizedCode,
-        total_cents: data.total_cents,
+        total_cents: safeTotalCents,
         currency: data.currency,
         status: "pending",
         payment_status: "paid",

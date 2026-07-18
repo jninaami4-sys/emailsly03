@@ -661,6 +661,86 @@ export const stripeApi = {
     j<{ url: string }>("/api/stripe/checkout", { order_id }),
 };
 
+// -------- Admin — Referrals (extended) --------
+export const adminReferralsApi = {
+  list: (query?: { status?: string; review_state?: string; search?: string; limit?: number }) =>
+    g<{ referrals: any[] }>("/api/admin/referrals", query),
+  stats: () => g<{ stats: any }>("/api/admin/referrals/stats"),
+  update: (id: string, body: unknown) => patch(`/api/admin/referrals/${id}`, body),
+  approve: (id: string, notes?: string) => j(`/api/admin/referrals/${id}/approve`, { notes }),
+  reject: (id: string, notes?: string) => j(`/api/admin/referrals/${id}/reject`, { notes }),
+  chain: (referrer_id: string) => g<{ chain: any }>(`/api/admin/referrals/chain`, { referrer_id }),
+  funnel: (days?: number) => g<{ funnel: any }>(`/api/admin/referrals/funnel`, { days }),
+  leaderboard: (limit?: number) =>
+    g<{ leaderboard: any[] }>(`/api/admin/referrals/leaderboard`, { limit }),
+  markPaidOut: (user_ids: string[], notes?: string) =>
+    j<{ batch_id: string | null; count: number; total_cents: number }>(
+      `/api/admin/referrals/payout`,
+      { user_ids, notes },
+    ),
+  exportOwedCsv: () => g<{ csv: string; count: number }>(`/api/admin/referrals/owed.csv`),
+};
+
+// -------- Admin — Stripe events / webhook deliveries --------
+export const adminStripeApi = {
+  events: (query?: { limit?: number; type?: string }) =>
+    g<{ events: any[] }>("/api/admin/stripe/events", query),
+  deliveries: (query?: { limit?: number; status?: string }) =>
+    g<{ deliveries: any[] }>("/api/admin/stripe/deliveries", query),
+};
+
+// -------- Conversion events (public + admin) --------
+export const conversionEventsApi = {
+  list: () => g<{ events: any[] }>("/api/conversion-events"),
+};
+export const adminConversionEventsApi = {
+  list: () => g<{ events: any[] }>("/api/admin/conversion-events"),
+  upsert: (body: unknown) => j<{ event: any }>("/api/admin/conversion-events", body),
+  destroy: (id: string) => del(`/api/admin/conversion-events/${id}`),
+};
+
+// -------- Admin — Server-side tracking config --------
+export const adminServerTrackingApi = {
+  get: () => g<{ config: any }>("/api/admin/server-tracking/config"),
+  update: (body: unknown) => patch("/api/admin/server-tracking/config", body),
+  log: () => g<{ events: any[] }>("/api/admin/server-tracking/log"),
+};
+
+// -------- Admin — Data portability (bulk import / export) --------
+export const adminPortabilityApi = {
+  import: (body: unknown) =>
+    j<{ ok: true; users_created: number; clients_processed: number; orders_upserted: number }>(
+      "/api/admin/portability/import",
+      body,
+    ),
+  export: () =>
+    g<{ exported_at: string; profiles: any[]; orders: any[]; order_events: any[] }>(
+      "/api/admin/portability/export",
+    ),
+};
+
+// -------- Sample datasets (public + admin extras) --------
+export const sampleDatasetsApi = {
+  get: () => g<{ data: any; meta: any; totalRows: number }>("/api/samples/data"),
+};
+export const adminSampleDatasetsApi = {
+  list: () => g<{ datasets: any[] }>("/api/admin/sample-datasets"),
+  upsert: (body: unknown) => j("/api/admin/sample-datasets", body),
+  upload: (body: { source: string; filename: string; contentBase64: string }) =>
+    j<{ ok: true; storage_path: string }>("/api/admin/sample-datasets/upload", body),
+  audit: () => g<{ entries: any[] }>("/api/admin/sample-datasets/audit"),
+  preview: (body: unknown) => j<{ preview: any }>("/api/admin/sample-datasets/preview", body),
+};
+
+// -------- Google Drive proxy (public file fetch) --------
+export const driveApi = {
+  fetch: (url: string) =>
+    j<{ fileId: string; contentType: string; size: number; base64: string }>(
+      "/api/admin/drive/fetch",
+      { url },
+    ),
+};
+
 // Convenience default export
 export default {
   api,
@@ -708,5 +788,14 @@ export default {
   socialLinks: socialLinksApi,
   adminSocialLinks: adminSocialLinksApi,
   stripe: stripeApi,
+  adminReferrals: adminReferralsApi,
+  adminStripe: adminStripeApi,
+  conversionEvents: conversionEventsApi,
+  adminConversionEvents: adminConversionEventsApi,
+  adminServerTracking: adminServerTrackingApi,
+  adminPortability: adminPortabilityApi,
+  sampleDatasets: sampleDatasetsApi,
+  adminSampleDatasets: adminSampleDatasetsApi,
+  drive: driveApi,
 };
 

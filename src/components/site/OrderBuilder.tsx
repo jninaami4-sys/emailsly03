@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState, type MouseEvent } from "react";
 import { Link } from "@tanstack/react-router";
-import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { validatePromo, type PromoResult } from "@/lib/promos.functions";
 import { recordMyOrder } from "@/lib/orders.functions";
@@ -123,7 +122,7 @@ export function OrderBuilder() {
   const [promo, setPromo] = useState("");
   const [promoApplied, setPromoApplied] = useState<PromoResult | null>(null);
   const [promoBusy, setPromoBusy] = useState(false);
-  const validatePromoFn = useServerFn(validatePromo);
+  const validatePromoFn = validatePromo;
   const recordOrderFn = recordMyOrder;
   const [agree, setAgree] = useState(false);
   const [name, setName] = useState("");

@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { listCampaigns, upsertCampaign, deleteCampaign, sendCampaign, previewCampaignAudience } from "@/lib/admin-extras.functions";
 import { Plus, Save, Trash2, Loader2, Megaphone } from "@/components/admin/AdminIcons";
 
@@ -30,11 +29,11 @@ const empty = {
 
 export function CampaignsAdmin() {
   const qc = useQueryClient();
-  const listFn = useServerFn(listCampaigns);
-  const upFn = useServerFn(upsertCampaign);
-  const delFn = useServerFn(deleteCampaign);
-  const sendFn = useServerFn(sendCampaign);
-  const previewFn = useServerFn(previewCampaignAudience);
+  const listFn = (listCampaigns);
+  const upFn = upsertCampaign;
+  const delFn = deleteCampaign;
+  const sendFn = sendCampaign;
+  const previewFn = previewCampaignAudience;
   const [draft, setDraft] = useState(empty);
   const [msg, setMsg] = useState<string | null>(null);
   const [audiencePreview, setAudiencePreview] = useState<{ count: number; sample: string[] } | null>(null);

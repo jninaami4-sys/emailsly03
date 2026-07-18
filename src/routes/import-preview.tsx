@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { useServerFn } from "@tanstack/react-start";
 import * as XLSX from "xlsx";
 import { UploadCloud, FileSpreadsheet, X, CheckCircle2, AlertTriangle, Link2, Loader2 } from "lucide-react";
 import { fetchPublicDriveFile } from "@/lib/import-preview.functions";
@@ -102,7 +101,7 @@ function ImportPreviewPage() {
   const [dragOver, setDragOver] = useState(false);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [driveUrl, setDriveUrl] = useState("");
-  const fetchDrive = useServerFn(fetchPublicDriveFile);
+  const fetchDrive = (fetchPublicDriveFile);
 
   const columnStats = useMemo(() => {
     if (!data) return [];

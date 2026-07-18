@@ -1,7 +1,7 @@
-import { createServerFn } from "@tanstack/react-start";
-import { requireAdmin } from "@/lib/require-admin";
-import type { SupabaseClient } from "@supabase/supabase-js";
-import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+/**
+ * Server-side tracking config + event log — thin proxies (Batch 6 migration).
+ */
+import { adminServerTrackingApi } from "@/lib/api-client";
 
 export type ServerTrackingConfig = {
   ga4_measurement_id: string;
@@ -28,14 +28,6 @@ export type ServerEventLogRow = {
   created_at: string;
 };
 
-type LooseClient = SupabaseClient;
-
-
-async function adminClient(): Promise<LooseClient> {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-  return supabaseAdmin as unknown as LooseClient;
-}
-
 const EMPTY: ServerTrackingConfig = {
   ga4_measurement_id: "",
   ga4_api_secret: "",
@@ -51,59 +43,27 @@ const EMPTY: ServerTrackingConfig = {
   updated_at: new Date(0).toISOString(),
 };
 
-export const getServerTrackingConfig = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
-  .handler(async ({ context }): Promise<ServerTrackingConfig> => {
-    await requireAdmin(context);
-    const db = await adminClient();
-    const { data, error } = await db
-      .from("server_tracking_config")
-      .select("*")
-      .eq("singleton", true)
-      .maybeSingle();
-    if (error) throw new Error(error.message);
-    return ((data as unknown as ServerTrackingConfig) ?? EMPTY);
-  });
+type Empty = Record<string, never>;
 
-export const updateServerTrackingConfig = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
-  .inputValidator((data: Partial<ServerTrackingConfig>) => data)
-  .handler(async ({ data, context }): Promise<ServerTrackingConfig> => {
-    await requireAdmin(context);
-    const db = await adminClient();
-    const payload = {
-      ga4_measurement_id: String(data.ga4_measurement_id ?? "").trim().slice(0, 60),
-      ga4_api_secret: String(data.ga4_api_secret ?? "").trim().slice(0, 200),
-      ga4_enabled: !!data.ga4_enabled,
-      meta_pixel_id: String(data.meta_pixel_id ?? "").trim().slice(0, 60),
-      meta_access_token: String(data.meta_access_token ?? "").trim().slice(0, 500),
-      meta_test_event_code: String(data.meta_test_event_code ?? "").trim().slice(0, 60),
-      meta_enabled: !!data.meta_enabled,
-      tiktok_pixel_id: String(data.tiktok_pixel_id ?? "").trim().slice(0, 60),
-      tiktok_access_token: String(data.tiktok_access_token ?? "").trim().slice(0, 500),
-      tiktok_test_event_code: String(data.tiktok_test_event_code ?? "").trim().slice(0, 60),
-      tiktok_enabled: !!data.tiktok_enabled,
-    };
-    const { data: row, error } = await db
-      .from("server_tracking_config")
-      .update(payload)
-      .eq("singleton", true)
-      .select("*")
-      .single();
-    if (error) throw new Error(error.message);
-    return row as unknown as ServerTrackingConfig;
-  });
+export async function getServerTrackingConfig(_?: {
+  data?: Empty;
+}): Promise<ServerTrackingConfig> {
+  try {
+    const { config } = await adminServerTrackingApi.get();
+    return (config ?? EMPTY) as ServerTrackingConfig;
+  } catch {
+    return EMPTY;
+  }
+}
 
-export const listServerEventLog = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
-  .handler(async ({ context }): Promise<ServerEventLogRow[]> => {
-    await requireAdmin(context);
-    const db = await adminClient();
-    const { data, error } = await db
-      .from("server_event_log")
-      .select("*")
-      .order("created_at", { ascending: false })
-      .limit(50);
-    if (error) throw new Error(error.message);
-    return (data ?? []) as unknown as ServerEventLogRow[];
-  });
+export async function updateServerTrackingConfig(args: {
+  data: Partial<ServerTrackingConfig>;
+}): Promise<ServerTrackingConfig> {
+  const res = (await adminServerTrackingApi.update(args.data)) as { config?: ServerTrackingConfig };
+  return (res.config ?? { ...EMPTY, ...args.data }) as ServerTrackingConfig;
+}
+
+export async function listServerEventLog(_?: { data?: Empty }): Promise<ServerEventLogRow[]> {
+  const { events } = await adminServerTrackingApi.log();
+  return (events ?? []) as ServerEventLogRow[];
+}

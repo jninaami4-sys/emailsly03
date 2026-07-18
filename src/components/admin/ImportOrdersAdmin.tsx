@@ -1,6 +1,5 @@
 import { useRef, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { importLegacyOrders } from "@/lib/admin-extras.functions";
 import { Loader2, Upload, Users } from "@/components/admin/AdminIcons";
 
@@ -37,7 +36,7 @@ function parseCsv(text: string): Record<string, string>[] {
 
 export function ImportOrdersAdmin() {
   const inputRef = useRef<HTMLInputElement>(null);
-  const importFn = useServerFn(importLegacyOrders);
+  const importFn = (importLegacyOrders);
   const [preview, setPreview] = useState<Record<string, string>[] | null>(null);
   const [result, setResult] = useState<any | null>(null);
 

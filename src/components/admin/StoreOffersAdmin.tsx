@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { listStoreOffers, upsertStoreOffer, deleteStoreOffer } from "@/lib/admin-extras.functions";
 import { Plus, Save, Trash2, Loader2 } from "@/components/admin/AdminIcons";
 
@@ -34,9 +33,9 @@ const empty = {
 
 export function StoreOffersAdmin() {
   const qc = useQueryClient();
-  const listFn = useServerFn(listStoreOffers);
-  const upFn = useServerFn(upsertStoreOffer);
-  const delFn = useServerFn(deleteStoreOffer);
+  const listFn = (listStoreOffers);
+  const upFn = upsertStoreOffer;
+  const delFn = deleteStoreOffer;
   const [draft, setDraft] = useState(empty);
 
   const { data, isLoading } = useQuery({ queryKey: ["admin-store-offers"], queryFn: () => listFn() });

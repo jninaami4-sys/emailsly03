@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { Server, Save, Loader2, CheckCircle2, XCircle, MinusCircle, RefreshCcw } from "@/components/admin/AdminIcons";
 import {
   getServerTrackingConfig,
@@ -30,9 +29,9 @@ const label = "block text-xs font-medium text-muted-foreground mb-1";
 
 export function ServerTrackingAdmin() {
   const qc = useQueryClient();
-  const getFn = useServerFn(getServerTrackingConfig);
-  const setFn = useServerFn(updateServerTrackingConfig);
-  const logFn = useServerFn(listServerEventLog);
+  const getFn = (getServerTrackingConfig);
+  const setFn = updateServerTrackingConfig;
+  const logFn = listServerEventLog;
 
   const { data, isLoading } = useQuery({
     queryKey: ["server-tracking", "config"],

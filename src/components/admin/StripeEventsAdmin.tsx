@@ -1,6 +1,5 @@
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import {
   adminListStripeEvents,
   adminListWebhookDeliveries,
@@ -41,7 +40,7 @@ function relTime(iso: string) {
 }
 
 export function StripeEventsAdmin() {
-  const listFn = useServerFn(adminListStripeEvents);
+  const listFn = (adminListStripeEvents);
   const [type, setType] = useState<string>("all");
   const { data, isLoading, isFetching, refetch, error } = useQuery({
     queryKey: ["admin-stripe-events", type],
@@ -268,7 +267,7 @@ const STATUS_TONE: Record<string, string> = {
 };
 
 export function StripeWebhookDeliveriesAdmin() {
-  const listFn = useServerFn(adminListWebhookDeliveries);
+  const listFn = (adminListWebhookDeliveries);
   const [status, setStatus] = useState<string>("all");
   const { data, isLoading, isFetching, refetch, error } = useQuery({
     queryKey: ["admin-webhook-deliveries", status],

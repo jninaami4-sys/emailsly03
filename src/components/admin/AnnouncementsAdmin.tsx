@@ -13,7 +13,7 @@ import {
 } from "@/lib/announcements.functions";
 import { AnnouncementPreview } from "@/components/site/AnnouncementModal";
 import { ImageCropperModal } from "@/components/admin/ImageCropperModal";
-import { supabase } from "@/integrations/supabase/client";
+import { uploadsApi } from "@/lib/api-client";
 
 const emptyDraft = {
   id: null as string | null,
@@ -135,14 +135,13 @@ export function AnnouncementsAdmin() {
       const ext = (name.split(".").pop() || "png").toLowerCase();
       const path = `${crypto.randomUUID()}.${ext}`;
       const contentType = (fileOrBlob as File).type || "image/png";
-      const { error: upErr } = await supabase.storage
-        .from("announcement-media")
-        .upload(path, fileOrBlob, { contentType, upsert: false });
-      if (upErr) throw upErr;
-      const { data } = supabase.storage.from("announcement-media").getPublicUrl(path);
+      const res = await uploadsApi.upload("announcement-media", fileOrBlob, {
+        path,
+        contentType,
+      });
       setDraft((d) => ({
         ...d,
-        image_url: data.publicUrl,
+        image_url: res.url,
         image_style: d.image_style === "none" ? "cover" : d.image_style,
       }));
       setStatus("Image uploaded");

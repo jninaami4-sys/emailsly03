@@ -17,6 +17,7 @@ import { openOrderDrawer } from "@/components/site/OrderDrawer";
 import { Loader2, Download, Package, User as UserIcon, Receipt, RotateCcw, ExternalLink, ShoppingBag, PackageSearch, MessageCircle, BookOpen, Zap, TrendingUp, CheckCircle2, Clock, Wallet, ArrowUpRight, Copy, Gift, Headphones, ChevronRight, Search, Camera, Trash2, LifeBuoy } from "lucide-react";
 import { PremiumSparkles as Sparkles } from "@/components/site/PremiumIcons";
 import { supabase } from "@/integrations/supabase/client";
+import { uploadsApi } from "@/lib/api-client";
 import { compressImage } from "@/lib/image-compress";
 import { AvatarCropDialog } from "@/components/site/AvatarCropDialog";
 import { ShareExperienceCTA } from "@/components/site/ShareExperienceCTA";
@@ -986,22 +987,18 @@ function ProfileTab() {
       setUploadState({ status: "uploading" });
       const path = `${data.user_id}/avatar-${Date.now()}.${compressed.ext}`;
       const contentType = compressed.ext === "webp" ? "image/webp" : "image/jpeg";
-      const { error: upErr } = await supabase.storage
-        .from("avatars")
-        .upload(path, compressed.blob, { contentType, upsert: true, cacheControl: "31536000" });
-      if (upErr) throw upErr;
-      // Long-lived signed URL (1 year) — bucket is private but signed URLs
-      // bypass RLS, so we can serve the avatar to anyone who has the profile.
-      const { data: signed, error: signErr } = await supabase.storage
-        .from("avatars")
-        .createSignedUrl(path, 60 * 60 * 24 * 365);
-      if (signErr || !signed?.signedUrl) throw signErr ?? new Error("Failed to create URL");
-      setAvatarUrl(signed.signedUrl);
+      const res = await uploadsApi.upload("avatars", compressed.blob, {
+        path,
+        contentType,
+        cacheControl: "31536000",
+        upsert: true,
+      });
+      setAvatarUrl(res.url);
       // Persist immediately so the header/other places see the new avatar.
-      await updateFn({ data: { ...form, avatar_url: signed.signedUrl } });
+      await updateFn({ data: { ...form, avatar_url: res.url } });
       try {
         await supabase.auth.updateUser({
-          data: { full_name: form.full_name, avatar_url: signed.signedUrl },
+          data: { full_name: form.full_name, avatar_url: res.url },
         });
       } catch {
         /* non-fatal */

@@ -280,7 +280,7 @@ export function ServicesCarousel() {
           </p>
         </div>
 
-        <div className="services-swiper-wrapper">
+        <div className="services-swiper-wrapper relative mx-auto">
           <Swiper
             key={isMobile ? "mobile" : "desktop"}
             effect={isMobile ? "slide" : "coverflow"}
@@ -309,7 +309,7 @@ export function ServicesCarousel() {
             coverflowEffect={{ rotate: 22, stretch: 0, depth: 140, modifier: 1.1, slideShadows: false }}
             pagination={{ clickable: true, dynamicBullets: isMobile }}
             modules={[EffectCoverflow, Autoplay, Pagination, FreeMode, Mousewheel]}
-            className="!pb-16 services-swiper"
+            className="services-swiper !pb-20"
           >
 
             {services.map((s) => (
@@ -424,10 +424,46 @@ export function ServicesCarousel() {
         .services-swiper {
           -webkit-overflow-scrolling: touch;
           overscroll-behavior-x: contain;
+          overflow: visible;
+          position: relative;
+          z-index: 2;
+        }
+        .services-swiper-wrapper {
+          isolation: isolate;
+          padding-top: 8px;
+        }
+        .services-swiper-wrapper::before {
+          content: "";
+          position: absolute;
+          left: 50%;
+          bottom: 4px;
+          z-index: 0;
+          width: min(680px, 76vw);
+          height: 120px;
+          transform: translateX(-50%);
+          border-radius: 999px;
+          background:
+            radial-gradient(ellipse at center, color-mix(in oklab, var(--violet) 18%, transparent), transparent 66%),
+            radial-gradient(ellipse at center, color-mix(in oklab, var(--magenta) 10%, transparent), transparent 72%);
+          filter: blur(22px);
+          opacity: 0.72;
+          pointer-events: none;
+        }
+        .services-swiper-wrapper::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+          z-index: 1;
+          pointer-events: none;
+          background:
+            linear-gradient(90deg, var(--background), transparent 10%, transparent 90%, var(--background)),
+            linear-gradient(180deg, transparent 82%, color-mix(in oklab, var(--background) 62%, transparent));
         }
         .services-swiper .swiper-wrapper {
           transition-timing-function: cubic-bezier(0.22, 0.61, 0.36, 1);
           will-change: transform;
+          position: relative;
+          z-index: 2;
         }
         .services-swiper .swiper-slide {
           touch-action: pan-y;
@@ -438,23 +474,56 @@ export function ServicesCarousel() {
           align-items: center;
           justify-content: center;
           gap: 8px;
-          bottom: 14px !important;
+          left: 50% !important;
+          bottom: 18px !important;
+          width: auto !important;
+          min-width: 128px;
+          height: 26px;
+          padding: 0 12px;
+          transform: translateX(-50%);
+          border: 1px solid color-mix(in oklab, var(--violet) 18%, var(--foreground) 5%);
+          border-radius: 999px;
+          background:
+            radial-gradient(circle at 50% 0%, color-mix(in oklab, var(--violet) 20%, transparent), transparent 72%),
+            color-mix(in oklab, var(--background) 76%, transparent);
+          box-shadow:
+            inset 0 1px 0 color-mix(in oklab, var(--foreground) 10%, transparent),
+            0 12px 34px color-mix(in oklab, var(--violet) 16%, transparent),
+            0 18px 42px color-mix(in oklab, var(--background) 80%, transparent);
+          backdrop-filter: blur(18px) saturate(1.1);
+          -webkit-backdrop-filter: blur(18px) saturate(1.1);
+          z-index: 6;
         }
         .services-swiper-wrapper .swiper-pagination-bullet {
           width: 6px;
           height: 6px;
           margin: 0 !important;
-          background: rgba(255,255,255,0.22);
+          background: color-mix(in oklab, var(--foreground) 34%, transparent);
           opacity: 1;
           border-radius: 999px;
-          transition: all 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
+          box-shadow: none;
+          transform: scale(1);
+          transition:
+            width 0.38s cubic-bezier(0.22, 0.61, 0.36, 1),
+            background 0.38s cubic-bezier(0.22, 0.61, 0.36, 1),
+            box-shadow 0.38s cubic-bezier(0.22, 0.61, 0.36, 1),
+            opacity 0.38s cubic-bezier(0.22, 0.61, 0.36, 1);
         }
         .services-swiper-wrapper .swiper-pagination-bullet-active {
           width: 26px;
           height: 6px;
-          background: linear-gradient(90deg, #8b5cf6, #d946ef);
+          background: linear-gradient(
+            90deg,
+            color-mix(in oklab, var(--violet) 88%, var(--foreground) 10%),
+            color-mix(in oklab, var(--magenta) 78%, var(--foreground) 10%)
+          );
           border-radius: 999px;
-          box-shadow: 0 0 14px rgba(139,92,246,0.45), 0 0 4px rgba(217,70,239,0.35);
+          box-shadow:
+            0 0 12px color-mix(in oklab, var(--violet) 36%, transparent),
+            inset 0 1px 0 color-mix(in oklab, var(--foreground) 24%, transparent);
+        }
+        .services-swiper-wrapper .swiper-pagination-bullet:not(.swiper-pagination-bullet-active):hover {
+          background: color-mix(in oklab, var(--foreground) 38%, transparent);
         }
         .services-swiper-wrapper .swiper-pagination-bullet-active-main,
         .services-swiper-wrapper .swiper-pagination-bullet-active-prev,

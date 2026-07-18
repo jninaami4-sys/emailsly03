@@ -280,7 +280,7 @@ export function ServicesCarousel() {
           </p>
         </div>
 
-        <div className="services-swiper-wrapper">
+        <div className="services-swiper-wrapper relative mx-auto">
           <Swiper
             key={isMobile ? "mobile" : "desktop"}
             effect={isMobile ? "slide" : "coverflow"}
@@ -309,7 +309,7 @@ export function ServicesCarousel() {
             coverflowEffect={{ rotate: 22, stretch: 0, depth: 140, modifier: 1.1, slideShadows: false }}
             pagination={{ clickable: true, dynamicBullets: isMobile }}
             modules={[EffectCoverflow, Autoplay, Pagination, FreeMode, Mousewheel]}
-            className="!pb-16 services-swiper"
+            className="services-swiper !pb-20"
           >
 
             {services.map((s) => (
@@ -424,10 +424,43 @@ export function ServicesCarousel() {
         .services-swiper {
           -webkit-overflow-scrolling: touch;
           overscroll-behavior-x: contain;
+          overflow: visible;
+        }
+        .services-swiper-wrapper {
+          isolation: isolate;
+          padding-top: 8px;
+        }
+        .services-swiper-wrapper::before {
+          content: "";
+          position: absolute;
+          left: 50%;
+          bottom: 4px;
+          z-index: 0;
+          width: min(680px, 76vw);
+          height: 96px;
+          transform: translateX(-50%);
+          border-radius: 999px;
+          background:
+            radial-gradient(ellipse at center, color-mix(in oklab, var(--violet) 18%, transparent), transparent 66%),
+            radial-gradient(ellipse at center, color-mix(in oklab, var(--magenta) 10%, transparent), transparent 72%);
+          filter: blur(22px);
+          opacity: 0.9;
+          pointer-events: none;
+        }
+        .services-swiper-wrapper::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+          z-index: 2;
+          pointer-events: none;
+          background:
+            linear-gradient(90deg, var(--background), transparent 14%, transparent 86%, var(--background)),
+            linear-gradient(180deg, transparent 72%, color-mix(in oklab, var(--background) 88%, transparent));
         }
         .services-swiper .swiper-wrapper {
           transition-timing-function: cubic-bezier(0.22, 0.61, 0.36, 1);
           will-change: transform;
+          z-index: 1;
         }
         .services-swiper .swiper-slide {
           touch-action: pan-y;
@@ -437,31 +470,31 @@ export function ServicesCarousel() {
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: 7px;
+          gap: 8px;
           left: 50% !important;
-          bottom: 10px !important;
+          bottom: 22px !important;
           width: auto !important;
-          min-width: 112px;
-          height: 24px;
-          padding: 0 12px;
+          min-width: 116px;
+          height: 22px;
+          padding: 0 10px;
           transform: translateX(-50%);
-          border: 1px solid color-mix(in oklab, var(--foreground) 12%, transparent);
+          border: 1px solid color-mix(in oklab, var(--foreground) 9%, transparent);
           border-radius: 999px;
           background:
-            radial-gradient(circle at 50% 0%, color-mix(in oklab, var(--violet) 16%, transparent), transparent 62%),
-            color-mix(in oklab, var(--background) 72%, transparent);
+            linear-gradient(180deg, color-mix(in oklab, var(--foreground) 7%, transparent), transparent),
+            color-mix(in oklab, var(--background) 54%, transparent);
           box-shadow:
-            inset 0 1px 0 color-mix(in oklab, var(--foreground) 9%, transparent),
-            0 14px 34px color-mix(in oklab, var(--background) 82%, transparent);
-          backdrop-filter: blur(14px) saturate(1.15);
-          -webkit-backdrop-filter: blur(14px) saturate(1.15);
-          z-index: 4;
+            inset 0 1px 0 color-mix(in oklab, var(--foreground) 8%, transparent),
+            0 10px 26px color-mix(in oklab, var(--background) 72%, transparent);
+          backdrop-filter: blur(18px) saturate(1.1);
+          -webkit-backdrop-filter: blur(18px) saturate(1.1);
+          z-index: 5;
         }
         .services-swiper-wrapper .swiper-pagination-bullet {
-          width: 6px;
-          height: 6px;
+          width: 5px;
+          height: 5px;
           margin: 0 !important;
-          background: color-mix(in oklab, var(--foreground) 32%, transparent);
+          background: color-mix(in oklab, var(--foreground) 24%, transparent);
           opacity: 1;
           border-radius: 999px;
           box-shadow: none;
@@ -473,20 +506,20 @@ export function ServicesCarousel() {
             opacity 0.38s cubic-bezier(0.22, 0.61, 0.36, 1);
         }
         .services-swiper-wrapper .swiper-pagination-bullet-active {
-          width: 24px;
-          height: 6px;
+          width: 22px;
+          height: 5px;
           background: linear-gradient(
             90deg,
-            color-mix(in oklab, var(--violet) 82%, var(--foreground) 18%),
-            color-mix(in oklab, var(--magenta) 78%, var(--foreground) 16%)
+            color-mix(in oklab, var(--violet) 74%, var(--foreground) 10%),
+            color-mix(in oklab, var(--magenta) 68%, var(--foreground) 10%)
           );
           border-radius: 999px;
           box-shadow:
-            0 0 10px color-mix(in oklab, var(--violet) 28%, transparent),
-            inset 0 1px 0 color-mix(in oklab, var(--foreground) 28%, transparent);
+            0 0 8px color-mix(in oklab, var(--violet) 22%, transparent),
+            inset 0 1px 0 color-mix(in oklab, var(--foreground) 18%, transparent);
         }
         .services-swiper-wrapper .swiper-pagination-bullet:not(.swiper-pagination-bullet-active):hover {
-          background: color-mix(in oklab, var(--foreground) 48%, transparent);
+          background: color-mix(in oklab, var(--foreground) 38%, transparent);
         }
         .services-swiper-wrapper .swiper-pagination-bullet-active-main,
         .services-swiper-wrapper .swiper-pagination-bullet-active-prev,

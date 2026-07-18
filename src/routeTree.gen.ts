@@ -28,6 +28,7 @@ import { Route as ManualLeadResearchRouteImport } from './routes/manual-lead-res
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as LoadingRouteImport } from './routes/loading'
 import { Route as LinkedinSalesNavigatorLeadsRouteImport } from './routes/linkedin-sales-navigator-leads'
+import { Route as LightPreviewRouteImport } from './routes/light-preview'
 import { Route as ImportPreviewRouteImport } from './routes/import-preview'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as BlogRouteImport } from './routes/blog'
@@ -145,6 +146,11 @@ const LinkedinSalesNavigatorLeadsRoute =
     path: '/linkedin-sales-navigator-leads',
     getParentRoute: () => rootRouteImport,
   } as any)
+const LightPreviewRoute = LightPreviewRouteImport.update({
+  id: '/light-preview',
+  path: '/light-preview',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ImportPreviewRoute = ImportPreviewRouteImport.update({
   id: '/import-preview',
   path: '/import-preview',
@@ -259,6 +265,7 @@ export interface FileRoutesByFullPath {
   '/blog': typeof BlogRouteWithChildren
   '/contact': typeof ContactRoute
   '/import-preview': typeof ImportPreviewRoute
+  '/light-preview': typeof LightPreviewRoute
   '/linkedin-sales-navigator-leads': typeof LinkedinSalesNavigatorLeadsRoute
   '/loading': typeof LoadingRoute
   '/login': typeof LoginRoute
@@ -299,6 +306,7 @@ export interface FileRoutesByTo {
   '/blog': typeof BlogRouteWithChildren
   '/contact': typeof ContactRoute
   '/import-preview': typeof ImportPreviewRoute
+  '/light-preview': typeof LightPreviewRoute
   '/linkedin-sales-navigator-leads': typeof LinkedinSalesNavigatorLeadsRoute
   '/loading': typeof LoadingRoute
   '/login': typeof LoginRoute
@@ -341,6 +349,7 @@ export interface FileRoutesById {
   '/blog': typeof BlogRouteWithChildren
   '/contact': typeof ContactRoute
   '/import-preview': typeof ImportPreviewRoute
+  '/light-preview': typeof LightPreviewRoute
   '/linkedin-sales-navigator-leads': typeof LinkedinSalesNavigatorLeadsRoute
   '/loading': typeof LoadingRoute
   '/login': typeof LoginRoute
@@ -383,6 +392,7 @@ export interface FileRouteTypes {
     | '/blog'
     | '/contact'
     | '/import-preview'
+    | '/light-preview'
     | '/linkedin-sales-navigator-leads'
     | '/loading'
     | '/login'
@@ -423,6 +433,7 @@ export interface FileRouteTypes {
     | '/blog'
     | '/contact'
     | '/import-preview'
+    | '/light-preview'
     | '/linkedin-sales-navigator-leads'
     | '/loading'
     | '/login'
@@ -464,6 +475,7 @@ export interface FileRouteTypes {
     | '/blog'
     | '/contact'
     | '/import-preview'
+    | '/light-preview'
     | '/linkedin-sales-navigator-leads'
     | '/loading'
     | '/login'
@@ -506,6 +518,7 @@ export interface RootRouteChildren {
   BlogRoute: typeof BlogRouteWithChildren
   ContactRoute: typeof ContactRoute
   ImportPreviewRoute: typeof ImportPreviewRoute
+  LightPreviewRoute: typeof LightPreviewRoute
   LinkedinSalesNavigatorLeadsRoute: typeof LinkedinSalesNavigatorLeadsRoute
   LoadingRoute: typeof LoadingRoute
   LoginRoute: typeof LoginRoute
@@ -668,6 +681,13 @@ declare module '@tanstack/react-router' {
       path: '/linkedin-sales-navigator-leads'
       fullPath: '/linkedin-sales-navigator-leads'
       preLoaderRoute: typeof LinkedinSalesNavigatorLeadsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/light-preview': {
+      id: '/light-preview'
+      path: '/light-preview'
+      fullPath: '/light-preview'
+      preLoaderRoute: typeof LightPreviewRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/import-preview': {
@@ -846,6 +866,7 @@ const rootRouteChildren: RootRouteChildren = {
   BlogRoute: BlogRouteWithChildren,
   ContactRoute: ContactRoute,
   ImportPreviewRoute: ImportPreviewRoute,
+  LightPreviewRoute: LightPreviewRoute,
   LinkedinSalesNavigatorLeadsRoute: LinkedinSalesNavigatorLeadsRoute,
   LoadingRoute: LoadingRoute,
   LoginRoute: LoginRoute,

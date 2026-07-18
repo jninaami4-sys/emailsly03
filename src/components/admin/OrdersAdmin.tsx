@@ -27,11 +27,11 @@ function money(cents: number, currency = "USD") {
 
 export function OrdersAdmin() {
   const qc = useQueryClient();
-  const listFn = useServerFn(adminListOrders);
-  const statsFn = useServerFn(adminOrderStats);
-  const archiveFn = useServerFn(adminArchiveOrders);
-  const restoreFn = useServerFn(adminRestoreOrders);
-  const bulkDeleteFn = useServerFn(adminDeleteOrders);
+  const listFn = adminListOrders;
+  const statsFn = adminOrderStats;
+  const archiveFn = adminArchiveOrders;
+  const restoreFn = adminRestoreOrders;
+  const bulkDeleteFn = adminDeleteOrders;
 
   const [view, setView] = useState<"active" | "archived">("active");
   const [status, setStatus] = useState("all");
@@ -501,7 +501,7 @@ function StatusPill({ value }: { value: string }) {
 }
 
 function InlineStatusSelect({ order, onDone }: { order: any; onDone: () => void }) {
-  const fn = useServerFn(adminSetStatus);
+  const fn = adminSetStatus;
   const [value, setValue] = useState<string>(order.status);
   const m = useMutation({
     mutationFn: (next: string) => fn({ data: { id: order.id, status: next } }),
@@ -540,7 +540,7 @@ function InlineStatusSelect({ order, onDone }: { order: any; onDone: () => void 
 }
 
 function DeliverDialog({ order, onClose, onDone }: { order: any; onClose: () => void; onDone: () => void }) {
-  const fn = useServerFn(adminDeliverOrder);
+  const fn = adminDeliverOrder;
   const [url, setUrl] = useState(order.delivery_url ?? "");
   const [notes, setNotes] = useState(order.delivery_notes ?? "");
   const m = useMutation({
@@ -595,7 +595,7 @@ function DeliverDialog({ order, onClose, onDone }: { order: any; onClose: () => 
 }
 
 function CancelDialog({ order, onClose, onDone }: { order: any; onClose: () => void; onDone: () => void }) {
-  const fn = useServerFn(adminCancelOrder);
+  const fn = adminCancelOrder;
   const [reason, setReason] = useState("");
   const [refund, setRefund] = useState(false);
   const m = useMutation({
@@ -643,7 +643,7 @@ function CancelDialog({ order, onClose, onDone }: { order: any; onClose: () => v
 }
 
 function MagicLinkButton({ email }: { email: string }) {
-  const fn = useServerFn(adminSendMagicLink);
+  const fn = adminSendMagicLink;
   const m = useMutation({ mutationFn: () => fn({ data: { email } }) });
   return (
     <button
@@ -687,8 +687,8 @@ function OrderFormDialog({
   onDone: () => void;
 }) {
   const isEdit = !!order;
-  const createFn = useServerFn(adminCreateOrder);
-  const updateFn = useServerFn(adminUpdateOrder);
+  const createFn = adminCreateOrder;
+  const updateFn = adminUpdateOrder;
   const [form, setForm] = useState({
     email: order?.email ?? "",
     service_label: order?.service_label ?? "",
@@ -816,7 +816,7 @@ function Field({ label, required, children }: { label: string; required?: boolea
 }
 
 function DeleteDialog({ order, onClose, onDone }: { order: any; onClose: () => void; onDone: () => void }) {
-  const fn = useServerFn(adminDeleteOrder);
+  const fn = adminDeleteOrder;
   const m = useMutation({
     mutationFn: () => fn({ data: { id: order.id } }),
     onSuccess: () => { onDone(); onClose(); },

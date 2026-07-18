@@ -28,7 +28,7 @@ function money(cents: number, currency = "USD") {
 
 function InvoicePage() {
   const { orderId } = Route.useParams();
-  const getFn = useServerFn(getMyOrder);
+  const getFn = getMyOrder;
   const { data, isLoading } = useQuery({
     queryKey: ["my-order", orderId],
     queryFn: () => getFn({ data: { id: orderId } }),

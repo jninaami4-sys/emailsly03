@@ -222,9 +222,9 @@ function LiveChatsPane() {
 // Orders
 // ---------------------------------------------------------------------------
 function OrdersPane() {
-  const listFn = useServerFn(adminListOrders);
+  const listFn = adminListOrders;
   const upsertFn = useServerFn(adminUpsertOrder);
-  const delFn = useServerFn(adminDeleteOrder);
+  const delFn = adminDeleteOrder;
   const qc = useQueryClient();
 
   const { data: orders = [], isLoading } = useQuery({

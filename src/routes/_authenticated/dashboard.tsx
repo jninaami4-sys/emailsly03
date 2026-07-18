@@ -40,9 +40,9 @@ type Tab = "orders" | "downloads" | "invoices" | "support" | "profile";
 function DashboardPage() {
   const { user } = useAuth();
   const [tab, setTab] = useState<Tab>("orders");
-  const listFn = useServerFn(listMyOrders);
+  const listFn = listMyOrders;
   const orders = useQuery({ queryKey: ["my-orders"], queryFn: () => listFn() });
-  const profileFn = useServerFn(getMyProfile);
+  const profileFn = getMyProfile;
   const profile = useQuery({ queryKey: ["my-profile"], queryFn: () => profileFn() });
 
   const data = orders.data ?? [];
@@ -620,8 +620,8 @@ function StatusPill({ value }: { value: string }) {
 
 function OrderDrawer({ id, onClose }: { id: string; onClose: () => void }) {
   const qc = useQueryClient();
-  const getFn = useServerFn(getMyOrder);
-  const revFn = useServerFn(requestRevision);
+  const getFn = getMyOrder;
+  const revFn = requestRevision;
   const { data, isLoading } = useQuery({
     queryKey: ["my-order", id],
     queryFn: () => getFn({ data: { id } }),
@@ -932,8 +932,8 @@ function InvoicesTab({ orders }: { orders: any[] }) {
 /* ------------------------------ profile ------------------------------ */
 
 function ProfileTab() {
-  const getFn = useServerFn(getMyProfile);
-  const updateFn = useServerFn(updateMyProfile);
+  const getFn = getMyProfile;
+  const updateFn = updateMyProfile;
   const qc = useQueryClient();
   const { data, isLoading } = useQuery({ queryKey: ["my-profile"], queryFn: () => getFn() });
   const [form, setForm] = useState<{ full_name: string; company: string; phone: string; country: string }>({

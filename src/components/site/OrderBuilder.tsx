@@ -124,7 +124,7 @@ export function OrderBuilder() {
   const [promoApplied, setPromoApplied] = useState<PromoResult | null>(null);
   const [promoBusy, setPromoBusy] = useState(false);
   const validatePromoFn = useServerFn(validatePromo);
-  const recordOrderFn = useServerFn(recordMyOrder);
+  const recordOrderFn = recordMyOrder;
   const [agree, setAgree] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");

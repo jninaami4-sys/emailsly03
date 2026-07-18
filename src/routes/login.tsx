@@ -265,15 +265,17 @@ function AuthPage() {
         if (error) throw error;
         // If confirmation is required, Supabase returns a user with no session.
         const needsConfirmation = !data.session;
-        setInfo(
-          needsConfirmation
-            ? "Check your email to confirm your account, then sign in."
-            : "Account created. You can sign in now.",
-        );
-        setSignUpSuccess(true);
-        setUnconfirmedEmail(needsConfirmation ? email : null);
-        setPassword("");
-        setMode("signin");
+        if (needsConfirmation) {
+          setPendingVerify(email);
+          setOtpCode("");
+          setOtpError(null);
+          setInfo("We sent a 6-digit verification code to your email.");
+        } else {
+          setInfo("Account created. You can sign in now.");
+          setSignUpSuccess(true);
+          setPassword("");
+          setMode("signin");
+        }
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) {

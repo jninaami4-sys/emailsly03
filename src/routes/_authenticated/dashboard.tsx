@@ -158,7 +158,7 @@ function DashboardPage() {
           {/* Quick actions */}
           <section className="mb-8">
             <SectionHeading eyebrow="Shortcuts" title="Jump back in" />
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5 [&>*:nth-child(5)]:col-span-2 sm:[&>*:nth-child(5)]:col-span-1">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
               <QuickAction
                 to="/store"
                 icon={<ShoppingBag className="size-5" />}
@@ -188,8 +188,10 @@ function DashboardPage() {
                 icon={<Headphones className="size-5" />}
                 label="Support"
                 sub="24h response"
+                className="col-span-2 sm:col-span-1"
               />
             </div>
+
           </section>
 
           {/* Main grid */}

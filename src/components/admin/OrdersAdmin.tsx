@@ -29,13 +29,21 @@ export function OrdersAdmin() {
   const qc = useQueryClient();
   const listFn = useServerFn(adminListOrders);
   const statsFn = useServerFn(adminOrderStats);
+  const archiveFn = useServerFn(adminArchiveOrders);
+  const restoreFn = useServerFn(adminRestoreOrders);
+  const bulkDeleteFn = useServerFn(adminDeleteOrders);
+
+  const [view, setView] = useState<"active" | "archived">("active");
   const [status, setStatus] = useState("all");
   const [search, setSearch] = useState("");
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [undo, setUndo] = useState<{ ids: string[]; label: string } | null>(null);
+  const [confirmBulkDelete, setConfirmBulkDelete] = useState(false);
 
   const stats = useQuery({ queryKey: ["admin-order-stats"], queryFn: () => statsFn() });
   const orders = useQuery({
-    queryKey: ["admin-orders", status, search],
-    queryFn: () => listFn({ data: { status, search: search || undefined, limit: 200 } }),
+    queryKey: ["admin-orders", view, status, search],
+    queryFn: () => listFn({ data: { view, status, search: search || undefined, limit: 200 } }),
   });
 
   const [deliverFor, setDeliverFor] = useState<any | null>(null);
@@ -49,8 +57,58 @@ export function OrdersAdmin() {
     qc.invalidateQueries({ queryKey: ["admin-order-stats"] });
   };
 
+  useEffect(() => {
+    setSelected(new Set());
+  }, [view, status, search]);
+
+  // Auto-dismiss undo after 8s
+  useEffect(() => {
+    if (!undo) return;
+    const t = setTimeout(() => setUndo(null), 8000);
+    return () => clearTimeout(t);
+  }, [undo]);
+
   const s = stats.data;
   const rows = orders.data ?? [];
+  const allSelected = rows.length > 0 && rows.every((r: any) => selected.has(r.id));
+  const toggleAll = () => {
+    if (allSelected) setSelected(new Set());
+    else setSelected(new Set(rows.map((r: any) => r.id)));
+  };
+  const toggleOne = (id: string) => {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const bulkArchive = useMutation({
+    mutationFn: (ids: string[]) => archiveFn({ data: { ids } }),
+    onSuccess: (_r, ids) => {
+      setUndo({ ids, label: `${ids.length} order${ids.length > 1 ? "s" : ""} archived` });
+      setSelected(new Set());
+      refresh();
+    },
+  });
+  const bulkRestore = useMutation({
+    mutationFn: (ids: string[]) => restoreFn({ data: { ids } }),
+    onSuccess: () => {
+      setSelected(new Set());
+      setUndo(null);
+      refresh();
+    },
+  });
+  const bulkDelete = useMutation({
+    mutationFn: (ids: string[]) => bulkDeleteFn({ data: { ids } }),
+    onSuccess: () => {
+      setSelected(new Set());
+      setConfirmBulkDelete(false);
+      refresh();
+    },
+  });
+
 
   return (
     <section className="rounded-2xl border border-border bg-card p-5">

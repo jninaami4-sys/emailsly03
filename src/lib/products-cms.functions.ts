@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { createClient } from "@supabase/supabase-js";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import type { Database } from "@/integrations/supabase/types";
+import { requireAdmin } from "@/lib/require-admin";
 import { z } from "zod";
 import type { Product } from "./products";
 
@@ -91,6 +92,7 @@ export const listPublicProducts = createServerFn({ method: "GET" }).handler(asyn
 export const adminListProducts = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
+    await requireAdmin(context);
     const { data, error } = await context.supabase
       .from("custom_products" as never)
       .select("*")
@@ -124,6 +126,7 @@ export const adminUpsertProduct = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => ProductInput.parse(input))
   .handler(async ({ data, context }) => {
+    await requireAdmin(context);
     const payload: Record<string, unknown> = { ...data };
     if (!payload.id) delete payload.id;
     if (payload.compare_at_price === undefined) payload.compare_at_price = null;
@@ -143,6 +146,7 @@ export const adminDeleteProduct = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
+    await requireAdmin(context);
     const { error } = await context.supabase
       .from("custom_products" as never)
       .delete()

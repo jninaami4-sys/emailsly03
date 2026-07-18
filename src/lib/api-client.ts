@@ -151,6 +151,65 @@ const del = <T = unknown>(path: string) => api<T>(path, { method: "DELETE" });
 const patch = <T = unknown>(path: string, body?: unknown) =>
   api<T>(path, { method: "PATCH", body });
 
+// -------- Health check --------
+export type HealthResult = {
+  ok: boolean;
+  baseUrl: string;       // resolved base ("" = same-origin)
+  effectiveUrl: string;  // full URL that was probed
+  status: number;        // HTTP status, 0 on network error
+  latencyMs: number;
+  message: string;       // human readable
+  payload?: unknown;     // parsed JSON if any
+};
+
+export async function checkApiHealth(timeoutMs = 4000): Promise<HealthResult> {
+  const base = BASE;
+  const origin = typeof window !== "undefined" ? window.location.origin : "";
+  const effectiveUrl = `${base || origin}/api/health`;
+  const started = Date.now();
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), timeoutMs);
+  try {
+    const res = await fetch(effectiveUrl, {
+      method: "GET",
+      headers: { Accept: "application/json" },
+      signal: ctrl.signal,
+      credentials: "include",
+    });
+    const latencyMs = Date.now() - started;
+    const text = await res.text();
+    const ct = res.headers.get("content-type") || "";
+    const looksHtml = ct.includes("text/html") || text.trimStart().startsWith("<");
+    if (looksHtml) {
+      return {
+        ok: false, baseUrl: base, effectiveUrl, status: res.status, latencyMs,
+        message: `Got HTML instead of JSON (HTTP ${res.status}) — PHP /api/health not mounted at this origin.`,
+      };
+    }
+    const payload = text ? safeJson(text) : null;
+    if (!res.ok) {
+      return {
+        ok: false, baseUrl: base, effectiveUrl, status: res.status, latencyMs,
+        message: `HTTP ${res.status} ${res.statusText || ""}`.trim(),
+        payload,
+      };
+    }
+    return {
+      ok: true, baseUrl: base, effectiveUrl, status: res.status, latencyMs,
+      message: "OK", payload,
+    };
+  } catch (e) {
+    const latencyMs = Date.now() - started;
+    const msg = e instanceof Error ? e.message : String(e);
+    return {
+      ok: false, baseUrl: base, effectiveUrl, status: 0, latencyMs,
+      message: msg.includes("aborted") ? `Timed out after ${timeoutMs}ms` : `Network error: ${msg}`,
+    };
+  } finally {
+    clearTimeout(t);
+  }
+}
+
 // -------- Auth helpers --------
 export const authApi = {
   register: (input: { email: string; password: string; full_name?: string; referral_code?: string }) =>

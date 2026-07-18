@@ -275,20 +275,38 @@ function Home() {
                 <p className="mt-1 text-sm text-foreground/60">250M+ contacts across 180+ countries, GDPR &amp; CCPA compliant.</p>
               </article>
 
-              <button
-                onClick={openOrderDrawer}
-                className="group relative overflow-hidden rounded-3xl border border-indigo/40 bg-gradient-to-br from-indigo to-[oklch(0.42_0.22_275)] p-6 text-left text-white transition-transform hover:-translate-y-0.5"
-              >
-                <div className="pointer-events-none absolute -right-8 -top-8 size-40 rounded-full bg-white/15 blur-2xl" />
+              <article className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] p-6">
+                <div className="pointer-events-none absolute -right-10 -top-10 size-48 rounded-full bg-indigo/20 blur-3xl" />
                 <div className="relative">
-                  <PremiumSparkles className="size-6" />
-                  <h3 className="mt-4 font-display text-lg font-bold">Get your price in 30 seconds</h3>
-                  <p className="mt-1 text-sm text-white/80">Slide out the builder, pick a service, see the exact cost.</p>
-                  <span className="mt-4 inline-flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-widest">
-                    Open builder <PremiumArrowUpRight className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                  </span>
+                  <div className="flex items-center gap-3">
+                    <div className="grid size-10 place-items-center rounded-xl bg-indigo/15 text-indigo">
+                      <PremiumStar className="size-5" />
+                    </div>
+                    <div className="flex items-center gap-2 rounded-full border border-emerald/30 bg-emerald/10 px-2.5 py-1">
+                      <span className="relative flex size-2">
+                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald opacity-75" />
+                        <span className="relative inline-flex size-2 rounded-full bg-emerald" />
+                      </span>
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-emerald">Live verification</span>
+                    </div>
+                  </div>
+                  <h3 className="mt-4 font-display text-lg font-bold">Data that never sleeps</h3>
+                  <p className="mt-1 text-sm text-foreground/60">Our verification pipeline runs 24/7 so every record you export is fresh.</p>
+                  <div className="mt-5 flex items-end gap-1.5">
+                    {[40, 65, 45, 80, 55, 90, 70, 100, 85, 60].map((h, i) => (
+                      <span
+                        key={i}
+                        className="w-full rounded-t-sm bg-indigo/60"
+                        style={{
+                          height: `${h * 0.55}px`,
+                          opacity: 0.4 + (i / 20),
+                          animation: `pulse-bar 1.8s ease-in-out ${i * 0.1}s infinite alternate`,
+                        }}
+                      />
+                    ))}
+                  </div>
                 </div>
-              </button>
+              </article>
             </div>
           </div>
         </section>

@@ -9,7 +9,6 @@ import "swiper/css/pagination";
 import { openOrderDrawer } from "@/components/site/OrderDrawer";
 import {
   PremiumArrowUpRight,
-  PremiumSparkles,
   PremiumTarget,
   PremiumGlobe,
   PremiumLayers,

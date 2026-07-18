@@ -15,7 +15,7 @@ export const Route = createFileRoute("/blog/$slug")({
     // Prefer DB-managed post; fall back to static playbook posts.
     let post: BlogPost | null | undefined = null;
     try {
-      post = await getPublishedBlogPost({ data: { slug: params.slug } });
+      post = await getPublishedBlogPost({ slug: params.slug });
     } catch {
       post = null;
     }
@@ -23,7 +23,7 @@ export const Route = createFileRoute("/blog/$slug")({
     if (!post) throw notFound();
     let seo = null as Awaited<ReturnType<typeof getBlogSeoOverride>>;
     try {
-      seo = await getBlogSeoOverride({ data: { slug: params.slug } });
+      seo = await getBlogSeoOverride({ slug: params.slug });
     } catch {
       seo = null;
     }

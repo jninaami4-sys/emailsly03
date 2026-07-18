@@ -1,5 +1,4 @@
 import { useEffect, useRef } from "react";
-import { useServerFn } from "@tanstack/react-start";
 import { trackBlogEvent, type BlogEventType } from "@/lib/blog-analytics.functions";
 
 const SESSION_KEY = "blog-analytics-session";
@@ -20,7 +19,7 @@ function getSessionId(): string {
 }
 
 export function BlogAnalyticsTracker({ slug }: { slug: string }) {
-  const trackFn = useServerFn(trackBlogEvent);
+  const trackFn = trackBlogEvent;
   const trackRef = useRef(trackFn);
   trackRef.current = trackFn;
 
@@ -31,9 +30,7 @@ export function BlogAnalyticsTracker({ slug }: { slug: string }) {
 
     const send = (event_type: BlogEventType, meta?: Record<string, unknown>) => {
       trackRef
-        .current({
-          data: { slug, event_type, session_id: sessionId, path, referrer, meta },
-        })
+        .current({ slug, event_type, session_id: sessionId, path, referrer, meta })
         .catch(() => {});
     };
 

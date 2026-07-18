@@ -1,6 +1,5 @@
 import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import {
   adminListProducts,
@@ -91,9 +90,9 @@ const CATEGORIES = [
 
 export function ProductsAdmin() {
   const qc = useQueryClient();
-  const listFn = useServerFn(adminListProducts);
-  const upsertFn = useServerFn(adminUpsertProduct);
-  const deleteFn = useServerFn(adminDeleteProduct);
+  const listFn = adminListProducts;
+  const upsertFn = adminUpsertProduct;
+  const deleteFn = adminDeleteProduct;
 
   const { data: products, isLoading } = useQuery({
     queryKey: ["admin-products"],
@@ -118,7 +117,7 @@ export function ProductsAdmin() {
 
   const upsertMut = useMutation({
     mutationFn: (payload: Record<string, unknown>) =>
-      upsertFn({ data: payload as never }),
+      upsertFn(payload as never),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin-products"] });
       qc.invalidateQueries({ queryKey: ["public-products"] });
@@ -131,7 +130,7 @@ export function ProductsAdmin() {
   });
 
   const deleteMut = useMutation({
-    mutationFn: (id: string) => deleteFn({ data: { id } }),
+    mutationFn: (id: string) => deleteFn({ id }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin-products"] });
       qc.invalidateQueries({ queryKey: ["public-products"] });

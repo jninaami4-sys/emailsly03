@@ -1,6 +1,5 @@
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { Loader2, RefreshCw, ExternalLink, Search } from "@/components/admin/AdminIcons";
 import { BLOG_POSTS } from "@/lib/blog-posts";
 import {
@@ -16,8 +15,8 @@ const RANGES = [
 ];
 
 export function BlogAnalyticsAdmin() {
-  const summaryFn = useServerFn(adminBlogAnalyticsSummary);
-  const detailFn = useServerFn(adminBlogAnalyticsForSlug);
+  const summaryFn = adminBlogAnalyticsSummary;
+  const detailFn = adminBlogAnalyticsForSlug;
 
   const [days, setDays] = useState(30);
   const [query, setQuery] = useState("");
@@ -25,13 +24,13 @@ export function BlogAnalyticsAdmin() {
 
   const summary = useQuery({
     queryKey: ["admin-blog-analytics", days],
-    queryFn: () => summaryFn({ data: { days } }),
+    queryFn: () => summaryFn({ days }),
     staleTime: 30_000,
   });
 
   const detail = useQuery({
     queryKey: ["admin-blog-analytics-detail", slug, days],
-    queryFn: () => detailFn({ data: { slug: slug!, days } }),
+    queryFn: () => detailFn({ slug: slug!, days }),
     enabled: !!slug,
     staleTime: 30_000,
   });

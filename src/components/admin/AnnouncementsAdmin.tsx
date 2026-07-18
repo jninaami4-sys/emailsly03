@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { Megaphone, Plus, Save, Trash2, Eye, EyeOff, Loader2, Upload, ImageIcon, ImageOff, Monitor, Smartphone, Target, Users, CalendarClock, ArrowUpDown, ChevronUp, ChevronDown, Crop as CropIcon } from "@/components/admin/AdminIcons";
 import {
   listAnnouncements,
@@ -83,9 +82,9 @@ const STYLE_OPTIONS: { value: AnnouncementImageStyle; label: string; hint: strin
 
 export function AnnouncementsAdmin() {
   const qc = useQueryClient();
-  const listFn = useServerFn(listAnnouncements);
-  const upsertFn = useServerFn(upsertAnnouncement);
-  const deleteFn = useServerFn(deleteAnnouncement);
+  const listFn = listAnnouncements;
+  const upsertFn = upsertAnnouncement;
+  const deleteFn = deleteAnnouncement;
 
   const { data: list = [], isLoading, error } = useQuery({
     queryKey: ["announcements", "admin"],
@@ -168,7 +167,7 @@ export function AnnouncementsAdmin() {
 
 
   const save = useMutation({
-    mutationFn: (input: typeof emptyDraft) => upsertFn({ data: input }),
+    mutationFn: (input: typeof emptyDraft) => upsertFn(input),
     onSuccess: () => {
       setStatus("Saved");
       qc.invalidateQueries({ queryKey: ["announcements", "admin"] });
@@ -179,7 +178,7 @@ export function AnnouncementsAdmin() {
   });
 
   const del = useMutation({
-    mutationFn: (id: string) => deleteFn({ data: { id } }),
+    mutationFn: (id: string) => deleteFn({ id }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["announcements", "admin"] });
       qc.invalidateQueries({ queryKey: ["active-announcements"] });
@@ -196,7 +195,6 @@ export function AnnouncementsAdmin() {
       const nextPriority =
         dir === "up" ? (neighbor.priority ?? 0) + 1 : (neighbor.priority ?? 0) - 1;
       await upsertFn({
-        data: {
           id: a.id,
           enabled: a.enabled,
           title: a.title,
@@ -214,8 +212,7 @@ export function AnnouncementsAdmin() {
           start_at: a.start_at,
           end_at: a.end_at,
           priority: nextPriority,
-        },
-      });
+        });
       return { skipped: false as const };
     },
     onSuccess: () => {

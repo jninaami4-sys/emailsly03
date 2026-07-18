@@ -1,6 +1,5 @@
 import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { PRODUCTS } from "@/lib/products";
 import {
   deleteProductDetails,
@@ -30,9 +29,9 @@ const EMPTY: FormState = {
 
 export function ProductDetailsAdmin() {
   const qc = useQueryClient();
-  const listFn = useServerFn(listProductDetails);
-  const upsertFn = useServerFn(upsertProductDetails);
-  const deleteFn = useServerFn(deleteProductDetails);
+  const listFn = listProductDetails;
+  const upsertFn = upsertProductDetails;
+  const deleteFn = deleteProductDetails;
 
   const { data: rows, isLoading } = useQuery({
     queryKey: ["admin-product-details"],
@@ -75,7 +74,7 @@ export function ProductDetailsAdmin() {
   };
 
   const saveMut = useMutation({
-    mutationFn: () => upsertFn({ data: { slug: selectedSlug, ...form } }),
+    mutationFn: () => upsertFn({ slug: selectedSlug, ...form }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin-product-details"] });
       qc.invalidateQueries({ queryKey: ["product-details", selectedSlug] });
@@ -84,7 +83,7 @@ export function ProductDetailsAdmin() {
   });
 
   const deleteMut = useMutation({
-    mutationFn: () => deleteFn({ data: { slug: selectedSlug } }),
+    mutationFn: () => deleteFn({ slug: selectedSlug }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin-product-details"] });
       qc.invalidateQueries({ queryKey: ["product-details", selectedSlug] });

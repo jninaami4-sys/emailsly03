@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { PRODUCTS, type Product } from "@/lib/products";
 import { listPublicProducts } from "@/lib/products-cms.functions";
 
@@ -8,7 +7,7 @@ import { listPublicProducts } from "@/lib/products-cms.functions";
  * from the database. DB products with a slug matching a static product override it.
  */
 export function useAllProducts(): Product[] {
-  const listFn = useServerFn(listPublicProducts);
+  const listFn = listPublicProducts;
   const { data } = useQuery({
     queryKey: ["public-products"],
     queryFn: () => listFn(),

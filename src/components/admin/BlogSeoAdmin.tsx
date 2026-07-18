@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { Loader2, Save, RefreshCw, Search, ExternalLink } from "@/components/admin/AdminIcons";
 import { BLOG_POSTS } from "@/lib/blog-posts";
 import { OG_IMAGES } from "@/lib/og-images";
@@ -30,9 +29,9 @@ function toDraft(o: BlogSeoOverride | undefined | null): Draft {
 }
 
 export function BlogSeoAdmin() {
-  const listFn = useServerFn(adminListBlogSeoOverrides);
-  const upsertFn = useServerFn(adminUpsertBlogSeo);
-  const resetFn = useServerFn(adminResetBlogSeo);
+  const listFn = adminListBlogSeoOverrides;
+  const upsertFn = adminUpsertBlogSeo;
+  const resetFn = adminResetBlogSeo;
 
   const { data, isLoading, isFetching, refetch } = useQuery({
     queryKey: ["admin-blog-seo"],
@@ -79,14 +78,12 @@ export function BlogSeoAdmin() {
     setSaved(null);
     try {
       await upsertFn({
-        data: {
           slug: post.slug,
           meta_description: draft.meta_description.trim() || null,
           canonical_url: draft.canonical_url.trim() || null,
           og_image: draft.og_image.trim() || null,
           social_title: draft.social_title.trim() || null,
-        },
-      });
+        });
       await refetch();
       setSaved("Saved");
       setTimeout(() => setSaved(null), 2000);
@@ -101,7 +98,7 @@ export function BlogSeoAdmin() {
     if (!confirm("Remove overrides and restore defaults for this post?")) return;
     setBusy(true);
     try {
-      await resetFn({ data: { slug: post.slug } });
+      await resetFn({ slug: post.slug });
       await refetch();
       setDraft(BLANK);
       setSaved("Reset to defaults");

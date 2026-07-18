@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { useRouterState } from "@tanstack/react-router";
 import { X } from "lucide-react";
 import { listActiveAnnouncements, type Announcement } from "@/lib/announcements.functions";
@@ -44,7 +43,7 @@ function audienceMatches(a: Announcement, v: Viewer): boolean {
 }
 
 export function AnnouncementModal() {
-  const fetchFn = useServerFn(listActiveAnnouncements);
+  const fetchFn = listActiveAnnouncements;
   const { data: list } = useQuery({
     queryKey: ["active-announcements"],
     queryFn: () => fetchFn(),

@@ -1,6 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { ogImageMeta, OG_IMAGES, matchTheme } from "@/lib/og-images";
 import { SiteShell } from "@/components/site/SiteShell";
 import { BLOG_POSTS, formatPublishedAt, type BlogPost } from "@/lib/blog-posts";
@@ -31,7 +30,7 @@ export const Route = createFileRoute("/blog/")({
 });
 
 function BlogList() {
-  const listFn = useServerFn(listPublishedBlogPosts);
+  const listFn = listPublishedBlogPosts;
   const { data: dbPosts } = useQuery({
     queryKey: ["public-blog-posts"],
     queryFn: () => listFn(),

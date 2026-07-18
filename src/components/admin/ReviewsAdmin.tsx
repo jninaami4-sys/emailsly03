@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import {
   Loader2,
   Star,
@@ -26,8 +25,8 @@ const STATUS_TABS: Array<{ key: ReviewStatus | "all"; label: string }> = [
 ];
 
 export function ReviewsAdmin() {
-  const listFn = useServerFn(adminListReviews);
-  const moderateFn = useServerFn(moderateReview);
+  const listFn = adminListReviews;
+  const moderateFn = moderateReview;
   const [tab, setTab] = useState<ReviewStatus | "all">("pending");
 
   const { data, isLoading, refetch, isFetching } = useQuery({
@@ -43,7 +42,7 @@ export function ReviewsAdmin() {
   async function moderate(id: string, action: "approve" | "reject" | "delete", reason?: string) {
     setBusy(id);
     try {
-      await moderateFn({ data: { id, action, reason: reason ?? null } });
+      await moderateFn({ id, action, reason: reason ?? null });
       await refetch();
       setRejectFor(null);
       setRejectReason("");

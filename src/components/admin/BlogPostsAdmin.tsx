@@ -1,6 +1,5 @@
 import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import {
   adminListBlogPosts,
@@ -64,9 +63,9 @@ function slugify(text: string) {
 
 export function BlogPostsAdmin() {
   const qc = useQueryClient();
-  const list = useServerFn(adminListBlogPosts);
-  const upsert = useServerFn(adminUpsertBlogPost);
-  const del = useServerFn(adminDeleteBlogPost);
+  const list = adminListBlogPosts;
+  const upsert = adminUpsertBlogPost;
+  const del = adminDeleteBlogPost;
 
   const { data: posts, isLoading, error } = useQuery({
     queryKey: ["admin-blog-posts"],
@@ -111,7 +110,6 @@ export function BlogPostsAdmin() {
     mutationFn: async (f: FormState) => {
       const blocks = parseBlogMarkdown(f.content_md);
       return upsert({
-        data: {
           id: f.id ?? null,
           slug: f.slug,
           title: f.title,
@@ -129,8 +127,7 @@ export function BlogPostsAdmin() {
           published: f.published,
           content_md: f.content_md,
           content_blocks: blocks,
-        },
-      });
+        });
     },
     onSuccess: () => {
       toast.success("Blog post saved");
@@ -142,7 +139,7 @@ export function BlogPostsAdmin() {
   });
 
   const deleteMut = useMutation({
-    mutationFn: (id: string) => del({ data: { id } }),
+    mutationFn: (id: string) => del({ id }),
     onSuccess: () => {
       toast.success("Post deleted");
       qc.invalidateQueries({ queryKey: ["admin-blog-posts"] });

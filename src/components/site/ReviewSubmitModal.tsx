@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { useServerFn } from "@tanstack/react-start";
 import { Link } from "@tanstack/react-router";
 import {
   X,
@@ -148,7 +147,7 @@ function SubmitFlow({
   onClose: () => void;
   onSubmitted?: () => void;
 }) {
-  const submitFn = useServerFn(submitReview);
+  const submitFn = submitReview;
   const [step, setStep] = useState<Step>("kind");
   const [kind, setKind] = useState<Kind>("text");
 
@@ -240,7 +239,6 @@ function SubmitFlow({
       }
 
       await submitFn({
-        data: {
           kind,
           rating,
           body: body.trim() || null,
@@ -250,8 +248,7 @@ function SubmitFlow({
           videoPath,
           videoPosterPath: posterPath,
           durationSec: compressed?.durationSec ?? null,
-        },
-      });
+        });
 
       onSubmitted?.();
       setStep("done");

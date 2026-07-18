@@ -476,16 +476,56 @@ export const adminBlogApi = {
   destroy: (id: string) => del(`/api/admin/blog/posts/${id}`),
 };
 
+// -------- Blog SEO overrides --------
+export const blogSeoApi = {
+  get: (slug: string) => g<{ override: any | null }>(`/api/blog/seo/${encodeURIComponent(slug)}`),
+};
+export const adminBlogSeoApi = {
+  list: () => g<{ overrides: any[] }>("/api/admin/blog/seo"),
+  upsert: (body: unknown) => j("/api/admin/blog/seo", body, "PUT"),
+  destroy: (slug: string) => del(`/api/admin/blog/seo/${encodeURIComponent(slug)}`),
+};
+
+// -------- Blog analytics --------
+export const blogAnalyticsApi = {
+  track: (body: {
+    slug: string;
+    event_type: string;
+    session_id?: string;
+    meta?: Record<string, unknown>;
+    path?: string;
+    referrer?: string;
+  }) => api("/api/blog/analytics/track", { method: "POST", body, auth: false }),
+};
+export const adminBlogAnalyticsApi = {
+  summary: (query?: { days?: number }) =>
+    g<{ rows: any[] }>("/api/admin/blog/analytics/summary", query),
+  forSlug: (query: { slug: string; days?: number }) =>
+    g<{ report: any }>("/api/admin/blog/analytics/slug", query),
+};
+
+// -------- Product details (extended per-slug CMS) --------
+export const productDetailsApi = {
+  get: (slug: string) => g<{ details: any | null }>(`/api/product-details/${encodeURIComponent(slug)}`),
+};
+export const adminProductDetailsApi = {
+  list: () => g<{ items: any[] }>("/api/admin/product-details"),
+  upsert: (body: unknown) => j("/api/admin/product-details", body, "PUT"),
+  destroy: (slug: string) => del(`/api/admin/product-details/${encodeURIComponent(slug)}`),
+};
+
 // -------- Reviews --------
 export const reviewsApi = {
-  list: () => g<{ reviews: any[] }>("/api/reviews"),
-  create: (body: unknown) => j("/api/reviews", body),
+  list: () => g<{ reviews: any[]; count: number }>("/api/reviews"),
+  submit: (body: unknown) => j<{ id: string }>("/api/reviews", body),
+  listMine: () => g<{ reviews: any[] }>("/api/reviews/mine"),
 };
 export const adminReviewsApi = {
   list: () => g<{ reviews: any[] }>("/api/admin/reviews"),
-  moderate: (id: string, status: "approved" | "rejected" | "pending") =>
-    patch(`/api/admin/reviews/${id}`, { status }),
+  moderate: (id: string, body: { action: "approve" | "reject" | "delete"; reason?: string | null }) =>
+    j(`/api/admin/reviews/${id}/moderate`, body),
 };
+
 
 // -------- Support tickets --------
 export const ticketsApi = {
@@ -602,6 +642,12 @@ export default {
   uploads: uploadsApi,
   blog: blogApi,
   adminBlog: adminBlogApi,
+  blogSeo: blogSeoApi,
+  adminBlogSeo: adminBlogSeoApi,
+  blogAnalytics: blogAnalyticsApi,
+  adminBlogAnalytics: adminBlogAnalyticsApi,
+  productDetails: productDetailsApi,
+  adminProductDetails: adminProductDetailsApi,
   reviews: reviewsApi,
   adminReviews: adminReviewsApi,
   tickets: ticketsApi,
@@ -623,3 +669,4 @@ export default {
   adminSocialLinks: adminSocialLinksApi,
   stripe: stripeApi,
 };
+

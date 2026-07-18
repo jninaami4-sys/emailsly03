@@ -492,42 +492,37 @@ html.site-light .text-muted-foreground {
  * look is preserved.
  * ────────────────────────────────────────────────────────────────────*/
 
-/* Text-only overrides — darker hue-matched shades that pass AA on pearl. */
-html.site-light .text-violet        { color: #3730a3; }  /* indigo-800  ~9:1  */
-html.site-light .text-primary       { color: #1e3a8a; }  /* indigo-900  ~11:1 */
-html.site-light .text-magenta       { color: #0f766e; }  /* teal-700    ~5.9:1 */
-html.site-light .text-accent        { color: #0f766e; }
-html.site-light .text-emerald       { color: #047857; }  /* emerald-700 ~5.7:1 */
-html.site-light .text-coral         { color: #b91c1c; }  /* red-700     ~6.4:1 */
-html.site-light .text-amber         { color: #92400e; }  /* amber-800   ~7:1  */
+/* Text-only overrides — darker warm-family shades that pass AA on ivory. */
+html.site-light .text-violet        { color: #9a3412; }  /* orange-800 */
+html.site-light .text-primary       { color: #7c2d12; }  /* orange-900 */
+html.site-light .text-magenta       { color: #9f1239; }  /* rose-800  */
+html.site-light .text-accent        { color: #14532d; }  /* green-900 sage */
+html.site-light .text-emerald       { color: #166534; }  /* green-800 */
+html.site-light .text-coral         { color: #b91c1c; }
+html.site-light .text-amber         { color: #92400e; }
 html.site-light .text-destructive   { color: #b91c1c; }
 
-/* Muted text on translucent glass — bump one step so 4.5:1 holds even
- * when a card sits over a colored aurora blob. */
-html.site-light .text-muted-foreground { color: oklch(0.38 0.02 255); }
+html.site-light .text-muted-foreground { color: oklch(0.40 0.02 45); }
 
-/* Links — give inline anchors a clear color + underline in light mode.
- * Scoped to prose/content anchors: skip anything that's styled as a
- * button, chip, or nav item (those already have their own affordance). */
+/* Links */
 html.site-light a:not([class*="bg-"]):not(.btn):not([data-button]):not([role="button"]):not(.no-underline) {
-  color: #1e3a8a;
+  color: #7c2d12;
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 3px;
-  text-decoration-color: rgba(30, 58, 138, 0.35);
+  text-decoration-color: rgba(124, 45, 18, 0.35);
   transition: color 160ms ease, text-decoration-color 160ms ease;
 }
 html.site-light a:not([class*="bg-"]):not(.btn):not([data-button]):not([role="button"]):not(.no-underline):hover {
-  color: #0f766e;
+  color: #c95a4a;
   text-decoration-color: currentColor;
 }
 
-/* Focus — visible ring on any interactive element, above glass blur. */
 html.site-light a:focus-visible,
 html.site-light button:focus-visible,
 html.site-light [role="button"]:focus-visible,
 html.site-light summary:focus-visible {
-  outline: 2px solid #1e3a8a;
+  outline: 2px solid #7c2d12;
   outline-offset: 2px;
   border-radius: 6px;
 }

@@ -547,9 +547,9 @@ export function OrderBuilder() {
                       <textarea
                         value={apolloUrls}
                         onChange={(e) => setApolloUrls(e.target.value)}
-                        placeholder="https://app.apollo.io/#/people?...&#10;https://app.apollo.io/#/people?..."
-                        rows={6}
-                        className="mt-4 w-full min-h-[160px] resize-y rounded-2xl border border-input bg-background px-4 py-4 font-mono text-sm outline-none transition-all placeholder:text-muted-foreground focus:border-violet focus:ring-4 focus:ring-violet/10"
+                        placeholder="https://app.apollo.io/#/people?..."
+                        rows={3}
+                        className="mt-4 w-full min-h-[100px] resize-y rounded-2xl border border-input bg-background px-4 py-3 font-mono text-sm outline-none transition-all placeholder:text-muted-foreground focus:border-violet focus:ring-4 focus:ring-violet/10"
                       />
                     </div>
 

@@ -197,12 +197,7 @@ function AuthPage() {
   async function handleResendConfirmation(target: string) {
     setResendState((s) => ({ ...s, busy: true, error: null }));
     try {
-      const { error } = await supabase.auth.resend({
-        type: "signup",
-        email: target,
-        options: { emailRedirectTo: `${window.location.origin}/` },
-      });
-      if (error) throw error;
+      await authApi.resendOtp(target);
       setResendState({ busy: false, sentAt: Date.now(), error: null, cooldown: 60 });
     } catch (err) {
       setResendState((s) => ({
@@ -251,43 +246,46 @@ function AuthPage() {
     setBusy(true);
     try {
       if (mode === "signup") {
-        const { data, error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: { emailRedirectTo: `${window.location.origin}/` },
-        });
-        if (error) throw error;
-        // If confirmation is required, Supabase returns a user with no session.
-        const needsConfirmation = !data.session;
-        if (needsConfirmation) {
-          setPendingVerify(email);
-          setOtpCode("");
-          setOtpError(null);
-          setInfo("We sent a 6-digit verification code to your email.");
-        } else {
-          setInfo("Account created. You can sign in now.");
-          setSignUpSuccess(true);
-          setPassword("");
-          setMode("signin");
+        try {
+          await authApi.register({ email, password });
+          // Registration succeeded without needing OTP — user is logged in.
+          const target = search.redirect && search.redirect.startsWith("/") ? search.redirect : "/";
+          window.location.replace(target);
+        } catch (err) {
+          if (err instanceof ApiError) {
+            const body = err.body as { needs_verification?: boolean; code?: string } | null;
+            const code = body?.code;
+            if (body?.needs_verification || err.status === 202 || code === "verification_required") {
+              setPendingVerify(email);
+              setOtpCode("");
+              setOtpError(null);
+              setInfo("We sent a 6-digit verification code to your email.");
+              return;
+            }
+          }
+          throw err;
         }
       } else {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) {
-          const code = (error as { code?: string }).code;
-          const msg = error.message || "";
-          if (code === "email_not_confirmed" || /email\s*not\s*confirmed|confirm.*email/i.test(msg)) {
-            setUnconfirmedEmail(email);
-            setResendState((s) => ({ ...s, error: null }));
-            return;
+        try {
+          await authApi.login({ email, password });
+        } catch (err) {
+          if (err instanceof ApiError) {
+            const body = err.body as { code?: string } | null;
+            const msg = err.message || "";
+            if (body?.code === "email_not_confirmed" || /email\s*not\s*confirmed|confirm.*email|verify/i.test(msg)) {
+              setUnconfirmedEmail(email);
+              setResendState((s) => ({ ...s, error: null }));
+              return;
+            }
           }
-          throw error;
+          throw err;
         }
         const target = search.redirect && search.redirect.startsWith("/") ? search.redirect : "/";
         window.location.replace(target);
       }
     } catch (err) {
       const message = err instanceof Error ? err.message : "Something went wrong";
-      setError(message.replace("Invalid login credentials", "Wrong email or password"));
+      setError(message.replace(/Invalid login credentials|Invalid credentials/i, "Wrong email or password"));
     } finally {
       setBusy(false);
     }
@@ -299,12 +297,7 @@ function AuthPage() {
     setUnconfirmedEmail(null);
     setBusy(true);
     try {
-      const { email: demoEmail, password: demoPassword } = await ensureDemoAccount();
-      const { error } = await supabase.auth.signInWithPassword({
-        email: demoEmail,
-        password: demoPassword,
-      });
-      if (error) throw error;
+      await authApi.login({ email: DEMO_EMAIL, password: DEMO_PASSWORD });
       const target = search.redirect && search.redirect.startsWith("/") ? search.redirect : "/";
       window.location.replace(target);
     } catch (err) {
@@ -329,10 +322,7 @@ function AuthPage() {
 
     setBusy(true);
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(parsed.data.email, {
-        redirectTo: `${window.location.origin}/reset-password`,
-      });
-      if (error) throw error;
+      await authApi.forgotPassword(parsed.data.email);
       setLastEmail(parsed.data.email);
       startResetCooldown(parsed.data.email);
       setInfo("If this email exists, you'll receive a reset link shortly.");
@@ -352,10 +342,7 @@ function AuthPage() {
     setInfo(null);
     setBusy(true);
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(lastEmail, {
-        redirectTo: `${window.location.origin}/reset-password`,
-      });
-      if (error) throw error;
+      await authApi.forgotPassword(lastEmail);
       startResetCooldown(lastEmail);
       setInfo("Reset link resent. Check your inbox.");
     } catch (err) {
@@ -365,6 +352,7 @@ function AuthPage() {
       setBusy(false);
     }
   }
+
 
   const inputBase =
     "w-full rounded-xl border bg-input/50 py-2.5 pl-10 pr-3 text-sm text-foreground placeholder:text-muted-foreground/60 outline-none transition-all focus:bg-background focus:ring-2";

@@ -121,7 +121,10 @@ function Store() {
             </div>
           ) : (
             <>
-              <p className="mb-6 font-mono text-xs uppercase tracking-widest text-muted-foreground">
+              <h2 className="font-display text-2xl font-bold tracking-tight">
+                Available B2B lead lists
+              </h2>
+              <p className="mb-6 mt-2 font-mono text-xs uppercase tracking-widest text-muted-foreground">
                 {filtered.length} {filtered.length === 1 ? "list" : "lists"}
               </p>
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">

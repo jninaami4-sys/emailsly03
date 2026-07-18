@@ -107,6 +107,7 @@ export function OrderBuilder() {
   const [mobileGroup, setMobileGroup] = useState<"data" | "growth" | "design">(service.group);
   const [quantity, setQuantity] = useState(service.minQty);
   const [extraUrls, setExtraUrls] = useState(1);
+  const [apolloUrls, setApolloUrls] = useState<string[]>([""]);
   const [verifier, setVerifier] = useState(false);
   const [rush, setRush] = useState(false);
   const [tip, setTip] = useState(0);
@@ -197,6 +198,15 @@ export function OrderBuilder() {
     if (promoApplied?.ok) setPromoApplied(null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [service.id, effectiveQty, extraUrls, verifier, rush, tip]);
+
+  // Keep the list of Apollo URL boxes in sync with the selected count.
+  useEffect(() => {
+    setApolloUrls((prev) => {
+      if (prev.length === extraUrls) return prev;
+      if (prev.length < extraUrls) return [...prev, ...Array(extraUrls - prev.length).fill("")];
+      return prev.slice(0, extraUrls);
+    });
+  }, [extraUrls]);
 
   const applyPromo = async () => {
     const code = promo.trim().toUpperCase();
@@ -560,13 +570,32 @@ export function OrderBuilder() {
                       </div>
                     </div>
 
-                    <Field label="Apollo search links">
-                      <textarea
-                        placeholder="https://app.apollo.io/#/people?..."
-                        rows={5}
-                        className="w-full min-h-[120px] resize-y rounded-xl border border-input bg-background px-4 py-3 font-mono text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-violet focus:ring-4 focus:ring-violet/10"
-                      />
-                    </Field>
+                    <div>
+                      <span className="mb-2 block font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                        Apollo search links
+                      </span>
+                      <div className="grid gap-3">
+                        {apolloUrls.map((url, i) => (
+                          <div
+                            key={i}
+                            className="relative rounded-2xl border border-input bg-background p-1 shadow-sm transition-all focus-within:border-violet focus-within:ring-4 focus-within:ring-violet/10"
+                          >
+                            <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                              #{i + 1}
+                            </span>
+                            <input
+                              type="text"
+                              value={url}
+                              onChange={(e) =>
+                                setApolloUrls((prev) => prev.map((u, idx) => (idx === i ? e.target.value : u)))
+                              }
+                              placeholder="https://app.apollo.io/#/people?..."
+                              className="w-full rounded-xl bg-transparent py-3 pl-10 pr-4 font-mono text-sm outline-none placeholder:text-muted-foreground"
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 )}
 

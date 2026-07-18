@@ -185,39 +185,40 @@
  * inherits a consistent readable look without touching each component.
  */
 .admin-theme {
-  /* Dark admin — near-black surfaces with a single electric blue accent,
-     matching the exportapolloleads.com admin login reference. */
-  --background: oklch(0.14 0.005 260);
-  --foreground: oklch(0.98 0 0);
-  --card: oklch(0.19 0.008 260);
-  --card-foreground: oklch(0.98 0 0);
-  --popover: oklch(0.19 0.008 260);
-  --popover-foreground: oklch(0.98 0 0);
-  --muted: oklch(0.22 0.008 260);
-  --muted-foreground: oklch(0.70 0.01 260);
-  --secondary: oklch(0.22 0.008 260);
+  /* Match the website login (.login-bright): near-black navy surfaces,
+     elevated card, electric blue accent. */
+  --background: oklch(0.13 0.025 265);
+  --foreground: oklch(0.97 0 0);
+  --card: oklch(0.20 0.035 265);
+  --card-foreground: oklch(1 0 0);
+  --popover: oklch(0.20 0.035 265);
+  --popover-foreground: oklch(1 0 0);
+  --muted: oklch(0.27 0.035 265);
+  --muted-foreground: oklch(0.78 0.02 265);
+  --secondary: oklch(0.27 0.035 265);
   --secondary-foreground: oklch(0.98 0 0);
-  --accent: oklch(0.65 0.17 258);
-  --accent-foreground: oklch(0.10 0 0);
-  --border: oklch(1 0 0 / 0.08);
-  --input: oklch(1 0 0 / 0.10);
-  --primary: oklch(0.65 0.17 258);
-  --primary-foreground: oklch(0.10 0 0);
-  --ring: oklch(0.65 0.17 258);
+  --accent: oklch(0.65 0.20 253);
+  --accent-foreground: oklch(1 0 0);
+  --border: oklch(0.38 0.04 265 / 0.55);
+  --input: oklch(0.38 0.04 265 / 0.65);
+  --primary: oklch(0.65 0.20 253);
+  --primary-foreground: oklch(1 0 0);
+  --ring: oklch(0.65 0.20 253);
   --destructive: oklch(0.62 0.22 22);
   --destructive-foreground: oklch(1 0 0);
-  --violet: oklch(0.65 0.17 258);
-  --violet-soft: oklch(0.65 0.17 258 / 0.14);
-  --magenta: oklch(0.65 0.17 258);
-  --magenta-soft: oklch(0.65 0.17 258 / 0.14);
-  --coral: oklch(0.65 0.17 258);
-  --coral-soft: oklch(0.65 0.17 258 / 0.14);
+  --violet: oklch(0.65 0.20 253);
+  --violet-soft: oklch(0.65 0.20 253 / 0.14);
+  --magenta: oklch(0.65 0.20 253);
+  --magenta-soft: oklch(0.65 0.20 253 / 0.14);
+  --coral: oklch(0.65 0.20 253);
+  --coral-soft: oklch(0.65 0.20 253 / 0.14);
   --emerald: oklch(0.66 0.15 165);
   --emerald-soft: oklch(0.66 0.15 165 / 0.16);
   --amber: oklch(0.78 0.15 78);
   --amber-soft: oklch(0.78 0.15 78 / 0.18);
   color-scheme: dark;
 }
+
 
 
 /* Bold sans font, minimal type inside admin */

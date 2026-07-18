@@ -6,6 +6,7 @@ import { Mail, MessageCircle, Calendar, Loader2 } from "lucide-react";
 import { submitContactLead } from "@/lib/contact-leads.functions";
 import { useSiteContent } from "@/hooks/use-site-content";
 import { ogImageMeta, OG_IMAGES, matchTheme } from "@/lib/og-images";
+import { isDisposableEmail, DISPOSABLE_EMAIL_MESSAGE } from "@/lib/disposable-emails";
 
 export const Route = createFileRoute("/contact")({
   head: ({ matches }) => ({
@@ -43,6 +44,11 @@ function Contact() {
     };
     setSubmitting(true);
     setError(null);
+    if (isDisposableEmail(payload.email)) {
+      setError(DISPOSABLE_EMAIL_MESSAGE);
+      setSubmitting(false);
+      return;
+    }
     try {
       await submit({ data: payload });
       setSent(true);

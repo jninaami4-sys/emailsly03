@@ -7,6 +7,7 @@ import { getMyReferralBalance } from "@/lib/referrals.functions";
 import { useAuth } from "@/hooks/use-auth";
 import { ReferralErrorBoundary } from "@/components/site/ReferralErrorBoundary";
 import { usePricingOverrides } from "@/hooks/use-pricing-overrides";
+import { isDisposableEmail, DISPOSABLE_EMAIL_MESSAGE } from "@/lib/disposable-emails";
 import {
   PremiumShieldCheck,
   PremiumTimer,
@@ -230,7 +231,7 @@ export function OrderBuilder() {
     step === 1 ? !!serviceId :
     step === 2 ? (service.fixed || effectiveQty >= service.minQty) :
     step === 3 ? true :
-    agree && name.trim().length > 1 && /\S+@\S+\.\S+/.test(email);
+    agree && name.trim().length > 1 && /\S+@\S+\.\S+/.test(email) && !isDisposableEmail(email);
 
   const goNext = () => setStep((s) => Math.min(4, s + 1));
   const goPrev = () => setStep((s) => Math.max(1, s - 1));
@@ -352,6 +353,9 @@ export function OrderBuilder() {
                       placeholder="jane@company.com"
                       className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-violet focus:ring-4 focus:ring-violet/10"
                     />
+                    {isDisposableEmail(email) && (
+                      <p className="mt-1.5 text-xs font-medium text-coral">{DISPOSABLE_EMAIL_MESSAGE}</p>
+                    )}
                   </Field>
                 </div>
               </div>
@@ -667,6 +671,9 @@ export function OrderBuilder() {
                         placeholder="jane@company.com"
                         className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-violet focus:ring-4 focus:ring-violet/10"
                       />
+                      {isDisposableEmail(email) && (
+                        <p className="mt-1.5 text-xs font-medium text-coral">{DISPOSABLE_EMAIL_MESSAGE}</p>
+                      )}
                     </Field>
                   </div>
                 )}
@@ -892,9 +899,9 @@ export function OrderBuilder() {
                     discount: promoApplied?.ok ? discount.toFixed(2) : undefined,
                     credit: creditApplied > 0 ? creditApplied.toFixed(2) : undefined,
                   }}
-                  aria-disabled={!agree || name.trim().length < 2 || !/\S+@\S+\.\S+/.test(email)}
+                  aria-disabled={!agree || name.trim().length < 2 || !/\S+@\S+\.\S+/.test(email) || isDisposableEmail(email)}
                   onClick={(e: MouseEvent<HTMLAnchorElement>) => {
-                    if (!agree || name.trim().length < 2 || !/\S+@\S+\.\S+/.test(email)) {
+                    if (!agree || name.trim().length < 2 || !/\S+@\S+\.\S+/.test(email) || isDisposableEmail(email)) {
                       e.preventDefault();
                     }
                   }}

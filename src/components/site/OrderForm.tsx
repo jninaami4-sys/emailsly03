@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { SERVICES } from "./PricingCalculator";
 import { CheckCircle2, Loader2, Send } from "lucide-react";
 import { PremiumSparkles as Sparkles } from "@/components/site/PremiumIcons";
+import { isDisposableEmail, DISPOSABLE_EMAIL_MESSAGE } from "@/lib/disposable-emails";
 
 export function OrderForm() {
   const [serviceId, setServiceId] = useState("apollo");
@@ -21,6 +22,11 @@ export function OrderForm() {
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
+    if (isDisposableEmail(email)) {
+      setStatus("idle");
+      alert(DISPOSABLE_EMAIL_MESSAGE);
+      return;
+    }
     setStatus("sending");
     setTimeout(() => setStatus("done"), 900);
   }
@@ -74,6 +80,9 @@ export function OrderForm() {
                   className={inputClass}
                   placeholder="jane@acme.com"
                 />
+                {isDisposableEmail(email) && (
+                  <p className="mt-1.5 text-xs font-medium text-coral">{DISPOSABLE_EMAIL_MESSAGE}</p>
+                )}
               </Field>
               <Field label="Company">
                 <input

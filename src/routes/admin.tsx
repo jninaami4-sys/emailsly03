@@ -32,7 +32,7 @@ import { TelegramBotsAdmin } from "@/components/admin/TelegramBotsAdmin";
 import { BackupRestoreAdmin } from "@/components/admin/BackupRestoreAdmin";
 import { ImportOrdersAdmin } from "@/components/admin/ImportOrdersAdmin";
 import { CampaignsAdmin } from "@/components/admin/CampaignsAdmin";
-import { whoAmIAdmin } from "@/lib/announcements.functions";
+
 import { useAuth } from "@/hooks/use-auth";
 import {
   Upload, X, Search, ShieldAlert, Lock,

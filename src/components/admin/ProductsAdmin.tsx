@@ -488,6 +488,24 @@ export function ProductsAdmin() {
           </div>
         )}
       </div>
+
+      <style>{`
+        .admin-input {
+          width: 100%;
+          border-radius: 0.5rem;
+          border: 1px solid rgb(255 255 255 / 0.10);
+          background: rgb(255 255 255 / 0.03);
+          padding: 0.5rem 0.75rem;
+          font-size: 13px;
+          color: inherit;
+          outline: none;
+        }
+        .admin-input:focus {
+          border-color: hsl(var(--primary) / 0.6);
+          background: rgb(255 255 255 / 0.05);
+        }
+        .admin-input::placeholder { color: rgb(255 255 255 / 0.30); }
+      `}</style>
     </div>
   );
 }

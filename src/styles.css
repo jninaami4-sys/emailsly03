@@ -240,8 +240,9 @@
 .admin-theme h3,
 .admin-theme h4,
 .admin-theme h5,
-.admin-theme h6 { font-weight: 900; letter-spacing: -0.02em; font-family: inherit; color: oklch(0.16 0.01 260); }
-.admin-theme .text-muted-foreground { color: oklch(0.45 0.012 260); font-weight: 700; }
+.admin-theme h6 { font-weight: 900; letter-spacing: -0.02em; font-family: inherit; color: oklch(0.98 0 0); }
+.admin-theme .text-muted-foreground { color: oklch(0.70 0.01 260); font-weight: 700; }
+
 .admin-theme .font-display { font-weight: 900; letter-spacing: -0.025em; font-family: inherit; }
 .admin-theme [data-numeric],
 .admin-theme .tabular-nums { font-variant-numeric: tabular-nums; }

@@ -1664,6 +1664,60 @@ export type Database = {
         }
         Relationships: []
       }
+      stripe_webhook_deliveries: {
+        Row: {
+          duration_ms: number | null
+          error_message: string | null
+          event_id: string | null
+          event_type: string | null
+          http_status: number
+          id: string
+          matched_order_id: string | null
+          outcome: string | null
+          payload_bytes: number | null
+          received_at: string
+          signature_present: boolean
+          source_ip: string | null
+          status: string
+          stripe_ref: string | null
+          verified: boolean
+        }
+        Insert: {
+          duration_ms?: number | null
+          error_message?: string | null
+          event_id?: string | null
+          event_type?: string | null
+          http_status: number
+          id?: string
+          matched_order_id?: string | null
+          outcome?: string | null
+          payload_bytes?: number | null
+          received_at?: string
+          signature_present?: boolean
+          source_ip?: string | null
+          status: string
+          stripe_ref?: string | null
+          verified?: boolean
+        }
+        Update: {
+          duration_ms?: number | null
+          error_message?: string | null
+          event_id?: string | null
+          event_type?: string | null
+          http_status?: number
+          id?: string
+          matched_order_id?: string | null
+          outcome?: string | null
+          payload_bytes?: number | null
+          received_at?: string
+          signature_present?: boolean
+          source_ip?: string | null
+          status?: string
+          stripe_ref?: string | null
+          verified?: boolean
+        }
+        Relationships: []
+      }
       support_ticket_messages: {
         Row: {
           body: string

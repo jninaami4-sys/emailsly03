@@ -18,21 +18,33 @@ const THEME_COLORS: Record<SiteTheme, string> = {
   dark: "#0a0b14",
 };
 
-function ensureThemeColorMeta(): HTMLMetaElement {
-  let el = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
+function ensureMeta(name: string): HTMLMetaElement {
+  let el = document.querySelector<HTMLMetaElement>(`meta[name="${name}"]`);
   if (!el) {
     el = document.createElement("meta");
-    el.name = "theme-color";
+    el.setAttribute("name", name);
     document.head.appendChild(el);
   }
   return el;
 }
 
+/** iOS Safari only recognizes: default | black | black-translucent. */
+const IOS_STATUS_STYLE: Record<SiteTheme, string> = {
+  light: "default",
+  dark: "black-translucent",
+};
+
 function apply(theme: SiteTheme) {
   const root = document.documentElement;
   root.classList.toggle("site-light", theme === "light");
   root.dataset.theme = theme;
-  ensureThemeColorMeta().setAttribute("content", THEME_COLORS[theme]);
+  const color = THEME_COLORS[theme];
+  ensureMeta("theme-color").setAttribute("content", color);
+  ensureMeta("apple-mobile-web-app-status-bar-style").setAttribute("content", IOS_STATUS_STYLE[theme]);
+  ensureMeta("apple-mobile-web-app-capable").setAttribute("content", "yes");
+  ensureMeta("mobile-web-app-capable").setAttribute("content", "yes");
+  ensureMeta("msapplication-navbutton-color").setAttribute("content", color);
+  ensureMeta("color-scheme").setAttribute("content", theme === "light" ? "light" : "dark");
 }
 
 export function useTheme() {
@@ -105,8 +117,17 @@ try {
   else document.documentElement.classList.remove('site-light');
   document.documentElement.dataset.theme = t;
   var c = t === 'light' ? '#fdfcff' : '#0a0b14';
-  var m = document.querySelector('meta[name="theme-color"]');
-  if (!m) { m = document.createElement('meta'); m.setAttribute('name', 'theme-color'); document.head.appendChild(m); }
-  m.setAttribute('content', c);
+  var ios = t === 'light' ? 'default' : 'black-translucent';
+  function m(n, v){
+    var el = document.querySelector('meta[name="'+n+'"]');
+    if (!el) { el = document.createElement('meta'); el.setAttribute('name', n); document.head.appendChild(el); }
+    el.setAttribute('content', v);
+  }
+  m('theme-color', c);
+  m('apple-mobile-web-app-status-bar-style', ios);
+  m('apple-mobile-web-app-capable', 'yes');
+  m('mobile-web-app-capable', 'yes');
+  m('msapplication-navbutton-color', c);
+  m('color-scheme', t);
 } catch (e) {}
 `;

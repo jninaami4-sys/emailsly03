@@ -221,6 +221,57 @@ export type Database = {
         }
         Relationships: []
       }
+      campaigns: {
+        Row: {
+          audience: string
+          audience_filter: Json
+          body: string
+          channel: string
+          created_at: string
+          created_by: string | null
+          id: string
+          name: string
+          recipient_count: number | null
+          scheduled_at: string | null
+          sent_at: string | null
+          status: string
+          subject: string | null
+          updated_at: string
+        }
+        Insert: {
+          audience?: string
+          audience_filter?: Json
+          body: string
+          channel?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          name: string
+          recipient_count?: number | null
+          scheduled_at?: string | null
+          sent_at?: string | null
+          status?: string
+          subject?: string | null
+          updated_at?: string
+        }
+        Update: {
+          audience?: string
+          audience_filter?: Json
+          body?: string
+          channel?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          name?: string
+          recipient_count?: number | null
+          scheduled_at?: string | null
+          sent_at?: string | null
+          status?: string
+          subject?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       chatbot_config: {
         Row: {
           enabled: boolean
@@ -569,6 +620,47 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      legacy_order_imports: {
+        Row: {
+          batch_id: string
+          created_at: string
+          error: string | null
+          id: string
+          imported_by: string | null
+          order_id: string | null
+          source_row: Json
+          status: string
+        }
+        Insert: {
+          batch_id: string
+          created_at?: string
+          error?: string | null
+          id?: string
+          imported_by?: string | null
+          order_id?: string | null
+          source_row: Json
+          status?: string
+        }
+        Update: {
+          batch_id?: string
+          created_at?: string
+          error?: string | null
+          id?: string
+          imported_by?: string | null
+          order_id?: string | null
+          source_row?: Json
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "legacy_order_imports_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       order_events: {
         Row: {
@@ -1437,6 +1529,54 @@ export type Database = {
         }
         Relationships: []
       }
+      store_offers: {
+        Row: {
+          active: boolean
+          badge: string | null
+          bg_gradient: string | null
+          created_at: string
+          cta_label: string | null
+          cta_url: string | null
+          ends_at: string | null
+          id: string
+          sort_order: number
+          starts_at: string | null
+          subtitle: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          badge?: string | null
+          bg_gradient?: string | null
+          created_at?: string
+          cta_label?: string | null
+          cta_url?: string | null
+          ends_at?: string | null
+          id?: string
+          sort_order?: number
+          starts_at?: string | null
+          subtitle?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          badge?: string | null
+          bg_gradient?: string | null
+          created_at?: string
+          cta_label?: string | null
+          cta_url?: string | null
+          ends_at?: string | null
+          id?: string
+          sort_order?: number
+          starts_at?: string | null
+          subtitle?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       stripe_events: {
         Row: {
           id: string
@@ -1542,6 +1682,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      telegram_bots: {
+        Row: {
+          active: boolean
+          bot_token: string
+          chat_id: string
+          created_at: string
+          events: Json
+          id: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          bot_token: string
+          chat_id: string
+          created_at?: string
+          events?: Json
+          id?: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          bot_token?: string
+          chat_id?: string
+          created_at?: string
+          events?: Json
+          id?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       user_roles: {
         Row: {

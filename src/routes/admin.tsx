@@ -28,6 +28,11 @@ import { BlogSeoAdmin } from "@/components/admin/BlogSeoAdmin";
 import { BlogAnalyticsAdmin } from "@/components/admin/BlogAnalyticsAdmin";
 import { BlogPostsAdmin } from "@/components/admin/BlogPostsAdmin";
 import { EmailTestAdmin } from "@/components/admin/EmailTestAdmin";
+import { StoreOffersAdmin } from "@/components/admin/StoreOffersAdmin";
+import { TelegramBotsAdmin } from "@/components/admin/TelegramBotsAdmin";
+import { BackupRestoreAdmin } from "@/components/admin/BackupRestoreAdmin";
+import { ImportOrdersAdmin } from "@/components/admin/ImportOrdersAdmin";
+import { CampaignsAdmin } from "@/components/admin/CampaignsAdmin";
 import { whoAmIAdmin } from "@/lib/announcements.functions";
 import { useAuth } from "@/hooks/use-auth";
 import {
@@ -365,12 +370,23 @@ function AdminPage() {
       ],
     },
     {
+      id: "growth",
+      label: "Growth",
+      items: [
+        { id: "store-offers", label: "Store Offers", desc: "Promotional banners for the store page.", icon: Megaphone, keywords: "store offers promo banner deal" },
+        { id: "campaigns", label: "Campaigns", desc: "Broadcast emails or in-app announcements to targeted audiences.", icon: Megaphone, keywords: "campaigns broadcast email announcement audience" },
+        { id: "telegram", label: "Telegram Bots", desc: "Instant notifications for orders, tickets, and more.", icon: MessageSquare, keywords: "telegram bots notifications" },
+      ],
+    },
+    {
       id: "data",
       label: "Data",
       items: [
         { id: "datasets", label: "Sample Datasets", desc: "Seeded demo datasets shown across the site.", icon: Database, keywords: "sample datasets" },
         { id: "audit", label: "Audit Log", desc: "History of sample dataset changes.", icon: Server, keywords: "audit history" },
         { id: "import-export", label: "Import / Export", desc: "Bulk import or export data via CSV/JSON.", icon: Users, keywords: "import export csv" },
+        { id: "import-legacy-orders", label: "Import Legacy Orders", desc: "Bulk-import old orders from a CSV file.", icon: Users, keywords: "import legacy orders csv old" },
+        { id: "backup-restore", label: "Backup / Restore", desc: "Download or restore a JSON backup of site data.", icon: Database, keywords: "backup restore json export" },
         { id: "email-test", label: "Email Diagnostics", desc: "Send test emails through each SMTP sender.", icon: Mail, keywords: "email smtp test diagnostics deliverability" },
       ],
     },
@@ -402,6 +418,11 @@ function AdminPage() {
     datasets: <SampleDatasetsAdmin />,
     audit: <SampleDatasetAuditLog />,
     "import-export": <ImportExportAdmin />,
+    "import-legacy-orders": <ImportOrdersAdmin />,
+    "backup-restore": <BackupRestoreAdmin />,
+    "store-offers": <StoreOffersAdmin />,
+    campaigns: <CampaignsAdmin />,
+    telegram: <TelegramBotsAdmin />,
     "email-test": <EmailTestAdmin />,
   };
 

@@ -1,7 +1,7 @@
 <?php
 namespace Emailsly\Controllers;
 
-use Emailsly\{Auth, Database, Request, Response};
+use Emailsly\{Auth, Database, Mailer, Request, Response};
 
 final class AuthController
 {
@@ -118,8 +118,11 @@ final class AuthController
             $pdo->prepare('INSERT INTO password_resets (token, user_id, expires_at) VALUES (?, ?, DATE_ADD(NOW(), INTERVAL 1 HOUR))')
                 ->execute([$token, $uid]);
             $resetUrl = ($_ENV['APP_URL'] ?? '') . '/reset-password?token=' . $token;
-            self::sendMail($email, 'Reset your Emailsly password',
-                "Click to reset: $resetUrl\n\nExpires in 1 hour. If you didn't request this, ignore this email.");
+            Mailer::auth()->send(
+                $email,
+                'Reset your Emailsly password',
+                "Hi,\n\nClick the link below to reset your Emailsly password:\n\n$resetUrl\n\nThis link expires in 1 hour. If you didn't request this, you can safely ignore this email.\n\n— Emailsly Security"
+            );
         }
         // Always return ok to prevent user enumeration
         Response::json(['ok' => true]);
@@ -183,9 +186,5 @@ final class AuthController
         return ['user' => $user, 'profile' => $profile];
     }
 
-    private static function sendMail(string $to, string $subject, string $body): void
-    {
-        $from = $_ENV['SMTP_FROM'] ?? 'noreply@emailsly.com';
-        @mail($to, $subject, $body, "From: $from\r\nContent-Type: text/plain; charset=utf-8");
-    }
+    // Mail delivery is handled by Emailsly\Mailer (SMTP, per-channel sender).
 }

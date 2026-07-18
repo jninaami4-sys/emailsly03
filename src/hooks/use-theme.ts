@@ -143,6 +143,12 @@ export function useTheme() {
     }
     const prefersLight = window.matchMedia?.("(prefers-color-scheme: light)").matches;
     const next: SiteTheme = prefersLight ? "light" : "dark";
+    // Also drop the cookie so SSR falls back to the OS scheme.
+    try {
+      document.cookie = `${STORAGE_KEY}=; Max-Age=0; Path=/; SameSite=Lax`;
+    } catch {
+      /* ignore */
+    }
     apply(next);
     setThemeState(next);
   }, []);
@@ -151,22 +157,28 @@ export function useTheme() {
 }
 
 /** Inline <script> body: runs before hydration to avoid theme flash.
- *  Priority: localStorage override → prefers-color-scheme → dark fallback. */
+ *  Priority: URL ?theme override → localStorage override → cookie → prefers-color-scheme. */
 export const themeBootScript = `
 try {
   var k = 'emailsly:theme';
-  var s = localStorage.getItem(k);
+  var q = null;
+  try {
+    var sp = new URLSearchParams(window.location.search);
+    var qv = sp.get('theme');
+    if (qv === 'light' || qv === 'dark') q = qv;
+  } catch (_) {}
+  var ls = localStorage.getItem(k);
+  var ck = (document.cookie.match(/(?:^|; )emailsly:theme=(light|dark)/) || [])[1] || null;
   var t;
-  if (s === 'light' || s === 'dark') {
-    t = s;
-  } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
-    t = 'light';
-  } else {
-    t = 'dark';
-  }
+  if (q) t = q;
+  else if (ls === 'light' || ls === 'dark') t = ls;
+  else if (ck) t = ck;
+  else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) t = 'light';
+  else t = 'dark';
   if (t === 'light') document.documentElement.classList.add('site-light');
   else document.documentElement.classList.remove('site-light');
   document.documentElement.dataset.theme = t;
+
   var c = t === 'light' ? '#fdfcff' : '#0a0b14';
   var ios = t === 'light' ? 'default' : 'black-translucent';
   function m(n, v){

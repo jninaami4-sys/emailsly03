@@ -1,78 +1,85 @@
-# Rewire frontend from Supabase → PHP API
+# Full Supabase Rip-Out → PHP/MySQL Only
 
-## Reality check
+You already have `database/schema.sql`, ~33 PHP controllers under `/api`, and a typed `src/lib/api-client.ts` SDK from an earlier pass. That work stays. This plan removes every remaining Supabase touchpoint from the running app and rewires everything that still calls a `*.functions.ts` server function to the PHP API instead.
 
-- 43 files in `src/` still import `@/integrations/supabase/*`.
-- Every `createServerFn` uses `requireSupabaseAuth`; the `_authenticated` gate uses `supabase.auth.getUser()`; storage calls use `supabase.storage`.
-- The PHP backend + `src/lib/api-client.ts` SDK + MySQL schema are already in place and match the current data shapes.
+## What changes
 
-Rewiring all of this cleanly is roughly **6 phased passes**. Each phase leaves the preview building and the site usable, so you can review before moving on.
+### 1. Config
+- Add `VITE_API_BASE_URL` (default `https://api.yourdomain.com`) — you edit this to the real Bangladeshi host URL before build.
+- Add a `config.local.php` template in `/api` for DB creds (`DB_HOST`, `DB_NAME`, `DB_USER`, `DB_PASS`, `JWT_SECRET`, `UPLOAD_DIR`, `PUBLIC_URL`) with `config.local.example.php` committed.
+- Frontend `api-client.ts` reads the base URL from `import.meta.env.VITE_API_BASE_URL`, sends `Authorization: Bearer <jwt>` from `localStorage`.
 
-## Ground rules for the rewire
+### 2. Auth (PHP sessions + JWT)
+- PHP: `/api/auth/signup`, `/login`, `/verify-otp`, `/resend-otp`, `/forgot`, `/reset`, `/me`, `/logout`. Bcrypt passwords, 6-digit email OTP (SMTP via PHPMailer, configurable), HS256 JWT (7-day), `users` + `user_roles` MySQL tables.
+- Frontend: rewrite `src/routes/login.tsx`, `src/hooks/use-auth.ts`, and delete `src/integrations/supabase/*` + `src/integrations/lovable/*`. Replace with `src/lib/auth-client.ts` (login/signup/otp/logout, subscribe to token changes).
+- Route gate: replace `_authenticated/route.tsx` Supabase check with a JWT-presence + `/me` validation check (still `ssr: false`).
+- Google OAuth is dropped (you picked PHP sessions + JWT). Login page loses the Google button.
 
-- Delete `createServerFn` usage. All data calls become direct `fetch` via the `api` client from `src/lib/api-client.ts` inside React Query hooks (`useQuery` / `useMutation`).
-- Auth becomes a plain React context reading `localStorage` for the JWT the PHP `/auth/login` returns. No more `_authenticated` Supabase gate — replace with a simple `<RequireAuth>` wrapper.
-- File uploads go through `api.uploadFile(bucket, file)` → PHP `/files/upload` → local `/public_html/uploads/`.
-- Stripe checkout redirect + webhook stay; the webhook already lives in PHP.
-- `import.meta.env.VITE_API_URL` points at your BD host (e.g. `https://api.emailsly.com`). I'll add it to `.env.example`.
-- Remove `src/integrations/supabase/*`, `src/start.ts` bearer middleware, and Supabase-only routes at the end so nothing dangles.
+### 3. Data layer — delete all server functions
+Every `src/lib/*.functions.ts` file gets deleted (~40 files including admin-orders, admin-extras, products-cms, pricing-settings, site-settings, reviews, chatbot, announcements, blog-cms, blog-seo, referrals, promos, contact-leads, sample-datasets, social-links, site-content, support-tickets, product-details, server-tracking, conversion-events, data-portability, orders, etc.). Every consumer switches to `apiClient.<domain>.<action>(...)` calls that hit the matching PHP controller.
 
-## Phase 1 — Auth + shell (foundation)
+PHP controllers to fill in / verify existence for all 40+ tables listed in the schema. Any missing controller gets scaffolded to mirror the deleted server function's behavior (list/get/create/update/delete + admin variants + specialty endpoints like archive/restore/bulk-delete for orders, promo validation, referral redemption, Stripe checkout session creation, Stripe webhook, Telegram webhook, KB sync, referral-click tracking).
 
-- New `src/lib/auth-client.ts`: login / signup / OTP verify / reset via `api.*`, stores `{ token, user }` in `localStorage`.
-- Rewrite `src/hooks/use-auth.tsx` to read that store, expose `user`, `signIn`, `signOut`, `signUp`, `verifyOtp`.
-- Replace `src/routes/_authenticated/route.tsx` with a client-side check against the auth store (redirect to `/login`).
-- Update `src/routes/login.tsx`, `reset-password.tsx`, `admin-login.tsx` to call the new client.
-- Strip `attachSupabaseAuth` from `src/start.ts`; add a generic bearer attacher for any remaining server fns during migration (removed at end).
-- Update `src/routes/__root.tsx`: drop `onAuthStateChange`, replace with a storage-event listener that invalidates queries.
+### 4. Storage
+- PHP `/api/storage/upload` (multipart, admin-gated per bucket) writes under `UPLOAD_DIR/<bucket>/<path>` and returns a public URL under `PUBLIC_URL/uploads/<bucket>/<path>`. Buckets modeled as folders: `brand-assets`, `avatars`, `reviews`, `announcement-media`, `sample-datasets` (sample-datasets stays private → signed download endpoint `/api/storage/sign?path=...` that checks order ownership).
+- Frontend `BrandSettingsAdmin`, `MediaItemsEditor`, review uploads, avatar uploads all switch to `apiClient.storage.upload(bucket, file)`.
 
-## Phase 2 — Customer surfaces
+### 5. Payments
+- Keep the existing PHP Stripe integration (create checkout session + webhook). Webhook path stays `/api/webhooks/stripe.php`; frontend calls `/api/checkout/session` from `OrderBuilder`. Stripe secret + webhook secret go in `config.local.php`.
 
-- `src/hooks/use-my-profile.ts`, `use-all-products.ts`, `use-pricing-overrides.ts`, `use-site-content.ts` → React Query hooks hitting `api.*`.
-- Order flow: `src/lib/orders.functions.ts`, `cart.tsx`, `OrderBuilder.tsx`, `OrderDrawer.tsx`, `OrderForm.tsx`, `CartDrawer.tsx`, `_authenticated/dashboard.tsx`, `_authenticated/invoice.$orderId.tsx`.
-- Contact / support / reviews / referrals / samples on the customer side.
-- Tracking: keep client tracking; drop `track-server-event` edge-fn calls (or point them at a new PHP endpoint — mark as optional).
+### 6. Cleanups
+- Delete `src/routes/api/**` (TanStack server routes for webhooks/telegram/kb/referral-click/health) — all replaced by PHP endpoints.
+- Delete `src/start.ts` bearer middleware referencing Supabase; add a lightweight JWT attacher that reads `localStorage`.
+- Delete `supabase/` folder, `src/integrations/supabase/`, `src/integrations/lovable/`.
+- Strip `@supabase/supabase-js`, `@supabase/ssr` from `package.json`.
+- Remove Supabase env vars from `.env` template; add `VITE_API_BASE_URL`.
+- Admin gating switches from `has_role()` RPC to the JWT's `roles` claim + a `/api/admin/verify` fallback.
+- Diagnostics drawer already uses `api-client` — no change.
 
-## Phase 3 — Blog + public content
+## Deliverables layout
 
-- `src/lib/blog-cms.functions.ts`, `blog-posts.ts`, `blog-analytics.functions.ts`, `blog-seo.functions.ts`.
-- Routes: `blog.index.tsx`, `blog.$slug.tsx`, sitemap.
-- Load public data in route loaders via `fetch` against the PHP API (no SSR-only auth needed).
+```text
+/api/                    PHP endpoints (grouped by domain)
+  config.local.example.php
+  bootstrap.php          db, jwt, cors, error handler
+  lib/                   Db.php, Jwt.php, Auth.php, Mail.php, Storage.php, Stripe.php
+  auth/                  signup.php, login.php, verify-otp.php, ...
+  orders/                list.php, get.php, create.php, update.php, archive.php, restore.php, bulk-delete.php
+  products/, pricing/, site/, reviews/, chatbot/, blog/, referrals/, promos/, ...
+  webhooks/stripe.php, webhooks/telegram.php
+  storage/upload.php, storage/sign.php, uploads/<bucket>/...
+/database/
+  schema.sql             full MySQL schema (users, user_roles, orders, ...)
+  seeds.sql              default site_settings/pricing/etc.
+src/
+  lib/api-client.ts      (already exists, extended)
+  lib/auth-client.ts     (new)
+  hooks/use-auth.ts      (rewritten)
+  routes/_authenticated/route.tsx  (rewritten)
+```
 
-## Phase 4 — Admin panel (biggest chunk)
+## Rollout order (single build, no half-states shipped)
 
-Rewire every `src/components/admin/*Admin.tsx` (~30 files) to call the matching PHP admin controller through `api.admin.*`:
-Orders, Products, ProductDetails, Pricing, SiteContent, ServiceCardsEditor, MediaItemsEditor, BrandSettings, Announcements, Reviews, Referrals, Campaigns, StoreOffers, TelegramBots, Chatbot, ContactLeads, SupportTickets, BackupRestore, ImportOrders, SampleDatasets, ConversionEvents, ServerTracking, StripeEvents, BlogPosts, BlogSeo, BlogAnalytics, ImportExport, EmailTest, DebugMode, SocialLinks.
+1. Config files + `auth-client.ts` + rewritten `use-auth` + login route + `_authenticated` gate.
+2. Delete all Supabase modules and `src/routes/api/**`.
+3. Migrate every consumer of a deleted `*.functions.ts` to `api-client` (batched by domain).
+4. Delete every `*.functions.ts` file.
+5. Fill in any missing PHP controllers so the schema tables all have working endpoints.
+6. Storage swap in admin uploaders.
+7. Typecheck / build until clean.
 
-## Phase 5 — Chatbot, referrals, telegram, storage
+## Deployment steps you'll do
 
-- `src/lib/chatbot*.ts`, `chatbot.functions.ts`, `ChatbotWidget.tsx`.
-- `ReferralCapture.tsx`, `referrals.functions.ts`, `referral-log.server.ts`.
-- Telegram webhook: keep as a TanStack public route that forwards to PHP, or move to PHP entirely (recommended — remove the TS route).
-- Uploads across `BrandSettingsAdmin`, `AvatarCropDialog`, `MediaItemsEditor`, `ServiceCardsEditor`, `ImageCropperModal` → `api.uploadFile`.
+1. Upload `/api` and `/database` to your Bangladeshi host.
+2. Import `database/schema.sql` into MySQL, then `seeds.sql`.
+3. Copy `config.local.example.php` → `config.local.php`, fill DB creds + JWT secret + SMTP + Stripe keys.
+4. Point the frontend build's `VITE_API_BASE_URL` at your API host and republish.
 
-## Phase 6 — Cleanup
+## Heads-up (things that will break by design)
 
-- Delete `src/integrations/supabase/`, `src/lib/*.server.ts` Supabase helpers, unused `.functions.ts` files, `supabase/` folder, `attachSupabaseAuth`.
-- Drop Supabase env vars from `.env.example`; document `VITE_API_URL`.
-- Update `AGENTS.md` / `DEPLOY.md` with the new architecture.
-- Final build + typecheck; fix any stragglers.
+- Existing Supabase users / data won't be migrated automatically — you'll need to export from Supabase and import into MySQL (I can add a one-shot importer script if you want; not in this plan).
+- Google OAuth logins will stop working (per your answer).
+- Anything currently relying on Supabase Realtime (chatbot live updates, order events streaming) becomes short-interval polling.
+- Row-level security moves from Postgres RLS into PHP checks — every admin controller enforces JWT `role=admin`, every user-scoped controller enforces `user_id = jwt.sub`.
 
-## What this means turn-by-turn
-
-Each phase is ~1–3 large turns depending on how the build reacts. I will:
-
-1. Edit the files for a phase in parallel.
-2. Rely on the auto-build; fix reported errors.
-3. Stop at the end of each phase and report so you can preview and say "next".
-
-## Confirm before I start
-
-Two decisions I need from you:
-
-1. **`VITE_API_URL` for preview** — during rewiring in Lovable there's no PHP host reachable. Options:
-   - (a) I set `VITE_API_URL=https://api.emailsly.com` (or whatever your BD host will be) — preview will show network errors until you deploy PHP, but the code is production-ready.
-   - (b) I leave it blank and add a small in-preview note; you set it in `.env` before build.
-2. **Kill switch for Supabase** — should I delete `src/integrations/supabase/` at the end of Phase 6, or keep it dormant so you can flip back? Recommendation: delete.
-
-Reply with your picks (or "a + delete") and I'll start Phase 1.
+Approve and I'll execute rollout in order, one batch per turn.

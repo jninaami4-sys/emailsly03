@@ -9,7 +9,10 @@
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "lint": "eslint .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "vr:snapshot": "node visual-regression/run.mjs snapshot",
+    "vr:compare": "node visual-regression/run.mjs compare",
+    "vr:update": "VR_UPDATE=1 node visual-regression/run.mjs compare"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

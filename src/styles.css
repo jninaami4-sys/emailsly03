@@ -179,64 +179,71 @@
  * so the entire public site (SiteShell uses .theme-midnight) flips to a
  * bright surface while keeping the violet → magenta brand accents.
  */
-/* Premium Soft Minimalist light theme — soft off-white surfaces, deep
- * slate ink, violet primary + magenta accent reserved for CTAs and active
- * states. Applied to the whole public site (SiteShell uses .theme-midnight)
- * plus the raw body so anything outside SiteShell also inherits it. */
+/* ─────────────────────────────────────────────────────────────────────
+ * Pearl & Aurora — premium light theme (v2)
+ * A soft pearl-white surface with cool ocean-indigo primary and a calm
+ * teal accent. Cards use real glassmorphism (translucent white + backdrop
+ * blur + hairline borders + soft ambient shadow) for depth without heavy
+ * paint. All hues are kept in the same cool family (indigo → teal) so
+ * gradients never clash or produce muddy mid-tones — no color distortion.
+ * Dark theme is untouched.
+ * ────────────────────────────────────────────────────────────────────*/
 html.site-light,
 html.site-light body,
 html.site-light .theme-midnight {
   /* Surfaces */
-  --background: oklch(0.992 0.004 300);   /* #fdfcff soft off-white */
-  --foreground: oklch(0.18 0.03 265);     /* deeper slate ink — sharper AA */
-  --card: oklch(1 0 0);                    /* pure white cards */
-  --card-foreground: oklch(0.18 0.03 265);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.18 0.03 265);
-  --muted: oklch(0.968 0.006 285);
-  --muted-foreground: oklch(0.42 0.02 265); /* darker for AA on white */
-  --secondary: oklch(0.965 0.008 290);
-  --secondary-foreground: oklch(0.22 0.03 265);
-  --accent: oklch(0.55 0.25 293);          /* violet accent */
+  --background: oklch(0.988 0.006 240);       /* #f7faff pearl white */
+  --foreground: oklch(0.20 0.03 255);         /* deep slate ink for AA */
+  --card: oklch(1 0 0 / 0.72);                /* translucent white glass */
+  --card-foreground: oklch(0.20 0.03 255);
+  --popover: oklch(1 0 0 / 0.92);
+  --popover-foreground: oklch(0.20 0.03 255);
+  --muted: oklch(0.965 0.010 240);
+  --muted-foreground: oklch(0.44 0.02 255);
+  --secondary: oklch(0.962 0.012 235);
+  --secondary-foreground: oklch(0.24 0.03 255);
+  --accent: oklch(0.68 0.12 200);              /* teal accent */
   --accent-foreground: oklch(1 0 0);
-  --border: oklch(0.90 0.01 280 / 0.85);
-  --input: oklch(0.88 0.01 280 / 0.9);
-  --primary: oklch(0.55 0.25 293);         /* #7c3aed violet */
+  --border: oklch(0.86 0.02 240 / 0.75);
+  --input: oklch(0.86 0.02 240 / 0.85);
+  --primary: oklch(0.55 0.20 258);             /* ocean indigo #3b5bdb-ish */
   --primary-foreground: oklch(1 0 0);
-  --ring: oklch(0.55 0.25 293);
+  --ring: oklch(0.55 0.20 258);
 
-  /* Status colors — light-mode tuned */
-  --destructive: oklch(0.60 0.22 18);
+  /* Status colors — same hue family, calmer chroma for light */
+  --destructive: oklch(0.60 0.20 24);
   --destructive-foreground: oklch(1 0 0);
 
   /* Ink / paper */
-  --ink: oklch(0.20 0.03 265);
-  --paper: oklch(0.992 0.004 300);
+  --ink: oklch(0.20 0.03 255);
+  --paper: oklch(0.988 0.006 240);
 
-  /* Brand accents — same identity, softer alphas for light */
-  --violet: oklch(0.55 0.25 293);
-  --violet-soft: oklch(0.55 0.25 293 / 0.10);
-  --magenta: oklch(0.68 0.28 328);
-  --magenta-soft: oklch(0.68 0.28 328 / 0.10);
-  --coral: oklch(0.68 0.28 328);
-  --coral-soft: oklch(0.68 0.28 328 / 0.10);
-  --emerald: oklch(0.60 0.15 158);
-  --emerald-soft: oklch(0.60 0.15 158 / 0.12);
-  --amber: oklch(0.79 0.16 78);
-  --amber-soft: oklch(0.79 0.16 78 / 0.14);
-  --indigo: oklch(0.50 0.20 268);
-  --indigo-soft: oklch(0.50 0.20 268 / 0.10);
-  --neon-blue: oklch(0.60 0.19 253);
-  --neon-blue-soft: oklch(0.60 0.19 253 / 0.12);
-  --neon-orange: oklch(0.72 0.19 55);
-  --neon-orange-soft: oklch(0.72 0.19 55 / 0.12);
+  /* Brand accents — remapped from violet/magenta to indigo/teal so any
+   * component reading these tokens stays inside the new family. Same
+   * variable names preserve visual contracts across the codebase. */
+  --violet: oklch(0.55 0.20 258);              /* indigo */
+  --violet-soft: oklch(0.55 0.20 258 / 0.10);
+  --magenta: oklch(0.68 0.12 200);             /* teal */
+  --magenta-soft: oklch(0.68 0.12 200 / 0.10);
+  --coral: oklch(0.72 0.14 40);                /* warm coral kept as-is */
+  --coral-soft: oklch(0.72 0.14 40 / 0.12);
+  --emerald: oklch(0.66 0.14 168);
+  --emerald-soft: oklch(0.66 0.14 168 / 0.12);
+  --amber: oklch(0.80 0.15 82);
+  --amber-soft: oklch(0.80 0.15 82 / 0.14);
+  --indigo: oklch(0.55 0.20 258);
+  --indigo-soft: oklch(0.55 0.20 258 / 0.10);
+  --neon-blue: oklch(0.62 0.18 245);
+  --neon-blue-soft: oklch(0.62 0.18 245 / 0.12);
+  --neon-orange: oklch(0.74 0.17 55);
+  --neon-orange-soft: oklch(0.74 0.17 55 / 0.12);
 
-  /* Midnight aliases flipped to light so bg-midnight-surface etc. don't
-     leave dark patches on the light theme. */
-  --midnight: oklch(0.992 0.004 300);
-  --midnight-surface: oklch(1 0 0);
-  --midnight-elev: oklch(0.985 0.006 290);
-  --midnight-line: oklch(0.90 0.01 280 / 0.85);
+  /* Midnight aliases → light glass surfaces so bg-midnight-* utilities
+   * inherit the new palette instead of punching dark rectangles. */
+  --midnight: oklch(0.988 0.006 240);
+  --midnight-surface: oklch(1 0 0 / 0.78);
+  --midnight-elev: oklch(1 0 0 / 0.9);
+  --midnight-line: oklch(0.86 0.02 240 / 0.7);
 
   color-scheme: light;
 }
@@ -246,10 +253,7 @@ html.site-light .admin-theme {
   color-scheme: dark;
 }
 
-/* ---------- Header dark/light toggle (Uiverse.io / Creatlydev inspired) ----------
- * Horizontal pill scaled to fit the 48px header. Original was a vertical
- * 60×155 pill; we keep the sliding-circle motion and green "on" state.
- */
+/* ---------- Header dark/light toggle (Uiverse.io / Creatlydev inspired) ---------- */
 .theme-toggle {
   position: relative;
   width: 44px;
@@ -283,14 +287,14 @@ html.site-light .admin-theme {
   display: block;
 }
 .theme-toggle.is-on {
-  background: linear-gradient(135deg, #7c3aed, #d946ef);
+  background: linear-gradient(135deg, #3b5bdb, #14b8a6);
 }
 .theme-toggle.is-on .theme-toggle__circle {
   margin-left: calc(44px - (2px * 2) - 18px);
   color: #f59e0b;
 }
 .theme-toggle:focus-visible {
-  outline: 2px solid #7c3aed;
+  outline: 2px solid #3b5bdb;
   outline-offset: 2px;
 }
 @media (prefers-reduced-motion: reduce) {
@@ -298,23 +302,17 @@ html.site-light .admin-theme {
   .theme-toggle__circle { transition: none !important; }
 }
 
-/* Premium light-mode polish: soft branded ambient wash, refined shadows,
- * gentle gradient text for headings, crisp hairline borders. */
+/* Ambient background — soft indigo/teal aurora over pearl. Single hue
+ * family means blend zones stay clean instead of turning gray/brown. */
 html.site-light body {
-  background-color: #fbfaff;
+  background-color: #f7faff;
   background-image:
-    /* soft aurora blobs — violet + magenta + sky, low opacity */
-    radial-gradient(60rem 40rem at 85% -8%, rgba(217, 70, 239, 0.14), transparent 60%),
-    radial-gradient(55rem 38rem at -10% 8%, rgba(124, 58, 237, 0.14), transparent 62%),
-    radial-gradient(50rem 34rem at 50% 110%, rgba(56, 189, 248, 0.10), transparent 60%),
-    /* faint dot grid for premium texture */
-    radial-gradient(rgba(15, 23, 42, 0.045) 1px, transparent 1px),
-    /* base warm-cool wash */
-    linear-gradient(180deg, #fbfaff 0%, #f4f2fb 100%);
-  background-size:
-    auto, auto, auto,
-    22px 22px,
-    auto;
+    radial-gradient(60rem 42rem at 88% -10%, rgba(59, 91, 219, 0.14), transparent 60%),
+    radial-gradient(55rem 40rem at -8% 12%, rgba(20, 184, 166, 0.13), transparent 62%),
+    radial-gradient(48rem 34rem at 50% 115%, rgba(129, 140, 248, 0.10), transparent 60%),
+    radial-gradient(rgba(30, 41, 59, 0.045) 1px, transparent 1px),
+    linear-gradient(180deg, #f7faff 0%, #eef3fb 100%);
+  background-size: auto, auto, auto, 22px 22px, auto;
   background-attachment: fixed, fixed, fixed, fixed, fixed;
   background-repeat: no-repeat, no-repeat, no-repeat, repeat, no-repeat;
 }
@@ -325,46 +323,56 @@ html.site-light body::before {
   pointer-events: none;
   z-index: 0;
   background:
-    linear-gradient(180deg, rgba(255,255,255,0.6) 0%, transparent 20%, transparent 80%, rgba(255,255,255,0.7) 100%);
+    linear-gradient(180deg, rgba(255,255,255,0.55) 0%, transparent 22%, transparent 78%, rgba(255,255,255,0.7) 100%);
 }
+
 html.site-light .theme-midnight h1,
-html.site-light .theme-midnight h2 {
-  letter-spacing: -0.02em;
-}
+html.site-light .theme-midnight h2 { letter-spacing: -0.02em; }
+
+/* Glass cards — translucent white, real backdrop blur, hairline indigo
+ * border, layered ambient shadow. Feature-query fallback for browsers
+ * without backdrop-filter so cards still read as solid white. */
 html.site-light .theme-midnight .card,
 html.site-light .theme-midnight [data-card],
 html.site-light .bg-card {
-  background-color: #ffffff;
-  border: 1px solid rgba(124, 58, 237, 0.10);
+  background-color: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(59, 91, 219, 0.12);
+  backdrop-filter: blur(18px) saturate(140%);
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.9) inset,
     0 1px 2px rgba(15, 23, 42, 0.04),
-    0 10px 30px -14px rgba(124, 58, 237, 0.20),
+    0 10px 30px -14px rgba(59, 91, 219, 0.18),
     0 30px 60px -30px rgba(15, 23, 42, 0.12);
   transition: box-shadow 240ms ease, transform 240ms ease, border-color 240ms ease;
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  html.site-light .theme-midnight .card,
+  html.site-light .theme-midnight [data-card],
+  html.site-light .bg-card {
+    background-color: #ffffff;
+  }
 }
 html.site-light .theme-midnight .card:hover,
 html.site-light .theme-midnight [data-card]:hover,
 html.site-light .bg-card:hover {
-  border-color: rgba(124, 58, 237, 0.22);
+  border-color: rgba(59, 91, 219, 0.24);
   box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 1px 0 rgba(255, 255, 255, 0.95) inset,
     0 2px 4px rgba(15, 23, 42, 0.05),
-    0 16px 40px -16px rgba(124, 58, 237, 0.28),
+    0 16px 40px -16px rgba(59, 91, 219, 0.28),
     0 40px 70px -30px rgba(15, 23, 42, 0.14);
 }
 
-/* Premium gradient headings in light mode — subtle violet→magenta tint on
- * h1/h2 without hurting readability. Body copy stays deep ink. */
+/* Heading gradient — stays inside the indigo/teal family so no muddy
+ * mid-tones appear across the transition. */
 html.site-light h1,
 html.site-light h2 {
-  background: linear-gradient(135deg, #1a1533 0%, #4c1d95 55%, #a21caf 100%);
+  background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 45%, #0d9488 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   letter-spacing: -0.02em;
 }
-/* Never gradient-clip icons, buttons, or elements that must stay solid */
 html.site-light h1 svg,
 html.site-light h2 svg,
 html.site-light h1 [data-no-gradient],
@@ -374,42 +382,45 @@ html.site-light h2 [data-no-gradient] {
   color: inherit;
 }
 
-/* Crisper form controls in light mode */
+/* Form controls */
 html.site-light input,
 html.site-light textarea,
 html.site-light select {
-  background-color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.85);
   border-color: rgba(15, 23, 42, 0.12);
   box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
 }
 html.site-light input:focus-visible,
 html.site-light textarea:focus-visible,
 html.site-light select:focus-visible {
-  border-color: rgba(124, 58, 237, 0.55);
-  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.14);
+  border-color: rgba(59, 91, 219, 0.55);
+  box-shadow: 0 0 0 3px rgba(59, 91, 219, 0.15);
 }
 
-/* Primary buttons — richer premium gradient in light mode */
+/* Primary buttons — indigo → teal gradient. Both stops in the same cool
+ * family so the mid-transition renders as a clean blue-teal, never gray. */
 html.site-light .theme-midnight .bg-primary,
 html.site-light .bg-primary {
-  background-image: linear-gradient(135deg, #7c3aed 0%, #a21caf 55%, #d946ef 100%);
+  background-image: linear-gradient(135deg, #3b5bdb 0%, #2563eb 50%, #14b8a6 100%);
   color: #ffffff;
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.35) inset,
-    0 10px 24px -12px rgba(124, 58, 237, 0.55);
+    0 10px 24px -12px rgba(59, 91, 219, 0.55);
 }
 html.site-light .theme-midnight .bg-primary:hover,
 html.site-light .bg-primary:hover {
   filter: brightness(1.05);
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.4) inset,
-    0 14px 30px -12px rgba(124, 58, 237, 0.65);
+    0 14px 30px -12px rgba(59, 91, 219, 0.65);
 }
 
-/* Muted / secondary body text — bump legibility */
+/* Muted / secondary body text — bump legibility on pearl surface */
 html.site-light .text-muted-foreground {
-  color: oklch(0.38 0.02 265);
+  color: oklch(0.40 0.02 255);
 }
+
+
 
 /*
  * Admin panel theme — deep navy surface with blue accent (matches the

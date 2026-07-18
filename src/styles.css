@@ -191,59 +191,54 @@
 html.site-light,
 html.site-light body,
 html.site-light .theme-midnight {
-  /* Surfaces */
-  --background: oklch(0.988 0.006 240);       /* #f7faff pearl white */
-  --foreground: oklch(0.20 0.03 255);         /* deep slate ink for AA */
-  --card: oklch(1 0 0 / 0.72);                /* translucent white glass */
-  --card-foreground: oklch(0.20 0.03 255);
-  --popover: oklch(1 0 0 / 0.92);
-  --popover-foreground: oklch(0.20 0.03 255);
-  --muted: oklch(0.965 0.010 240);
-  --muted-foreground: oklch(0.44 0.02 255);
-  --secondary: oklch(0.962 0.012 235);
-  --secondary-foreground: oklch(0.24 0.03 255);
-  --accent: oklch(0.68 0.12 200);              /* teal accent */
+  /* Warm editorial "Ivory & Ember" — deliberately different from the
+   * dark theme's cool violet/magenta. Ivory paper background, espresso
+   * ink, rose-copper primary, muted sage accent. */
+  --background: oklch(0.982 0.012 85);
+  --foreground: oklch(0.22 0.02 40);
+  --card: oklch(1 0 0 / 0.78);
+  --card-foreground: oklch(0.22 0.02 40);
+  --popover: oklch(0.995 0.006 85);
+  --popover-foreground: oklch(0.22 0.02 40);
+  --muted: oklch(0.955 0.014 78);
+  --muted-foreground: oklch(0.44 0.02 45);
+  --secondary: oklch(0.945 0.018 72);
+  --secondary-foreground: oklch(0.26 0.03 40);
+  --accent: oklch(0.62 0.09 155);
   --accent-foreground: oklch(1 0 0);
-  --border: oklch(0.86 0.02 240 / 0.75);
-  --input: oklch(0.86 0.02 240 / 0.85);
-  --primary: oklch(0.55 0.20 258);             /* ocean indigo #3b5bdb-ish */
+  --border: oklch(0.84 0.025 70 / 0.7);
+  --input: oklch(0.84 0.025 70 / 0.85);
+  --primary: oklch(0.56 0.16 25);
   --primary-foreground: oklch(1 0 0);
-  --ring: oklch(0.55 0.20 258);
+  --ring: oklch(0.56 0.16 25);
 
-  /* Status colors — same hue family, calmer chroma for light */
-  --destructive: oklch(0.60 0.20 24);
+  --destructive: oklch(0.55 0.20 25);
   --destructive-foreground: oklch(1 0 0);
 
-  /* Ink / paper */
-  --ink: oklch(0.20 0.03 255);
-  --paper: oklch(0.988 0.006 240);
+  --ink: oklch(0.22 0.02 40);
+  --paper: oklch(0.982 0.012 85);
 
-  /* Brand accents — remapped from violet/magenta to indigo/teal so any
-   * component reading these tokens stays inside the new family. Same
-   * variable names preserve visual contracts across the codebase. */
-  --violet: oklch(0.55 0.20 258);              /* indigo */
-  --violet-soft: oklch(0.55 0.20 258 / 0.10);
-  --magenta: oklch(0.68 0.12 200);             /* teal */
-  --magenta-soft: oklch(0.68 0.12 200 / 0.10);
-  --coral: oklch(0.72 0.14 40);                /* warm coral kept as-is */
-  --coral-soft: oklch(0.72 0.14 40 / 0.12);
-  --emerald: oklch(0.66 0.14 168);
-  --emerald-soft: oklch(0.66 0.14 168 / 0.12);
-  --amber: oklch(0.80 0.15 82);
-  --amber-soft: oklch(0.80 0.15 82 / 0.14);
-  --indigo: oklch(0.55 0.20 258);
-  --indigo-soft: oklch(0.55 0.20 258 / 0.10);
-  --neon-blue: oklch(0.62 0.18 245);
-  --neon-blue-soft: oklch(0.62 0.18 245 / 0.12);
-  --neon-orange: oklch(0.74 0.17 55);
-  --neon-orange-soft: oklch(0.74 0.17 55 / 0.12);
+  --violet: oklch(0.56 0.16 25);
+  --violet-soft: oklch(0.56 0.16 25 / 0.10);
+  --magenta: oklch(0.62 0.16 15);
+  --magenta-soft: oklch(0.62 0.16 15 / 0.10);
+  --coral: oklch(0.68 0.16 40);
+  --coral-soft: oklch(0.68 0.16 40 / 0.12);
+  --emerald: oklch(0.58 0.10 155);
+  --emerald-soft: oklch(0.58 0.10 155 / 0.12);
+  --amber: oklch(0.76 0.15 75);
+  --amber-soft: oklch(0.76 0.15 75 / 0.14);
+  --indigo: oklch(0.42 0.08 265);
+  --indigo-soft: oklch(0.42 0.08 265 / 0.10);
+  --neon-blue: oklch(0.55 0.12 240);
+  --neon-blue-soft: oklch(0.55 0.12 240 / 0.12);
+  --neon-orange: oklch(0.70 0.17 45);
+  --neon-orange-soft: oklch(0.70 0.17 45 / 0.12);
 
-  /* Midnight aliases → light glass surfaces so bg-midnight-* utilities
-   * inherit the new palette instead of punching dark rectangles. */
-  --midnight: oklch(0.988 0.006 240);
-  --midnight-surface: oklch(1 0 0 / 0.78);
-  --midnight-elev: oklch(1 0 0 / 0.9);
-  --midnight-line: oklch(0.86 0.02 240 / 0.7);
+  --midnight: oklch(0.982 0.012 85);
+  --midnight-surface: oklch(1 0 0 / 0.82);
+  --midnight-elev: oklch(1 0 0 / 0.92);
+  --midnight-line: oklch(0.84 0.025 70 / 0.65);
 
   color-scheme: light;
 }

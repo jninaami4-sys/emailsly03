@@ -16,7 +16,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
-import { supabase } from "@/integrations/supabase/client";
+import { uploadsApi } from "@/lib/api-client";
 import { useMyProfile } from "@/hooks/use-my-profile";
 import {
   compressVideo,

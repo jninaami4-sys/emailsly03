@@ -335,8 +335,9 @@
 .admin-theme input:not([type="checkbox"]):not([type="radio"]),
 .admin-theme select,
 .admin-theme textarea {
-  background: oklch(0.26 0.03 265);
-  border: 1px solid oklch(1 0 0 / 0.14);
+  background: oklch(0.16 0.01 265);
+  border: 1px solid oklch(1 0 0 / 0.09);
+
   color: oklch(0.99 0 0);
   font-weight: 600;
   border-radius: 8px;

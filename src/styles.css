@@ -150,29 +150,28 @@
 
 
 .theme-midnight {
-  /* Public site surface — exact spec values */
-  --background: oklch(0.10 0.02 265);      /* #0a0b14 */
-  --foreground: oklch(0.92 0.005 265);     /* #E5E7EB */
-  --card: oklch(0.15 0.03 265);            /* #0B1220 */
-  --card-foreground: oklch(0.98 0 0);
-  --muted: oklch(0.20 0.03 265);
-  --muted-foreground: oklch(0.78 0.02 265);
-  --secondary: oklch(0.20 0.03 265);
-  --secondary-foreground: oklch(0.98 0 0);
-  --border: oklch(0.30 0.03 265 / 0.6);    /* ~#1E2536 */
-  --input: oklch(0.30 0.03 265 / 0.7);
-  --primary: oklch(0.63 0.19 253);         /* electric blue */
+  --background: oklch(0.11 0.012 275);
+  --foreground: oklch(0.95 0.004 275);
+  --card: oklch(0.155 0.015 275);
+  --card-foreground: oklch(0.95 0.004 275);
+  --muted: oklch(0.19 0.02 275);
+  --muted-foreground: oklch(0.61 0.02 265);
+  --secondary: oklch(0.19 0.02 275);
+  --secondary-foreground: oklch(0.95 0.004 275);
+  --border: oklch(1 0 0 / 0.07);
+  --input: oklch(1 0 0 / 0.09);
+  --primary: oklch(0.66 0.17 254);
   --primary-foreground: oklch(1 0 0);
-  --ring: oklch(0.63 0.19 253);
-  /* Brand accents on public site — violet → magenta identity */
-  --violet: oklch(0.55 0.25 293);          /* #7C3AED */
-  --violet-soft: oklch(0.55 0.25 293 / 0.15);
-  --magenta: oklch(0.68 0.28 328);         /* #D946EF */
-  --magenta-soft: oklch(0.68 0.28 328 / 0.15);
-  --coral: oklch(0.68 0.28 328);
-  --coral-soft: oklch(0.68 0.28 328 / 0.15);
+  --ring: oklch(0.66 0.17 254);
+  --violet: oklch(0.66 0.17 254);
+  --violet-soft: oklch(0.66 0.17 254 / 0.12);
+  --magenta: oklch(0.66 0.17 254);
+  --magenta-soft: oklch(0.66 0.17 254 / 0.10);
+  --coral: oklch(0.66 0.17 254);
+  --coral-soft: oklch(0.66 0.17 254 / 0.10);
   color-scheme: dark;
 }
+
 
 /*
  * Admin panel theme — deep navy surface with blue accent (matches the

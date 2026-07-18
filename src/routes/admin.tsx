@@ -44,6 +44,8 @@ import { EmailslyLoaderInline } from "@/components/site/EmailslyLoaderInline";
 import { AdminShell, type NavGroup } from "@/components/admin/AdminShell";
 import { CommandPalette } from "@/components/admin/CommandPalette";
 import { AdminDashboard } from "@/components/admin/AdminDashboard";
+import { ApiDiagnosticsDrawer } from "@/components/site/ApiDiagnosticsDrawer";
+
 
 export const Route = createFileRoute("/admin")({
   head: () => ({

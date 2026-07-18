@@ -53,7 +53,7 @@ export function TrackingDebugPanel() {
     gtm: false, ga4: false, meta: false, tiktok: false, dataLayer: false,
   });
 
-  const settingsFn = useServerFn(getSiteSettings);
+  const settingsFn = getSiteSettings;
   const eventsFn = useServerFn(getConversionEvents);
   const { data: settings } = useQuery({
     queryKey: ["site-settings"],

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { LineChart, Save, Loader2, MessageCircle } from "@/components/admin/AdminIcons";
 import { getSiteSettings, updateSiteSettings, type TawkPosition } from "@/lib/site-settings.functions";
 
@@ -17,8 +16,8 @@ const empty = {
 
 export function TrackingAdmin() {
   const qc = useQueryClient();
-  const getFn = useServerFn(getSiteSettings);
-  const setFn = useServerFn(updateSiteSettings);
+  const getFn = getSiteSettings;
+  const setFn = updateSiteSettings;
 
   const { data, isLoading } = useQuery({
     queryKey: ["site-settings", "admin"],

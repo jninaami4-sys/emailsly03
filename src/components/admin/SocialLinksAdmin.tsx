@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { Loader2, RefreshCw, Trash2, Plus, Save, X } from "@/components/admin/AdminIcons";
 import {
   adminListSocialLinks,
@@ -48,10 +47,10 @@ const BLANK: Draft = {
 };
 
 export function SocialLinksAdmin() {
-  const listFn = useServerFn(adminListSocialLinks);
-  const upsertFn = useServerFn(adminUpsertSocialLink);
-  const toggleFn = useServerFn(adminToggleSocialLink);
-  const deleteFn = useServerFn(adminDeleteSocialLink);
+  const listFn = adminListSocialLinks;
+  const upsertFn = adminUpsertSocialLink;
+  const toggleFn = adminToggleSocialLink;
+  const deleteFn = adminDeleteSocialLink;
 
   const { data, isLoading, isFetching, refetch } = useQuery({
     queryKey: ["admin-social-links"],

@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { Loader2, Trash2, Plus, Send, RefreshCw } from "@/components/admin/AdminIcons";
 import {
   adminCloseConversation,
@@ -72,10 +71,10 @@ export function ChatbotAdmin() {
 // Live chats
 // ---------------------------------------------------------------------------
 function LiveChatsPane() {
-  const listFn = useServerFn(adminListConversations);
-  const msgFn = useServerFn(adminListMessages);
-  const replyFn = useServerFn(adminReply);
-  const closeFn = useServerFn(adminCloseConversation);
+  const listFn = adminListConversations;
+  const msgFn = adminListMessages;
+  const replyFn = adminReply;
+  const closeFn = adminCloseConversation;
   const qc = useQueryClient();
 
   const { data: convs = [], isLoading, refetch } = useQuery({
@@ -223,7 +222,7 @@ function LiveChatsPane() {
 // ---------------------------------------------------------------------------
 function OrdersPane() {
   const listFn = adminListOrders;
-  const upsertFn = useServerFn(adminUpsertOrder);
+  const upsertFn = adminUpsertOrder;
   const delFn = adminDeleteOrder;
   const qc = useQueryClient();
 
@@ -394,8 +393,8 @@ function OrdersPane() {
 // Tickets
 // ---------------------------------------------------------------------------
 function TicketsPane() {
-  const listFn = useServerFn(adminListTickets);
-  const updFn = useServerFn(adminUpdateTicket);
+  const listFn = adminListTickets;
+  const updFn = adminUpdateTicket;
   const qc = useQueryClient();
   const { data: tickets = [], isLoading } = useQuery({
     queryKey: ["chatbot-admin-tickets"],
@@ -454,10 +453,10 @@ function TicketsPane() {
 // KB
 // ---------------------------------------------------------------------------
 function KbPane() {
-  const listFn = useServerFn(adminListKb);
-  const upsertFn = useServerFn(adminUpsertKb);
-  const delFn = useServerFn(adminDeleteKb);
-  const syncFn = useServerFn(adminSyncKb);
+  const listFn = adminListKb;
+  const upsertFn = adminUpsertKb;
+  const delFn = adminDeleteKb;
+  const syncFn = adminSyncKb;
   const qc = useQueryClient();
   const { data: kb = [] } = useQuery({
     queryKey: ["chatbot-admin-kb"],
@@ -633,9 +632,9 @@ function KbPane() {
 // Config
 // ---------------------------------------------------------------------------
 function ConfigPane() {
-  const getFn = useServerFn(adminGetConfig);
-  const saveFn = useServerFn(adminSaveConfig);
-  const hookFn = useServerFn(adminSetTelegramWebhook);
+  const getFn = adminGetConfig;
+  const saveFn = adminSaveConfig;
+  const hookFn = adminSetTelegramWebhook;
   const qc = useQueryClient();
   const { data, isLoading } = useQuery({
     queryKey: ["chatbot-admin-cfg"],

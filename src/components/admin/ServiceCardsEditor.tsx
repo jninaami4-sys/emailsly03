@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { upsertSiteContent } from "@/lib/site-content.functions";
 import {
   SERVICE_ICON_KEYS,
@@ -35,7 +34,7 @@ export function ServiceCardsEditor({ initial, onSaved }: Props) {
   const [cards, setCards] = useState<EditableServiceCard[]>(initialItems);
   const [error, setError] = useState<string | null>(null);
   const [savedAt, setSavedAt] = useState<number | null>(null);
-  const upsertFn = useServerFn(upsertSiteContent);
+  const upsertFn = upsertSiteContent;
   const qc = useQueryClient();
 
   useEffect(() => {

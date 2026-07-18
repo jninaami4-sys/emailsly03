@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useServerFn } from "@tanstack/react-start";
 import { MessageCircle, X, ArrowLeft, User, Send, Loader2 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { useMyProfile } from "@/hooks/use-my-profile";
@@ -135,15 +134,15 @@ export function ChatbotWidget() {
   const [liveStatus, setLiveStatus] = useState<"bot" | "live" | "closed">("bot");
   const [authChecked, setAuthChecked] = useState(false);
 
-  const cfgFn = useServerFn(getChatbotPublicConfig);
-  const kbFn = useServerFn(listKb);
-  const startFn = useServerFn(startConversation);
-  const listMsgFn = useServerFn(listMessages);
-  const postFn = useServerFn(postMessage);
-  const lookupFn = useServerFn(lookupOrder);
-  const orderFn = useServerFn(createOrder);
-  const ticketFn = useServerFn(createTicket);
-  const handoffFn = useServerFn(requestHumanHandoff);
+  const cfgFn = getChatbotPublicConfig;
+  const kbFn = listKb;
+  const startFn = startConversation;
+  const listMsgFn = listMessages;
+  const postFn = postMessage;
+  const lookupFn = lookupOrder;
+  const orderFn = createOrder;
+  const ticketFn = createTicket;
+  const handoffFn = requestHumanHandoff;
 
   // Load config once
   useEffect(() => {

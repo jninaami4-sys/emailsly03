@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useRef } from "react";
 import { captureReferralFromUrl, getStoredReferral, clearStoredReferral } from "@/lib/referral-capture";
-import { useServerFn } from "@tanstack/react-start";
 import { attachReferrer } from "@/lib/referrals.functions";
 import { useAuth } from "@/hooks/use-auth";
 
@@ -13,7 +12,7 @@ import { useAuth } from "@/hooks/use-auth";
  * Safe to render everywhere: reads only, no UI.
  */
 export function ReferralCapture() {
-  const attachFn = useServerFn(attachReferrer);
+  const attachFn = attachReferrer;
   const { user } = useAuth();
   const lastUserId = useRef<string | null>(null);
 

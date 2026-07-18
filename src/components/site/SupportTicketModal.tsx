@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { createSupportTicket } from "@/lib/support-tickets.functions";
 import { getSiteSettings } from "@/lib/site-settings.functions";
 import { X, LifeBuoy, Loader2, AlertCircle, CheckCircle2 } from "lucide-react";
@@ -37,8 +36,8 @@ export function SupportTicketModal({
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
   const qc = useQueryClient();
-  const createFn = useServerFn(createSupportTicket);
-  const settingsFn = useServerFn(getSiteSettings);
+  const createFn = createSupportTicket;
+  const settingsFn = getSiteSettings;
   const { data: settings } = useQuery({
     queryKey: ["site-settings"],
     queryFn: () => settingsFn(),

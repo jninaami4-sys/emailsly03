@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { useMemo } from "react";
 import { getPricingSettings, type PricingSetting } from "@/lib/pricing-settings.functions";
 
@@ -12,7 +11,7 @@ export type PricingOverride = {
 };
 
 export function usePricingOverrides() {
-  const fn = useServerFn(getPricingSettings);
+  const fn = getPricingSettings;
   const { data } = useQuery({
     queryKey: ["pricing-settings"],
     queryFn: () => fn(),

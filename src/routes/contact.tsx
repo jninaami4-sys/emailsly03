@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteShell } from "@/components/site/SiteShell";
 import { useState } from "react";
-import { useServerFn } from "@tanstack/react-start";
 import { Mail, MessageCircle, Calendar, Loader2 } from "lucide-react";
 import { submitContactLead } from "@/lib/contact-leads.functions";
 import { useSiteContent } from "@/hooks/use-site-content";
@@ -28,7 +27,7 @@ function Contact() {
   const [sent, setSent] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const submit = useServerFn(submitContactLead);
+  const submit = submitContactLead;
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();

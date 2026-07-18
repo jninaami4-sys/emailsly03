@@ -18,7 +18,7 @@ import { pageviewId, reserveEvent } from "@/lib/dedupe";
  * SPA navigations fire virtual pageviews below.
  */
 export function TrackingScripts() {
-  const fn = useServerFn(getSiteSettings);
+  const fn = getSiteSettings;
   const eventsFn = useServerFn(getConversionEvents);
   const { data } = useQuery({
     queryKey: ["site-settings"],

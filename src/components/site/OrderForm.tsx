@@ -80,6 +80,9 @@ export function OrderForm() {
                   className={inputClass}
                   placeholder="jane@acme.com"
                 />
+                {isDisposableEmail(email) && (
+                  <p className="mt-1.5 text-xs font-medium text-coral">{DISPOSABLE_EMAIL_MESSAGE}</p>
+                )}
               </Field>
               <Field label="Company">
                 <input

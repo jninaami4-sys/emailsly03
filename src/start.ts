@@ -1,7 +1,20 @@
 import { createStart, createMiddleware } from "@tanstack/react-start";
 
 import { renderErrorPage } from "./lib/error-page";
-import { attachSupabaseAuth } from "@/integrations/supabase/auth-attacher";
+
+// Attach the PHP-API JWT (stored in localStorage as `emailsly_jwt`) to any
+// server-fn call so legacy server functions that still exist during the
+// Supabase → PHP migration receive an Authorization header. Once every
+// consumer switches to `api-client`, server functions and this attacher can
+// be removed entirely.
+const attachApiAuth = createMiddleware().client(async ({ next }) => {
+  const headers: Record<string, string> = {};
+  if (typeof window !== "undefined") {
+    const token = window.localStorage.getItem("emailsly_jwt");
+    if (token) headers.Authorization = `Bearer ${token}`;
+  }
+  return next({ headers });
+});
 
 const errorMiddleware = createMiddleware().server(async ({ next }) => {
   try {
@@ -19,6 +32,6 @@ const errorMiddleware = createMiddleware().server(async ({ next }) => {
 });
 
 export const startInstance = createStart(() => ({
-  functionMiddleware: [attachSupabaseAuth],
+  functionMiddleware: [attachApiAuth],
   requestMiddleware: [errorMiddleware],
 }));

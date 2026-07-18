@@ -6,7 +6,7 @@ import { X } from "lucide-react";
 import { listActiveAnnouncements, type Announcement } from "@/lib/announcements.functions";
 
 type ExtendedAnnouncement = Announcement & { card_style?: string; title_emoji?: string };
-import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/use-auth";
 
 const DISMISS_PREFIX = "lyra_announce_dismissed:";
 
@@ -24,34 +24,9 @@ function pathMatches(pattern: string, pathname: string): boolean {
 type Viewer = { userId: string | null; isAdmin: boolean };
 
 function useViewer(): Viewer | null {
-  const [viewer, setViewer] = useState<Viewer | null>(null);
-  useEffect(() => {
-    let alive = true;
-    const load = async () => {
-      const { data } = await supabase.auth.getUser();
-      const uid = data.user?.id ?? null;
-      let isAdmin = false;
-      if (uid) {
-        try {
-          const { data: adminData } = await supabase.rpc("has_role", {
-            _user_id: uid,
-            _role: "admin",
-          });
-          isAdmin = !!adminData;
-        } catch {
-          isAdmin = false;
-        }
-      }
-      if (alive) setViewer({ userId: uid, isAdmin });
-    };
-    load();
-    const { data: sub } = supabase.auth.onAuthStateChange(() => load());
-    return () => {
-      alive = false;
-      sub.subscription.unsubscribe();
-    };
-  }, []);
-  return viewer;
+  const { user, loading } = useAuth();
+  if (loading) return null;
+  return { userId: user?.id ?? null, isAdmin: Boolean(user?.is_admin) };
 }
 
 function audienceMatches(a: Announcement, v: Viewer): boolean {

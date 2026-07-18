@@ -350,6 +350,7 @@ function AuthPage() {
 
   return (
     <main className="login-bright relative min-h-screen overflow-hidden bg-[radial-gradient(ellipse_120%_80%_at_50%_-10%,var(--card)_0%,var(--muted)_45%,var(--background)_100%)] text-foreground">
+
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute left-1/4 top-1/3 size-[50rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet/[0.07] blur-[140px]" />
         <div className="absolute right-1/4 bottom-1/3 size-[50rem] translate-x-1/2 translate-y-1/2 rounded-full bg-magenta/[0.05] blur-[140px]" />

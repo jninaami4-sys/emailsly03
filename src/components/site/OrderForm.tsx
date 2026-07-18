@@ -189,7 +189,7 @@ export function OrderForm() {
 }
 
 const inputClass =
-  "w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-sm outline-none transition-colors focus:border-violet focus:ring-2 focus:ring-violet/20";
+  "w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-sm outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20";
 
 function Field({
   label,

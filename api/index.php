@@ -31,6 +31,7 @@ $routes = [
     // Site
     ['GET',    '#^/site-settings$#',                'site/settings_get.php'],
     ['PATCH',  '#^/admin/site-settings$#',          'admin/site_settings_update.php'],
+    ['POST',   '#^/admin/test-email$#',             'admin/test_email.php'],
 
     // Uploads
     ['POST',   '#^/uploads$#',                      'uploads/upload.php'],

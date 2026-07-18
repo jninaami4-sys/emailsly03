@@ -179,26 +179,45 @@
  * so the entire public site (SiteShell uses .theme-midnight) flips to a
  * bright surface while keeping the violet → magenta brand accents.
  */
-html.site-light .theme-midnight,
-html.site-light body {
-  --background: oklch(0.985 0.003 265);   /* near-white */
-  --foreground: oklch(0.22 0.03 265);     /* dark navy ink */
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.20 0.03 265);
+/* Premium Soft Minimalist light theme — soft off-white surfaces, deep
+ * slate ink, violet primary + magenta accent reserved for CTAs and active
+ * states. Applied to the whole public site (SiteShell uses .theme-midnight)
+ * plus the raw body so anything outside SiteShell also inherits it. */
+html.site-light,
+html.site-light body,
+html.site-light .theme-midnight {
+  --background: oklch(0.992 0.004 300);   /* #fdfcff soft off-white */
+  --foreground: oklch(0.22 0.03 265);     /* deep slate ink */
+  --card: oklch(1 0 0);                    /* pure white cards */
+  --card-foreground: oklch(0.22 0.03 265);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.20 0.03 265);
-  --muted: oklch(0.96 0.005 265);
-  --muted-foreground: oklch(0.45 0.02 265);
-  --secondary: oklch(0.95 0.005 265);
+  --popover-foreground: oklch(0.22 0.03 265);
+  --muted: oklch(0.968 0.006 285);         /* subtle lavender-tinted muted */
+  --muted-foreground: oklch(0.48 0.02 265);
+  --secondary: oklch(0.965 0.008 290);
   --secondary-foreground: oklch(0.22 0.03 265);
-  --border: oklch(0.86 0.01 265 / 0.7);
-  --input: oklch(0.86 0.01 265 / 0.8);
-  --primary: oklch(0.55 0.25 293);        /* violet stays primary */
+  --accent: oklch(0.55 0.25 293);          /* violet accent */
+  --accent-foreground: oklch(1 0 0);
+  --border: oklch(0.90 0.01 280 / 0.85);   /* soft hairline */
+  --input: oklch(0.88 0.01 280 / 0.9);
+  --primary: oklch(0.55 0.25 293);         /* #7c3aed violet */
   --primary-foreground: oklch(1 0 0);
   --ring: oklch(0.55 0.25 293);
   --ink: oklch(0.20 0.03 265);
-  --paper: oklch(0.99 0.003 265);
+  --paper: oklch(0.992 0.004 300);
+  /* Brand accents stay identical on light so gradients keep their identity */
+  --violet: oklch(0.55 0.25 293);
+  --violet-soft: oklch(0.55 0.25 293 / 0.10);
+  --magenta: oklch(0.68 0.28 328);
+  --magenta-soft: oklch(0.68 0.28 328 / 0.10);
+  --coral: oklch(0.68 0.28 328);
+  --coral-soft: oklch(0.68 0.28 328 / 0.10);
   color-scheme: light;
+}
+
+/* Keep the admin panel dark regardless of the site-light default. */
+html.site-light .admin-theme {
+  color-scheme: dark;
 }
 
 /* ---------- Header dark/light toggle (Uiverse.io / Creatlydev inspired) ----------

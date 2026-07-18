@@ -226,18 +226,46 @@ export const adminSiteSettingsApi = {
   update: (body: unknown) => patch("/api/admin/site-settings", body),
 };
 
-// -------- File uploads --------
+// -------- File uploads / downloads --------
 export const uploadsApi = {
-  upload: async (bucket: string, file: File, opts?: { path?: string }) => {
+  /**
+   * Upload a file to the PHP storage endpoint. Server returns a ready-to-use
+   * URL (public for public buckets, pre-signed for private buckets).
+   */
+  upload: async (
+    bucket: string,
+    file: File | Blob,
+    opts?: { path?: string; contentType?: string; cacheControl?: string; upsert?: boolean },
+  ) => {
     const fd = new FormData();
     fd.append("bucket", bucket);
-    fd.append("file", file);
+    const filename = (file as File).name || opts?.path?.split("/").pop() || "upload.bin";
+    fd.append("file", file, filename);
     if (opts?.path) fd.append("path", opts.path);
+    if (opts?.contentType) fd.append("content_type", opts.contentType);
+    if (opts?.cacheControl) fd.append("cache_control", opts.cacheControl);
+    if (opts?.upsert) fd.append("upsert", "1");
     return api<{ url: string; path: string; bucket: string }>("/api/uploads", {
       method: "POST",
       body: fd,
     });
   },
+  /** Get a fresh signed/expiring URL for a stored object. */
+  sign: (bucket: string, path: string, expiresIn = 60 * 60) =>
+    j<{ url: string; expires_at: string }>("/api/uploads/sign", {
+      bucket,
+      path,
+      expires_in: expiresIn,
+    }),
+  /** Public URL helper for public buckets (no signature). */
+  publicUrl: (bucket: string, path: string) =>
+    `${BASE}/api/uploads/public/${encodeURIComponent(bucket)}/${path
+      .split("/")
+      .map(encodeURIComponent)
+      .join("/")}`,
+  /** Delete a stored object. */
+  destroy: (bucket: string, path: string) =>
+    del(`/api/uploads?bucket=${encodeURIComponent(bucket)}&path=${encodeURIComponent(path)}`),
 };
 
 // -------- Blog --------

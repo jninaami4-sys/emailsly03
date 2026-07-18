@@ -60,9 +60,6 @@ export const Route = createFileRoute("/pricing")({
 type Tier = {
   id: string;
   name: string;
-  price: string;
-  per: string;
-  min: string;
   desc?: string;
   icon: typeof Zap;
   popular?: boolean;
@@ -74,9 +71,6 @@ const DATA_TIERS: Tier[] = [
   {
     id: "apollo",
     name: "Apollo Export",
-    price: "$20",
-    per: "/ 5k leads",
-    min: "$0.0035 per lead · min 5,000",
     desc: "Standard bulk export directly from your Apollo search filters.",
     icon: Crown,
     popular: true,
@@ -86,18 +80,12 @@ const DATA_TIERS: Tier[] = [
   {
     id: "zoominfo",
     name: "ZoomInfo Data",
-    price: "$20",
-    per: "/ 1k leads",
-    min: "$0.02 per lead · min 1,000",
     icon: Phone,
     features: ["HQ phone numbers", "Real-Time Data", "Current Job Titles"],
   },
   {
     id: "linkedin",
     name: "LinkedIn B2B",
-    price: "$50",
-    per: "/ 5k leads",
-    min: "$0.01 per lead · min 5,000",
     desc: "Real-time fresh scraping from Sales Navigator searches.",
     icon: Linkedin,
     features: ["Sales-Nav filters", "Trigger events", "Real-Time Data", "Current Job Titles"],
@@ -106,14 +94,12 @@ const DATA_TIERS: Tier[] = [
   {
     id: "manual",
     name: "Manual Research",
-    price: "$35",
-    per: "/ 100 leads",
-    min: "100 leads · $0.35 per lead",
     desc: "100% human-verified research for niche or complex ICPs.",
     icon: PenTool,
     features: ["Human-verified", "Custom criteria", "48h delivery", "Any data field"],
   },
 ];
+
 
 
 function Pricing() {

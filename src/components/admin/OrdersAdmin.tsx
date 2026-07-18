@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import {
@@ -11,9 +11,13 @@ import {
   adminCreateOrder,
   adminUpdateOrder,
   adminDeleteOrder,
+  adminArchiveOrders,
+  adminRestoreOrders,
+  adminDeleteOrders,
 } from "@/lib/admin-orders.functions";
 import { Loader2, Package, DollarSign, RefreshCcw, Send, Ban, CheckCircle2, Mail } from "@/components/admin/AdminIcons";
-import { Plus, Pencil, Trash2 } from "lucide-react";
+import { Plus, Pencil, Trash2, Archive, ArchiveRestore, Undo2 } from "lucide-react";
+
 
 const STATUSES = ["all", "pending", "in_progress", "delivered", "cancelled", "refunded", "revision_requested"];
 

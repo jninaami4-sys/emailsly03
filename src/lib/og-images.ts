@@ -53,8 +53,10 @@ export function matchTheme(matches: ReadonlyArray<{ routeId?: string; id?: strin
     matches.find((m) => m.routeId === "__root__" || m.id === "__root__") ?? matches[0];
   const data = root?.loaderData as { theme?: SiteTheme } | undefined;
   if (typeof window === "undefined") {
-    console.error("[matchTheme]", JSON.stringify({ len: matches.length, ids: matches.map((m: any) => m.routeId ?? m.id), loaderKeys: matches.map((m: any) => Object.keys(m.loaderData ?? {})), rootLoader: root?.loaderData }));
+    const debug = JSON.stringify({ len: matches.length, ids: matches.map((m: any) => m.routeId ?? m.id), loaderKeys: matches.map((m: any) => Object.keys(m.loaderData ?? {})), rootLoader: root?.loaderData });
+    (globalThis as any).__mt = debug;
   }
+
 
   return data?.theme === "light" || data?.theme === "dark" ? data.theme : null;
 }

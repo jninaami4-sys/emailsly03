@@ -28,6 +28,11 @@ import { BlogSeoAdmin } from "@/components/admin/BlogSeoAdmin";
 import { BlogAnalyticsAdmin } from "@/components/admin/BlogAnalyticsAdmin";
 import { BlogPostsAdmin } from "@/components/admin/BlogPostsAdmin";
 import { EmailTestAdmin } from "@/components/admin/EmailTestAdmin";
+import { StoreOffersAdmin } from "@/components/admin/StoreOffersAdmin";
+import { TelegramBotsAdmin } from "@/components/admin/TelegramBotsAdmin";
+import { BackupRestoreAdmin } from "@/components/admin/BackupRestoreAdmin";
+import { ImportOrdersAdmin } from "@/components/admin/ImportOrdersAdmin";
+import { CampaignsAdmin } from "@/components/admin/CampaignsAdmin";
 import { whoAmIAdmin } from "@/lib/announcements.functions";
 import { useAuth } from "@/hooks/use-auth";
 import {

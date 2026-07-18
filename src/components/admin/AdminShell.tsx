@@ -282,7 +282,7 @@ export function AdminShell({
             </div>
           </header>
 
-          <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+          <main className="w-full px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
             {active && (
               <div key={`h-${activeId}`} className="mb-6">
                 <span className="admin-eyebrow">

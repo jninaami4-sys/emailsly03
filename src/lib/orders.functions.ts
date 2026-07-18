@@ -88,6 +88,16 @@ export const requestRevision = createServerFn({ method: "POST" })
   )
   .handler(async ({ context, data }) => {
     const supabase = context.supabase as any;
+    // Ownership check — verify caller actually owns the parent order before writing.
+    const { data: owned, error: ownErr } = await supabase
+      .from("orders")
+      .select("id")
+      .eq("id", data.order_id)
+      .eq("user_id", context.userId)
+      .maybeSingle();
+    if (ownErr) throw new Error(ownErr.message);
+    if (!owned) throw new Error("Order not found");
+
     const { error: e1 } = await supabase.from("order_events").insert({
       order_id: data.order_id,
       actor_id: context.userId,

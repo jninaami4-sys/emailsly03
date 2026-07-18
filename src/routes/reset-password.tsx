@@ -2,12 +2,13 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { z } from "zod";
 import { fallback, zodValidator } from "@tanstack/zod-adapter";
-import { supabase } from "@/integrations/supabase/client";
+import { authApi, ApiError } from "@/lib/api-client";
 import { ArrowRight, Loader2, Lock, CheckCircle2, AlertCircle, Eye, EyeOff, Check, X } from "lucide-react";
 import { useSiteContent } from "@/hooks/use-site-content";
 
 const searchSchema = z.object({
   redirectTo: fallback(z.string(), "").default(""),
+  token: fallback(z.string(), "").default(""),
 });
 
 // Only allow same-origin relative paths to prevent open-redirect attacks.
@@ -108,7 +109,7 @@ function ResetPasswordPage() {
   const [linkMessage, setLinkMessage] = useState<string | null>(null);
   const [redirectSeconds, setRedirectSeconds] = useState(3);
   const [capsLock, setCapsLock] = useState(false);
-  const { redirectTo } = Route.useSearch();
+  const { redirectTo, token } = Route.useSearch();
   const navigate = useNavigate();
   const safeRedirect = useMemo(() => sanitizeRedirect(redirectTo), [redirectTo]);
   const isFormValid = useMemo(
@@ -116,13 +117,21 @@ function ResetPasswordPage() {
     [password, confirm],
   );
 
+  // Prefer ?token=..., fall back to token in the URL hash (some email clients).
+  const resetToken = useMemo(() => {
+    if (token) return token;
+    if (typeof window === "undefined") return "";
+    const hash = window.location.hash.slice(1);
+    const params = new URLSearchParams(hash);
+    return params.get("token") || params.get("access_token") || "";
+  }, [token]);
+
   useEffect(() => {
+    if (typeof window === "undefined") return;
     const hash = window.location.hash.slice(1);
     const params = new URLSearchParams(hash);
     const errCode = params.get("error_code") || params.get("error");
     const errDesc = params.get("error_description");
-    const type = params.get("type");
-    const accessToken = params.get("access_token");
 
     if (errCode) {
       const desc = errDesc ? decodeURIComponent(errDesc.replace(/\+/g, " ")) : "";
@@ -139,24 +148,14 @@ function ResetPasswordPage() {
       return;
     }
 
-    if (type === "recovery" && accessToken) {
+    if (resetToken) {
       setLinkState("valid");
-      return;
+    } else {
+      setLinkState("invalid");
+      setLinkMessage("Missing reset token. Please request a new link.");
     }
+  }, [resetToken]);
 
-    // Fallback: PASSWORD_RECOVERY event fires if Supabase already parsed the hash.
-    const { data: sub } = supabase.auth.onAuthStateChange((event) => {
-      if (event === "PASSWORD_RECOVERY") setLinkState("valid");
-    });
-    const timer = window.setTimeout(() => {
-      setLinkState((s) => (s === "checking" ? "invalid" : s));
-    }, 1200);
-
-    return () => {
-      sub.subscription.unsubscribe();
-      window.clearTimeout(timer);
-    };
-  }, []);
 
   const checks = useMemo(() => getPasswordChecks(password), [password]);
   const strength = useMemo(() => scorePassword(password), [password]);
@@ -184,32 +183,36 @@ function ResetPasswordPage() {
 
     setBusy(true);
     try {
-      const { error } = await supabase.auth.updateUser({ password });
-      if (error) {
-        const msg = error.message || "";
+      if (!resetToken) {
+        setLinkState("invalid");
+        setLinkMessage("Missing reset token. Please request a new link.");
+        return;
+      }
+      await authApi.resetPassword(resetToken, password);
+      setSuccess(true);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Something went wrong";
+      if (err instanceof ApiError) {
         if (/same_password|different from the old|should be different/i.test(msg)) {
           setErrors({ password: "New password must be different from your current password" });
         } else if (/weak|pwned|breach|leaked/i.test(msg)) {
           setErrors({ password: "This password has appeared in a data breach — choose a different one" });
-        } else if (/rate|too many|throttle/i.test(msg)) {
+        } else if (err.status === 429 || /rate|too many|throttle/i.test(msg)) {
           setErrors({ form: "Too many attempts. Please wait a moment and try again." });
-        } else if (/network|fetch|failed to fetch/i.test(msg)) {
-          setErrors({ form: "Network error — check your connection and try again." });
-        } else if (/expired|invalid|session|jwt|token/i.test(msg)) {
+        } else if (err.status === 400 || err.status === 401 || err.status === 410 || /expired|invalid|jwt|token/i.test(msg)) {
           setLinkState("expired");
-          setLinkMessage("Your reset session has expired. Please request a new link.");
+          setLinkMessage("Your reset link has expired or is invalid. Please request a new one.");
         } else {
           setErrors({ form: msg || "Something went wrong. Please try again." });
         }
-        return;
+      } else {
+        setErrors({ form: msg });
       }
-      setSuccess(true);
-    } catch (err) {
-      setErrors({ form: err instanceof Error ? err.message : "Something went wrong" });
     } finally {
       setBusy(false);
     }
   }
+
 
   const invalidLink = linkState === "invalid" || linkState === "expired" || linkState === "used";
 

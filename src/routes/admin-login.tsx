@@ -1,7 +1,9 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { DEMO_EMAIL, DEMO_PASSWORD, ensureDemoAccount } from "@/lib/demo-account.functions";
+import { authApi } from "@/lib/api-client";
+
+const DEMO_EMAIL = "demo@emailsly.com";
+const DEMO_PASSWORD = "Demo!2024Pass";
 
 export const Route = createFileRoute("/admin-login")({
   head: () => ({
@@ -16,26 +18,13 @@ export const Route = createFileRoute("/admin-login")({
 
 function AdminAutoLogin() {
   const navigate = useNavigate();
-  const [status, setStatus] = useState("Preparing demo account…");
+  const [status, setStatus] = useState("Signing in as demo…");
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
       try {
-        setStatus("Ensuring demo account…");
-        await ensureDemoAccount();
-
-        setStatus("Signing in as demo…");
-        const { data: sess } = await supabase.auth.getSession();
-        if (sess.session?.user?.email?.toLowerCase() !== DEMO_EMAIL.toLowerCase()) {
-          await supabase.auth.signOut();
-          const { error } = await supabase.auth.signInWithPassword({
-            email: DEMO_EMAIL,
-            password: DEMO_PASSWORD,
-          });
-          if (error) throw error;
-        }
-
+        await authApi.login({ email: DEMO_EMAIL, password: DEMO_PASSWORD });
         if (cancelled) return;
         setStatus("Opening admin panel…");
         navigate({ to: "/admin", replace: true });

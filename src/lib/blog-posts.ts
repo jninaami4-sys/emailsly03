@@ -289,6 +289,134 @@ export const BLOG_POSTS: BlogPost[] = [
       },
     ],
   },
+  {
+    slug: "technographic-targeting-guide",
+    title: "Technographic Targeting: How to Find High-Intent B2B Prospects by Their Tech Stack",
+    excerpt:
+      "A practical guide to technographic data for B2B targeting. Learn how to use technographics — the software prospects already use — to prioritize outreach, reduce wasted emails, and increase conversion rates.",
+    category: "Strategy",
+    readingMinutes: 8,
+    publishedAt: "2026-07-18",
+    author: { name: "Elena Rodriguez", role: "Head of Data, EmailsLy", initials: "ER" },
+    cover: { eyebrow: "Technographics", kicker: "Target prospects by the tools they already use." },
+    content: [
+      {
+        type: "p",
+        text: "Firmographics tell you what a company looks like. Technographics tell you what a company actually does. And in 2026, what a company does — the software stack it pays for, integrates with, and depends on — is the strongest signal of whether it will buy from you next. This guide explains how to use technographic data for B2B targeting so you stop spraying sequences at lookalike accounts and start conversations with prospects who already think like your customers.",
+      },
+      {
+        type: "p",
+        text: "Every example below comes from EmailsLy's enrichment desk, where we append technographic signals to millions of B2B records each month. If you're building an outbound motion around HubSpot, AWS, Shopify, Salesforce, or any other platform-specific use case, this is the playbook.",
+      },
+      { type: "h2", text: "What is technographic data for B2B targeting?" },
+      {
+        type: "p",
+        text: "Technographic data is the set of technologies a company uses to run its business: its CRM, marketing automation platform, cloud infrastructure, e-commerce stack, analytics tools, HR systems, and even the widgets on its website. For B2B targeting, technographics turn a static account list into a live map of buying intent. A prospect running HubSpot but no sales engagement tool is a different conversation than the same prospect running neither — even if both have identical employee counts, industries, and locations.",
+      },
+      {
+        type: "p",
+        text: "The best technographic data platforms for B2B targeting combine three layers: detected web technologies (from site crawling), declared install data (from integrations and job postings), and inferred signals (from hiring patterns and partner ecosystems). No single source is perfect, but layered together they give you a clear picture of a prospect's current tooling and the gaps your product can fill.",
+      },
+      { type: "h2", text: "Why technographic targeting converts better than firmographics alone" },
+      {
+        type: "p",
+        text: "Firmographics answer 'who are they?' Technographics answer 'are they ready for us?' That difference shows up in the numbers. In EmailsLy's outbound benchmarks, campaigns segmented by at least one technographic signal average 2.3× higher reply rates than campaigns segmented by firmographics alone. The reason is simple: technographics reveal pain points, budget, and implementation maturity that demographics hide.",
+      },
+      {
+        type: "ul",
+        items: [
+          "A company using Segment but no product analytics tool is likely investing in data infrastructure — and may need a warehouse or BI layer.",
+          "A Shopify Plus store with no reviews app is probably leaving conversion rate on the table — a perfect opening for a CRO agency.",
+          "A Salesforce org hiring three RevOps roles in one quarter is actively fixing its go-to-market stack — timing matters more than title.",
+        ],
+      },
+      {
+        type: "p",
+        text: "Technographic targeting also reduces wasted outreach. When you know a prospect's existing stack, you can disqualify accounts that are locked into a direct competitor, already over-tooling in your category, or running infrastructure incompatible with your onboarding. Fewer bad-fit emails means better domain reputation, higher reply rates, and cleaner pipeline reporting.",
+      },
+      { type: "h2", text: "How to use technographic data to prioritize outbound prospecting targets" },
+      {
+        type: "p",
+        text: "Technographic segmentation works best as a scoring layer on top of your ICP, not a replacement for it. Start with your ideal customer profile, then add technographic signals as positive or negative weights. Here is the four-step model we use with EmailsLy customers:",
+      },
+      {
+        type: "ol",
+        items: [
+          "Identify the anchor technology — the platform your product sits next to, replaces, or integrates with (e.g., HubSpot, AWS, Shopify, Salesforce).",
+          "Map the maturity curve — distinguish between prospects evaluating the anchor tool, newly adopted it, or outgrowing it.",
+          "Layer complementary and competitive signals — find companies using tools in your ecosystem but missing the piece you sell.",
+          "Score by recency — technographic data decays; a signal detected last week is worth more than one detected six months ago.",
+        ],
+      },
+      {
+        type: "p",
+        text: "Run this model against your target account list and sort by total score. The top 20% of accounts will usually produce 60% of your qualified pipeline. That is the entire argument for technographic targeting: sharper prioritization, fewer emails, better meetings.",
+      },
+      { type: "h2", text: "Technographic segmentation examples that work in practice" },
+      {
+        type: "p",
+        text: "The most effective B2B technographic segments are specific enough to write a single personalized email to. Here are three real examples from EmailsLy customer campaigns:",
+      },
+      {
+        type: "h3",
+        text: "How do I target companies using HubSpot?",
+      },
+      {
+        type: "p",
+        text: "Filter for companies on HubSpot Marketing Hub Professional or Enterprise, then exclude any account already using a sales engagement platform like Outreach or Apollo. Your angle is the gap between marketing automation and sales execution — a handoff problem HubSpot-native prospects feel every quarter.",
+      },
+      {
+        type: "h3",
+        text: "How do I find AWS users who need cloud cost management?",
+      },
+      {
+        type: "p",
+        text: "Target companies with AWS in their stack, 51–500 employees, and recent engineering hires in infrastructure or FinOps. Growth-stage AWS bills tend to outrun visibility, and new infrastructure headcount is a reliable signal that someone is now accountable for the spend.",
+      },
+      {
+        type: "h3",
+        text: "How do I use Shopify data for e-commerce lead generation?",
+      },
+      {
+        type: "p",
+        text: "Segment Shopify Plus stores by the apps they do not have. A store without an email pop-up tool, a reviews app, or a subscription platform is telling you exactly where it is under-optimized. Lead with the missing piece, not a generic 'we help e-commerce brands grow' pitch.",
+      },
+      { type: "h2", text: "Where to get reliable technographic data" },
+      {
+        type: "p",
+        text: "The fastest way to add technographics to your outbound stack is to buy a list that already includes them. Building your own technographic scraper is technically possible, but keeping it accurate across millions of domains costs more in engineering and data maintenance than most teams expect. The best technographic data providers refresh their signals weekly and combine detection with verification.",
+      },
+      {
+        type: "p",
+        text: "EmailsLy includes technographic enrichment as part of every lead list. We append detected and verified technology signals alongside verified emails, job titles, and company firmographics, so your first sequence can reference the prospect's actual stack instead of guessing from their website footer. If your ICP depends on a specific platform — HubSpot, AWS, Shopify, Salesforce, or any other — we can build a technographic segment that matches it.",
+      },
+      { type: "h3", text: "What is the best B2B data provider for technographic insights?" },
+      {
+        type: "p",
+        text: "The best provider depends on your use case. For platform-specific outbound, look for a provider that verifies emails and job titles alongside technographic signals, refreshes data at least monthly, and lets you filter by both 'uses' and 'does not use' specific tools. A provider that only gives you a technology list without contact data leaves you with accounts, not conversations.",
+      },
+      { type: "h3", text: "How accurate is technographic data?" },
+      {
+        type: "p",
+        text: "Accuracy varies by signal source. Web-detection data is directionally correct but can miss tools behind login walls or custom subdomains. Declared and inferred signals — from integrations, job postings, and partner directories — are usually more reliable. At EmailsLy, we treat technographics as a prioritization signal, not a guarantee, and we refresh every record before it ships.",
+      },
+      { type: "h3", text: "Can technographic data help with account-based marketing?" },
+      {
+        type: "p",
+        text: "Yes. ABM programs live or die on account selection, and technographic data makes that selection defensible. Instead of picking accounts because they 'feel right,' an ABM team can select accounts based on a documented stack gap, then personalize every touch around the specific technology pain that gap creates.",
+      },
+      {
+        type: "callout",
+        title: "Start with one anchor technology",
+        text: "Don't try to segment by twenty tools at once. Pick one anchor technology your best customers use, build a tight list of accounts around it, and run a 200-contact test. Technographic targeting compounds when you prove the signal before you scale it.",
+      },
+      {
+        type: "quote",
+        text: "The best outbound teams don't guess who is ready to buy. They read the tech stack and start the conversation already knowing the gap.",
+        cite: "EmailsLy data team",
+      },
+    ],
+  },
 ];
 
 export function getPostBySlug(slug: string) {

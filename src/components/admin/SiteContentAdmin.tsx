@@ -21,9 +21,10 @@ type TabDef = {
 const TABS: TabDef[] = [
   { id: "hero", label: "Hero", icon: Layout, description: "Homepage hero — badge, headline, subtitle, CTAs." },
   { id: "popup", label: "Popup", icon: BellRing, description: "Welcome/promo popup shown on first visit." },
-  { id: "trust", label: "Trust", icon: ShieldCheck, description: "Trust bar stats under the hero." },
+  { id: "trust", label: "Trust stats", icon: ShieldCheck, description: "Hero stat strip & Testimonials trust bar — icons + values." },
   { id: "services", label: "Services heading", icon: Boxes, description: "Services carousel heading & subheading." },
   { id: "service_cards", label: "Service cards", icon: Boxes, description: "Every service card — icon, price, bullets, gradient." },
+  { id: "testimonials" as SiteContentSection, label: "Testimonials", icon: Star, description: "Curated homepage testimonials with avatar upload per item." },
 
   { id: "competitors", label: "Competitors", icon: BarChart3, description: "Comparison table copy vs. competitors." },
   { id: "faq", label: "FAQ", icon: HelpCircle, description: "Homepage FAQ questions & answers." },
@@ -32,6 +33,26 @@ const TABS: TabDef[] = [
   { id: "misc", label: "Misc", icon: Sparkles, description: "Misc CTA banners and one-off strings." },
   { id: "branding", label: "Branding", icon: Palette, description: "Site name, logo, favicon, tagline." },
   { id: "contact", label: "Contact", icon: Mail, description: "Contact page email, WhatsApp, calendar, hours." },
+];
+
+const TRUST_ITEM_FIELDS: FieldDef[] = [
+  { key: "value", label: "Value (e.g. 500+)", kind: "text" },
+  { key: "label", label: "Label", kind: "text" },
+  { key: "icon", label: "Icon (preset)", kind: "icon" },
+  { key: "iconUrl", label: "Custom icon / image (optional)", kind: "image", full: true },
+  { key: "color", label: "Color theme", kind: "color", full: true },
+];
+
+const TESTIMONIAL_ITEM_FIELDS: FieldDef[] = [
+  { key: "text", label: "Quote", kind: "textarea", full: true },
+  { key: "name", label: "Name", kind: "text" },
+  { key: "role", label: "Role / company", kind: "text" },
+  { key: "avatarUrl", label: "Avatar image", kind: "image", full: true },
+];
+
+const TESTIMONIAL_SCALAR_FIELDS: FieldDef[] = [
+  { key: "heading", label: "Section heading", kind: "text", full: true },
+  { key: "subheading", label: "Section subheading", kind: "textarea", full: true },
 ];
 
 // Field label overrides (defaults to Title Cased key)

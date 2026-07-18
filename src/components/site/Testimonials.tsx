@@ -268,6 +268,24 @@ export function Testimonials() {
   const approved = data?.reviews ?? [];
   const approvedCount = data?.count ?? 0;
 
+  // Editable content from Admin → Site Content
+  const trustContent = useSiteContent("trust") as unknown as {
+    items?: Array<{ value: string; label: string; icon?: string; iconUrl?: string; color?: string }>;
+  };
+  const trustItems = trustContent.items ?? [];
+  const testimonialsContent = useSiteContent("testimonials" as never) as unknown as {
+    heading: string;
+    subheading: string;
+    items?: Array<{ text: string; name: string; role: string; avatarUrl?: string }>;
+  };
+  const curatedFromDb: Testimonial[] = (testimonialsContent.items ?? []).map((it) => ({
+    text: it.text,
+    name: it.name,
+    role: it.role,
+    image: it.avatarUrl && it.avatarUrl.length > 0 ? it.avatarUrl : avatarFor(it.name),
+  }));
+  const curatedSource = curatedFromDb.length > 0 ? curatedFromDb : curatedTestimonials;
+
   const [open, setOpen] = useState(false);
 
   const dynamicVideos: VideoTestimonial[] = useMemo(
@@ -288,8 +306,8 @@ export function Testimonials() {
   );
 
   const allText = useMemo(
-    () => [...dynamicText, ...curatedTestimonials],
-    [dynamicText],
+    () => [...dynamicText, ...curatedSource],
+    [dynamicText, curatedSource],
   );
 
   // Distribute across 3 columns so all reviews appear.

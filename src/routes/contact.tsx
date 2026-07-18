@@ -49,6 +49,7 @@ function Contact() {
       setSubmitting(false);
       return;
     }
+    try {
       await submit({ data: payload });
       setSent(true);
     } catch (err) {

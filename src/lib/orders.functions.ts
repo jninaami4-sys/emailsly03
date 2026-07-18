@@ -198,7 +198,11 @@ export const recordMyOrder = createServerFn({ method: "POST" })
         total_cents: safeTotalCents,
         currency: data.currency,
         status: "pending",
-        payment_status: "paid",
+        // CRITICAL: the client cannot mark an order as paid. Payment status
+        // is only ever flipped to "paid" by the verified Stripe webhook
+        // (or by an admin). This prevents a tampered checkout from creating
+        // a fake paid order by navigating directly to /payment-success.
+        payment_status: "unpaid",
         payment_provider: data.payment_provider,
         payment_ref: data.payment_ref,
       })
@@ -210,8 +214,8 @@ export const recordMyOrder = createServerFn({ method: "POST" })
       order_id: row.id,
       actor_id: context.userId,
       actor_role: "system",
-      event_type: "payment_received",
-      message: "Payment received",
+      event_type: "order_created",
+      message: "Order created, awaiting payment confirmation",
     });
 
     // Atomically spend referral credit against this order (user-scoped RPC).

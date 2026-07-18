@@ -12,10 +12,27 @@ function readInitial(): SiteTheme {
   return document.documentElement.classList.contains("site-light") ? "light" : "dark";
 }
 
+/** Brand colors used by mobile browser chrome (address bar, task switcher). */
+const THEME_COLORS: Record<SiteTheme, string> = {
+  light: "#fdfcff",
+  dark: "#0a0b14",
+};
+
+function ensureThemeColorMeta(): HTMLMetaElement {
+  let el = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
+  if (!el) {
+    el = document.createElement("meta");
+    el.name = "theme-color";
+    document.head.appendChild(el);
+  }
+  return el;
+}
+
 function apply(theme: SiteTheme) {
   const root = document.documentElement;
   root.classList.toggle("site-light", theme === "light");
   root.dataset.theme = theme;
+  ensureThemeColorMeta().setAttribute("content", THEME_COLORS[theme]);
 }
 
 export function useTheme() {

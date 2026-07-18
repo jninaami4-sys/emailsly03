@@ -158,8 +158,9 @@ export function OrdersAdmin() {
                 </td>
                 <td className="p-2.5 font-mono text-sm">{money(o.total_cents, o.currency)}</td>
                 <td className="p-2.5">
-                  <StatusPill value={o.status} />
+                  <InlineStatusSelect order={o} onDone={refresh} />
                 </td>
+
                 <td className="p-2.5 text-xs">{o.payment_status}</td>
                 <td className="p-2.5">
                   <div className="flex justify-end gap-1.5">
@@ -242,6 +243,45 @@ function StatusPill({ value }: { value: string }) {
     <span className={`rounded-full px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider ${map[value] ?? "bg-secondary"}`}>
       {value.replace("_", " ")}
     </span>
+  );
+}
+
+function InlineStatusSelect({ order, onDone }: { order: any; onDone: () => void }) {
+  const fn = useServerFn(adminSetStatus);
+  const [value, setValue] = useState<string>(order.status);
+  const m = useMutation({
+    mutationFn: (next: string) => fn({ data: { id: order.id, status: next } }),
+    onSuccess: () => onDone(),
+  });
+  const OPTIONS = ["pending", "in_progress", "delivered", "cancelled", "refunded", "revision_requested"];
+  const tone: Record<string, string> = {
+    pending: "border-amber-500/40 bg-amber-500/10 text-amber-700",
+    in_progress: "border-sky-500/40 bg-sky-500/10 text-sky-700",
+    delivered: "border-emerald-600/40 bg-emerald-600/10 text-emerald-700",
+    cancelled: "border-border bg-secondary text-muted-foreground",
+    refunded: "border-rose-500/40 bg-rose-500/10 text-rose-700",
+    revision_requested: "border-primary/40 bg-primary/10 text-primary",
+  };
+  return (
+    <div className="flex items-center gap-1.5">
+      <select
+        value={value}
+        onChange={(e) => {
+          const next = e.target.value;
+          setValue(next);
+          m.mutate(next);
+        }}
+        disabled={m.isPending}
+        className={`rounded-full border px-2 py-1 font-mono text-[10px] font-black uppercase tracking-wider ${tone[value] ?? "border-border bg-secondary"}`}
+      >
+        {OPTIONS.map((s) => (
+          <option key={s} value={s}>
+            {s.replace("_", " ")}
+          </option>
+        ))}
+      </select>
+      {m.isPending && <Loader2 className="size-3 animate-spin text-muted-foreground" />}
+    </div>
   );
 }
 

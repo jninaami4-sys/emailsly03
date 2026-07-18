@@ -48,42 +48,21 @@ type Lookup = {
 };
 
 // Deterministic mock — same input always returns the same result
-function mockLookup(query: string): Lookup | null {
-  const q = query.trim().toLowerCase();
-  if (!q) return null;
-  const hash = Array.from(q).reduce((a, c) => a + c.charCodeAt(0), 0);
-  const stageIndex = hash % STAGES.length;
-  const services = ["Apollo B2B Data", "LinkedIn Lead Lists", "Hand-Picked Leads", "ZoomInfo Data"];
-  const quantities = ["5,000 leads", "10,000 leads", "25,000 leads", "50,000 leads"];
-  return {
-    id: q.startsWith("lyr-") ? query.trim().toUpperCase() : `LYR-${String(hash).padStart(6, "0")}`,
-    service: services[hash % services.length],
-    quantity: quantities[hash % quantities.length],
-    placed: new Date(Date.now() - (hash % 20) * 3600_000).toLocaleString(),
-    eta: new Date(Date.now() + ((STAGES.length - stageIndex) * 6) * 3600_000).toLocaleString(),
-    stageIndex,
-    email: q.includes("@") ? query.trim() : "you@company.com",
-  };
-}
+type ErrorState = {
+  title: string;
+  message: string;
+  hint?: string;
+  detail?: string;
+  kind: "validation" | "not_found" | "network" | "server";
+};
 
 function TrackOrderPage() {
   const hydrated = useHydrated();
   const [query, setQuery] = useState("");
-  const [submitted, setSubmitted] = useState<string | null>(null);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [result, setResult] = useState<Lookup | null>(null);
+  const [error, setError] = useState<ErrorState | null>(null);
   const [loading, setLoading] = useState(false);
-
-  const result = useMemo(
-    () => (submitted && !loading ? mockLookup(submitted) : null),
-    [submitted, loading],
-  );
-
-  useEffect(() => {
-    if (!submitted) return;
-    setLoading(true);
-    const t = window.setTimeout(() => setLoading(false), 850);
-    return () => window.clearTimeout(t);
-  }, [submitted]);
+  const [lastQuery, setLastQuery] = useState<string | null>(null);
 
   const detectKind = (q: string): "order" | "invoice" | "email" | "unknown" => {
     if (q.includes("@")) return /\S+@\S+\.\S+/.test(q) ? "email" : "unknown";
@@ -92,35 +71,112 @@ function TrackOrderPage() {
     return "unknown";
   };
 
+  const runLookup = async (q: string) => {
+    setLoading(true);
+    setError(null);
+    setResult(null);
+    setLastQuery(q);
+    try {
+      const resp = await ordersApi.track(q);
+      const o = resp?.order;
+      if (!o) {
+        setError({
+          kind: "not_found",
+          title: "No matching order",
+          message: `We couldn't find an order for “${q}”.`,
+          hint: "Double-check the ID from your confirmation email, or try the email address you paid with.",
+        });
+        return;
+      }
+      setResult({
+        id: o.id ?? o.order_id ?? q,
+        service: o.service ?? o.product ?? "—",
+        quantity: o.quantity ?? o.qty ?? "—",
+        placed: o.placed_at ? new Date(o.placed_at).toLocaleString() : (o.created_at ? new Date(o.created_at).toLocaleString() : "—"),
+        eta: o.eta ? new Date(o.eta).toLocaleString() : "—",
+        stageIndex: Math.max(0, Math.min(STAGES.length - 1, Number(resp?.stageIndex ?? o.stage_index ?? 0))),
+        email: o.email ?? "",
+      });
+    } catch (e) {
+      if (e instanceof ApiError) {
+        if (e.status === 404) {
+          setError({
+            kind: "not_found",
+            title: "No matching order",
+            message: `We couldn't find an order for “${q}”.`,
+            hint: "Check the ID (LYR-…) or use the email you paid with. If you placed the order recently, try again in a minute.",
+          });
+        } else if (e.status === 400 || e.status === 422) {
+          setError({
+            kind: "validation",
+            title: "Invalid lookup",
+            message: e.message || "The server rejected that lookup value.",
+            hint: "Use an order ID (LYR-000123), invoice number (INV-000123), or the email you paid with.",
+          });
+        } else if (e.status === 0 || /unreachable|Failed to fetch|NetworkError/i.test(e.message)) {
+          setError({
+            kind: "network",
+            title: "Can't reach the tracking service",
+            message: e.message,
+            hint: "Check your internet connection or try again in a few seconds.",
+            detail: `Base URL: ${getApiBase() || window.location.origin}`,
+          });
+        } else {
+          setError({
+            kind: "server",
+            title: `Tracking failed (HTTP ${e.status || "?"})`,
+            message: e.message || "Unexpected server response.",
+            hint: "This is on us — please retry, or contact support if it keeps happening.",
+            detail: `Base URL: ${getApiBase() || window.location.origin}`,
+          });
+        }
+      } else {
+        setError({
+          kind: "network",
+          title: "Can't reach the tracking service",
+          message: e instanceof Error ? e.message : String(e),
+          hint: "Check your connection and try again.",
+          detail: `Base URL: ${getApiBase() || window.location.origin}`,
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const q = query.trim();
     if (!q) {
-      setErrorMsg("Please enter your order ID, invoice number, or email.");
-      setSubmitted(null);
+      setError({ kind: "validation", title: "Enter something to look up", message: "Please enter your order ID, invoice number, or email." });
+      setResult(null);
       return;
     }
     if (q.includes("@") && !/\S+@\S+\.\S+/.test(q)) {
-      setErrorMsg("That email looks incomplete — use the full address you paid with.");
-      setSubmitted(null);
+      setError({ kind: "validation", title: "That email looks incomplete", message: "Use the full address you paid with (e.g. you@company.com)." });
+      setResult(null);
       return;
     }
     if (q.length < 4) {
-      setErrorMsg("Too short — order IDs and invoices are at least 4 characters.");
-      setSubmitted(null);
+      setError({ kind: "validation", title: "Too short", message: "Order IDs and invoices are at least 4 characters." });
+      setResult(null);
       return;
     }
     const kind = detectKind(q);
     if (kind === "unknown") {
-      setErrorMsg(
-        "Use an order ID (LYR-000123), an invoice number (INV-000123), or the email you paid with.",
-      );
-      setSubmitted(null);
+      setError({
+        kind: "validation",
+        title: "Unrecognized format",
+        message: "Use an order ID (LYR-000123), an invoice number (INV-000123), or the email you paid with.",
+      });
+      setResult(null);
       return;
     }
-    setErrorMsg(null);
-    setSubmitted(q);
+    void runLookup(q);
   };
+
+  const errorMsg = error?.message ?? null;
+
 
   if (!hydrated) {
     return (

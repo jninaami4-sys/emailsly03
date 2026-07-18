@@ -32,6 +32,7 @@ export const ADD_ONS: AddOn[] = [
 
 
 export function AddOns() {
+  const overrides = usePricingOverrides();
   return (
     <section className="border-t border-border px-6 py-24">
       <div className="mx-auto max-w-7xl">
@@ -48,6 +49,8 @@ export function AddOns() {
         </div>
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {ADD_ONS.map((a) => {
+            const price = formatAddOnPrice(a.id, overrides);
+
             const inner = (
               <>
                 <div className="mb-5 inline-grid size-11 place-items-center rounded-xl bg-violet-soft text-violet">

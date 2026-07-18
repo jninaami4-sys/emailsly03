@@ -5,6 +5,7 @@ import { ProductCard } from "@/components/site/ProductCard";
 import { StoreSkeleton } from "@/components/site/StoreSkeleton";
 import { useHydrated } from "@/hooks/use-hydrated";
 import { PRODUCTS, CATEGORIES } from "@/lib/products";
+import { useAllProducts } from "@/hooks/use-all-products";
 import { Search } from "lucide-react";
 
 export const Route = createFileRoute("/store")({
@@ -60,8 +61,9 @@ function Store() {
   const [category, setCategory] = useState<string>("All");
   const [query, setQuery] = useState("");
   const hydrated = useHydrated();
+  const allProducts = useAllProducts();
 
-  const filtered = PRODUCTS.filter((p) => {
+  const filtered = allProducts.filter((p) => {
     if (category !== "All" && p.category !== category) return false;
     if (query && !`${p.title} ${p.category} ${p.description}`.toLowerCase().includes(query.toLowerCase())) return false;
     return true;

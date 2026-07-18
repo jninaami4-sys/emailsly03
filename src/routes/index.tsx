@@ -3,6 +3,7 @@ import { ogImageMeta, OG_IMAGES, matchTheme } from "@/lib/og-images";
 import { SiteShell } from "@/components/site/SiteShell";
 import { ProductCard } from "@/components/site/ProductCard";
 import { PRODUCTS } from "@/lib/products";
+import { useAllProducts } from "@/hooks/use-all-products";
 import rawApollo from "@/lib/apollo-leads-raw.json";
 import rawLinkedin from "@/lib/linkedin-leads-raw.json";
 import rawZoominfo from "@/lib/zoominfo-leads-raw.json";
@@ -102,7 +103,8 @@ export const Route = createFileRoute("/")({
 
 
 function Home() {
-  const featured = PRODUCTS.filter((p) => p.featured).concat(PRODUCTS.filter((p) => !p.featured)).slice(0, 3);
+  const allProducts = useAllProducts();
+  const featured = allProducts.filter((p) => p.featured).concat(allProducts.filter((p) => !p.featured)).slice(0, 3);
   const trust = useSiteContent("trust");
   const faqContent = useSiteContent("faq");
   const stats = [

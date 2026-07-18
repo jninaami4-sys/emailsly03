@@ -621,6 +621,72 @@ export type Database = {
         }
         Relationships: []
       }
+      custom_products: {
+        Row: {
+          category: string
+          category_color: string
+          compare_at_price: number | null
+          cover_image: string | null
+          created_at: string
+          description: string
+          featured: boolean
+          fields: string[]
+          file_format: string
+          geography: string
+          id: string
+          price: number
+          published: boolean
+          records: number
+          sample_note: string | null
+          slug: string
+          sort_order: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          category_color?: string
+          compare_at_price?: number | null
+          cover_image?: string | null
+          created_at?: string
+          description?: string
+          featured?: boolean
+          fields?: string[]
+          file_format?: string
+          geography?: string
+          id?: string
+          price?: number
+          published?: boolean
+          records?: number
+          sample_note?: string | null
+          slug: string
+          sort_order?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          category_color?: string
+          compare_at_price?: number | null
+          cover_image?: string | null
+          created_at?: string
+          description?: string
+          featured?: boolean
+          fields?: string[]
+          file_format?: string
+          geography?: string
+          id?: string
+          price?: number
+          published?: boolean
+          records?: number
+          sample_note?: string | null
+          slug?: string
+          sort_order?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       legacy_order_imports: {
         Row: {
           batch_id: string

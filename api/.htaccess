@@ -1,0 +1,21 @@
+# Apache: route /api/* through index.php (single entry point)
+RewriteEngine On
+RewriteBase /api/
+
+# Deny direct access to config + libs
+<FilesMatch "^(config\.local\.php|bootstrap\.php)$">
+  Require all denied
+</FilesMatch>
+<Directory "lib">
+  Require all denied
+</Directory>
+
+# Serve real files directly (uploads/, favicon, etc.)
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^ - [L]
+
+# Everything else goes to index.php
+RewriteRule ^ index.php [L]
+
+# CORS preflight is handled inside PHP
+Header always set X-Content-Type-Options "nosniff"

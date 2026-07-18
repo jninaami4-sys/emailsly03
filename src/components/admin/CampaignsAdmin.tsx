@@ -1,33 +1,31 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { listCampaigns, upsertCampaign, deleteCampaign, sendCampaign } from "@/lib/admin-extras.functions";
+import { listCampaigns, upsertCampaign, deleteCampaign, sendCampaign, previewCampaignAudience } from "@/lib/admin-extras.functions";
 import { Plus, Save, Trash2, Loader2, Megaphone } from "@/components/admin/AdminIcons";
 
 type Campaign = {
   id: string;
   name: string;
   subject: string | null;
-  body_html: string | null;
-  body_text: string | null;
+  body: string;
   audience: string;
   audience_filter: any;
   channel: string;
   status: string;
   sent_at: string | null;
-  recipients_count: number;
+  recipient_count: number;
 };
 
 const empty = {
   id: null as string | null,
   name: "",
   subject: "",
-  body_html: "",
-  body_text: "",
-  audience: "all",
+  body: "",
+  audience: "all" as "all" | "paid" | "by_service",
   audience_filter: {} as any,
-  channel: "email",
-  status: "draft",
+  channel: "email" as "email" | "announcement",
+  status: "draft" as const,
 };
 
 export function CampaignsAdmin() {
@@ -36,8 +34,10 @@ export function CampaignsAdmin() {
   const upFn = useServerFn(upsertCampaign);
   const delFn = useServerFn(deleteCampaign);
   const sendFn = useServerFn(sendCampaign);
+  const previewFn = useServerFn(previewCampaignAudience);
   const [draft, setDraft] = useState(empty);
   const [msg, setMsg] = useState<string | null>(null);
+  const [audiencePreview, setAudiencePreview] = useState<{ count: number; sample: string[] } | null>(null);
 
   const { data, isLoading } = useQuery({ queryKey: ["admin-campaigns"], queryFn: () => listFn() });
   const save = useMutation({
@@ -54,10 +54,14 @@ export function CampaignsAdmin() {
   const send = useMutation({
     mutationFn: (id: string) => sendFn({ data: { id } }),
     onSuccess: (r) => {
-      setMsg(`✅ Sent to ${r.recipients} recipients.`);
+      setMsg(`✅ Queued for ${r.recipients < 0 ? "site-wide" : r.recipients} recipient(s).`);
       qc.invalidateQueries({ queryKey: ["admin-campaigns"] });
     },
     onError: (e) => setMsg(`❌ ${(e as Error).message}`),
+  });
+  const preview = useMutation({
+    mutationFn: () => previewFn({ data: { audience: draft.audience, audience_filter: draft.audience_filter } }),
+    onSuccess: (r) => setAudiencePreview(r),
   });
 
   return (
@@ -77,7 +81,7 @@ export function CampaignsAdmin() {
                   <span className={`rounded px-1.5 py-0.5 text-[10px] font-bold uppercase ${c.status === "sent" ? "bg-emerald-soft text-emerald" : "bg-secondary text-muted-foreground"}`}>{c.status}</span>
                 </div>
                 <p className="mt-0.5 truncate text-xs text-muted-foreground">
-                  {c.channel} · {c.audience} · {c.recipients_count || 0} recipients
+                  {c.channel} · {c.audience} · {c.recipient_count || 0} recipients
                 </p>
               </div>
               <div className="flex shrink-0 gap-1">
@@ -96,12 +100,11 @@ export function CampaignsAdmin() {
                       id: c.id,
                       name: c.name,
                       subject: c.subject ?? "",
-                      body_html: c.body_html ?? "",
-                      body_text: c.body_text ?? "",
-                      audience: c.audience,
+                      body: c.body ?? "",
+                      audience: c.audience as any,
                       audience_filter: c.audience_filter ?? {},
-                      channel: c.channel,
-                      status: c.status,
+                      channel: c.channel as any,
+                      status: "draft" as const,
                     })
                   }
                   className="rounded-lg border border-border bg-background px-2.5 py-1 text-xs font-bold"
@@ -129,27 +132,49 @@ export function CampaignsAdmin() {
           </Field>
           <div className="grid grid-cols-2 gap-3">
             <Field label="Channel">
-              <select value={draft.channel} onChange={(e) => setDraft({ ...draft, channel: e.target.value })} className={input}>
+              <select value={draft.channel} onChange={(e) => setDraft({ ...draft, channel: e.target.value as any })} className={input}>
                 <option value="email">Email</option>
                 <option value="announcement">In-app announcement</option>
               </select>
             </Field>
             <Field label="Audience">
-              <select value={draft.audience} onChange={(e) => setDraft({ ...draft, audience: e.target.value })} className={input}>
+              <select
+                value={draft.audience}
+                onChange={(e) => {
+                  setDraft({ ...draft, audience: e.target.value as any });
+                  setAudiencePreview(null);
+                }}
+                className={input}
+              >
                 <option value="all">All users</option>
                 <option value="paid">Paid customers</option>
-                <option value="service">By service</option>
+                <option value="by_service">By service</option>
               </select>
             </Field>
           </div>
-          {draft.audience === "service" && (
-            <Field label="Service ID (e.g. apollo-basic)">
+          {draft.audience === "by_service" && (
+            <Field label="Service label contains">
               <input
-                value={draft.audience_filter?.service_id ?? ""}
-                onChange={(e) => setDraft({ ...draft, audience_filter: { ...draft.audience_filter, service_id: e.target.value } })}
+                value={draft.audience_filter?.service_label ?? ""}
+                onChange={(e) => setDraft({ ...draft, audience_filter: { ...draft.audience_filter, service_label: e.target.value } })}
                 className={input}
+                placeholder="Apollo"
               />
             </Field>
+          )}
+          <button
+            type="button"
+            onClick={() => preview.mutate()}
+            disabled={preview.isPending}
+            className="text-xs font-bold text-primary underline underline-offset-2 disabled:opacity-50"
+          >
+            {preview.isPending ? "Counting…" : "Preview audience"}
+          </button>
+          {audiencePreview && (
+            <div className="rounded-lg border border-border bg-secondary px-3 py-2 text-xs">
+              <strong>{audiencePreview.count}</strong> recipient{audiencePreview.count === 1 ? "" : "s"}
+              {audiencePreview.sample.length > 0 && <> · sample: {audiencePreview.sample.slice(0, 3).join(", ")}…</>}
+            </div>
           )}
           {draft.channel === "email" && (
             <Field label="Subject">
@@ -157,19 +182,12 @@ export function CampaignsAdmin() {
             </Field>
           )}
           <Field label={draft.channel === "email" ? "HTML body" : "Message"}>
-            <textarea
-              value={draft.channel === "email" ? draft.body_html : draft.body_text}
-              onChange={(e) =>
-                setDraft(draft.channel === "email" ? { ...draft, body_html: e.target.value } : { ...draft, body_text: e.target.value })
-              }
-              className={input}
-              rows={8}
-            />
+            <textarea value={draft.body} onChange={(e) => setDraft({ ...draft, body: e.target.value })} className={input} rows={8} />
           </Field>
         </div>
         <div className="mt-4 flex gap-2">
           <button
-            disabled={!draft.name || save.isPending}
+            disabled={!draft.name || !draft.body || save.isPending}
             onClick={() => save.mutate()}
             className="inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2 text-sm font-bold text-primary-foreground disabled:opacity-50"
           >

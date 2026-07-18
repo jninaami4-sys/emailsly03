@@ -231,26 +231,32 @@
 .admin-theme button,
 .admin-theme a,
 .admin-theme div,
-.admin-theme li { font-weight: 600; font-family: inherit; }
+.admin-theme li { font-weight: 700; font-family: inherit; }
 .admin-theme strong,
-.admin-theme b { font-weight: 800; }
+.admin-theme b { font-weight: 900; }
 .admin-theme h1,
 .admin-theme h2,
 .admin-theme h3,
 .admin-theme h4,
 .admin-theme h5,
 .admin-theme h6 { font-weight: 900; letter-spacing: -0.02em; font-family: inherit; color: oklch(0.16 0.01 260); }
-.admin-theme .text-muted-foreground { color: oklch(0.48 0.012 260); font-weight: 600; }
+.admin-theme .text-muted-foreground { color: oklch(0.45 0.012 260); font-weight: 700; }
 .admin-theme .font-display { font-weight: 900; letter-spacing: -0.025em; font-family: inherit; }
 .admin-theme [data-numeric],
 .admin-theme .tabular-nums { font-variant-numeric: tabular-nums; }
 
-/* Kill motion inside the admin panel — no fades, slides, pings, transitions. */
+/* Kill motion + glow inside the admin panel — no fades, glass, shadows, blurs. */
 .admin-theme *,
 .admin-theme *::before,
 .admin-theme *::after {
   animation: none !important;
   transition: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+.admin-theme *:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
 }
 
 /* Solid, minimal display headline (no gradient) */
@@ -278,40 +284,16 @@
   color: oklch(0.48 0.012 260);
 }
 
-/* Liquid glass card — frosted white surface with layered highlights */
+/* Admin card — flat, minimal, no glow or glass */
 .admin-theme .admin-glow-card {
   position: relative;
-  isolation: isolate;
-  background:
-    linear-gradient(180deg, oklch(1 0 0 / 0.85) 0%, oklch(0.99 0.003 260 / 0.72) 100%);
-  border: 1px solid oklch(1 0 0 / 0.7);
+  background: var(--card);
+  border: 1px solid var(--border);
   border-radius: 18px;
-  backdrop-filter: blur(22px) saturate(160%);
-  box-shadow:
-    0 1px 0 oklch(1 0 0 / 0.9) inset,
-    0 0 0 1px oklch(0.18 0.01 260 / 0.05),
-    0 8px 24px -12px oklch(0.18 0.01 260 / 0.18),
-    0 24px 60px -32px oklch(0.55 0.18 258 / 0.18);
+  box-shadow: none;
 }
 .admin-theme .admin-glow-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(
-    140deg,
-    oklch(1 0 0 / 0.9) 0%,
-    oklch(1 0 0 / 0) 45%,
-    oklch(0.55 0.18 258 / 0.18) 100%
-  );
-  -webkit-mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-          mask-composite: exclude;
-  pointer-events: none;
-  z-index: 1;
+  content: none;
 }
 
 /* Table primitives */
@@ -1136,22 +1118,14 @@ html { scroll-behavior: smooth; }
   z-index: 1;
 }
 
-/* Admin theme: swap liquid-glass to the frosted-white variant */
-.admin-theme .liquid-glass {
-  background:
-    linear-gradient(180deg, oklch(1 0 0 / 0.85) 0%, oklch(0.99 0.003 260 / 0.72) 100%);
-  border: 1px solid oklch(1 0 0 / 0.7);
-  backdrop-filter: blur(22px) saturate(160%);
-  box-shadow:
-    0 1px 0 oklch(1 0 0 / 0.9) inset,
-    0 0 0 1px oklch(0.18 0.01 260 / 0.05),
-    0 8px 24px -12px oklch(0.18 0.01 260 / 0.18);
+/* Admin theme: flat, no liquid-glass sheen/glow */
+.admin-theme .liquid-glass,
+.admin-theme .liquid-glass::before {
+  background: var(--card);
+  border: 1px solid var(--border);
+  backdrop-filter: none;
+  box-shadow: none;
 }
 .admin-theme .liquid-glass::before {
-  background: linear-gradient(
-    140deg,
-    oklch(1 0 0 / 0.9) 0%,
-    oklch(1 0 0 / 0) 45%,
-    oklch(0.55 0.18 258 / 0.18) 100%
-  );
+  content: none;
 }

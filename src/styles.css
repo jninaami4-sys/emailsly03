@@ -220,33 +220,40 @@
 
 
 /* Bolder default type inside admin for punchy readability */
+.admin-theme {
+  font-family: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
 .admin-theme,
 .admin-theme p,
 .admin-theme span,
 .admin-theme td,
 .admin-theme label,
 .admin-theme button,
-.admin-theme a { font-weight: 700; }
+.admin-theme a,
+.admin-theme div,
+.admin-theme li { font-weight: 700; font-family: inherit; }
 .admin-theme h1,
 .admin-theme h2,
 .admin-theme h3,
-.admin-theme h4 { font-weight: 900; letter-spacing: -0.025em; }
-.admin-theme .text-muted-foreground { color: oklch(0.82 0 0); font-weight: 600; }
-.admin-theme .font-display { font-weight: 900; letter-spacing: -0.03em; }
+.admin-theme h4,
+.admin-theme h5,
+.admin-theme h6 { font-weight: 900; letter-spacing: -0.025em; font-family: inherit; }
+.admin-theme .text-muted-foreground { color: oklch(0.82 0.015 265); font-weight: 600; }
+.admin-theme .font-display { font-weight: 900; letter-spacing: -0.03em; font-family: inherit; }
 .admin-theme [data-numeric],
 .admin-theme .tabular-nums { font-variant-numeric: tabular-nums; }
 
-/* Bold display headline with a subtle yellow-to-white gradient wash. */
+/* Bold display headline — white to soft blue-white gradient */
 .admin-theme .admin-title {
   font-weight: 900;
   letter-spacing: -0.035em;
-  background-image: linear-gradient(180deg, #ffffff 0%, #d5dbe6 100%);
+  background-image: linear-gradient(180deg, #ffffff 0%, #cfd8ec 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 .admin-theme .admin-title-accent {
-  background-image: linear-gradient(90deg, #facc15 0%, #f59e0b 100%);
+  background-image: linear-gradient(90deg, #60a5fa 0%, #418df1 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -254,19 +261,19 @@
 
 /* Small uppercase eyebrow chip used across the admin shell. */
 .admin-theme .admin-eyebrow {
-  font-family: var(--font-mono, ui-monospace);
+  font-family: inherit;
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: color-mix(in oklab, #facc15 92%, transparent);
+  color: color-mix(in oklab, #60a5fa 92%, transparent);
 }
 
 /* Creative card outline used on hero panels: soft gradient border via mask. */
 .admin-theme .admin-glow-card {
   position: relative;
   isolation: isolate;
-  background: linear-gradient(180deg, #0f1521 0%, #0b1120 100%);
+  background: linear-gradient(180deg, oklch(0.29 0.03 265) 0%, oklch(0.25 0.03 265) 100%);
   border-radius: 20px;
 }
 .admin-theme .admin-glow-card::before {
@@ -276,8 +283,8 @@
   border-radius: inherit;
   padding: 1px;
   background: linear-gradient(135deg,
-    color-mix(in oklab, #facc15 55%, transparent) 0%,
-    color-mix(in oklab, #3b82f6 45%, transparent) 45%,
+    color-mix(in oklab, #60a5fa 55%, transparent) 0%,
+    color-mix(in oklab, #418df1 45%, transparent) 45%,
     transparent 100%);
   -webkit-mask:
     linear-gradient(#000 0 0) content-box,
@@ -295,7 +302,7 @@
   font-size: 13px;
 }
 .admin-theme thead th {
-  background: oklch(0.18 0.03 265);
+  background: oklch(0.30 0.03 265);
   color: oklch(0.99 0 0);
   font-weight: 800;
   font-size: 11px;
@@ -303,18 +310,18 @@
   text-transform: uppercase;
   padding: 10px 14px;
   text-align: left;
-  border-bottom: 1px solid oklch(0.30 0.03 265 / 0.7);
+  border-bottom: 1px solid oklch(1 0 0 / 0.14);
   position: sticky;
   top: 0;
 }
 .admin-theme tbody td {
   padding: 12px 14px;
-  border-bottom: 1px solid oklch(1 0 0 / 0.06);
+  border-bottom: 1px solid oklch(1 0 0 / 0.08);
   color: oklch(0.97 0 0);
   vertical-align: middle;
 }
 .admin-theme tbody tr:hover td {
-  background: oklch(0.63 0.19 253 / 0.08);
+  background: oklch(0.68 0.17 254 / 0.10);
 }
 .admin-theme tbody tr:last-child td {
   border-bottom: none;
@@ -324,8 +331,8 @@
 .admin-theme input:not([type="checkbox"]):not([type="radio"]),
 .admin-theme select,
 .admin-theme textarea {
-  background: oklch(0.15 0.03 265);
-  border: 1px solid oklch(0.30 0.03 265 / 0.7);
+  background: oklch(0.26 0.03 265);
+  border: 1px solid oklch(1 0 0 / 0.14);
   color: oklch(0.99 0 0);
   font-weight: 600;
   border-radius: 8px;
@@ -334,13 +341,14 @@
 .admin-theme select:focus,
 .admin-theme textarea:focus {
   outline: none;
-  border-color: oklch(0.63 0.19 253 / 0.8);
-  box-shadow: 0 0 0 2px oklch(0.63 0.19 253 / 0.28);
+  border-color: oklch(0.68 0.17 254 / 0.9);
+  box-shadow: 0 0 0 2px oklch(0.68 0.17 254 / 0.28);
 }
 .admin-theme input::placeholder,
 .admin-theme textarea::placeholder {
-  color: oklch(0.7 0 0);
+  color: oklch(0.78 0.015 265);
 }
+
 
 /* Login page — brighter surface that keeps the form readable and in focus */
 .login-bright {

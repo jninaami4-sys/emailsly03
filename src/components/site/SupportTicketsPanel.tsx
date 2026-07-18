@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import {
   listMySupportTickets,
   getMySupportTicket,
@@ -45,7 +44,7 @@ function StatusPill({ status }: { status: string }) {
 export function SupportTicketsPanel() {
   const [creating, setCreating] = useState(false);
   const [openId, setOpenId] = useState<string | null>(null);
-  const listFn = useServerFn(listMySupportTickets);
+  const listFn = listMySupportTickets;
   const { data = [], isLoading } = useQuery({
     queryKey: ["my-support-tickets"],
     queryFn: () => listFn(),
@@ -127,9 +126,9 @@ export function SupportTicketsPanel() {
 
 function TicketThreadDrawer({ id, onClose }: { id: string; onClose: () => void }) {
   const qc = useQueryClient();
-  const getFn = useServerFn(getMySupportTicket);
-  const replyFn = useServerFn(replySupportTicket);
-  const closeFn = useServerFn(closeMySupportTicket);
+  const getFn = getMySupportTicket;
+  const replyFn = replySupportTicket;
+  const closeFn = closeMySupportTicket;
   const [body, setBody] = useState("");
 
   const { data, isLoading, refetch } = useQuery({

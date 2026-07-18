@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { DollarSign, Save, Loader2, Check } from "@/components/admin/AdminIcons";
 import {
   getPricingSettings,
@@ -19,10 +18,10 @@ type Draft = {
 };
 
 export function PricingAdmin() {
-  const getFn = useServerFn(getPricingSettings);
-  const updateFn = useServerFn(updatePricingSetting);
-  const publishFn = useServerFn(setPricingPublished);
-  const auditFn = useServerFn(getPricingAudit);
+  const getFn = getPricingSettings;
+  const updateFn = updatePricingSetting;
+  const publishFn = setPricingPublished;
+  const auditFn = getPricingAudit;
   const qc = useQueryClient();
   const { data, isLoading, isError, error: queryError, refetch, isFetching } = useQuery({
     queryKey: ["pricing-settings"],

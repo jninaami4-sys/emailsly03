@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { listSiteContent, upsertSiteContent } from "@/lib/site-content.functions";
 import { SITE_CONTENT_DEFAULTS, type SiteContentSection } from "@/lib/site-content-defaults";
 import { ServiceCardsEditor } from "@/components/admin/ServiceCardsEditor";
@@ -93,7 +92,7 @@ const LONG_FIELDS = new Set([
 
 export function SiteContentAdmin() {
   const [tab, setTab] = useState<SiteContentSection>("hero");
-  const listFn = useServerFn(listSiteContent);
+  const listFn = listSiteContent;
   const qc = useQueryClient();
   const { data, isLoading, refetch, isFetching } = useQuery({
     queryKey: ["site-content"],
@@ -207,7 +206,7 @@ function SectionEditor({
   const defaults = SITE_CONTENT_DEFAULTS[section] as Record<string, unknown>;
   const merged = useMemo(() => ({ ...defaults, ...initial }), [defaults, initial]);
   const [values, setValues] = useState<Record<string, unknown>>(merged);
-  const upsertFn = useServerFn(upsertSiteContent);
+  const upsertFn = upsertSiteContent;
   const [error, setError] = useState<string | null>(null);
   const [savedAt, setSavedAt] = useState<number | null>(null);
 

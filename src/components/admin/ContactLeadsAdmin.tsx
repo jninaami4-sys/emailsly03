@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { Loader2, RefreshCw, Trash2, Mail, Building2, ExternalLink } from "@/components/admin/AdminIcons";
 import {
   adminListContactLeads,
@@ -20,9 +19,9 @@ const STATUS_STYLES: Record<LeadStatus, string> = {
 };
 
 export function ContactLeadsAdmin() {
-  const listFn = useServerFn(adminListContactLeads);
-  const updateFn = useServerFn(adminUpdateContactLead);
-  const deleteFn = useServerFn(adminDeleteContactLead);
+  const listFn = adminListContactLeads;
+  const updateFn = adminUpdateContactLead;
+  const deleteFn = adminDeleteContactLead;
 
   const [tab, setTab] = useState<LeadStatus | "all">("new");
   const [busy, setBusy] = useState<string | null>(null);

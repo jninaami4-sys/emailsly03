@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { upsertSiteContent } from "@/lib/site-content.functions";
 import { uploadsApi } from "@/lib/api-client";
 import { Save, Loader2 } from "@/components/admin/AdminIcons";
@@ -60,7 +59,7 @@ export function MediaItemsEditor({
   const merged = { ...defaults, ...initial };
   const [values, setValues] = useState<Record<string, unknown>>(merged);
   const items = (values.items as Array<Record<string, unknown>>) ?? [];
-  const upsertFn = useServerFn(upsertSiteContent);
+  const upsertFn = upsertSiteContent;
   const [error, setError] = useState<string | null>(null);
   const [savedAt, setSavedAt] = useState<number | null>(null);
   const qc = useQueryClient();

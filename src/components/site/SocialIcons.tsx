@@ -4,7 +4,6 @@
  */
 
 import { useQuery } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import {
   Mail,
   Instagram,
@@ -38,7 +37,7 @@ const ICONS: Record<SocialIconKey, typeof Mail> = {
 };
 
 export function SocialIcons() {
-  const listFn = useServerFn(listPublicSocialLinks);
+  const listFn = listPublicSocialLinks;
   const { data } = useQuery({
     queryKey: ["public-social-links"],
     queryFn: () => listFn(),

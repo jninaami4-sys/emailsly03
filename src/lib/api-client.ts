@@ -533,11 +533,15 @@ export const ticketsApi = {
   create: (body: unknown) => j<{ id: string }>("/api/tickets", body),
   get: (id: string) => g<{ ticket: any; messages: any[] }>(`/api/tickets/${id}`),
   postMessage: (id: string, body: string) => j(`/api/tickets/${id}/messages`, { body }),
+  close: (id: string) => j(`/api/tickets/${id}/close`, {}),
 };
 export const adminTicketsApi = {
-  list: () => g<{ tickets: any[] }>("/api/admin/tickets"),
+  list: (query?: { status?: string; search?: string }) =>
+    g<{ tickets: any[] }>("/api/admin/tickets", query),
+  get: (id: string) => g<{ ticket: any; messages: any[] }>(`/api/admin/tickets/${id}`),
   update: (id: string, body: unknown) => patch(`/api/admin/tickets/${id}`, body),
-  postMessage: (id: string, body: string) => j(`/api/admin/tickets/${id}/messages`, { body }),
+  postMessage: (id: string, body: string, status?: string) =>
+    j(`/api/admin/tickets/${id}/messages`, { body, status }),
 };
 
 // -------- Pricing --------
@@ -545,11 +549,16 @@ export const pricingApi = { list: () => g<{ pricing: any[] }>("/api/pricing") };
 export const adminPricingApi = {
   list: () => g<{ pricing: any[] }>("/api/admin/pricing"),
   update: (id: string, body: unknown) => patch(`/api/admin/pricing/${id}`, body),
+  publish: (id: string, published: boolean) =>
+    j(`/api/admin/pricing/${id}/publish`, { published }),
+  audit: () => g<{ audit: any[] }>("/api/admin/pricing/audit"),
 };
 
 // -------- Referrals --------
 export const referralsApi = {
-  me: () => g<{ profile: any; credits: any[]; balance_cents: number; referrals: any[] }>("/api/referrals/me"),
+  me: () => g<{ profile: any; credits: any[]; balance_cents: number; referrals: any[]; totals?: any; ledger?: any[] }>("/api/referrals/me"),
+  balance: () => g<{ balance_cents: number; currency: string }>("/api/referrals/balance"),
+  attach: (code: string) => j<{ ok: boolean; reason?: string }>("/api/referrals/attach", { code }),
   redeem: (order_id: string, requested_cents: number, subtotal_cents: number) =>
     j<{ applied_cents: number }>("/api/referrals/redeem", { order_id, requested_cents, subtotal_cents }),
 };
@@ -561,6 +570,7 @@ export const contactApi = {
 export const adminLeadsApi = {
   list: () => g<{ leads: any[] }>("/api/admin/leads"),
   update: (id: string, body: unknown) => patch(`/api/admin/leads/${id}`, body),
+  destroy: (id: string) => del(`/api/admin/leads/${id}`),
 };
 
 // -------- Announcements --------
@@ -572,17 +582,47 @@ export const adminAnnouncementsApi = {
   destroy: (id: string) => del(`/api/admin/announcements/${id}`),
 };
 
-// -------- Chatbot --------
+// -------- Chatbot (public widget) --------
 export const chatbotApi = {
-  config: () => g<{ config: any }>("/api/chatbot/config"),
-  start: () => j<{ conversation_id: string }>("/api/chatbot/conversations"),
-  sendMessage: (conversation_id: string, message: string) =>
-    j<{ reply: string }>(`/api/chatbot/conversations/${conversation_id}/messages`, { message }),
+  config: () => g<{ enabled: boolean; greeting: string; human_hours_note: string }>("/api/chatbot/config"),
+  listKb: () => g<{ items: any[] }>("/api/chatbot/kb"),
+  startConversation: (body: { sessionId: string; visitorName: string; orderId?: string; email?: string }) =>
+    j<{ conversation: any }>("/api/chatbot/conversations", body),
+  listMessages: (sessionId: string) =>
+    g<{ messages: any[] }>("/api/chatbot/messages", { session_id: sessionId }),
+  postMessage: (body: { sessionId: string; sender: string; text: string }) =>
+    j<{ ok: boolean }>("/api/chatbot/messages", body),
+  lookupOrder: (body: { orderId: string; verify?: string }) =>
+    j<{ found: boolean; order?: any }>("/api/chatbot/lookup-order", body),
+  createOrder: (body: unknown) => j<{ order_id: string }>("/api/chatbot/orders", body),
+  createTicket: (body: unknown) => j<{ ticket_no: string }>("/api/chatbot/tickets", body),
+  handoff: (body: { sessionId: string; lastMessage?: string }) =>
+    j<{ ok: boolean; note?: string }>("/api/chatbot/handoff", body),
 };
 export const adminChatbotApi = {
+  getConfig: () => g<{ config: any }>("/api/admin/chatbot/config"),
+  saveConfig: (body: unknown) => j("/api/admin/chatbot/config", body, "PUT"),
+  conversations: () => g<{ conversations: any[] }>("/api/admin/chatbot/conversations"),
+  messages: (conversationId: string) =>
+    g<{ messages: any[] }>(`/api/admin/chatbot/conversations/${conversationId}/messages`),
+  reply: (conversationId: string, text: string) =>
+    j(`/api/admin/chatbot/conversations/${conversationId}/messages`, { text }),
+  closeConversation: (conversationId: string) =>
+    j(`/api/admin/chatbot/conversations/${conversationId}/close`, {}),
   kbList: () => g<{ items: any[] }>("/api/admin/chatbot/kb"),
   kbUpsert: (body: unknown) => j("/api/admin/chatbot/kb", body),
-  conversations: () => g<{ conversations: any[] }>("/api/admin/chatbot/conversations"),
+  kbDelete: (id: string) => del(`/api/admin/chatbot/kb/${id}`),
+  ordersList: () => g<{ orders: any[] }>("/api/admin/chatbot/orders"),
+  orderUpsert: (body: unknown) => j("/api/admin/chatbot/orders", body),
+  orderDelete: (id: string) => del(`/api/admin/chatbot/orders/${id}`),
+  ticketsList: () => g<{ tickets: any[] }>("/api/admin/chatbot/tickets"),
+  ticketUpdate: (id: string, body: unknown) => patch(`/api/admin/chatbot/tickets/${id}`, body),
+  telegramWebhook: (webhookUrl: string) =>
+    j<{ ok: boolean; description?: string }>("/api/admin/chatbot/telegram-webhook", { webhookUrl }),
+  syncKb: () => j<{ ok: true; inserted: number; removed: number; categories: Record<string, number> }>(
+    "/api/admin/chatbot/kb/sync",
+    {},
+  ),
 };
 
 // -------- Samples --------

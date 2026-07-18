@@ -1,8 +1,8 @@
-import { createServerFn } from "@tanstack/react-start";
-import { requireAdmin } from "@/lib/require-admin";
-import { createClient } from "@supabase/supabase-js";
-import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import type { Database } from "@/integrations/supabase/types";
+/**
+ * Site settings — thin proxies to PHP API (Batch 5 migration).
+ * Consumers strip `useServerFn` and call these directly with `{ data }`.
+ */
+import { siteSettingsApi, adminSiteSettingsApi } from "@/lib/api-client";
 
 export type TawkPosition = "br" | "bl" | "tr" | "tl";
 
@@ -30,42 +30,17 @@ const EMPTY: SiteSettings = {
   updated_at: "",
 };
 
-function serverAnonClient() {
-  const url = process.env.SUPABASE_URL!;
-  const key = process.env.SUPABASE_PUBLISHABLE_KEY!;
-  return createClient<Database>(url, key, {
-    auth: { persistSession: false, autoRefreshToken: false, storage: undefined },
-    global: {
-      fetch: (input, init) => {
-        const h = new Headers(init?.headers);
-        if (key.startsWith("sb_") && h.get("Authorization") === `Bearer ${key}`) {
-          h.delete("Authorization");
-        }
-        h.set("apikey", key);
-        return fetch(input, { ...init, headers: h });
-      },
-    },
-  });
+type Empty = Record<string, never>;
+
+export async function getSiteSettings(_?: { data?: Empty }): Promise<SiteSettings> {
+  try {
+    const { settings } = await siteSettingsApi.get();
+    return { ...EMPTY, ...(settings ?? {}) } as SiteSettings;
+  } catch (e) {
+    console.error("getSiteSettings", e);
+    return EMPTY;
+  }
 }
-
-
-export const getSiteSettings = createServerFn({ method: "GET" }).handler(
-  async (): Promise<SiteSettings> => {
-    const supabase = serverAnonClient();
-    const { data, error } = await supabase
-      .from("site_settings")
-      .select(
-        "gtm_id, ga4_id, fb_pixel_id, tiktok_pixel_id, custom_head_html, tawk_enabled, tawk_position, support_show_category, updated_at",
-      )
-      .eq("id", true)
-      .maybeSingle();
-    if (error) {
-      console.error("getSiteSettings", error);
-      return EMPTY;
-    }
-    return (data as SiteSettings) ?? EMPTY;
-  },
-);
 
 type UpdateInput = {
   gtm_id: string;
@@ -78,33 +53,7 @@ type UpdateInput = {
   support_show_category?: boolean;
 };
 
-export const updateSiteSettings = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
-  .inputValidator((data: UpdateInput) => data)
-  .handler(async ({ data, context }): Promise<SiteSettings> => {
-    await requireAdmin(context);
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const allowedPositions: TawkPosition[] = ["br", "bl", "tr", "tl"];
-    const position: TawkPosition = allowedPositions.includes(data.tawk_position)
-      ? data.tawk_position
-      : "br";
-    const payload = {
-      gtm_id: String(data.gtm_id || "").trim().slice(0, 40),
-      ga4_id: String(data.ga4_id || "").trim().slice(0, 40),
-      fb_pixel_id: String(data.fb_pixel_id || "").trim().slice(0, 40),
-      tiktok_pixel_id: String(data.tiktok_pixel_id || "").trim().slice(0, 60),
-      custom_head_html: String(data.custom_head_html || "").slice(0, 8000),
-      tawk_enabled: Boolean(data.tawk_enabled),
-      tawk_position: position,
-      support_show_category: Boolean(data.support_show_category),
-    };
-    const { data: row, error } = await supabaseAdmin
-      .from("site_settings")
-      .update(payload)
-      .eq("id", true)
-      .select("*")
-      .single();
-    if (error) throw new Error(error.message);
-    return row as SiteSettings;
-  });
-
+export async function updateSiteSettings(args: { data: UpdateInput }): Promise<SiteSettings> {
+  const res = (await adminSiteSettingsApi.update(args.data)) as { settings?: SiteSettings };
+  return { ...EMPTY, ...(res?.settings ?? args.data) } as SiteSettings;
+}

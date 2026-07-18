@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, EffectCoverflow, FreeMode, Mousewheel, Pagination } from "swiper/modules";
 import "swiper/css";
@@ -187,7 +186,7 @@ export function ServicesCarousel() {
   const [viewport, setViewport] = useState({ w: 0, h: 0 });
   const [overflowCount, setOverflowCount] = useState(0);
 
-  const listFn = useServerFn(listSiteContent);
+  const listFn = listSiteContent;
   const { data: siteContent } = useQuery({
     queryKey: ["site-content"],
     queryFn: () => listFn(),

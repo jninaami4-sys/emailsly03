@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { listSiteContent, upsertSiteContent } from "@/lib/site-content.functions";
 import { SITE_CONTENT_DEFAULTS } from "@/lib/site-content-defaults";
 import { Palette, Save, Loader2, RefreshCw } from "@/components/admin/AdminIcons";
@@ -32,8 +31,8 @@ async function uploadBrandAsset(file: File, kind: string): Promise<string> {
 const HEX_RE = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i;
 
 export function BrandSettingsAdmin() {
-  const listFn = useServerFn(listSiteContent);
-  const upsertFn = useServerFn(upsertSiteContent);
+  const listFn = listSiteContent;
+  const upsertFn = upsertSiteContent;
   const qc = useQueryClient();
 
   const { data, isLoading, isFetching, refetch } = useQuery({

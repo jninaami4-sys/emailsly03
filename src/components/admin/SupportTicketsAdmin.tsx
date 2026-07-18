@@ -1,6 +1,5 @@
 import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import {
   adminListSupportTickets,
   adminGetSupportTicket,
@@ -32,9 +31,9 @@ export function SupportTicketsAdmin() {
   const [status, setStatus] = useState<string>("all");
   const [search, setSearch] = useState("");
   const [openId, setOpenId] = useState<string | null>(null);
-  const listFn = useServerFn(adminListSupportTickets);
-  const getSettingsFn = useServerFn(getSiteSettings);
-  const setSettingsFn = useServerFn(updateSiteSettings);
+  const listFn = adminListSupportTickets;
+  const getSettingsFn = getSiteSettings;
+  const setSettingsFn = updateSiteSettings;
   const qc = useQueryClient();
 
   const { data: settings } = useQuery({
@@ -243,9 +242,9 @@ function Pill({ children, tone }: { children: React.ReactNode; tone: "orange" | 
 
 function AdminTicketDrawer({ id, onClose }: { id: string; onClose: () => void }) {
   const qc = useQueryClient();
-  const getFn = useServerFn(adminGetSupportTicket);
-  const replyFn = useServerFn(adminReplySupportTicket);
-  const updateFn = useServerFn(adminUpdateSupportTicket);
+  const getFn = adminGetSupportTicket;
+  const replyFn = adminReplySupportTicket;
+  const updateFn = adminUpdateSupportTicket;
   const [body, setBody] = useState("");
 
   const { data, isLoading, refetch } = useQuery({

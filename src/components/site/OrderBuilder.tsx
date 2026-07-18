@@ -133,7 +133,7 @@ export function OrderBuilder() {
   const [checkoutBusy, setCheckoutBusy] = useState(false);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
   const { user } = useAuth();
-  const balanceFn = useServerFn(getMyReferralBalance);
+  const balanceFn = getMyReferralBalance;
   const balanceQuery = useQuery({
     queryKey: ["my-referral-balance", user?.id],
     queryFn: async () => {

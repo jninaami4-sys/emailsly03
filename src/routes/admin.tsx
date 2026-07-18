@@ -61,15 +61,9 @@ export const Route = createFileRoute("/admin")({
 
 function AdminGate() {
   const { user, loading } = useAuth();
-  const whoFn = useServerFn(whoAmIAdmin);
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["admin-check", user?.id],
-    queryFn: () => whoFn(),
-    enabled: !!user,
-    retry: false,
-  });
+  const isAdmin = Boolean((user as { is_admin?: boolean } | null)?.is_admin);
 
-  if (loading || (user && isLoading)) {
+  if (loading) {
     return (
       <div className="theme-midnight min-h-screen bg-background text-foreground">
         <Header />
@@ -105,7 +99,7 @@ function AdminGate() {
     );
   }
 
-  if (error || !data?.isAdmin) {
+  if (!isAdmin) {
     return (
       <div className="theme-midnight min-h-screen bg-background text-foreground">
         <Header />
@@ -116,7 +110,7 @@ function AdminGate() {
             </div>
             <h1 className="mt-4 font-display text-2xl font-bold">Not authorized</h1>
             <p className="mt-2 text-sm text-muted-foreground">
-              {user.email} isn't the admin account. Sign in with the admin email.
+              {user.email} isn't an admin account. Sign in with the admin email.
             </p>
           </main>
         </PlainBackdrop>
@@ -126,6 +120,7 @@ function AdminGate() {
 
   return <AdminPage />;
 }
+
 
 const coverKey = (id: string) => `product-cover:${id}`;
 

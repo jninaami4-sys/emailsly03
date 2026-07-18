@@ -5,11 +5,9 @@ import { authApi, ApiError } from "@/lib/api-client";
 import { useAuth } from "@/hooks/use-auth";
 import { isDisposableEmail, DISPOSABLE_EMAIL_MESSAGE } from "@/lib/disposable-emails";
 import { ArrowRight, Loader2, Mail, Lock, ShieldCheck, Zap, BadgeCheck, Eye, EyeOff, AlertCircle, CheckCircle2, ArrowLeft } from "lucide-react";
-import { PremiumSparkles as Sparkles } from "@/components/site/PremiumIcons";
+
 import { useSiteContent } from "@/hooks/use-site-content";
 
-const DEMO_EMAIL = "demo@emailsly.com";
-const DEMO_PASSWORD = "Demo!2024Pass";
 
 const searchSchema = z.object({
   mode: z.enum(["signin", "signup", "forgot"]).optional(),
@@ -291,22 +289,8 @@ function AuthPage() {
     }
   }
 
-  async function handleDemoLogin() {
-    setError(null);
-    setInfo(null);
-    setUnconfirmedEmail(null);
-    setBusy(true);
-    try {
-      await authApi.login({ email: DEMO_EMAIL, password: DEMO_PASSWORD });
-      const target = search.redirect && search.redirect.startsWith("/") ? search.redirect : "/";
-      window.location.replace(target);
-    } catch (err) {
-      const message = err instanceof Error ? err.message : "Could not start demo session";
-      setError(message);
-    } finally {
-      setBusy(false);
-    }
-  }
+
+
 
   async function handleForgotSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -995,24 +979,6 @@ function AuthPage() {
                         </span>
                       </button>
 
-                      <div className="relative my-4 flex items-center gap-3">
-                        <div className="h-px flex-1 bg-border/60" />
-                        <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground/70">or</span>
-                        <div className="h-px flex-1 bg-border/60" />
-                      </div>
-
-                      <button
-                        type="button"
-                        onClick={handleDemoLogin}
-                        disabled={busy}
-                        className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-border/70 bg-background px-5 py-3 text-sm font-semibold text-foreground transition-all hover:bg-muted/60 active:scale-[0.99] disabled:opacity-70 focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:outline-none"
-                      >
-                        <Sparkles className="size-4 text-primary" aria-hidden="true" />
-                        Try demo account
-                      </button>
-                      <p className="mt-2 text-center text-[11px] text-muted-foreground/70">
-                        Instant access — no signup, no email required.
-                      </p>
                     </form>
                   </>
                 )}

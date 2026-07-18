@@ -1,20 +1,39 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { listSiteContent, upsertSiteContent } from "@/lib/site-content.functions";
 import { SITE_CONTENT_DEFAULTS } from "@/lib/site-content-defaults";
 import { Palette, Save, Loader2, RefreshCw } from "@/components/admin/AdminIcons";
+import { supabase } from "@/integrations/supabase/client";
 
 type BrandingValues = {
   site_name: string;
   logo_url: string;
   footer_logo_url: string;
   favicon_url: string;
+  invoice_logo_url: string;
   tagline: string;
   primary_color: string;
   accent_color: string;
   ink_color: string;
 };
+
+// ~30 years — effectively permanent for a private bucket signed URL
+const SIGNED_URL_TTL = 60 * 60 * 24 * 365 * 30;
+
+async function uploadBrandAsset(file: File, kind: string): Promise<string> {
+  const ext = (file.name.split(".").pop() || "png").toLowerCase().replace(/[^a-z0-9]/g, "") || "png";
+  const path = `${kind}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+  const up = await supabase.storage.from("brand-assets").upload(path, file, {
+    cacheControl: "31536000",
+    upsert: false,
+    contentType: file.type || undefined,
+  });
+  if (up.error) throw up.error;
+  const signed = await supabase.storage.from("brand-assets").createSignedUrl(path, SIGNED_URL_TTL);
+  if (signed.error || !signed.data?.signedUrl) throw signed.error || new Error("Failed to sign URL");
+  return signed.data.signedUrl;
+}
 
 const HEX_RE = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i;
 
@@ -133,35 +152,46 @@ export function BrandSettingsAdmin() {
               />
             </FieldRow>
 
-            <FieldRow label="Logo URL" hint="Direct link to a transparent PNG or SVG. Used on light backgrounds (header, emails, invoices).">
-              <input
-                type="url"
-                value={values.logo_url}
-                onChange={(e) => set("logo_url", e.target.value)}
-                className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-violet"
-                placeholder="https://…/logo.png"
-              />
-            </FieldRow>
+            <AssetField
+              label="Logo URL"
+              hint="Direct link to a transparent PNG or SVG. Used in header, emails, invoices."
+              value={values.logo_url}
+              onChange={(v) => set("logo_url", v)}
+              kind="logo"
+              accept="image/png,image/jpeg,image/svg+xml,image/webp"
+              placeholder="https://…/logo.png"
+            />
 
-            <FieldRow label="Footer logo URL" hint="Light version for the dark footer. Falls back to the main logo if empty.">
-              <input
-                type="url"
-                value={values.footer_logo_url}
-                onChange={(e) => set("footer_logo_url", e.target.value)}
-                className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-violet"
-                placeholder="https://…/logo-white.png"
-              />
-            </FieldRow>
+            <AssetField
+              label="Footer logo URL"
+              hint="Light version for the dark footer. Falls back to the main logo if empty."
+              value={values.footer_logo_url}
+              onChange={(v) => set("footer_logo_url", v)}
+              kind="footer-logo"
+              accept="image/png,image/jpeg,image/svg+xml,image/webp"
+              placeholder="https://…/logo-white.png"
+            />
 
-            <FieldRow label="Favicon URL" hint="Small square icon shown in the browser tab (32×32 or 64×64).">
-              <input
-                type="url"
-                value={values.favicon_url}
-                onChange={(e) => set("favicon_url", e.target.value)}
-                className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-violet"
-                placeholder="https://…/favicon.png"
-              />
-            </FieldRow>
+            <AssetField
+              label="Favicon URL"
+              hint="Small square icon shown in the browser tab (32×32 or 64×64 PNG / ICO / SVG)."
+              value={values.favicon_url}
+              onChange={(v) => set("favicon_url", v)}
+              kind="favicon"
+              accept="image/png,image/x-icon,image/vnd.microsoft.icon,image/svg+xml"
+              placeholder="https://…/favicon.png"
+            />
+
+            <AssetField
+              label="Invoice logo URL"
+              hint="Logo shown on PDF invoices and receipts. Best as a square/horizontal PNG on a transparent or white background."
+              value={values.invoice_logo_url}
+              onChange={(v) => set("invoice_logo_url", v)}
+              kind="invoice-logo"
+              accept="image/png,image/jpeg,image/webp"
+              placeholder="https://…/invoice-logo.png"
+            />
+
 
             <div className="grid gap-4 sm:grid-cols-3">
               <ColorField
@@ -331,3 +361,95 @@ function ColorField({
     </div>
   );
 }
+
+function AssetField({
+  label,
+  hint,
+  value,
+  onChange,
+  kind,
+  accept,
+  placeholder,
+}: {
+  label: string;
+  hint?: string;
+  value: string;
+  onChange: (v: string) => void;
+  kind: string;
+  accept: string;
+  placeholder?: string;
+}) {
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+
+  async function handleFile(file: File) {
+    setErr(null);
+    if (file.size > 5 * 1024 * 1024) {
+      setErr("File is larger than 5 MB. Please compress or resize it.");
+      return;
+    }
+    setUploading(true);
+    try {
+      const url = await uploadBrandAsset(file, kind);
+      onChange(url);
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : "Upload failed");
+    } finally {
+      setUploading(false);
+      if (inputRef.current) inputRef.current.value = "";
+    }
+  }
+
+  return (
+    <div>
+      <label className="mb-1 block font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+        {label}
+      </label>
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-stretch">
+        <input
+          type="url"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className="min-w-0 flex-1 rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-violet"
+          placeholder={placeholder}
+        />
+        <div className="flex items-center gap-2">
+          <input
+            ref={inputRef}
+            type="file"
+            accept={accept}
+            className="hidden"
+            onChange={(e) => {
+              const f = e.target.files?.[0];
+              if (f) void handleFile(f);
+            }}
+          />
+          <button
+            type="button"
+            onClick={() => inputRef.current?.click()}
+            disabled={uploading}
+            className="inline-flex items-center gap-2 rounded-xl border border-border bg-background px-4 py-3 text-sm font-semibold hover:border-violet disabled:opacity-60"
+          >
+            {uploading ? <Loader2 className="size-4 animate-spin" /> : null}
+            {uploading ? "Uploading…" : "Upload"}
+          </button>
+          {value && (
+            <a
+              href={value}
+              target="_blank"
+              rel="noreferrer"
+              className="hidden shrink-0 items-center overflow-hidden rounded-xl border border-border bg-background sm:inline-flex"
+              aria-label="Preview"
+            >
+              <img src={value} alt="" className="h-11 w-11 object-contain" />
+            </a>
+          )}
+        </div>
+      </div>
+      {err && <p className="mt-1 text-[11px] text-coral">{err}</p>}
+      {hint && !err && <p className="mt-1 text-[11px] text-muted-foreground">{hint}</p>}
+    </div>
+  );
+}
+

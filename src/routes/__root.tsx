@@ -113,17 +113,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 
 function RootShell({ children }: { children: ReactNode }) {
-  const loaderData = Route.useLoaderData();
-  const theme = loaderData?.theme ?? null;
+  // The <html> class + data-theme is rewritten server-side per-request in
+  // src/server.ts based on ?theme=/cookie; the pre-hydration script below
+  // handles the client bootstrap. Rendering neither here avoids a
+  // hydration mismatch when the SSR rewrite has flipped the class.
   return (
-    <html
-      lang="en"
-      className={theme === "light" ? "site-light" : undefined}
-      data-theme={theme ?? undefined}
-      suppressHydrationWarning
-    >
+    <html lang="en" suppressHydrationWarning>
       <head>
-        {/* Applies the persisted theme class before hydration to prevent flash */}
         <script dangerouslySetInnerHTML={{ __html: themeBootScript }} />
         <HeadContent />
       </head>
@@ -134,6 +130,7 @@ function RootShell({ children }: { children: ReactNode }) {
     </html>
   );
 }
+
 
 
 function RootComponent() {

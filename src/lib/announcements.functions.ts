@@ -1,8 +1,6 @@
-import { createServerFn } from "@tanstack/react-start";
-import { requireAdmin } from "@/lib/require-admin";
-import { createClient } from "@supabase/supabase-js";
-import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import type { Database } from "@/integrations/supabase/types";
+// PHP-backed proxies. Same export names as before; now plain async functions.
+import { announcementsApi, adminAnnouncementsApi } from "@/lib/api-client";
+import { authApi } from "@/lib/api-client";
 
 export type AnnouncementImageStyle = "cover" | "thumbnail" | "none";
 export type AnnouncementAudience = "all" | "guests" | "authenticated" | "admins";
@@ -30,77 +28,27 @@ export type Announcement = {
   updated_at: string;
 };
 
-function serverAnonClient() {
-  const url = process.env.SUPABASE_URL!;
-  const key = process.env.SUPABASE_PUBLISHABLE_KEY!;
-  return createClient<Database>(url, key, {
-    auth: { persistSession: false, autoRefreshToken: false, storage: undefined },
-    global: {
-      fetch: (input, init) => {
-        const h = new Headers(init?.headers);
-        if (key.startsWith("sb_") && h.get("Authorization") === `Bearer ${key}`) {
-          h.delete("Authorization");
-        }
-        h.set("apikey", key);
-        return fetch(input, { ...init, headers: h });
-      },
-    },
-  });
+export async function listActiveAnnouncements(): Promise<Announcement[]> {
+  try {
+    const { announcements } = await announcementsApi.active();
+    return (announcements ?? []) as Announcement[];
+  } catch {
+    return [];
+  }
 }
 
+/** @deprecated kept for compat — returns the newest enabled announcement. */
+export async function getActiveAnnouncement(): Promise<Announcement | null> {
+  const list = await listActiveAnnouncements();
+  return list[0] ?? null;
+}
 
-/** Public: all currently enabled announcements (targeting applied client-side). */
-export const listActiveAnnouncements = createServerFn({ method: "GET" }).handler(
-  async (): Promise<Announcement[]> => {
-    const supabase = serverAnonClient();
-    const { data, error } = await supabase
-      .from("announcements")
-      .select("*")
-      .eq("enabled", true)
-      .order("priority", { ascending: false }).order("updated_at", { ascending: false })
-      .limit(20);
-    if (error) {
-      console.error("listActiveAnnouncements", error);
-      return [];
-    }
-    return (data ?? []) as Announcement[];
-  },
-);
+export async function listAnnouncements(): Promise<Announcement[]> {
+  const { announcements } = await adminAnnouncementsApi.list();
+  return (announcements ?? []) as Announcement[];
+}
 
-/** @deprecated kept for compat — returns the newest enabled announcement without targeting. */
-export const getActiveAnnouncement = createServerFn({ method: "GET" }).handler(
-  async (): Promise<Announcement | null> => {
-    const supabase = serverAnonClient();
-    const { data, error } = await supabase
-      .from("announcements")
-      .select("*")
-      .eq("enabled", true)
-      .order("priority", { ascending: false }).order("updated_at", { ascending: false })
-      .limit(1)
-      .maybeSingle();
-    if (error) {
-      console.error("getActiveAnnouncement", error);
-      return null;
-    }
-    return (data as Announcement) ?? null;
-  },
-);
-
-/** Admin: list all announcements. */
-export const listAnnouncements = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
-  .handler(async ({ context }): Promise<Announcement[]> => {
-    await requireAdmin(context);
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data, error } = await supabaseAdmin
-      .from("announcements")
-      .select("*")
-      .order("priority", { ascending: false }).order("updated_at", { ascending: false });
-    if (error) throw new Error(error.message);
-    return (data ?? []) as Announcement[];
-  });
-
-type UpsertInput = {
+export type AnnouncementUpsertInput = {
   id?: string | null;
   enabled: boolean;
   title: string;
@@ -120,92 +68,28 @@ type UpsertInput = {
   priority: number;
 };
 
-export const upsertAnnouncement = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
-  .inputValidator((data: UpsertInput) => data)
-  .handler(async ({ data, context }): Promise<Announcement> => {
-    await requireAdmin(context);
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const allowedStyles: AnnouncementImageStyle[] = ["cover", "thumbnail", "none"];
-    const image_style: AnnouncementImageStyle = allowedStyles.includes(data.image_style)
-      ? data.image_style
-      : "cover";
-    const allowedAudiences: AnnouncementAudience[] = ["all", "guests", "authenticated", "admins"];
-    const audience: AnnouncementAudience = allowedAudiences.includes(data.audience)
-      ? data.audience
-      : "all";
-    const allowedCardStyles: AnnouncementCardStyle[] = ["glass", "solid", "gradient", "minimal"];
-    const card_style: AnnouncementCardStyle = allowedCardStyles.includes(data.card_style)
-      ? data.card_style
-      : "glass";
-    const cleanedPatterns = Array.from(
-      new Set(
-        (Array.isArray(data.path_patterns) ? data.path_patterns : [])
-          .map((p) => String(p || "").trim())
-          .filter(Boolean)
-          .slice(0, 30)
-          .map((p) => p.slice(0, 200)),
-      ),
-    );
-    const path_patterns = cleanedPatterns.length ? cleanedPatterns : ["*"];
-    const payload = {
-      enabled: !!data.enabled,
-      title: String(data.title || "").slice(0, 200),
-      body: String(data.body || "").slice(0, 2000),
-      cta_label: String(data.cta_label || "").slice(0, 80),
-      cta_url: String(data.cta_url || "").slice(0, 500),
-      image_url: image_style === "none" ? "" : String(data.image_url || "").slice(0, 500),
-      image_style,
-      badge: String(data.badge || "").slice(0, 40),
-      accent: String(data.accent || "violet").slice(0, 40),
-      card_style,
-      title_emoji: String(data.title_emoji || "").slice(0, 8),
-      path_patterns,
-      audience,
-      start_at: data.start_at && data.start_at.trim() ? new Date(data.start_at).toISOString() : null,
-      end_at: data.end_at && data.end_at.trim() ? new Date(data.end_at).toISOString() : null,
-      priority: Number.isFinite(data.priority) ? Math.max(-1000, Math.min(1000, Math.trunc(data.priority))) : 0,
-    };
-    if (data.id) {
-      const { data: row, error } = await supabaseAdmin
-        .from("announcements")
-        .update(payload)
-        .eq("id", data.id)
-        .select("*")
-        .single();
-      if (error) throw new Error(error.message);
-      return row as Announcement;
-    }
-    const { data: row, error } = await supabaseAdmin
-      .from("announcements")
-      .insert(payload)
-      .select("*")
-      .single();
-    if (error) throw new Error(error.message);
-    return row as Announcement;
-  });
+export async function upsertAnnouncement(input: AnnouncementUpsertInput): Promise<Announcement> {
+  const payload = { ...input };
+  if (input.id) {
+    await adminAnnouncementsApi.update(input.id, payload);
+    return { ...(payload as unknown as Announcement), id: input.id };
+  }
+  const { id } = await adminAnnouncementsApi.create(payload);
+  return { ...(payload as unknown as Announcement), id };
+}
 
-export const deleteAnnouncement = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
-  .inputValidator((data: { id: string }) => data)
-  .handler(async ({ data, context }) => {
-    await requireAdmin(context);
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { error } = await supabaseAdmin.from("announcements").delete().eq("id", data.id);
-    if (error) throw new Error(error.message);
-    return { ok: true as const };
-  });
+export async function deleteAnnouncement(input: { id: string }): Promise<{ ok: true }> {
+  await adminAnnouncementsApi.destroy(input.id);
+  return { ok: true };
+}
 
-/** Server fn used by admin UI to know if signed-in user is the admin. */
-export const whoAmIAdmin = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
-  .handler(async ({ context }) => {
-    const email = (context.claims as { email?: string }).email ?? null;
-    const { data, error } = await context.supabase.rpc("has_role", {
-      _user_id: context.userId,
-      _role: "admin",
-    });
-    if (error) throw new Error(error.message);
-    return { email, isAdmin: !!data };
-  });
-
+export async function whoAmIAdmin(): Promise<{ email: string | null; isAdmin: boolean }> {
+  try {
+    const { user, profile } = await authApi.me();
+    const u = (user ?? {}) as { email?: string | null };
+    const p = (profile ?? {}) as { roles?: string[] };
+    return { email: u.email ?? null, isAdmin: Array.isArray(p.roles) && p.roles.includes("admin") };
+  } catch {
+    return { email: null, isAdmin: false };
+  }
+}

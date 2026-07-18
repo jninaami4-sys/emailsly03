@@ -268,13 +268,13 @@
   background: none;
   -webkit-background-clip: initial;
   background-clip: initial;
-  color: oklch(0.16 0.01 260);
+  color: oklch(0.98 0 0);
 }
 .admin-theme .admin-title-accent {
   background: none;
   -webkit-background-clip: initial;
   background-clip: initial;
-  color: oklch(0.55 0.18 258);
+  color: oklch(0.65 0.17 258);
 }
 
 .admin-theme .admin-eyebrow {
@@ -283,8 +283,9 @@
   font-weight: 800;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: oklch(0.48 0.012 260);
+  color: oklch(0.65 0.17 258);
 }
+
 
 /* Admin card — flat, minimal, no glow or glass */
 .admin-theme .admin-glow-card {

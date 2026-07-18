@@ -23,11 +23,16 @@ final class Mail
         }
     }
 
-    private static function resolveFrom(string $kind): string
+    public static function resolveFrom(string $kind): string
     {
-        if ($kind === 'auth' && defined('SMTP_FROM_AUTH') && SMTP_FROM_AUTH) return SMTP_FROM_AUTH;
-        if ($kind === 'orders' && defined('SMTP_FROM_ORDERS') && SMTP_FROM_ORDERS) return SMTP_FROM_ORDERS;
-        return SMTP_FROM;
+        $const = 'SMTP_FROM_' . strtoupper($kind);
+        if (defined($const) && constant($const)) return (string) constant($const);
+        return defined('SMTP_FROM') ? SMTP_FROM : 'no-reply@localhost';
+    }
+
+    public static function smtpHost(): string
+    {
+        return defined('SMTP_HOST') ? (string) SMTP_HOST : '';
     }
 
 

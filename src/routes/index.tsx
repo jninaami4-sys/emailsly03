@@ -103,7 +103,8 @@ export const Route = createFileRoute("/")({
 
 
 function Home() {
-  const featured = PRODUCTS.filter((p) => p.featured).concat(PRODUCTS.filter((p) => !p.featured)).slice(0, 3);
+  const allProducts = useAllProducts();
+  const featured = allProducts.filter((p) => p.featured).concat(allProducts.filter((p) => !p.featured)).slice(0, 3);
   const trust = useSiteContent("trust");
   const faqContent = useSiteContent("faq");
   const stats = [

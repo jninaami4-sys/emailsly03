@@ -124,11 +124,14 @@ export function OrderBuilder() {
   const [promoApplied, setPromoApplied] = useState<PromoResult | null>(null);
   const [promoBusy, setPromoBusy] = useState(false);
   const validatePromoFn = useServerFn(validatePromo);
+  const recordOrderFn = useServerFn(recordMyOrder);
   const [agree, setAgree] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [isDesktop, setIsDesktop] = useState(false);
   const [useCredit, setUseCredit] = useState(false);
+  const [checkoutBusy, setCheckoutBusy] = useState(false);
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
   const { user } = useAuth();
   const balanceFn = useServerFn(getMyReferralBalance);
   const balanceQuery = useQuery({

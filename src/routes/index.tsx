@@ -292,11 +292,11 @@ function Home() {
                   </div>
                   <h3 className="mt-4 font-display text-lg font-bold">Data that never sleeps</h3>
                   <p className="mt-1 text-sm text-foreground/60">Our verification pipeline runs 24/7 so every record you export is fresh.</p>
-                  <div className="mt-5 flex items-end gap-1.5">
+                  <div className="mt-5 flex h-16 items-end gap-1.5">
                     {[40, 65, 45, 80, 55, 90, 70, 100, 85, 60].map((h, i) => (
                       <span
                         key={i}
-                        className="w-full rounded-t-sm bg-indigo/60"
+                        className="w-full origin-bottom rounded-t-sm bg-indigo/60"
                         style={{
                           height: `${h * 0.55}px`,
                           opacity: 0.4 + (i / 20),

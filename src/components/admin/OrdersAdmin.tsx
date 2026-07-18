@@ -698,7 +698,7 @@ function OrderFormDialog({
   });
 
   return (
-    <Modal onClose={onClose} title={isEdit ? `Edit ${order.short_id ?? "order"}` : "Create order"}>
+    <Modal onClose={onClose} size="xl" title={isEdit ? `Edit ${order.short_id ?? "order"}` : "Create order"}>
       <div className="grid gap-2.5 text-xs">
         <Field label="Customer email" required>
           <input value={form.email} onChange={(e) => set("email", e.target.value)} type="email" className={inp} placeholder="client@example.com" />

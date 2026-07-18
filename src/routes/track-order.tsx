@@ -4,8 +4,10 @@ import { SiteShell } from "@/components/site/SiteShell";
 import { TrackOrderSkeleton } from "@/components/site/TrackOrderSkeleton";
 import { TrackResultSkeleton } from "@/components/site/TrackResultSkeleton";
 import { useHydrated } from "@/hooks/use-hydrated";
-import { Search, Package, Database, ShieldCheck, Truck, Check, Clock, Mail, Hash, AlertCircle, ArrowRight } from "lucide-react";
+import { Search, Package, Database, ShieldCheck, Truck, Check, Clock, Mail, Hash, AlertCircle, ArrowRight, RefreshCcw } from "lucide-react";
 import { PremiumSparkles as Sparkles } from "@/components/site/PremiumIcons";
+import { ordersApi, ApiError, getApiBase } from "@/lib/api-client";
+
 
 export const Route = createFileRoute("/track-order")({
   head: () => ({

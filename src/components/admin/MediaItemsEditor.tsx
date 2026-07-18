@@ -278,7 +278,9 @@ function FieldRenderer({
             <img src={String(value)} alt="" className="size-10 rounded-md object-cover ring-1 ring-border" />
           ) : (
             <div className="grid size-10 place-items-center rounded-md border border-dashed border-border text-[10px] text-muted-foreground">
-              img
+              {"img"}
+            </div>
+          )}
             </div>
           )}
           <input

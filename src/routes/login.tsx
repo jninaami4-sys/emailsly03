@@ -74,12 +74,42 @@ function AuthPage() {
   });
   const [signUpSuccess, setSignUpSuccess] = useState(false);
   const [unconfirmedEmail, setUnconfirmedEmail] = useState<string | null>(null);
+  const [pendingVerify, setPendingVerify] = useState<string | null>(null);
+  const [otpCode, setOtpCode] = useState("");
+  const [otpBusy, setOtpBusy] = useState(false);
+  const [otpError, setOtpError] = useState<string | null>(null);
   const [resendState, setResendState] = useState<{ busy: boolean; sentAt: number | null; error: string | null; cooldown: number }>({
     busy: false,
     sentAt: null,
     error: null,
     cooldown: 0,
   });
+
+  async function handleVerifyOtp(e: React.FormEvent) {
+    e.preventDefault();
+    if (!pendingVerify) return;
+    const token = otpCode.trim();
+    if (!/^\d{6}$/.test(token)) {
+      setOtpError("Enter the 6-digit code from your email.");
+      return;
+    }
+    setOtpError(null);
+    setOtpBusy(true);
+    try {
+      const { error } = await supabase.auth.verifyOtp({
+        email: pendingVerify,
+        token,
+        type: "signup",
+      });
+      if (error) throw error;
+      const target = search.redirect && search.redirect.startsWith("/") ? search.redirect : "/";
+      window.location.replace(target);
+    } catch (err) {
+      setOtpError(err instanceof Error ? err.message : "Invalid or expired code");
+    } finally {
+      setOtpBusy(false);
+    }
+  }
 
   useEffect(() => {
     if (typeof window === "undefined") return;

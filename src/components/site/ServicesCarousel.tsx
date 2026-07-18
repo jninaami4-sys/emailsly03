@@ -433,16 +433,33 @@ export function ServicesCarousel() {
           touch-action: pan-y;
           transform: translate3d(0, 0, 0);
         }
+        .services-swiper-wrapper .swiper-pagination {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+          bottom: 8px !important;
+        }
         .services-swiper-wrapper .swiper-pagination-bullet {
-          background: rgba(255,255,255,0.35);
+          width: 8px;
+          height: 8px;
+          margin: 0 !important;
+          background: rgba(255,255,255,0.28);
           opacity: 1;
-          transition: all 0.3s ease;
+          border-radius: 999px;
+          transition: all 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
         }
         .services-swiper-wrapper .swiper-pagination-bullet-active {
-          background: oklch(0.62 0.22 275);
-          width: 28px;
+          width: 32px;
+          height: 8px;
+          background: linear-gradient(90deg, #6366f1, #8b5cf6);
           border-radius: 999px;
-          box-shadow: 0 0 20px oklch(0.62 0.22 275 / 0.6);
+          box-shadow: 0 0 18px rgba(99,102,241,0.55), 0 0 6px rgba(139,92,246,0.4);
+        }
+        .services-swiper-wrapper .swiper-pagination-bullet-active-main,
+        .services-swiper-wrapper .swiper-pagination-bullet-active-prev,
+        .services-swiper-wrapper .swiper-pagination-bullet-active-next {
+          transform: scale(1);
         }
         /* Responsive debug mode */
         .carousel-debug .services-swiper .swiper-slide {

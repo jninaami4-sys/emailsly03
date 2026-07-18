@@ -366,7 +366,7 @@ function AuthPage() {
         }}
       />
 
-      <div className="relative mx-auto grid min-h-screen max-w-6xl grid-cols-1 items-center gap-8 px-4 py-8 sm:gap-12 sm:px-6 sm:py-12 lg:grid-cols-2 lg:py-16">
+      <div className="relative mx-auto grid max-w-6xl grid-cols-1 content-start gap-8 px-4 py-8 sm:gap-12 sm:px-6 sm:py-12 lg:min-h-screen lg:grid-cols-2 lg:content-center lg:items-center lg:py-16">
         {/* Mobile / tablet hero (hidden on lg — desktop uses left column below) */}
         <div className="lg:hidden">
           <div className="mx-auto flex max-w-md flex-col items-center text-center">

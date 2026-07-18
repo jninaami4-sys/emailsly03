@@ -3,12 +3,12 @@ import { useCallback, useEffect, useState } from "react";
 export type SiteTheme = "dark" | "light";
 const STORAGE_KEY = "emailsly:theme";
 
-/** Read persisted theme (light default for a premium bright feel; falls back to dark). */
+/** Read persisted theme; if unset, follow whatever the pre-hydration script
+ *  applied (which itself honors prefers-color-scheme). */
 function readInitial(): SiteTheme {
   if (typeof window === "undefined") return "dark";
   const stored = window.localStorage.getItem(STORAGE_KEY);
   if (stored === "light" || stored === "dark") return stored;
-  // Respect the class the pre-hydration script already applied
   return document.documentElement.classList.contains("site-light") ? "light" : "dark";
 }
 
@@ -21,9 +21,23 @@ function apply(theme: SiteTheme) {
 export function useTheme() {
   const [theme, setThemeState] = useState<SiteTheme>("dark");
 
-  // Hydrate from storage / current DOM class once mounted
   useEffect(() => {
     setThemeState(readInitial());
+  }, []);
+
+  // Follow OS changes only while the user hasn't explicitly overridden.
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.matchMedia) return;
+    const mq = window.matchMedia("(prefers-color-scheme: light)");
+    const onChange = (e: MediaQueryListEvent) => {
+      const stored = window.localStorage.getItem(STORAGE_KEY);
+      if (stored === "light" || stored === "dark") return; // override wins
+      const next: SiteTheme = e.matches ? "light" : "dark";
+      apply(next);
+      setThemeState(next);
+    };
+    mq.addEventListener?.("change", onChange);
+    return () => mq.removeEventListener?.("change", onChange);
   }, []);
 
   const setTheme = useCallback((next: SiteTheme) => {
@@ -40,16 +54,38 @@ export function useTheme() {
     setTheme(theme === "light" ? "dark" : "light");
   }, [theme, setTheme]);
 
-  return { theme, setTheme, toggle };
+  /** Drop the persisted override so the site follows the OS again. */
+  const resetToSystem = useCallback(() => {
+    try {
+      window.localStorage.removeItem(STORAGE_KEY);
+    } catch {
+      /* ignore */
+    }
+    const prefersLight = window.matchMedia?.("(prefers-color-scheme: light)").matches;
+    const next: SiteTheme = prefersLight ? "light" : "dark";
+    apply(next);
+    setThemeState(next);
+  }, []);
+
+  return { theme, setTheme, toggle, resetToSystem };
 }
 
-/** Inline <script> body: applied before hydration to avoid theme flash. */
+/** Inline <script> body: runs before hydration to avoid theme flash.
+ *  Priority: localStorage override → prefers-color-scheme → dark fallback. */
 export const themeBootScript = `
 try {
   var k = 'emailsly:theme';
   var s = localStorage.getItem(k);
-  var t = (s === 'light' || s === 'dark') ? s : 'light';
+  var t;
+  if (s === 'light' || s === 'dark') {
+    t = s;
+  } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+    t = 'light';
+  } else {
+    t = 'dark';
+  }
   if (t === 'light') document.documentElement.classList.add('site-light');
+  else document.documentElement.classList.remove('site-light');
   document.documentElement.dataset.theme = t;
 } catch (e) {}
 `;

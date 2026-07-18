@@ -8,8 +8,8 @@ import emailslyLogo from "@/assets/emailsly-logo-trim.png.asset.json";
 import { useSiteContent } from "@/hooks/use-site-content";
 
 const BRAND = {
-  violet: "#7C3AED",
-  violetSoft: "#A78BFA",
+  violet: "#418df1",
+  violetSoft: "#7fb0f5",
   ink: "#0A0A1F",
   paper: "#FAFAFC",
   border: "#E5E7EB",

@@ -49,7 +49,7 @@ export function BrandSettingsAdmin() {
     mutationFn: async () => {
       for (const key of ["primary_color", "accent_color", "ink_color"] as const) {
         const v = String(values[key] || "").trim();
-        if (v && !HEX_RE.test(v)) throw new Error(`${key} must be a hex color like #7C3AED`);
+        if (v && !HEX_RE.test(v)) throw new Error(`${key} must be a hex color like #418df1`);
       }
       await upsertFn({ data: { section: "branding", data: JSON.parse(JSON.stringify(values)) } });
     },
@@ -305,7 +305,7 @@ function ColorField({
   value: string;
   onChange: (v: string) => void;
 }) {
-  const safe = HEX_RE.test(value) ? value : "#7C3AED";
+  const safe = HEX_RE.test(value) ? value : "#418df1";
   return (
     <div>
       <label className="mb-1 block font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
@@ -324,7 +324,7 @@ function ColorField({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           className="w-full rounded-md bg-transparent px-2 py-1 font-mono text-sm outline-none"
-          placeholder="#7C3AED"
+          placeholder="#418df1"
         />
       </div>
       {hint && <p className="mt-1 text-[11px] text-muted-foreground">{hint}</p>}

@@ -1,6 +1,6 @@
 import { motion, useReducedMotion } from "framer-motion";
 
-const VIOLET = "#7C3AED";
+const VIOLET = "#418df1";
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 export interface EmailslyLoaderInlineProps {
@@ -68,7 +68,7 @@ export function EmailslyLoaderInline({
           className="absolute inset-y-0 w-1/3"
           style={{
             background:
-              "linear-gradient(90deg, transparent, #7C3AED 40%, #a78bfa 60%, transparent)",
+              "linear-gradient(90deg, transparent, #418df1 40%, #7fb0f5 60%, transparent)",
           }}
           initial={{ x: "-100%" }}
           animate={reduced ? { x: "0%" } : { x: ["-100%", "300%"] }}

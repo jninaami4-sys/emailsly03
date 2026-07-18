@@ -2,11 +2,13 @@ import React, { useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Star, Quote, Play, Pause, BadgeCheck, Users, Clock, TrendingUp } from "lucide-react";
+import { Star, Quote, Play, Pause, BadgeCheck } from "lucide-react";
 import amineVideo from "@/assets/amine-italy.mp4.asset.json";
 import aminePoster from "@/assets/amine-poster.jpg.asset.json";
 import { ReviewSubmitModal } from "@/components/site/ReviewSubmitModal";
 import { listApprovedReviews, type PublicReview } from "@/lib/reviews.functions";
+import { useSiteContent } from "@/hooks/use-site-content";
+import { TrustItemIcon } from "@/components/admin/MediaItemsEditor";
 
 // --- Types ---
 type Testimonial = {

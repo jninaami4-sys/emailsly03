@@ -60,6 +60,7 @@ const SERVICES: Service[] = [
   { id: "manual", name: "Hand-Picked Leads", rate: 0.35, minQty: 100, minOrder: 35, unit: "lead", helper: "Min 100 leads · enter any quantity", icon: PremiumUserSearch, group: "data" },
   { id: "mobile", name: "Apollo Mobile Numbers", rate: 0.15, minQty: 100, minOrder: 25, unit: "record", helper: "Min 100 numbers · enter any quantity", icon: PremiumPhone, group: "data" },
   { id: "pixel", name: "Facebook Pixel", rate: 100, minQty: 1, minOrder: 100, unit: "setup", fixed: true, icon: PremiumMousePointerClick, group: "growth" },
+  { id: "warmup", name: "Mailbox Warmup + DKIM/SPF", rate: 100, minQty: 1, minOrder: 100, unit: "mailbox", fixed: true, helper: "15-day warmup · DKIM, SPF, DMARC setup", icon: PremiumShieldCheck, group: "growth" },
   { id: "ads", name: "Google Ads Launch", rate: 100, minQty: 1, minOrder: 100, unit: "setup", fixed: true, icon: PremiumLineChart, group: "growth" },
   { id: "tracking", name: "Server-Side Tracking", rate: 150, minQty: 1, minOrder: 150, unit: "setup", fixed: true, icon: PremiumServerCog, group: "growth" },
   { id: "logo", name: "Logo & Brand Kit", rate: 50, minQty: 1, minOrder: 50, unit: "kit", fixed: true, icon: PremiumPenTool, group: "design" },

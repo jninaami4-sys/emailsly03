@@ -9,7 +9,6 @@ import "swiper/css/pagination";
 import { openOrderDrawer } from "@/components/site/OrderDrawer";
 import {
   PremiumArrowUpRight,
-  PremiumSparkles,
   PremiumTarget,
   PremiumGlobe,
   PremiumLayers,
@@ -264,7 +263,6 @@ export function ServicesCarousel() {
       <div className="mx-auto max-w-7xl">
         <div className="mx-auto mb-14 max-w-2xl text-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 backdrop-blur">
-            <PremiumSparkles className="size-3.5 text-indigo" />
             <span className="font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-foreground/80">
               Our services · full stack
             </span>

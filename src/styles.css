@@ -352,6 +352,77 @@ html.site-light .bg-card {
     background-color: #ffffff;
   }
 }
+
+/* ─────────────────────────────────────────────────────────────────────
+ * Glassmorphism fallbacks
+ *
+ * Applies when:
+ *   1) the browser doesn't support backdrop-filter at all (older Firefox
+ *      pre-103, some embedded webviews, print), OR
+ *   2) the user has requested reduced transparency (macOS/iOS "Reduce
+ *      Transparency", Windows "Transparency effects off").
+ *
+ * Strategy: swap translucent surfaces for opaque pearl-tinted solids
+ * with a soft ambient shadow. Same palette, no muddy see-through, no
+ * blur artifacts. Only affects the light theme — dark theme untouched.
+ * ────────────────────────────────────────────────────────────────────*/
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  /* Popovers, dropdowns, sheets */
+  html.site-light [data-popover],
+  html.site-light [data-radix-popper-content-wrapper] > *,
+  html.site-light [role="dialog"],
+  html.site-light [role="menu"],
+  html.site-light [role="listbox"] {
+    background-color: #ffffff !important;
+    border: 1px solid rgba(59, 91, 219, 0.14);
+  }
+
+  /* Tailwind backdrop-blur-* utilities — neutralize the (unsupported)
+   * filter and replace the translucent surface with a solid pearl tint
+   * so bg-white/60 style overlays don't reveal the aurora underneath. */
+  html.site-light [class*="backdrop-blur"] {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  html.site-light [class*="backdrop-blur"][class*="bg-white/"],
+  html.site-light [class*="backdrop-blur"][class*="bg-background/"],
+  html.site-light [class*="backdrop-blur"][class*="bg-card/"] {
+    background-color: #f7faff !important;
+  }
+
+  /* Ambient aurora blobs — without blur they read as harsh color patches.
+   * Fade them out and let the layered gradient carry the depth. */
+  html.site-light body {
+    background-image:
+      radial-gradient(rgba(30, 41, 59, 0.045) 1px, transparent 1px),
+      linear-gradient(180deg, #f7faff 0%, #eef3fb 100%);
+    background-size: 22px 22px, auto;
+    background-repeat: repeat, no-repeat;
+  }
+  html.site-light body::before { display: none; }
+}
+
+/* Respect the OS-level reduced-transparency preference regardless of
+ * backdrop-filter support — accessibility trumps aesthetics. */
+@media (prefers-reduced-transparency: reduce) {
+  html.site-light .theme-midnight .card,
+  html.site-light .theme-midnight [data-card],
+  html.site-light .bg-card,
+  html.site-light [data-popover],
+  html.site-light [role="dialog"],
+  html.site-light [role="menu"],
+  html.site-light [role="listbox"] {
+    background-color: #ffffff !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  html.site-light [class*="backdrop-blur"] {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  html.site-light body::before { display: none; }
+}
+
 html.site-light .theme-midnight .card:hover,
 html.site-light .theme-midnight [data-card]:hover,
 html.site-light .bg-card:hover {

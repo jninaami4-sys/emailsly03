@@ -111,19 +111,31 @@ final class OrderController
         $appUrl = rtrim($_ENV['APP_URL'] ?? '', '/');
         $brand  = $_ENV['BRAND_NAME'] ?? 'Emailsly';
         $logo   = $_ENV['BRAND_LOGO_URL'] ?? '';
-        // Prefer live brand logo saved from admin panel (site_settings.brand_logo_url)
+        // Match the login/site header logo priority exactly:
+        //   1. site_content['branding'].footer_logo_url
+        //   2. site_content['branding'].logo_url
+        //   3. site_settings.brand_logo_url
+        //   4. BRAND_LOGO_URL env
+        try {
+            $branding = Database::pdo()->prepare('SELECT value FROM site_content WHERE `key` = ?');
+            $branding->execute(['branding']);
+            $bRow = $branding->fetch();
+            if ($bRow && !empty($bRow['value'])) {
+                $b = json_decode($bRow['value'], true) ?: [];
+                $siteLogo = trim((string)($b['footer_logo_url'] ?? '')) ?: trim((string)($b['logo_url'] ?? ''));
+                if ($siteLogo !== '') $logo = $siteLogo;
+                if (!empty($b['site_name'])) $brand = $b['site_name'];
+            }
+        } catch (\Throwable $e) { /* ignore */ }
         try {
             $row = Database::pdo()->query('SELECT brand_name, brand_logo_url FROM site_settings WHERE id = 1')->fetch();
             if ($row) {
-                if (!empty($row['brand_logo_url'])) {
-                    $dbLogo = $row['brand_logo_url'];
-                    // Resolve relative URLs against APP_URL so they render in email clients
-                    if ($dbLogo[0] === '/' && $appUrl) $dbLogo = $appUrl . $dbLogo;
-                    $logo = $dbLogo;
-                }
-                if (!empty($row['brand_name'])) $brand = $row['brand_name'];
+                if ($logo === '' && !empty($row['brand_logo_url'])) $logo = $row['brand_logo_url'];
+                if (empty($b) && !empty($row['brand_name'])) $brand = $row['brand_name'];
             }
         } catch (\Throwable $e) { /* fall back to env */ }
+        // Resolve relative URLs against APP_URL so they render in email clients
+        if ($logo !== '' && $logo[0] === '/' && $appUrl) $logo = $appUrl . $logo;
         $items  = $o['items'] ?? null;
 
         $mailer = Mailer::orders();

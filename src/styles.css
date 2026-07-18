@@ -191,59 +191,54 @@
 html.site-light,
 html.site-light body,
 html.site-light .theme-midnight {
-  /* Surfaces */
-  --background: oklch(0.988 0.006 240);       /* #f7faff pearl white */
-  --foreground: oklch(0.20 0.03 255);         /* deep slate ink for AA */
-  --card: oklch(1 0 0 / 0.72);                /* translucent white glass */
-  --card-foreground: oklch(0.20 0.03 255);
-  --popover: oklch(1 0 0 / 0.92);
-  --popover-foreground: oklch(0.20 0.03 255);
-  --muted: oklch(0.965 0.010 240);
-  --muted-foreground: oklch(0.44 0.02 255);
-  --secondary: oklch(0.962 0.012 235);
-  --secondary-foreground: oklch(0.24 0.03 255);
-  --accent: oklch(0.68 0.12 200);              /* teal accent */
+  /* Warm editorial "Ivory & Ember" — deliberately different from the
+   * dark theme's cool violet/magenta. Ivory paper background, espresso
+   * ink, rose-copper primary, muted sage accent. */
+  --background: oklch(0.982 0.012 85);
+  --foreground: oklch(0.22 0.02 40);
+  --card: oklch(1 0 0 / 0.78);
+  --card-foreground: oklch(0.22 0.02 40);
+  --popover: oklch(0.995 0.006 85);
+  --popover-foreground: oklch(0.22 0.02 40);
+  --muted: oklch(0.955 0.014 78);
+  --muted-foreground: oklch(0.44 0.02 45);
+  --secondary: oklch(0.945 0.018 72);
+  --secondary-foreground: oklch(0.26 0.03 40);
+  --accent: oklch(0.62 0.09 155);
   --accent-foreground: oklch(1 0 0);
-  --border: oklch(0.86 0.02 240 / 0.75);
-  --input: oklch(0.86 0.02 240 / 0.85);
-  --primary: oklch(0.55 0.20 258);             /* ocean indigo #3b5bdb-ish */
+  --border: oklch(0.84 0.025 70 / 0.7);
+  --input: oklch(0.84 0.025 70 / 0.85);
+  --primary: oklch(0.56 0.16 25);
   --primary-foreground: oklch(1 0 0);
-  --ring: oklch(0.55 0.20 258);
+  --ring: oklch(0.56 0.16 25);
 
-  /* Status colors — same hue family, calmer chroma for light */
-  --destructive: oklch(0.60 0.20 24);
+  --destructive: oklch(0.55 0.20 25);
   --destructive-foreground: oklch(1 0 0);
 
-  /* Ink / paper */
-  --ink: oklch(0.20 0.03 255);
-  --paper: oklch(0.988 0.006 240);
+  --ink: oklch(0.22 0.02 40);
+  --paper: oklch(0.982 0.012 85);
 
-  /* Brand accents — remapped from violet/magenta to indigo/teal so any
-   * component reading these tokens stays inside the new family. Same
-   * variable names preserve visual contracts across the codebase. */
-  --violet: oklch(0.55 0.20 258);              /* indigo */
-  --violet-soft: oklch(0.55 0.20 258 / 0.10);
-  --magenta: oklch(0.68 0.12 200);             /* teal */
-  --magenta-soft: oklch(0.68 0.12 200 / 0.10);
-  --coral: oklch(0.72 0.14 40);                /* warm coral kept as-is */
-  --coral-soft: oklch(0.72 0.14 40 / 0.12);
-  --emerald: oklch(0.66 0.14 168);
-  --emerald-soft: oklch(0.66 0.14 168 / 0.12);
-  --amber: oklch(0.80 0.15 82);
-  --amber-soft: oklch(0.80 0.15 82 / 0.14);
-  --indigo: oklch(0.55 0.20 258);
-  --indigo-soft: oklch(0.55 0.20 258 / 0.10);
-  --neon-blue: oklch(0.62 0.18 245);
-  --neon-blue-soft: oklch(0.62 0.18 245 / 0.12);
-  --neon-orange: oklch(0.74 0.17 55);
-  --neon-orange-soft: oklch(0.74 0.17 55 / 0.12);
+  --violet: oklch(0.56 0.16 25);
+  --violet-soft: oklch(0.56 0.16 25 / 0.10);
+  --magenta: oklch(0.62 0.16 15);
+  --magenta-soft: oklch(0.62 0.16 15 / 0.10);
+  --coral: oklch(0.68 0.16 40);
+  --coral-soft: oklch(0.68 0.16 40 / 0.12);
+  --emerald: oklch(0.58 0.10 155);
+  --emerald-soft: oklch(0.58 0.10 155 / 0.12);
+  --amber: oklch(0.76 0.15 75);
+  --amber-soft: oklch(0.76 0.15 75 / 0.14);
+  --indigo: oklch(0.42 0.08 265);
+  --indigo-soft: oklch(0.42 0.08 265 / 0.10);
+  --neon-blue: oklch(0.55 0.12 240);
+  --neon-blue-soft: oklch(0.55 0.12 240 / 0.12);
+  --neon-orange: oklch(0.70 0.17 45);
+  --neon-orange-soft: oklch(0.70 0.17 45 / 0.12);
 
-  /* Midnight aliases → light glass surfaces so bg-midnight-* utilities
-   * inherit the new palette instead of punching dark rectangles. */
-  --midnight: oklch(0.988 0.006 240);
-  --midnight-surface: oklch(1 0 0 / 0.78);
-  --midnight-elev: oklch(1 0 0 / 0.9);
-  --midnight-line: oklch(0.86 0.02 240 / 0.7);
+  --midnight: oklch(0.982 0.012 85);
+  --midnight-surface: oklch(1 0 0 / 0.82);
+  --midnight-elev: oklch(1 0 0 / 0.92);
+  --midnight-line: oklch(0.84 0.025 70 / 0.65);
 
   color-scheme: light;
 }
@@ -287,14 +282,14 @@ html.site-light .admin-theme {
   display: block;
 }
 .theme-toggle.is-on {
-  background: linear-gradient(135deg, #3b5bdb, #14b8a6);
+  background: linear-gradient(135deg, #c95a4a, #d97a55);
 }
 .theme-toggle.is-on .theme-toggle__circle {
   margin-left: calc(44px - (2px * 2) - 18px);
-  color: #f59e0b;
+  color: #b45309;
 }
 .theme-toggle:focus-visible {
-  outline: 2px solid #3b5bdb;
+  outline: 2px solid #c95a4a;
   outline-offset: 2px;
 }
 @media (prefers-reduced-motion: reduce) {
@@ -302,16 +297,17 @@ html.site-light .admin-theme {
   .theme-toggle__circle { transition: none !important; }
 }
 
-/* Ambient background — soft indigo/teal aurora over pearl. Single hue
- * family means blend zones stay clean instead of turning gray/brown. */
+/* Ambient background — warm ivory paper with subtle rose/copper glow and
+ * a faint grain pattern for editorial texture. Different personality from
+ * the dark theme's cool aurora. */
 html.site-light body {
-  background-color: #f7faff;
+  background-color: #faf6ef;
   background-image:
-    radial-gradient(60rem 42rem at 88% -10%, rgba(59, 91, 219, 0.14), transparent 60%),
-    radial-gradient(55rem 40rem at -8% 12%, rgba(20, 184, 166, 0.13), transparent 62%),
-    radial-gradient(48rem 34rem at 50% 115%, rgba(129, 140, 248, 0.10), transparent 60%),
-    radial-gradient(rgba(30, 41, 59, 0.045) 1px, transparent 1px),
-    linear-gradient(180deg, #f7faff 0%, #eef3fb 100%);
+    radial-gradient(58rem 40rem at 92% -8%, rgba(201, 90, 74, 0.14), transparent 60%),
+    radial-gradient(52rem 38rem at -6% 14%, rgba(217, 168, 106, 0.16), transparent 62%),
+    radial-gradient(46rem 32rem at 50% 118%, rgba(180, 83, 9, 0.08), transparent 60%),
+    radial-gradient(rgba(120, 53, 15, 0.05) 1px, transparent 1px),
+    linear-gradient(180deg, #faf6ef 0%, #f3ebdc 100%);
   background-size: auto, auto, auto, 22px 22px, auto;
   background-attachment: fixed, fixed, fixed, fixed, fixed;
   background-repeat: no-repeat, no-repeat, no-repeat, repeat, no-repeat;
@@ -323,7 +319,7 @@ html.site-light body::before {
   pointer-events: none;
   z-index: 0;
   background:
-    linear-gradient(180deg, rgba(255,255,255,0.55) 0%, transparent 22%, transparent 78%, rgba(255,255,255,0.7) 100%);
+    linear-gradient(180deg, rgba(255, 250, 240, 0.5) 0%, transparent 22%, transparent 78%, rgba(255, 250, 240, 0.7) 100%);
 }
 
 html.site-light .theme-midnight h1,
@@ -335,14 +331,14 @@ html.site-light .theme-midnight h2 { letter-spacing: -0.02em; }
 html.site-light .theme-midnight .card,
 html.site-light .theme-midnight [data-card],
 html.site-light .bg-card {
-  background-color: rgba(255, 255, 255, 0.72);
-  border: 1px solid rgba(59, 91, 219, 0.12);
-  backdrop-filter: blur(18px) saturate(140%);
+  background-color: rgba(255, 252, 246, 0.78);
+  border: 1px solid rgba(120, 53, 15, 0.10);
+  backdrop-filter: blur(16px) saturate(135%);
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.9) inset,
-    0 1px 2px rgba(15, 23, 42, 0.04),
-    0 10px 30px -14px rgba(59, 91, 219, 0.18),
-    0 30px 60px -30px rgba(15, 23, 42, 0.12);
+    0 1px 2px rgba(120, 53, 15, 0.05),
+    0 10px 30px -14px rgba(201, 90, 74, 0.18),
+    0 30px 60px -30px rgba(120, 53, 15, 0.14);
   transition: box-shadow 240ms ease, transform 240ms ease, border-color 240ms ease;
 }
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
@@ -373,13 +369,10 @@ html.site-light .bg-card {
   html.site-light [role="dialog"],
   html.site-light [role="menu"],
   html.site-light [role="listbox"] {
-    background-color: #ffffff !important;
-    border: 1px solid rgba(59, 91, 219, 0.14);
+    background-color: #fffdf7 !important;
+    border: 1px solid rgba(120, 53, 15, 0.14);
   }
 
-  /* Tailwind backdrop-blur-* utilities — neutralize the (unsupported)
-   * filter and replace the translucent surface with a solid pearl tint
-   * so bg-white/60 style overlays don't reveal the aurora underneath. */
   html.site-light [class*="backdrop-blur"] {
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
@@ -387,15 +380,13 @@ html.site-light .bg-card {
   html.site-light [class*="backdrop-blur"][class*="bg-white/"],
   html.site-light [class*="backdrop-blur"][class*="bg-background/"],
   html.site-light [class*="backdrop-blur"][class*="bg-card/"] {
-    background-color: #f7faff !important;
+    background-color: #faf6ef !important;
   }
 
-  /* Ambient aurora blobs — without blur they read as harsh color patches.
-   * Fade them out and let the layered gradient carry the depth. */
   html.site-light body {
     background-image:
-      radial-gradient(rgba(30, 41, 59, 0.045) 1px, transparent 1px),
-      linear-gradient(180deg, #f7faff 0%, #eef3fb 100%);
+      radial-gradient(rgba(120, 53, 15, 0.05) 1px, transparent 1px),
+      linear-gradient(180deg, #faf6ef 0%, #f3ebdc 100%);
     background-size: 22px 22px, auto;
     background-repeat: repeat, no-repeat;
   }
@@ -426,19 +417,18 @@ html.site-light .bg-card {
 html.site-light .theme-midnight .card:hover,
 html.site-light .theme-midnight [data-card]:hover,
 html.site-light .bg-card:hover {
-  border-color: rgba(59, 91, 219, 0.24);
+  border-color: rgba(201, 90, 74, 0.28);
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.95) inset,
-    0 2px 4px rgba(15, 23, 42, 0.05),
-    0 16px 40px -16px rgba(59, 91, 219, 0.28),
-    0 40px 70px -30px rgba(15, 23, 42, 0.14);
+    0 2px 4px rgba(120, 53, 15, 0.06),
+    0 16px 40px -16px rgba(201, 90, 74, 0.30),
+    0 40px 70px -30px rgba(120, 53, 15, 0.16);
 }
 
-/* Heading gradient — stays inside the indigo/teal family so no muddy
- * mid-tones appear across the transition. */
+/* Editorial heading gradient — espresso → copper → rose, warm family. */
 html.site-light h1,
 html.site-light h2 {
-  background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 45%, #0d9488 100%);
+  background: linear-gradient(135deg, #2b1810 0%, #7c2d12 45%, #c95a4a 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -457,33 +447,32 @@ html.site-light h2 [data-no-gradient] {
 html.site-light input,
 html.site-light textarea,
 html.site-light select {
-  background-color: rgba(255, 255, 255, 0.85);
-  border-color: rgba(15, 23, 42, 0.12);
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+  background-color: rgba(255, 252, 246, 0.9);
+  border-color: rgba(120, 53, 15, 0.14);
+  box-shadow: 0 1px 2px rgba(120, 53, 15, 0.04);
 }
 html.site-light input:focus-visible,
 html.site-light textarea:focus-visible,
 html.site-light select:focus-visible {
-  border-color: rgba(59, 91, 219, 0.55);
-  box-shadow: 0 0 0 3px rgba(59, 91, 219, 0.15);
+  border-color: rgba(201, 90, 74, 0.55);
+  box-shadow: 0 0 0 3px rgba(201, 90, 74, 0.18);
 }
 
-/* Primary buttons — indigo → teal gradient. Both stops in the same cool
- * family so the mid-transition renders as a clean blue-teal, never gray. */
+/* Primary buttons — copper → rose gradient, warm family, no muddy mids. */
 html.site-light .theme-midnight .bg-primary,
 html.site-light .bg-primary {
-  background-image: linear-gradient(135deg, #3b5bdb 0%, #2563eb 50%, #14b8a6 100%);
+  background-image: linear-gradient(135deg, #b8452e 0%, #c95a4a 50%, #d97a55 100%);
   color: #ffffff;
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.35) inset,
-    0 10px 24px -12px rgba(59, 91, 219, 0.55);
+    0 10px 24px -12px rgba(201, 90, 74, 0.55);
 }
 html.site-light .theme-midnight .bg-primary:hover,
 html.site-light .bg-primary:hover {
   filter: brightness(1.05);
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.4) inset,
-    0 14px 30px -12px rgba(59, 91, 219, 0.65);
+    0 14px 30px -12px rgba(201, 90, 74, 0.65);
 }
 
 /* Muted / secondary body text — bump legibility on pearl surface */
@@ -503,42 +492,37 @@ html.site-light .text-muted-foreground {
  * look is preserved.
  * ────────────────────────────────────────────────────────────────────*/
 
-/* Text-only overrides — darker hue-matched shades that pass AA on pearl. */
-html.site-light .text-violet        { color: #3730a3; }  /* indigo-800  ~9:1  */
-html.site-light .text-primary       { color: #1e3a8a; }  /* indigo-900  ~11:1 */
-html.site-light .text-magenta       { color: #0f766e; }  /* teal-700    ~5.9:1 */
-html.site-light .text-accent        { color: #0f766e; }
-html.site-light .text-emerald       { color: #047857; }  /* emerald-700 ~5.7:1 */
-html.site-light .text-coral         { color: #b91c1c; }  /* red-700     ~6.4:1 */
-html.site-light .text-amber         { color: #92400e; }  /* amber-800   ~7:1  */
+/* Text-only overrides — darker warm-family shades that pass AA on ivory. */
+html.site-light .text-violet        { color: #9a3412; }  /* orange-800 */
+html.site-light .text-primary       { color: #7c2d12; }  /* orange-900 */
+html.site-light .text-magenta       { color: #9f1239; }  /* rose-800  */
+html.site-light .text-accent        { color: #14532d; }  /* green-900 sage */
+html.site-light .text-emerald       { color: #166534; }  /* green-800 */
+html.site-light .text-coral         { color: #b91c1c; }
+html.site-light .text-amber         { color: #92400e; }
 html.site-light .text-destructive   { color: #b91c1c; }
 
-/* Muted text on translucent glass — bump one step so 4.5:1 holds even
- * when a card sits over a colored aurora blob. */
-html.site-light .text-muted-foreground { color: oklch(0.38 0.02 255); }
+html.site-light .text-muted-foreground { color: oklch(0.40 0.02 45); }
 
-/* Links — give inline anchors a clear color + underline in light mode.
- * Scoped to prose/content anchors: skip anything that's styled as a
- * button, chip, or nav item (those already have their own affordance). */
+/* Links */
 html.site-light a:not([class*="bg-"]):not(.btn):not([data-button]):not([role="button"]):not(.no-underline) {
-  color: #1e3a8a;
+  color: #7c2d12;
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 3px;
-  text-decoration-color: rgba(30, 58, 138, 0.35);
+  text-decoration-color: rgba(124, 45, 18, 0.35);
   transition: color 160ms ease, text-decoration-color 160ms ease;
 }
 html.site-light a:not([class*="bg-"]):not(.btn):not([data-button]):not([role="button"]):not(.no-underline):hover {
-  color: #0f766e;
+  color: #c95a4a;
   text-decoration-color: currentColor;
 }
 
-/* Focus — visible ring on any interactive element, above glass blur. */
 html.site-light a:focus-visible,
 html.site-light button:focus-visible,
 html.site-light [role="button"]:focus-visible,
 html.site-light summary:focus-visible {
-  outline: 2px solid #1e3a8a;
+  outline: 2px solid #7c2d12;
   outline-offset: 2px;
   border-radius: 6px;
 }

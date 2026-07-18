@@ -186,32 +186,58 @@
 html.site-light,
 html.site-light body,
 html.site-light .theme-midnight {
+  /* Surfaces */
   --background: oklch(0.992 0.004 300);   /* #fdfcff soft off-white */
   --foreground: oklch(0.22 0.03 265);     /* deep slate ink */
   --card: oklch(1 0 0);                    /* pure white cards */
   --card-foreground: oklch(0.22 0.03 265);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.22 0.03 265);
-  --muted: oklch(0.968 0.006 285);         /* subtle lavender-tinted muted */
+  --muted: oklch(0.968 0.006 285);
   --muted-foreground: oklch(0.48 0.02 265);
   --secondary: oklch(0.965 0.008 290);
   --secondary-foreground: oklch(0.22 0.03 265);
   --accent: oklch(0.55 0.25 293);          /* violet accent */
   --accent-foreground: oklch(1 0 0);
-  --border: oklch(0.90 0.01 280 / 0.85);   /* soft hairline */
+  --border: oklch(0.90 0.01 280 / 0.85);
   --input: oklch(0.88 0.01 280 / 0.9);
   --primary: oklch(0.55 0.25 293);         /* #7c3aed violet */
   --primary-foreground: oklch(1 0 0);
   --ring: oklch(0.55 0.25 293);
+
+  /* Status colors — light-mode tuned */
+  --destructive: oklch(0.60 0.22 18);
+  --destructive-foreground: oklch(1 0 0);
+
+  /* Ink / paper */
   --ink: oklch(0.20 0.03 265);
   --paper: oklch(0.992 0.004 300);
-  /* Brand accents stay identical on light so gradients keep their identity */
+
+  /* Brand accents — same identity, softer alphas for light */
   --violet: oklch(0.55 0.25 293);
   --violet-soft: oklch(0.55 0.25 293 / 0.10);
   --magenta: oklch(0.68 0.28 328);
   --magenta-soft: oklch(0.68 0.28 328 / 0.10);
   --coral: oklch(0.68 0.28 328);
   --coral-soft: oklch(0.68 0.28 328 / 0.10);
+  --emerald: oklch(0.60 0.15 158);
+  --emerald-soft: oklch(0.60 0.15 158 / 0.12);
+  --amber: oklch(0.79 0.16 78);
+  --amber-soft: oklch(0.79 0.16 78 / 0.14);
+  --indigo: oklch(0.50 0.20 268);
+  --indigo-soft: oklch(0.50 0.20 268 / 0.10);
+  --neon-blue: oklch(0.60 0.19 253);
+  --neon-blue-soft: oklch(0.60 0.19 253 / 0.12);
+  --neon-orange: oklch(0.72 0.19 55);
+  --neon-orange-soft: oklch(0.72 0.19 55 / 0.12);
+
+  /* Midnight aliases flipped to light so bg-midnight-surface etc. don't
+     leave dark patches on the light theme. */
+  --midnight: oklch(0.992 0.004 300);
+  --midnight-surface: oklch(1 0 0);
+  --midnight-elev: oklch(0.985 0.006 290);
+  --midnight-line: oklch(0.90 0.01 280 / 0.85);
+
   color-scheme: light;
 }
 

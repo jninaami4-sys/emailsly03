@@ -278,40 +278,16 @@
   color: oklch(0.48 0.012 260);
 }
 
-/* Liquid glass card — frosted white surface with layered highlights */
+/* Admin card — flat, minimal, no glow or glass */
 .admin-theme .admin-glow-card {
   position: relative;
-  isolation: isolate;
-  background:
-    linear-gradient(180deg, oklch(1 0 0 / 0.85) 0%, oklch(0.99 0.003 260 / 0.72) 100%);
-  border: 1px solid oklch(1 0 0 / 0.7);
+  background: var(--card);
+  border: 1px solid var(--border);
   border-radius: 18px;
-  backdrop-filter: blur(22px) saturate(160%);
-  box-shadow:
-    0 1px 0 oklch(1 0 0 / 0.9) inset,
-    0 0 0 1px oklch(0.18 0.01 260 / 0.05),
-    0 8px 24px -12px oklch(0.18 0.01 260 / 0.18),
-    0 24px 60px -32px oklch(0.55 0.18 258 / 0.18);
+  box-shadow: none;
 }
 .admin-theme .admin-glow-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(
-    140deg,
-    oklch(1 0 0 / 0.9) 0%,
-    oklch(1 0 0 / 0) 45%,
-    oklch(0.55 0.18 258 / 0.18) 100%
-  );
-  -webkit-mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-          mask-composite: exclude;
-  pointer-events: none;
-  z-index: 1;
+  content: none;
 }
 
 /* Table primitives */

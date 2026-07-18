@@ -893,9 +893,9 @@ export function OrderBuilder() {
                     discount: promoApplied?.ok ? discount.toFixed(2) : undefined,
                     credit: creditApplied > 0 ? creditApplied.toFixed(2) : undefined,
                   }}
-                  aria-disabled={!agree || name.trim().length < 2 || !/\S+@\S+\.\S+/.test(email)}
+                  aria-disabled={!agree || name.trim().length < 2 || !/\S+@\S+\.\S+/.test(email) || isDisposableEmail(email)}
                   onClick={(e: MouseEvent<HTMLAnchorElement>) => {
-                    if (!agree || name.trim().length < 2 || !/\S+@\S+\.\S+/.test(email)) {
+                    if (!agree || name.trim().length < 2 || !/\S+@\S+\.\S+/.test(email) || isDisposableEmail(email)) {
                       e.preventDefault();
                     }
                   }}

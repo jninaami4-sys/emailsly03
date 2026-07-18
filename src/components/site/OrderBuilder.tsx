@@ -231,7 +231,7 @@ export function OrderBuilder() {
     step === 1 ? !!serviceId :
     step === 2 ? (service.fixed || effectiveQty >= service.minQty) :
     step === 3 ? true :
-    agree && name.trim().length > 1 && /\S+@\S+\.\S+/.test(email);
+    agree && name.trim().length > 1 && /\S+@\S+\.\S+/.test(email) && !isDisposableEmail(email);
 
   const goNext = () => setStep((s) => Math.min(4, s + 1));
   const goPrev = () => setStep((s) => Math.max(1, s - 1));

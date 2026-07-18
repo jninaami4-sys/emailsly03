@@ -198,8 +198,8 @@ function DashboardPage() {
           <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
             <div>
               {/* Tabs */}
-              <div className="mb-4 -mx-4 overflow-x-auto px-4 sm:mx-0 sm:overflow-visible sm:px-0 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-                <div className="flex min-w-max gap-1 rounded-2xl border border-border bg-card p-1 sm:grid sm:min-w-0 sm:grid-cols-5">
+              <div className="mb-4">
+                <div className="grid grid-cols-5 gap-1 rounded-2xl border border-border bg-card p-1">
                   <TabBtn active={tab === "orders"} onClick={() => setTab("orders")} icon={<Package className="size-4" />}>
                     Orders
                   </TabBtn>

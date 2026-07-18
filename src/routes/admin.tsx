@@ -18,7 +18,7 @@ import { SiteContentAdmin } from "@/components/admin/SiteContentAdmin";
 import { BrandSettingsAdmin } from "@/components/admin/BrandSettingsAdmin";
 import { OrdersAdmin } from "@/components/admin/OrdersAdmin";
 import { ReferralsAdmin } from "@/components/admin/ReferralsAdmin";
-import { StripeEventsAdmin } from "@/components/admin/StripeEventsAdmin";
+import { StripeEventsAdmin, StripeWebhookDeliveriesAdmin } from "@/components/admin/StripeEventsAdmin";
 import { ImportExportAdmin } from "@/components/admin/ImportExportAdmin";
 import { PricingAdmin } from "@/components/admin/PricingAdmin";
 import { SampleDatasetsAdmin, SampleDatasetAuditLog } from "@/components/admin/SampleDatasetsAdmin";

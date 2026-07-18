@@ -1,74 +1,61 @@
-# Referrals: Stripe-verified rewards + anti-abuse + admin tracking
 
-## 1. Stripe webhook (real payment gate)
+# Full API-based migration: React + PHP/MySQL on cPanel
 
-Since you already have Stripe elsewhere, I'll add a signed webhook. Rewards will only fire when Stripe confirms.
+Goal: the React app talks only to your PHP API on Emailsly.com. Zero Supabase at runtime. Upload `/backend-php/` to cPanel (`public_html/api/`), point React at it via `VITE_API_BASE`, done.
 
-- New public route `src/routes/api/public/webhooks/stripe.ts`
-  - Verifies `stripe-signature` with HMAC-SHA256 using `STRIPE_WEBHOOK_SECRET` (I'll request it via `add_secret`).
-  - Handles `checkout.session.completed` and `payment_intent.succeeded`.
-  - Idempotent by Stripe event id (new table `stripe_events`).
-  - Marks the order `payment_status='paid'`, stores `payment_ref` (Stripe session/PI id), which trips the existing `orders_qualify_referral` trigger.
-- Order creation moves from "instantly paid" to `payment_status='pending'`; only the webhook flips it to `paid`. The `/payment-success` page just polls the order until it flips (no client-driven crediting).
-- Referral trigger updated: only qualify when `payment_provider='stripe'` AND payment_ref starts with `cs_`/`pi_` AND order passes anti-abuse checks (below).
+## Current state
 
-## 2. Referral link capture
+- `/backend-php/` already scaffolded: Router, Auth (JWT), 30+ controllers (Auth, Orders, Pricing, Blog, Chatbot, Site, Support, Referrals, Reviews, Samples, Contact, Stripe webhook + admin variants), MySQL schema, seed, migrate script, `.htaccess`, Mailer with 4 SMTP channels.
+- `src/lib/api-client.ts` exists as a thin bridge.
+- 53 React files still import `@/integrations/supabase/client` directly.
+- No file-upload endpoint yet, no `/uploads` handler.
 
-- New `src/lib/referral-capture.ts` client util. On any page load with `?ref=CODE`, store `{ code, ts, landing_url }` in `localStorage.lyra_ref` (30-day TTL) and drop a first-party cookie `lyra_ref`.
-- On `SIGNED_IN` (root `onAuthStateChange`), call existing `attachReferrer({ code })`. Ignored if the profile already has one, or on self-referral.
-- Stripe checkout session gets `client_reference_id = user_id` and `metadata.ref_code` for defense-in-depth.
+## What I'll build in this pass
 
-## 3. Anti-abuse (all four)
+### 1. PHP backend — fill remaining gaps
 
-New columns on `referrals`: `signup_ip inet`, `signup_ua_hash text`, `flag_reasons text[]`, `admin_review_state text default 'auto'` (`auto|flagged|approved|rejected`), `qualified_order_min_cents int`.
+- `FileController.php` → `POST /api/uploads` (multipart form-data, JWT-protected). Writes to `public_html/uploads/{bucket}/{yyyy}/{mm}/{uuid}.{ext}`, returns `{ url }`. Bucket whitelist: `avatars, reviews, brand-assets, announcement-media, sample-datasets, blog-images, product-images`. MIME + size guard (5 MB images, 20 MB datasets).
+- `.htaccess` at `/uploads/` → static serve, deny PHP execution, 1-year cache headers.
+- Add missing admin endpoints (audit each controller against Supabase tables list): brand settings, site_content, store_offers, telegram_bots, campaigns, custom_products, product_details, social_links, server_tracking_config, legacy_order_imports, reviews approve/reject, chatbot KB, orders bulk archive/restore, order_events, order_messages.
+- Add missing customer endpoints: `/me/orders`, `/me/referrals`, `/me/credits`, `/me/tickets`, `/me/reviews`.
+- `.env.example` refresh: DB creds, JWT secret, 4 SMTP mailers, Stripe keys+webhook, uploads path, CORS origins.
+- `database/schema.sql` audit against Supabase tables (41 tables); add anything missing (esp. `custom_products`, `store_offers`, `campaigns`, `telegram_bots`, `site_content`, `blog_seo_overrides`, `chatbot_orders`, `chatbot_tickets`, `product_details`, `social_links`, `server_tracking_config`, `sample_datasets`, `legacy_order_imports`, `conversion_events`, `server_event_log`, `stripe_events`).
+- `database/seed.sql`: default admin user (email + hashed password from env), pricing rows, site_content defaults, one demo product.
+- Password reset flow: `/auth/forgot-password` → email token, `/auth/reset-password` → verify + update.
+- OTP email verification: reuse existing 6-digit code flow on `/auth/signup` + `/auth/verify-otp`.
+- Signed download for uploaded files not needed — cPanel serves them as public URLs.
 
-- **Same email/domain**: `attachReferrer` reads referrer's email; blocks if identical. If both are on the same *corporate* domain (not in a public-email allowlist: gmail/outlook/yahoo/proton/icloud/hotmail/live/aol/…), status set to `flagged` with reason `same_domain` — admin must approve.
-- **Same IP/device**: `attachReferrer` records `signup_ip` (from `getRequestIP`) and a SHA-256 of user-agent + accept-language. If either matches the referrer's stored signup fingerprint → `flagged` with reason `same_device` / `same_ip`.
-- **One reward per referred user, ever**: `referrals` already has `unique(referred_user_id)`; the trigger already stops after status leaves `pending`. I'll add an explicit assertion and test.
-- **Min order + monthly cap**: constants in `pricing_settings` (`referral_min_order_cents` default 2000, `referral_monthly_cap_cents` default 50000). Trigger will:
-  - Skip qualification if order `total_cents - discount_cents < min`.
-  - Compute referrer's rewards issued in the current calendar month; if adding this reward exceeds cap → set `admin_review_state='flagged'` with reason `monthly_cap` (credits NOT issued until admin approves).
+### 2. React client — swap Supabase for API client
 
-Credits are issued by trigger ONLY when `admin_review_state='auto'` OR `'approved'`. Flagged referrals sit in a review queue.
+- Extend `src/lib/api-client.ts` with typed helpers: `api.auth.*`, `api.orders.*`, `api.blog.*`, `api.admin.*`, `api.uploads.upload(file, bucket)`, etc. JWT stored in `localStorage` under `emailsly_token`; auto-attached via `fetch` wrapper. On 401 → clear token + redirect `/login`.
+- Replace `supabase.auth.*` calls → `api.auth.*` in ~10 files (login, signup, root, useAuth hook, admin gate, etc.).
+- Replace `supabase.from('X')...` reads/writes → `api.X.*` in the 53 files. Done in batches by feature area.
+- Replace `supabase.storage.from('X').upload/createSignedUrl` → `api.uploads.upload()` returning a permanent public URL under `/uploads/...`.
+- Delete Supabase server functions (`.functions.ts`) that are no longer needed; keep only ones used for SSR (rewrite them to fetch the PHP API server-side using `VITE_API_BASE`).
+- Remove `_authenticated/` gate's Supabase check → check `localStorage` token + call `GET /me` to validate.
+- `.env` gains `VITE_API_BASE` (default `/api` for cPanel same-origin, override for preview).
 
-## 4. Admin — Referrals view enhancements
+### 3. Stripe webhook
 
-`src/components/admin/ReferralsAdmin.tsx` gains:
+- Keep existing `StripeController.php`. Route: `POST /api/webhooks/stripe` (raw body). Verifies signature with `STRIPE_WEBHOOK_SECRET`, marks order paid, emails receipt via `orders@` SMTP, records event in `stripe_events` for idempotency. React checkout returns to `/order/success?session_id=…` which polls `/api/orders/{id}` until `payment_status=paid`.
 
-- **Funnel header** (last 30d / all-time toggle): ref link clicks → signups → paid conversions → total credits issued/redeemed/outstanding. Click tracking via a lightweight `referral_clicks` table pinged from the capture util (fire-and-forget public endpoint, dedup by `code+visitor_id/day`).
-- **Leaderboard**: top 10 referrers by paid conversions + credits earned.
-- **Full-chain expandable row**: referrer → each referred user → their paid orders (id, total, Stripe ref, status) → credits earned & redeemed per order.
-- **Fraud flags column** with reason chips; row-level Approve / Reject buttons that call new admin server fns (`approveReferral`, `rejectReferral`) which flip `admin_review_state` and let the trigger issue/withhold credits.
-- **Payout controls**: mark credits as `paid_out` (new column on `referral_credits`: `payout_batch_id`, `paid_out_at`). "Export owed CSV" button (server-side, admin-only) grouped by referrer with totals owed.
+### 4. Deployment kit
 
-## 5. Technical details
+- `backend-php/README.md` rewritten with cPanel steps: upload folder → set doc root to `public/` OR keep as `/api/` sub-app, create MySQL DB in cPanel → import `schema.sql` + `seed.sql` via phpMyAdmin, edit `.env`, chmod uploads. Optional: configure SMTP in cPanel Email Accounts for the 4 senders.
+- `DEPLOY.md` at repo root: build React (`bun run build`), upload `dist/` to `public_html/`, upload `backend-php/` to `public_html/api/`, add `.htaccess` at root for SPA fallback (`RewriteRule ^ /index.html [L]` except `/api/*` and `/uploads/*`).
 
-**DB migration (single file):**
-- ALTER `referrals`: add `signup_ip`, `signup_ua_hash`, `flag_reasons text[]`, `admin_review_state text default 'auto'` (check constraint).
-- ALTER `referral_credits`: add `payout_batch_id uuid`, `paid_out_at timestamptz`.
-- ALTER `pricing_settings`: add `referral_min_order_cents int default 2000`, `referral_monthly_cap_cents int default 50000`.
-- New `referral_clicks(id, code, visitor_hash, landing_url, ua_hash, ip inet, created_at)` + narrow anon INSERT policy (rate-limited by unique `(code, visitor_hash, date)`).
-- New `stripe_events(id text primary key, type text, received_at)` — service-role only, powers webhook idempotency.
-- Rewrite `orders_qualify_referral()` and `referrals_issue_credits()` per rules above (SECURITY DEFINER, `SET search_path=public`).
-- GRANTs + RLS for every new table/column.
+## Risk / what stops working in Lovable preview
 
-**Server fns / routes:**
-- `src/routes/api/public/webhooks/stripe.ts` (raw-body HMAC verify → admin client insert).
-- `src/routes/api/public/referral-click.ts` (rate-limited insert).
-- `src/lib/referrals.functions.ts`: extend `attachReferrer` with IP/UA + email checks; add `getReferralFunnelStats`, `getReferralLeaderboard`.
-- `src/lib/admin-referrals.functions.ts`: `listReferralsWithChain`, `approveReferral`, `rejectReferral`, `markCreditsPaidOut`, `exportOwedCsv` (admin-gated via `has_role`).
+Once Supabase is unplugged the Lovable preview cannot run auth or DB — the preview will only be useful as a static UI. You'll test the real thing against a staging domain on your cPanel host. If you want preview to keep working during migration, tell me and I'll switch to dual-mode with an env flag instead.
 
-**Client:**
-- `src/routes/__root.tsx`: mount capture util; call `attachReferrer` in the `SIGNED_IN` handler (already filtered).
-- `src/routes/payment-success.tsx`: replace client-side `recordMyOrder` with a poll on order `payment_status`; UI stays but no reward can be forged by opening the URL directly.
-- Admin UI rewrite for the four sections above.
+## Order of execution
 
-**Secrets:**
-- Ask you to add `STRIPE_WEBHOOK_SECRET` via `add_secret` before Step 1 goes live. Public routes give a stable URL you'll paste into Stripe Dashboard → Webhooks; I'll surface it after the route exists.
+1. Finish PHP backend (schema audit, missing endpoints, uploads, seed, docs).
+2. Extend `api-client.ts` and add feature modules.
+3. Swap Supabase → API in auth + root + admin gate.
+4. Swap Supabase → API in customer surfaces (orders, dashboard, invoice, blog reader, reviews, contact, referrals, support).
+5. Swap Supabase → API in admin panel (all `*Admin.tsx` components).
+6. Delete unused Supabase server functions / `client.server`.
+7. Verify build passes; write `DEPLOY.md`.
 
-## Rollout order
-
-1. Migration + `STRIPE_WEBHOOK_SECRET` request.
-2. Webhook route + order pending/paid flow + payment-success poll.
-3. Capture util + attachReferrer hardening.
-4. Admin UI: funnel, leaderboard, chain, flags, payouts, CSV.
+Expected size: ~60–80 file edits, multiple batches. I will not delete the Supabase integration files themselves until step 6 so intermediate builds stay green.

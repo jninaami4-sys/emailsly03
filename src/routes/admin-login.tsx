@@ -9,6 +9,7 @@ export const Route = createFileRoute("/admin-login")({
       { title: "Admin auto-login (demo)" },
       { name: "robots", content: "noindex, nofollow" },
     ],
+    links: [{ rel: "canonical", href: "/admin-login" }],
   }),
   component: AdminAutoLogin,
 });

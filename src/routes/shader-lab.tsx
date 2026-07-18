@@ -11,6 +11,7 @@ export const Route = createFileRoute("/shader-lab")({
       { property: "og:title", content: "Shader Lab — EmailsLy" },
       { property: "og:description", content: "A living nebula built with WebGL 2. Move your cursor to bend the light." },
     ],
+    links: [{ rel: "canonical", href: "/shader-lab" }],
   }),
   component: ShaderLabPage,
 });

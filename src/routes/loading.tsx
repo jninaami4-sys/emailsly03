@@ -7,6 +7,7 @@ export const Route = createFileRoute("/loading")({
       { title: "Loading — EmailsLy" },
       { name: "robots", content: "noindex,nofollow" },
     ],
+    links: [{ rel: "canonical", href: "/loading" }],
   }),
   component: LoadingPage,
 });

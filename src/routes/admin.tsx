@@ -47,6 +47,7 @@ export const Route = createFileRoute("/admin")({
       { name: "description", content: "Upload and preview cover images for prebuilt lead products." },
       { name: "robots", content: "noindex, nofollow" },
     ],
+    links: [{ rel: "canonical", href: "/admin" }],
   }),
   component: AdminGate,
 });

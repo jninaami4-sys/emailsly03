@@ -20,6 +20,7 @@ export const Route = createFileRoute("/login")({
       { title: "Sign in or get started | EmailsLy" },
       { name: "description", content: "Sign in or create your free EmailsLy account to access verified B2B lead data." },
     ],
+    links: [{ rel: "canonical", href: "/login" }],
   }),
   component: AuthPage,
 });

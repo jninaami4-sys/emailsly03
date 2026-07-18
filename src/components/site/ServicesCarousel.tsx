@@ -46,7 +46,7 @@ type Service = {
   tiers?: { qty: string; price: string; unitRate: string }[];
 };
 
-const services: Service[] = [
+const FALLBACK_SERVICES: Service[] = [
   {
     serviceId: "apollo",
     title: "Apollo B2B Data",

@@ -145,6 +145,7 @@ function RootComponent() {
       <AuthProvider>
         
         <CartProvider>
+          <ApiHealthBanner />
           <RouteTransition>
             <Outlet />
           </RouteTransition>

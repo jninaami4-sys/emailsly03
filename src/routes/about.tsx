@@ -27,10 +27,55 @@ export const Route = createFileRoute("/about")({
       {
         property: "og:description",
         content:
-          "Verified B2B leads from Apollo, ZoomInfo & LinkedIn. Pay per lead. No subscription. 24-hour delivery.",
+          "100M+ contacts sourced. 99% accuracy. 24-hour delivery. Verified B2B leads from Apollo, ZoomInfo & LinkedIn — pay per lead, no subscription.",
       },
       { property: "og:type", content: "website" },
       ...ogImageMeta(ogAboutPng),
+    ],
+    links: [{ rel: "canonical", href: "/about" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "AboutPage",
+          name: "About EmailsLy",
+          url: "/about",
+          mainEntity: {
+            "@type": "Organization",
+            name: "EmailsLy",
+            description:
+              "B2B lead intelligence platform delivering verified contact data from Apollo, ZoomInfo, and LinkedIn.",
+            slogan: "Verified B2B leads, delivered.",
+            areaServed: "Worldwide",
+            makesOffer: {
+              "@type": "Offer",
+              category: "B2B Lead Data",
+              description: "Pay-per-lead verified B2B contact data with 24-hour delivery.",
+            },
+          },
+          about: [
+            {
+              "@type": "QuantitativeValue",
+              name: "Contacts sourced",
+              value: "100000000+",
+              description: "100M+ verified B2B contacts sourced",
+            },
+            {
+              "@type": "QuantitativeValue",
+              name: "Data accuracy rate",
+              value: "99",
+              unitText: "PERCENT",
+            },
+            {
+              "@type": "QuantitativeValue",
+              name: "Average delivery time",
+              value: "24",
+              unitText: "HOUR",
+            },
+          ],
+        }),
+      },
     ],
   }),
   component: AboutPage,

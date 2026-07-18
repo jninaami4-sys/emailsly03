@@ -1,6 +1,5 @@
 import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import {
   adminListBlogPosts,
@@ -64,9 +63,9 @@ function slugify(text: string) {
 
 export function BlogPostsAdmin() {
   const qc = useQueryClient();
-  const list = useServerFn(adminListBlogPosts);
-  const upsert = useServerFn(adminUpsertBlogPost);
-  const del = useServerFn(adminDeleteBlogPost);
+  const list = adminListBlogPosts;
+  const upsert = adminUpsertBlogPost;
+  const del = adminDeleteBlogPost;
 
   const { data: posts, isLoading, error } = useQuery({
     queryKey: ["admin-blog-posts"],

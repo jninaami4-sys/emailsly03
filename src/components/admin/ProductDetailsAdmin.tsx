@@ -1,6 +1,5 @@
 import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { PRODUCTS } from "@/lib/products";
 import {
   deleteProductDetails,
@@ -30,9 +29,9 @@ const EMPTY: FormState = {
 
 export function ProductDetailsAdmin() {
   const qc = useQueryClient();
-  const listFn = useServerFn(listProductDetails);
-  const upsertFn = useServerFn(upsertProductDetails);
-  const deleteFn = useServerFn(deleteProductDetails);
+  const listFn = listProductDetails;
+  const upsertFn = upsertProductDetails;
+  const deleteFn = deleteProductDetails;
 
   const { data: rows, isLoading } = useQuery({
     queryKey: ["admin-product-details"],

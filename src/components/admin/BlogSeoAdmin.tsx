@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { Loader2, Save, RefreshCw, Search, ExternalLink } from "@/components/admin/AdminIcons";
 import { BLOG_POSTS } from "@/lib/blog-posts";
 import { OG_IMAGES } from "@/lib/og-images";
@@ -30,9 +29,9 @@ function toDraft(o: BlogSeoOverride | undefined | null): Draft {
 }
 
 export function BlogSeoAdmin() {
-  const listFn = useServerFn(adminListBlogSeoOverrides);
-  const upsertFn = useServerFn(adminUpsertBlogSeo);
-  const resetFn = useServerFn(adminResetBlogSeo);
+  const listFn = adminListBlogSeoOverrides;
+  const upsertFn = adminUpsertBlogSeo;
+  const resetFn = adminResetBlogSeo;
 
   const { data, isLoading, isFetching, refetch } = useQuery({
     queryKey: ["admin-blog-seo"],

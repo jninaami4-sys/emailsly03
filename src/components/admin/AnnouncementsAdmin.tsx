@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { Megaphone, Plus, Save, Trash2, Eye, EyeOff, Loader2, Upload, ImageIcon, ImageOff, Monitor, Smartphone, Target, Users, CalendarClock, ArrowUpDown, ChevronUp, ChevronDown, Crop as CropIcon } from "@/components/admin/AdminIcons";
 import {
   listAnnouncements,
@@ -83,9 +82,9 @@ const STYLE_OPTIONS: { value: AnnouncementImageStyle; label: string; hint: strin
 
 export function AnnouncementsAdmin() {
   const qc = useQueryClient();
-  const listFn = useServerFn(listAnnouncements);
-  const upsertFn = useServerFn(upsertAnnouncement);
-  const deleteFn = useServerFn(deleteAnnouncement);
+  const listFn = listAnnouncements;
+  const upsertFn = upsertAnnouncement;
+  const deleteFn = deleteAnnouncement;
 
   const { data: list = [], isLoading, error } = useQuery({
     queryKey: ["announcements", "admin"],

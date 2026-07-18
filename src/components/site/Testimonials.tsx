@@ -1,7 +1,6 @@
 import React, { useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { Star, Quote, Play, Pause, BadgeCheck } from "lucide-react";
 import amineVideo from "@/assets/amine-italy.mp4.asset.json";
 import aminePoster from "@/assets/amine-poster.jpg.asset.json";
@@ -259,7 +258,7 @@ function VideoCard({ v }: { v: VideoTestimonial }) {
 
 // --- Main exported component ---
 export function Testimonials() {
-  const listFn = useServerFn(listApprovedReviews);
+  const listFn = listApprovedReviews;
   const { data, refetch } = useQuery({
     queryKey: ["reviews", "approved"],
     queryFn: () => listFn(),

@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { useQuery } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { X, ArrowUpRight, Loader2 } from "lucide-react";
 import type { Product } from "@/lib/products";
 import { getProductDetails } from "@/lib/product-details.functions";
@@ -17,7 +16,7 @@ export function ProductDetailsModal({
   onClose: () => void;
 }) {
   const { add } = useCart();
-  const getDetailsFn = useServerFn(getProductDetails);
+  const getDetailsFn = getProductDetails;
   const { data, isLoading } = useQuery({
     queryKey: ["product-details", product.slug],
     queryFn: () => getDetailsFn({ data: { slug: product.slug } }),

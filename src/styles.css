@@ -331,14 +331,14 @@ html.site-light .theme-midnight h2 { letter-spacing: -0.02em; }
 html.site-light .theme-midnight .card,
 html.site-light .theme-midnight [data-card],
 html.site-light .bg-card {
-  background-color: rgba(255, 255, 255, 0.72);
-  border: 1px solid rgba(59, 91, 219, 0.12);
-  backdrop-filter: blur(18px) saturate(140%);
+  background-color: rgba(255, 252, 246, 0.78);
+  border: 1px solid rgba(120, 53, 15, 0.10);
+  backdrop-filter: blur(16px) saturate(135%);
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.9) inset,
-    0 1px 2px rgba(15, 23, 42, 0.04),
-    0 10px 30px -14px rgba(59, 91, 219, 0.18),
-    0 30px 60px -30px rgba(15, 23, 42, 0.12);
+    0 1px 2px rgba(120, 53, 15, 0.05),
+    0 10px 30px -14px rgba(201, 90, 74, 0.18),
+    0 30px 60px -30px rgba(120, 53, 15, 0.14);
   transition: box-shadow 240ms ease, transform 240ms ease, border-color 240ms ease;
 }
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {

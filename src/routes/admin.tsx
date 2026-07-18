@@ -429,6 +429,7 @@ function AdminPage() {
     campaigns: <CampaignsAdmin />,
     telegram: <TelegramBotsAdmin />,
     "email-test": <EmailTestAdmin />,
+    "mail-logs": <MailLogsAdmin />,
   };
 
   return (

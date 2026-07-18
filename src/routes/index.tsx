@@ -44,6 +44,47 @@ export const Route = createFileRoute("/")({
       { property: "og:description", content: "Verified leads delivered to your CRM in 24h. No manual cleaning." },
       ...ogImageMeta(OG_IMAGES.default),
     ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: "EmailsLy",
+          url: "/",
+          description:
+            "B2B lead intelligence platform delivering verified contact data from Apollo, ZoomInfo, and LinkedIn.",
+          slogan: "Verified B2B leads, delivered.",
+          areaServed: "Worldwide",
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "EmailsLy",
+          url: "/",
+          potentialAction: {
+            "@type": "SearchAction",
+            target: "/store?query={search_term_string}",
+            "query-input": "required name=search_term_string",
+          },
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: defaultFaqs.map((f) => ({
+            "@type": "Question",
+            name: f.q,
+            acceptedAnswer: { "@type": "Answer", text: f.a },
+          })),
+        }),
+      },
+    ],
   }),
   component: Home,
 });

@@ -42,7 +42,12 @@ function serverAnonClient() {
 
 const submitSchema = z.object({
   name: z.string().trim().min(1).max(120),
-  email: z.string().trim().email().max(255),
+  email: z
+    .string()
+    .trim()
+    .email()
+    .max(255)
+    .refine((v) => !isDisposableEmail(v), { message: DISPOSABLE_EMAIL_MESSAGE }),
   company: z.string().trim().max(160).optional().nullable(),
   message: z.string().trim().min(1).max(4000),
   source: z.string().trim().max(60).optional(),

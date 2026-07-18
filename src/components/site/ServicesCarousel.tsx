@@ -25,6 +25,14 @@ import {
   getGradientPreset,
   type EditableServiceCard,
 } from "@/lib/service-icons";
+import { usePricingOverrides } from "@/hooks/use-pricing-overrides";
+import {
+  SERVICE_CATALOG,
+  formatUnitPrice,
+  formatPerUnit,
+  formatMinOrder,
+} from "@/lib/service-catalog";
+
 
 
 type Service = {

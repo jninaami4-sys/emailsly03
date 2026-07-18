@@ -183,38 +183,38 @@
 .admin-theme {
   /* Admin surface — dark navy, electric-blue accent, emerald for success,
      rose for destructive. Matches the public site's spec palette. */
-  --background: oklch(0.10 0.02 265);         /* #0a0b14 */
-  --foreground: oklch(0.98 0 0);              /* near-white */
-  --card: oklch(0.15 0.03 265);               /* #0B1220 */
-  --card-foreground: oklch(0.98 0 0);
-  --popover: oklch(0.15 0.03 265);
-  --popover-foreground: oklch(0.98 0 0);
-  --muted: oklch(0.20 0.03 265);
-  --muted-foreground: oklch(0.72 0.02 265);
-  --secondary: oklch(0.20 0.03 265);
-  --secondary-foreground: oklch(0.98 0 0);
-  --accent: oklch(0.50 0.20 268);             /* indigo */
+  --background: oklch(0.11 0.012 275);
+  --foreground: oklch(0.95 0.004 275);
+  --card: oklch(0.155 0.015 275);
+  --card-foreground: oklch(0.95 0.004 275);
+  --popover: oklch(0.155 0.015 275);
+  --popover-foreground: oklch(0.95 0.004 275);
+  --muted: oklch(0.19 0.02 275);
+  --muted-foreground: oklch(0.61 0.02 265);
+  --secondary: oklch(0.19 0.02 275);
+  --secondary-foreground: oklch(0.95 0.004 275);
+  --accent: oklch(0.66 0.17 254);
   --accent-foreground: oklch(1 0 0);
-  --border: oklch(0.30 0.03 265 / 0.6);       /* ~#1E2536 */
-  --input: oklch(0.30 0.03 265 / 0.7);
-  --primary: oklch(0.63 0.19 253);            /* electric blue */
+  --border: oklch(1 0 0 / 0.07);
+  --input: oklch(1 0 0 / 0.09);
+  --primary: oklch(0.66 0.17 254);
   --primary-foreground: oklch(1 0 0);
-  --ring: oklch(0.63 0.19 253);
-  --destructive: oklch(0.62 0.24 15);         /* rose */
+  --ring: oklch(0.66 0.17 254);
+  --destructive: oklch(0.62 0.24 15);
   --destructive-foreground: oklch(1 0 0);
-  /* Remap legacy brand accents so old markup inherits navy/indigo/emerald */
-  --violet: oklch(0.50 0.20 268);
-  --violet-soft: oklch(0.50 0.20 268 / 0.18);
-  --magenta: oklch(0.63 0.19 253);
-  --magenta-soft: oklch(0.63 0.19 253 / 0.15);
-  --coral: oklch(0.63 0.19 253);
-  --coral-soft: oklch(0.63 0.19 253 / 0.15);
-  --emerald: oklch(0.58 0.14 158);            /* #059669 */
-  --emerald-soft: oklch(0.58 0.14 158 / 0.15);
+  --violet: oklch(0.66 0.17 254);
+  --violet-soft: oklch(0.66 0.17 254 / 0.14);
+  --magenta: oklch(0.66 0.17 254);
+  --magenta-soft: oklch(0.66 0.17 254 / 0.12);
+  --coral: oklch(0.66 0.17 254);
+  --coral-soft: oklch(0.66 0.17 254 / 0.12);
+  --emerald: oklch(0.72 0.15 165);
+  --emerald-soft: oklch(0.72 0.15 165 / 0.15);
   --amber: oklch(0.79 0.16 78);
   --amber-soft: oklch(0.79 0.16 78 / 0.18);
   color-scheme: dark;
 }
+
 
 /* Bolder default type inside admin for punchy readability */
 .admin-theme,

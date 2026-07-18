@@ -1,20 +1,13 @@
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
-import type { Session, User } from "@supabase/supabase-js";
-import { supabase } from "@/integrations/supabase/client";
-import { ensureUserRole } from "@/lib/ensure-admin-role.functions";
 import { apiFetchMe, apiHasToken, apiSignOut, type AuthUser } from "@/lib/auth-client";
 
 /**
- * Compatibility auth hook. Prefers the PHP API session (JWT in localStorage)
- * and falls back to the existing Supabase session while individual features
- * are migrated. Consumers keep reading `user.id` / `user.email` — those
- * fields exist on both shapes.
- *
- * Rewiring plan lives in `.lovable/plan.md`.
+ * Auth hook — talks to the PHP API exclusively.
+ * Reads a JWT from localStorage (`emailsly_jwt`) and hydrates the current user.
  */
 type AuthCtx = {
-  user: (User | AuthUser) | null;
-  session: Session | null;
+  user: AuthUser | null;
+  session: null;
   loading: boolean;
   isApiSession: boolean;
   refresh: () => Promise<void>;
@@ -48,7 +41,6 @@ function clearPersistedAuthState() {
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [session, setSession] = useState<Session | null>(null);
   const [apiUser, setApiUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -62,66 +54,40 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    const { data: sub } = supabase.auth.onAuthStateChange((event, s) => {
-      setSession(s);
-      if (event === "SIGNED_IN" && s?.user) {
-        void ensureUserRole().catch((e) => console.warn("ensureUserRole failed", e));
-      }
-    });
-
     (async () => {
       try {
-        const [{ data }, apiMe] = await Promise.all([
-          supabase.auth.getSession(),
-          apiHasToken() ? apiFetchMe() : Promise.resolve(null),
-        ]);
-        setSession(data.session);
-        setApiUser(apiMe);
+        const me = apiHasToken() ? await apiFetchMe() : null;
+        setApiUser(me);
       } finally {
         setLoading(false);
       }
     })();
 
-    // Cross-tab sync: another tab logs in/out via API → refresh here.
+    // Cross-tab sync: another tab logs in/out → refresh here.
     const onStorage = (e: StorageEvent) => {
       if (e.key === "emailsly_jwt") void refresh();
     };
     if (typeof window !== "undefined") window.addEventListener("storage", onStorage);
-
     return () => {
-      sub.subscription.unsubscribe();
       if (typeof window !== "undefined") window.removeEventListener("storage", onStorage);
     };
   }, [refresh]);
 
   const signOut = useCallback(async () => {
-    // Sign out of both stacks so the user is fully logged out during migration.
     try {
       await apiSignOut();
     } catch {
       /* noop */
     }
-    try {
-      await supabase.auth.signOut({ scope: "global" });
-    } catch {
-      try {
-        await supabase.auth.signOut({ scope: "local" });
-      } catch {
-        /* noop */
-      }
-    }
     clearPersistedAuthState();
-    setSession(null);
     setApiUser(null);
   }, []);
-
-  const user: User | AuthUser | null = apiUser ?? session?.user ?? null;
 
   return (
     <Ctx.Provider
       value={{
-        user,
-        session,
+        user: apiUser,
+        session: null,
         loading,
         isApiSession: Boolean(apiUser),
         refresh,

@@ -1,21 +1,16 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
-import { supabase } from "@/integrations/supabase/client";
 import { apiHasToken } from "@/lib/auth-client";
 
 /**
- * Auth gate — accepts EITHER a PHP API JWT (localStorage `emailsly_jwt`)
- * OR a live Supabase session, so the app keeps working while individual
- * features are migrated to the PHP backend.
+ * Auth gate — accepts a PHP API JWT stored under localStorage `emailsly_jwt`.
+ * Runs client-only so the token check happens in the browser.
  */
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
-  beforeLoad: async ({ location }) => {
+  beforeLoad: ({ location }) => {
+    if (typeof window === "undefined") return {};
     if (apiHasToken()) return {};
-    const { data } = await supabase.auth.getSession();
-    if (!data.session?.user) {
-      throw redirect({ to: "/login", search: { mode: "signin", redirect: location.href } });
-    }
-    return { user: data.session.user };
+    throw redirect({ to: "/login", search: { mode: "signin", redirect: location.href } });
   },
   component: () => <Outlet />,
 });

@@ -339,16 +339,18 @@ function QuickAction({
   icon,
   label,
   sub,
+  className = "",
 }: {
   to: string;
   icon: React.ReactNode;
   label: string;
   sub: string;
+  className?: string;
 }) {
   return (
     <Link
       to={to as any}
-      className="group relative overflow-hidden rounded-2xl border border-border bg-card p-4 transition-all hover:-translate-y-0.5 hover:border-violet/40 hover:shadow-lg hover:shadow-violet/15"
+      className={`group relative overflow-hidden rounded-2xl border border-border bg-card p-4 transition-all hover:-translate-y-0.5 hover:border-violet/40 hover:shadow-lg hover:shadow-violet/15 ${className}`}
     >
       <div
         aria-hidden
@@ -363,6 +365,7 @@ function QuickAction({
     </Link>
   );
 }
+
 
 function TabBtn({
   active,

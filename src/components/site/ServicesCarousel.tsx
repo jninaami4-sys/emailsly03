@@ -233,10 +233,21 @@ export function ServicesCarousel() {
           ring: fb?.ring ?? "ring-1 ring-white/10",
           accent: fb?.accent ?? preset.accent,
           Icon: IconCmp,
-          tiers: fb?.tiers,
-        };
-      });
-  }, [siteContent, overrides]);
+          tiers: fb?.tiers
+            ? fb.tiers.map((t) => {
+                const q = Number(t.qty.replace(/[^0-9]/g, ""));
+                const entry = SERVICE_CATALOG[c.serviceId];
+                if (!entry || !Number.isFinite(q)) return t;
+                const o = overrides.get(c.serviceId);
+                const rate = o?.rate ?? entry.rate;
+                return {
+                  qty: t.qty,
+                  price: `$${(q * rate).toLocaleString(undefined, { maximumFractionDigits: 2 })}`,
+                  unitRate: `$${rate}`,
+                };
+              })
+            : undefined,
+
 
 
 

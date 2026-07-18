@@ -84,10 +84,22 @@ export function AdminShell({
             <path d="M4 6h16M4 12h16M4 18h16" strokeLinecap="round" />
           </svg>
         </button>
-        <div className="flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-widest text-foreground">
-          <span className="size-2 rounded-full bg-primary" />
-          Emailsly Admin
-        </div>
+        <Link
+          to="/admin"
+          onClick={() => selectItem("overview")}
+          className="flex items-center gap-2"
+        >
+          <img
+            src={logoAsset.url}
+            alt="Emailsly"
+            className="h-6 w-auto"
+            width={96}
+            height={24}
+          />
+          <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+            Admin
+          </span>
+        </Link>
         <button
           type="button"
           onClick={() => { tap(); onOpenPalette(); }}

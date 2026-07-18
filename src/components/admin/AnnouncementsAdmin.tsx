@@ -13,7 +13,7 @@ import {
 } from "@/lib/announcements.functions";
 import { AnnouncementPreview } from "@/components/site/AnnouncementModal";
 import { ImageCropperModal } from "@/components/admin/ImageCropperModal";
-import { supabase } from "@/integrations/supabase/client";
+import { uploadsApi } from "@/lib/api-client";
 
 const emptyDraft = {
   id: null as string | null,

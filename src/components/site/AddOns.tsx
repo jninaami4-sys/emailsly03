@@ -59,7 +59,7 @@ export function AddOns() {
                 <div className="flex items-start justify-between gap-3">
                   <h3 className="font-display text-lg font-bold">{a.name}</h3>
                   <span className="whitespace-nowrap font-mono text-[11px] font-bold text-violet">
-                    {a.price}
+                    {price}
                   </span>
                 </div>
                 <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{a.desc}</p>

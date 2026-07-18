@@ -178,20 +178,16 @@ export const exportBackup = createServerFn({ method: "GET" })
     assertAdmin((context.claims as { email?: string }).email);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const sb = supabaseAdmin as any;
-    const out: Record<string, unknown[]> = {};
+    const out: Record<string, any[]> = {};
     for (const t of BACKUP_TABLES) {
       const { data, error } = await sb.from(t).select("*");
-      if (error) {
-        out[t] = [];
-        continue;
-      }
-      out[t] = data ?? [];
+      out[t] = error ? [] : (data ?? []);
     }
     return {
       version: 1,
       exported_at: new Date().toISOString(),
       tables: out,
-    };
+    } as { version: number; exported_at: string; tables: Record<string, any[]> };
   });
 
 export const restoreBackup = createServerFn({ method: "POST" })

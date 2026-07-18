@@ -245,12 +245,18 @@
 .admin-theme [data-numeric],
 .admin-theme .tabular-nums { font-variant-numeric: tabular-nums; }
 
-/* Kill motion inside the admin panel — no fades, slides, pings, transitions. */
+/* Kill motion + glow inside the admin panel — no fades, glass, shadows, blurs. */
 .admin-theme *,
 .admin-theme *::before,
 .admin-theme *::after {
   animation: none !important;
   transition: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+.admin-theme *:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
 }
 
 /* Solid, minimal display headline (no gradient) */

@@ -107,6 +107,7 @@ export function OrderBuilder() {
   const [mobileGroup, setMobileGroup] = useState<"data" | "growth" | "design">(service.group);
   const [quantity, setQuantity] = useState(service.minQty);
   const [extraUrls, setExtraUrls] = useState(1);
+  const [apolloUrls, setApolloUrls] = useState<string[]>([""]);
   const [verifier, setVerifier] = useState(false);
   const [rush, setRush] = useState(false);
   const [tip, setTip] = useState(0);

@@ -51,7 +51,7 @@ export default {
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
       const normalized = await normalizeCatastrophicSsrResponse(response);
-      return await applySSRTheme(normalized, request);
+      return normalized;
     } catch (error) {
       console.error(error);
       return new Response(renderErrorPage(), {

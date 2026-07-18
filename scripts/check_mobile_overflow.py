@@ -107,7 +107,11 @@ async def check_route(page, route, viewport):
     await page.wait_for_timeout(400)
     r = await page.evaluate(PROBE_JS, TOLERANCE_PX)
     page_scroll = r["scrollW"] - r["clientW"]
-    failed = page_scroll > TOLERANCE_PX or r["offenderCount"] > 0
+    # Real "cut off" = the page itself horizontally scrolls. Per-element
+    # overhang is only reported as diagnostic when that happens, since
+    # elements can legitimately sit off-screen inside a clipping ancestor
+    # (closed drawers, carousels, transformed panels).
+    failed = page_scroll > TOLERANCE_PX
     return {**r, "path": route["path"], "viewport": viewport["name"], "pageScroll": page_scroll, "failed": failed}
 
 

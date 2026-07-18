@@ -319,7 +319,8 @@
 }
 .admin-theme tbody td {
   padding: 12px 14px;
-  border-bottom: 1px solid oklch(1 0 0 / 0.08);
+  border-bottom: 1px solid oklch(1 0 0 / 0.05);
+
   color: oklch(0.97 0 0);
   vertical-align: middle;
 }

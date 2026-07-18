@@ -117,8 +117,8 @@ export function ProductsAdmin() {
   }, [products, search]);
 
   const upsertMut = useMutation({
-    mutationFn: (payload: Parameters<typeof upsertFn>[0]["data"]) =>
-      upsertFn({ data: payload }),
+    mutationFn: (payload: Record<string, unknown>) =>
+      upsertFn({ data: payload as never }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin-products"] });
       qc.invalidateQueries({ queryKey: ["public-products"] });

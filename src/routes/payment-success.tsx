@@ -504,11 +504,11 @@ function Invoice(props: {
               <div className="mb-1 font-mono text-[10px] font-semibold uppercase tracking-widest text-neutral-400">
                 From
               </div>
-              <div className="font-semibold">EmailsLy, Inc.</div>
+              <div className="font-semibold">EmailsLy</div>
               <div className="text-neutral-600">
-                548 Market St #92384
+                House 42, Road 11, Banani
                 <br />
-                San Francisco, CA 94104
+                Dhaka 1213, Bangladesh
               </div>
             </div>
           </div>

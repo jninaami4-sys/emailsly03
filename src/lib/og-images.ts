@@ -52,9 +52,10 @@ export function matchTheme(matches: ReadonlyArray<{ routeId?: string; id?: strin
   const root =
     matches.find((m) => m.routeId === "__root__" || m.id === "__root__") ?? matches[0];
   const data = root?.loaderData as { theme?: SiteTheme } | undefined;
-  if (typeof console !== "undefined" && typeof process !== "undefined" && process.env?.DEBUG_THEME) {
-    console.log("[matchTheme]", { keys: Object.keys(root ?? {}), data });
+  if (typeof window === "undefined") {
+    console.error("[matchTheme]", JSON.stringify({ len: matches.length, ids: matches.map((m: any) => m.routeId ?? m.id), loaderKeys: matches.map((m: any) => Object.keys(m.loaderData ?? {})), rootLoader: root?.loaderData }));
   }
+
   return data?.theme === "light" || data?.theme === "dark" ? data.theme : null;
 }
 

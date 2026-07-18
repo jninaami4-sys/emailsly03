@@ -317,59 +317,35 @@ export function Testimonials() {
       <div className="pointer-events-none absolute left-1/2 top-0 -z-10 h-[500px] w-[900px] -translate-x-1/2 bg-[radial-gradient(circle_at_center,var(--violet-soft),transparent_70%)] opacity-60" />
 
       <div className="mx-auto max-w-7xl">
-        {/* Trust bar */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-          className="mx-auto mb-20 max-w-4xl overflow-hidden rounded-xl border border-border bg-background shadow-lg"
-        >
-          <div className="grid divide-y divide-border sm:grid-cols-3 sm:divide-x sm:divide-y-0">
-            <div className="group relative flex items-center gap-4 p-6 sm:justify-center sm:p-8">
-              <div className="grid size-12 place-items-center rounded-lg bg-violet-soft text-violet transition-colors group-hover:bg-violet group-hover:text-white">
-                <Users className="size-6" />
-              </div>
-              <div className="text-left">
-                <div className="font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-                  500+
+        {/* Trust bar — driven by Admin → Site Content → Trust stats */}
+        {trustItems.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            className="mx-auto mb-20 max-w-4xl overflow-hidden rounded-xl border border-border bg-background shadow-lg"
+          >
+            <div
+              className="grid divide-y divide-border sm:divide-x sm:divide-y-0"
+              style={{ gridTemplateColumns: `repeat(${Math.min(trustItems.length, 4)}, minmax(0, 1fr))` }}
+            >
+              {trustItems.map((item, i) => (
+                <div key={i} className="group relative flex items-center gap-4 p-6 sm:justify-center sm:p-8">
+                  <TrustItemIcon icon={item.icon} iconUrl={item.iconUrl} color={item.color} />
+                  <div className="text-left">
+                    <div className="font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+                      {item.value}
+                    </div>
+                    <p className="mt-0.5 font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                      {item.label}
+                    </p>
+                  </div>
                 </div>
-                <p className="mt-0.5 font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-                  Clients served
-                </p>
-              </div>
+              ))}
             </div>
-
-            <div className="group relative flex items-center gap-4 p-6 sm:justify-center sm:p-8">
-              <div className="grid size-12 place-items-center rounded-lg bg-coral-soft text-coral transition-colors group-hover:bg-coral group-hover:text-white">
-                <TrendingUp className="size-6" />
-              </div>
-              <div className="text-left">
-                <div className="flex items-baseline gap-1 font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-                  4.9
-                  <span className="text-base font-medium text-muted-foreground">/ 5</span>
-                </div>
-                <p className="mt-0.5 font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-                  Average verified rating
-                </p>
-              </div>
-            </div>
-
-            <div className="group relative flex items-center gap-4 p-6 sm:justify-center sm:p-8">
-              <div className="grid size-12 place-items-center rounded-lg bg-emerald-soft text-emerald transition-colors group-hover:bg-emerald group-hover:text-white">
-                <Clock className="size-6" />
-              </div>
-              <div className="text-left">
-                <div className="font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-                  24h
-                </div>
-                <p className="mt-0.5 font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-                  Standard delivery
-                </p>
-              </div>
-            </div>
-          </div>
-        </motion.div>
+          </motion.div>
+        )}
 
         {/* Header */}
         <div className="mx-auto mb-10 flex max-w-2xl flex-col items-center text-center">
@@ -383,12 +359,13 @@ export function Testimonials() {
             id="testimonials-heading"
             className="mt-5 font-display text-4xl font-bold tracking-tight text-foreground md:text-5xl"
           >
-            Loved by growth teams that ship
+            {testimonialsContent.heading}
           </h2>
           <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
-            Every review below comes from a signed-in customer. We verify before we publish.
+            {testimonialsContent.subheading}
           </p>
         </div>
+
 
         {/* Video testimonials */}
         {videos.length > 0 && (

@@ -725,11 +725,16 @@ function AuthPage() {
                       pendingEmail={unconfirmedEmail ?? (signUpSuccess ? email : null)}
                       lastSentAt={resendState.sentAt}
                       onCheck={async () => {
-                        const { data } = await supabase.auth.getUser();
-                        if (data.user?.email_confirmed_at) {
-                          setUnconfirmedEmail(null);
-                          setInfo("Email verified — you can sign in now.");
-                        } else {
+                        try {
+                          const me = await authApi.me();
+                          const u = (me as { user?: { email_verified?: boolean } }).user;
+                          if (u?.email_verified) {
+                            setUnconfirmedEmail(null);
+                            setInfo("Email verified — you can sign in now.");
+                          } else {
+                            setInfo("Still waiting for confirmation. Check your inbox.");
+                          }
+                        } catch {
                           setInfo("Still waiting for confirmation. Check your inbox.");
                         }
                       }}

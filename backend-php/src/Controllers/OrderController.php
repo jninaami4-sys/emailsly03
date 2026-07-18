@@ -111,6 +111,19 @@ final class OrderController
         $appUrl = rtrim($_ENV['APP_URL'] ?? '', '/');
         $brand  = $_ENV['BRAND_NAME'] ?? 'Emailsly';
         $logo   = $_ENV['BRAND_LOGO_URL'] ?? '';
+        // Prefer live brand logo saved from admin panel (site_settings.brand_logo_url)
+        try {
+            $row = Database::pdo()->query('SELECT brand_name, brand_logo_url FROM site_settings WHERE id = 1')->fetch();
+            if ($row) {
+                if (!empty($row['brand_logo_url'])) {
+                    $dbLogo = $row['brand_logo_url'];
+                    // Resolve relative URLs against APP_URL so they render in email clients
+                    if ($dbLogo[0] === '/' && $appUrl) $dbLogo = $appUrl . $dbLogo;
+                    $logo = $dbLogo;
+                }
+                if (!empty($row['brand_name'])) $brand = $row['brand_name'];
+            }
+        } catch (\Throwable $e) { /* fall back to env */ }
         $items  = $o['items'] ?? null;
 
         $mailer = Mailer::orders();

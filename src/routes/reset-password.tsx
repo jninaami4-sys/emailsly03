@@ -2,12 +2,13 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { z } from "zod";
 import { fallback, zodValidator } from "@tanstack/zod-adapter";
-import { supabase } from "@/integrations/supabase/client";
+import { authApi, ApiError } from "@/lib/api-client";
 import { ArrowRight, Loader2, Lock, CheckCircle2, AlertCircle, Eye, EyeOff, Check, X } from "lucide-react";
 import { useSiteContent } from "@/hooks/use-site-content";
 
 const searchSchema = z.object({
   redirectTo: fallback(z.string(), "").default(""),
+  token: fallback(z.string(), "").default(""),
 });
 
 // Only allow same-origin relative paths to prevent open-redirect attacks.

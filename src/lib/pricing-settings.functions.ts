@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { requireAdmin } from "@/lib/require-admin";
 import { createClient } from "@supabase/supabase-js";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import type { Database } from "@/integrations/supabase/types";
@@ -35,13 +36,6 @@ function serverAnonClient() {
   });
 }
 
-function assertAdmin(email: string | undefined | null) {
-  const admin = (process.env.ADMIN_EMAIL || "").trim().toLowerCase();
-  if (!admin) throw new Error("ADMIN_EMAIL is not configured");
-  if (!email || email.trim().toLowerCase() !== admin && email.trim().toLowerCase() !== "demo@emailsly.app") {
-    throw new Error("Forbidden: admin only");
-  }
-}
 
 function normalize(row: Record<string, unknown>): PricingSetting {
   return {
@@ -87,7 +81,7 @@ export const updatePricingSetting = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data: UpdateInput) => data)
   .handler(async ({ data, context }): Promise<PricingSetting> => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const payload = {
       rate: Math.max(0, Number(data.rate) || 0),
@@ -112,7 +106,7 @@ export const setPricingPublished = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data: PublishInput) => data)
   .handler(async ({ data, context }): Promise<PricingSetting> => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: row, error } = await supabaseAdmin
       .from("pricing_settings")
@@ -138,7 +132,7 @@ export type PricingAuditEntry = {
 export const getPricingAudit = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }): Promise<PricingAuditEntry[]> => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data, error } = await supabaseAdmin
       .from("pricing_settings_audit")

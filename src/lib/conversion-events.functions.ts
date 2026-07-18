@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { requireAdmin } from "@/lib/require-admin";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import type { Database } from "@/integrations/supabase/types";
@@ -42,13 +43,6 @@ function serverAnonClient(): LooseClient {
   }) as unknown as LooseClient;
 }
 
-function assertAdmin(email: string | undefined | null) {
-  const admin = (process.env.ADMIN_EMAIL || "").trim().toLowerCase();
-  if (!admin) throw new Error("ADMIN_EMAIL is not configured");
-  if (!email || email.trim().toLowerCase() !== admin && email.trim().toLowerCase() !== "demo@emailsly.app") {
-    throw new Error("Forbidden: admin only");
-  }
-}
 
 async function adminClient(): Promise<LooseClient> {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -74,7 +68,7 @@ export const getConversionEvents = createServerFn({ method: "GET" }).handler(
 export const listConversionEventsAdmin = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }): Promise<ConversionEvent[]> => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const db = await adminClient();
     const { data, error } = await db
       .from("conversion_events")
@@ -123,7 +117,7 @@ export const upsertConversionEvent = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data: UpsertInput) => data)
   .handler(async ({ data, context }): Promise<ConversionEvent> => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const db = await adminClient();
     const payload = clean(data);
     if (data.id) {
@@ -149,7 +143,7 @@ export const deleteConversionEvent = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data: { id: string }) => data)
   .handler(async ({ data, context }): Promise<{ ok: true }> => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const db = await adminClient();
     const { error } = await db.from("conversion_events").delete().eq("id", data.id);
     if (error) throw new Error(error.message);

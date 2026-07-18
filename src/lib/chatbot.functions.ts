@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { requireAdmin } from "@/lib/require-admin";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 // -----------------------------------------------------------------------------
@@ -72,13 +73,6 @@ export type ChatbotConfig = {
 // -----------------------------------------------------------------------------
 // Admin gate (matches existing project pattern using ADMIN_EMAIL)
 // -----------------------------------------------------------------------------
-function assertAdmin(email: string | undefined | null) {
-  const admin = (process.env.ADMIN_EMAIL || "").trim().toLowerCase();
-  if (!admin) throw new Error("ADMIN_EMAIL is not configured");
-  if (!email || email.trim().toLowerCase() !== admin && email.trim().toLowerCase() !== "demo@emailsly.app") {
-    throw new Error("Forbidden: admin only");
-  }
-}
 
 // -----------------------------------------------------------------------------
 // Telegram helpers (uses Lovable connector gateway)
@@ -424,7 +418,7 @@ export const requestHumanHandoff = createServerFn({ method: "POST" })
 export const adminGetConfig = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }): Promise<ChatbotConfig> => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data } = await (supabaseAdmin as any)
       .from("chatbot_config")
@@ -444,7 +438,7 @@ export const adminSaveConfig = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: ChatbotConfig) => d)
   .handler(async ({ context, data }): Promise<{ ok: true }> => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     await (supabaseAdmin as any)
       .from("chatbot_config")
@@ -462,7 +456,7 @@ export const adminSaveConfig = createServerFn({ method: "POST" })
 export const adminListConversations = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }): Promise<ChatConversation[]> => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data } = await (supabaseAdmin as any)
       .from("chatbot_conversations")
@@ -476,7 +470,7 @@ export const adminListMessages = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: { conversationId: string }) => d)
   .handler(async ({ context, data }): Promise<ChatMessage[]> => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: rows } = await (supabaseAdmin as any)
       .from("chatbot_messages")
@@ -490,7 +484,7 @@ export const adminReply = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: { conversationId: string; text: string }) => d)
   .handler(async ({ context, data }): Promise<{ ok: true }> => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     await (supabaseAdmin as any).from("chatbot_messages").insert({
       conversation_id: data.conversationId,
@@ -508,7 +502,7 @@ export const adminCloseConversation = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: { conversationId: string }) => d)
   .handler(async ({ context, data }): Promise<{ ok: true }> => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     await (supabaseAdmin as any)
       .from("chatbot_conversations")
@@ -526,7 +520,7 @@ export const adminCloseConversation = createServerFn({ method: "POST" })
 export const adminListKb = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }): Promise<KbEntry[]> => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data } = await (supabaseAdmin as any)
       .from("chatbot_kb")
@@ -549,7 +543,7 @@ export const adminUpsertKb = createServerFn({ method: "POST" })
     }) => d,
   )
   .handler(async ({ context, data }): Promise<{ ok: true }> => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     if (data.id) {
       await (supabaseAdmin as any)
@@ -578,7 +572,7 @@ export const adminDeleteKb = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: { id: string }) => d)
   .handler(async ({ context, data }): Promise<{ ok: true }> => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     await (supabaseAdmin as any).from("chatbot_kb").delete().eq("id", data.id);
     return { ok: true };
@@ -588,7 +582,7 @@ export const adminDeleteKb = createServerFn({ method: "POST" })
 export const adminListOrders = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }): Promise<OrderRow[]> => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data } = await (supabaseAdmin as any)
       .from("chatbot_orders")
@@ -615,7 +609,7 @@ export const adminUpsertOrder = createServerFn({ method: "POST" })
     }) => d,
   )
   .handler(async ({ context, data }): Promise<{ ok: true }> => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const payload: Record<string, unknown> = {
       customer_name: data.customer_name,
@@ -640,7 +634,7 @@ export const adminDeleteOrder = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: { id: string }) => d)
   .handler(async ({ context, data }): Promise<{ ok: true }> => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     await (supabaseAdmin as any).from("chatbot_orders").delete().eq("id", data.id);
     return { ok: true };
@@ -650,7 +644,7 @@ export const adminDeleteOrder = createServerFn({ method: "POST" })
 export const adminListTickets = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }): Promise<TicketRow[]> => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data } = await (supabaseAdmin as any)
       .from("chatbot_tickets")
@@ -664,7 +658,7 @@ export const adminUpdateTicket = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: { id: string; status: "Open" | "Closed" }) => d)
   .handler(async ({ context, data }): Promise<{ ok: true }> => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     await (supabaseAdmin as any)
       .from("chatbot_tickets")
@@ -680,7 +674,7 @@ export const adminSetTelegramWebhook = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: { webhookUrl: string }) => d)
   .handler(async ({ context, data }): Promise<{ ok: boolean; description?: string }> => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const res = await telegramCall("setWebhook", {
       url: data.webhookUrl,
       allowed_updates: ["message", "edited_message"],
@@ -699,7 +693,7 @@ export const adminSyncKb = createServerFn({ method: "POST" })
     removed: number;
     categories: Record<string, number>;
   }> => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const { runKbSync } = await import("./chatbot-sync");
     return runKbSync();
   });

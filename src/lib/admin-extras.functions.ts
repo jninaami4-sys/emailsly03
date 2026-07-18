@@ -1,18 +1,14 @@
 import { createServerFn } from "@tanstack/react-start";
+import { requireAdmin } from "@/lib/require-admin";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-function assertAdmin(email: string | undefined | null) {
-  const admin = (process.env.ADMIN_EMAIL || "").trim().toLowerCase();
-  if (!admin) throw new Error("ADMIN_EMAIL is not configured");
-  if (!email || email.trim().toLowerCase() !== admin) throw new Error("Forbidden: admin only");
-}
 
 // ---------- Store Offers ----------
 export const listStoreOffers = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data, error } = await (supabaseAdmin as any).from("store_offers").select("*").order("sort_order").order("created_at", { ascending: false });
     if (error) throw new Error(error.message);
@@ -37,7 +33,7 @@ export const upsertStoreOffer = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d) => offerSchema.parse(d))
   .handler(async ({ context, data }) => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const sb = supabaseAdmin as any;
     const { id, ...payload } = data;
@@ -52,7 +48,7 @@ export const deleteStoreOffer = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ context, data }) => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await (supabaseAdmin as any).from("store_offers").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
@@ -90,7 +86,7 @@ export const listActiveStoreOffers = createServerFn({ method: "GET" }).handler(a
 export const listTelegramBots = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data, error } = await (supabaseAdmin as any).from("telegram_bots").select("*").order("created_at", { ascending: false });
     if (error) throw new Error(error.message);
@@ -110,7 +106,7 @@ export const upsertTelegramBot = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d) => botSchema.parse(d))
   .handler(async ({ context, data }) => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const sb = supabaseAdmin as any;
     const { id, ...payload } = data;
@@ -125,7 +121,7 @@ export const deleteTelegramBot = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ context, data }) => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await (supabaseAdmin as any).from("telegram_bots").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
@@ -136,7 +132,7 @@ export const testTelegramBot = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ context, data }) => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: bot, error } = await (supabaseAdmin as any).from("telegram_bots").select("*").eq("id", data.id).single();
     if (error || !bot) throw new Error(error?.message ?? "Bot not found");
@@ -182,7 +178,7 @@ export type BackupBundle = {
 export const exportBackup = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const sb = supabaseAdmin as any;
     const out: Record<string, JsonValue[]> = {};
@@ -215,7 +211,7 @@ export const restoreBackup = createServerFn({ method: "POST" })
     }).parse(d),
   )
   .handler(async ({ context, data }) => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const sb = supabaseAdmin as any;
     const selected = data.tables && data.tables.length ? data.tables : Object.keys(data.backup.tables);
@@ -256,7 +252,7 @@ export const importLegacyOrders = createServerFn({ method: "POST" })
     z.object({ rows: z.array(z.record(z.string(), z.any())).min(1).max(5000) }).parse(d),
   )
   .handler(async ({ context, data }) => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const sb = supabaseAdmin as any;
     const batch_id = (globalThis.crypto?.randomUUID?.() ?? `${Date.now()}`) as string;
@@ -310,7 +306,7 @@ export const importLegacyOrders = createServerFn({ method: "POST" })
 export const listCampaigns = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data, error } = await (supabaseAdmin as any).from("campaigns").select("*").order("created_at", { ascending: false });
     if (error) throw new Error(error.message);
@@ -333,7 +329,7 @@ export const upsertCampaign = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d) => campaignSchema.parse(d))
   .handler(async ({ context, data }) => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const sb = supabaseAdmin as any;
     const { id, ...payload } = data;
@@ -348,7 +344,7 @@ export const deleteCampaign = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ context, data }) => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await (supabaseAdmin as any).from("campaigns").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
@@ -364,7 +360,7 @@ export const previewCampaignAudience = createServerFn({ method: "POST" })
     }).parse(d),
   )
   .handler(async ({ context, data }) => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const sb = supabaseAdmin as any;
     if (data.audience === "paid") {
@@ -387,7 +383,7 @@ export const sendCampaign = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ context, data }) => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const sb = supabaseAdmin as any;
     const { data: c, error } = await sb.from("campaigns").select("*").eq("id", data.id).single();

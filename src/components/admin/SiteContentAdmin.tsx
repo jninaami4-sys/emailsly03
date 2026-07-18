@@ -127,12 +127,21 @@ export function SiteContentAdmin() {
           <Loader2 className="size-4 animate-spin" /> Loading content…
         </div>
       ) : (
-        <SectionEditor
-          key={tab}
-          section={tab}
-          initial={(data?.[tab] ?? {}) as Record<string, unknown>}
-          onSaved={() => qc.invalidateQueries({ queryKey: ["site-content"] })}
-        />
+        tab === "service_cards" ? (
+          <ServiceCardsEditor
+            key={tab}
+            initial={(data?.service_cards ?? {}) as Record<string, unknown>}
+            onSaved={() => qc.invalidateQueries({ queryKey: ["site-content"] })}
+          />
+        ) : (
+          <SectionEditor
+            key={tab}
+            section={tab}
+            initial={(data?.[tab] ?? {}) as Record<string, unknown>}
+            onSaved={() => qc.invalidateQueries({ queryKey: ["site-content"] })}
+          />
+        )
+
       )}
     </div>
   );

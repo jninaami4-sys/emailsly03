@@ -117,8 +117,17 @@ try {
   else document.documentElement.classList.remove('site-light');
   document.documentElement.dataset.theme = t;
   var c = t === 'light' ? '#fdfcff' : '#0a0b14';
-  var m = document.querySelector('meta[name="theme-color"]');
-  if (!m) { m = document.createElement('meta'); m.setAttribute('name', 'theme-color'); document.head.appendChild(m); }
-  m.setAttribute('content', c);
+  var ios = t === 'light' ? 'default' : 'black-translucent';
+  function m(n, v){
+    var el = document.querySelector('meta[name="'+n+'"]');
+    if (!el) { el = document.createElement('meta'); el.setAttribute('name', n); document.head.appendChild(el); }
+    el.setAttribute('content', v);
+  }
+  m('theme-color', c);
+  m('apple-mobile-web-app-status-bar-style', ios);
+  m('apple-mobile-web-app-capable', 'yes');
+  m('mobile-web-app-capable', 'yes');
+  m('msapplication-navbutton-color', c);
+  m('color-scheme', t);
 } catch (e) {}
 `;

@@ -148,22 +148,48 @@ export function SiteContentAdmin() {
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <Loader2 className="size-4 animate-spin" /> Loading content…
         </div>
+      ) : tab === "service_cards" ? (
+        <ServiceCardsEditor
+          key={tab}
+          initial={(data?.service_cards ?? {}) as Record<string, unknown>}
+          onSaved={() => qc.invalidateQueries({ queryKey: ["site-content"] })}
+        />
+      ) : tab === "trust" ? (
+        <MediaItemsEditor
+          key={tab}
+          section="trust"
+          title="Trust stats"
+          description="Shown in the hero stat strip and the Testimonials trust bar. Pick a preset icon or upload a custom image per item."
+          itemLabel="Stat"
+          itemFields={TRUST_ITEM_FIELDS}
+          storageFolder="trust-icons"
+          defaults={SITE_CONTENT_DEFAULTS.trust as unknown as Record<string, unknown>}
+          initial={(data?.trust ?? {}) as Record<string, unknown>}
+          makeNewItem={() => ({ value: "0", label: "New stat", icon: "sparkles", iconUrl: "", color: "indigo" })}
+          onSaved={() => qc.invalidateQueries({ queryKey: ["site-content"] })}
+        />
+      ) : tab === ("testimonials" as SiteContentSection) ? (
+        <MediaItemsEditor
+          key={tab}
+          section="testimonials"
+          title="Curated testimonials"
+          description="Text testimonials shown on the homepage scrolling wall. Upload an avatar image per person."
+          itemLabel="Testimonial"
+          scalarFields={TESTIMONIAL_SCALAR_FIELDS}
+          itemFields={TESTIMONIAL_ITEM_FIELDS}
+          storageFolder="testimonial-avatars"
+          defaults={SITE_CONTENT_DEFAULTS.testimonials as unknown as Record<string, unknown>}
+          initial={(data?.testimonials ?? {}) as Record<string, unknown>}
+          makeNewItem={() => ({ text: "", name: "", role: "", avatarUrl: "" })}
+          onSaved={() => qc.invalidateQueries({ queryKey: ["site-content"] })}
+        />
       ) : (
-        tab === "service_cards" ? (
-          <ServiceCardsEditor
-            key={tab}
-            initial={(data?.service_cards ?? {}) as Record<string, unknown>}
-            onSaved={() => qc.invalidateQueries({ queryKey: ["site-content"] })}
-          />
-        ) : (
-          <SectionEditor
-            key={tab}
-            section={tab}
-            initial={(data?.[tab] ?? {}) as Record<string, unknown>}
-            onSaved={() => qc.invalidateQueries({ queryKey: ["site-content"] })}
-          />
-        )
-
+        <SectionEditor
+          key={tab}
+          section={tab}
+          initial={(data?.[tab] ?? {}) as Record<string, unknown>}
+          onSaved={() => qc.invalidateQueries({ queryKey: ["site-content"] })}
+        />
       )}
     </div>
   );

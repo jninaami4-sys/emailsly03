@@ -152,35 +152,46 @@ export function BrandSettingsAdmin() {
               />
             </FieldRow>
 
-            <FieldRow label="Logo URL" hint="Direct link to a transparent PNG or SVG. Used on light backgrounds (header, emails, invoices).">
-              <input
-                type="url"
-                value={values.logo_url}
-                onChange={(e) => set("logo_url", e.target.value)}
-                className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-violet"
-                placeholder="https://…/logo.png"
-              />
-            </FieldRow>
+            <AssetField
+              label="Logo URL"
+              hint="Direct link to a transparent PNG or SVG. Used in header, emails, invoices."
+              value={values.logo_url}
+              onChange={(v) => set("logo_url", v)}
+              kind="logo"
+              accept="image/png,image/jpeg,image/svg+xml,image/webp"
+              placeholder="https://…/logo.png"
+            />
 
-            <FieldRow label="Footer logo URL" hint="Light version for the dark footer. Falls back to the main logo if empty.">
-              <input
-                type="url"
-                value={values.footer_logo_url}
-                onChange={(e) => set("footer_logo_url", e.target.value)}
-                className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-violet"
-                placeholder="https://…/logo-white.png"
-              />
-            </FieldRow>
+            <AssetField
+              label="Footer logo URL"
+              hint="Light version for the dark footer. Falls back to the main logo if empty."
+              value={values.footer_logo_url}
+              onChange={(v) => set("footer_logo_url", v)}
+              kind="footer-logo"
+              accept="image/png,image/jpeg,image/svg+xml,image/webp"
+              placeholder="https://…/logo-white.png"
+            />
 
-            <FieldRow label="Favicon URL" hint="Small square icon shown in the browser tab (32×32 or 64×64).">
-              <input
-                type="url"
-                value={values.favicon_url}
-                onChange={(e) => set("favicon_url", e.target.value)}
-                className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-violet"
-                placeholder="https://…/favicon.png"
-              />
-            </FieldRow>
+            <AssetField
+              label="Favicon URL"
+              hint="Small square icon shown in the browser tab (32×32 or 64×64 PNG / ICO / SVG)."
+              value={values.favicon_url}
+              onChange={(v) => set("favicon_url", v)}
+              kind="favicon"
+              accept="image/png,image/x-icon,image/vnd.microsoft.icon,image/svg+xml"
+              placeholder="https://…/favicon.png"
+            />
+
+            <AssetField
+              label="Invoice logo URL"
+              hint="Logo shown on PDF invoices and receipts. Best as a square/horizontal PNG on a transparent or white background."
+              value={values.invoice_logo_url}
+              onChange={(v) => set("invoice_logo_url", v)}
+              kind="invoice-logo"
+              accept="image/png,image/jpeg,image/webp"
+              placeholder="https://…/invoice-logo.png"
+            />
+
 
             <div className="grid gap-4 sm:grid-cols-3">
               <ColorField

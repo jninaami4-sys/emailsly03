@@ -3,7 +3,7 @@ import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { useHydrated } from "@/hooks/use-hydrated";
 
 const NAVY = "#0F0F1A";
-const VIOLET = "#7C3AED";
+const VIOLET = "#418df1";
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 export interface PreloaderProps {
@@ -154,7 +154,7 @@ export function Preloader({
                 className="h-full origin-left"
                 style={{
                   background:
-                    "linear-gradient(90deg, transparent, #7C3AED 40%, #a78bfa 60%, transparent)",
+                    "linear-gradient(90deg, transparent, #418df1 40%, #7fb0f5 60%, transparent)",
                 }}
                 initial={{ scaleX: 0 }}
                 animate={{ scaleX: progress / 100 }}
@@ -223,8 +223,8 @@ function EmailslyLogoMark({
     >
       <defs>
         <linearGradient id="arrow-trail" x1="0" y1="1" x2="1" y2="0">
-          <stop offset="0%" stopColor="#7C3AED" stopOpacity="0" />
-          <stop offset="100%" stopColor="#a78bfa" stopOpacity="0.6" />
+          <stop offset="0%" stopColor="#418df1" stopOpacity="0" />
+          <stop offset="100%" stopColor="#7fb0f5" stopOpacity="0.6" />
         </linearGradient>
         <radialGradient id="mark-glow" cx="0.5" cy="0.5" r="0.5">
           <stop offset="0%" stopColor={VIOLET} stopOpacity="0.35" />

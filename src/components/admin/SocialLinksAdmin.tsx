@@ -41,7 +41,7 @@ const BLANK: Draft = {
   platform: "",
   label: "",
   href: "",
-  color: "#8b5cf6",
+  color: "#418df1",
   icon: "link",
   enabled: true,
   sort_order: 100,

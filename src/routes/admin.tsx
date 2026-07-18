@@ -27,6 +27,7 @@ import { SupportTicketsAdmin } from "@/components/admin/SupportTicketsAdmin";
 import { BlogSeoAdmin } from "@/components/admin/BlogSeoAdmin";
 import { BlogAnalyticsAdmin } from "@/components/admin/BlogAnalyticsAdmin";
 import { BlogPostsAdmin } from "@/components/admin/BlogPostsAdmin";
+import { EmailTestAdmin } from "@/components/admin/EmailTestAdmin";
 import { whoAmIAdmin } from "@/lib/announcements.functions";
 import { useAuth } from "@/hooks/use-auth";
 import {
@@ -400,6 +401,7 @@ function AdminPage() {
     datasets: <SampleDatasetsAdmin />,
     audit: <SampleDatasetAuditLog />,
     "import-export": <ImportExportAdmin />,
+    "email-test": <EmailTestAdmin />,
   };
 
   return (

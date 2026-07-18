@@ -172,28 +172,11 @@ function PaymentSuccessPage() {
     });
   }
 
-  // Persist this order into the user's dashboard once (idempotent by payment_ref)
-  useEffect(() => {
-    if (!user || recordedRef.current) return;
-    recordedRef.current = true;
-    recordFn({
-      data: {
-        payment_ref: orderId,
-        service_label: service,
-        service_id: null,
-        quantity: Math.max(1, Math.round(qty || 1)),
-        subtotal_cents: Math.round(subtotal * 100),
-        discount_cents: Math.round(discount * 100),
-        promo_code: search.promo ?? null,
-        total_cents: Math.round(total * 100),
-        currency: "USD",
-        payment_provider: "stripe",
-        credit_applied_cents: Math.round(creditApplied * 100),
-      },
-    }).catch(() => {
-      recordedRef.current = false;
-    });
-  }, [user, orderId, service, qty, subtotal, discount, total, creditApplied, search.promo, recordFn]);
+  // NOTE: We no longer create orders from this page. The order is created
+  // (as UNPAID) before the Stripe redirect, and the verified Stripe webhook
+  // flips it to paid. This page only displays the receipt for the order id
+  // returned by Stripe in the redirect URL (`?order=<id>`).
+
 
 
 

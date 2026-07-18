@@ -298,7 +298,7 @@ function FieldRenderer({
             placeholder="or paste URL"
             className={`${inputCls} flex-1`}
           />
-          {value && (
+          {!!value && (
             <button
               type="button"
               onClick={() => onChange("")}

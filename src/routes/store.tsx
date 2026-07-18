@@ -15,6 +15,40 @@ export const Route = createFileRoute("/store")({
       { property: "og:title", content: "Lead Store — Prebuilt B2B lead lists" },
       { property: "og:description", content: "Browse verified prebuilt B2B lead lists. Instant download after checkout." },
     ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          name: "EmailsLy Lead Store",
+          url: "/store",
+          description:
+            "Prebuilt, verified B2B lead lists — instant download after checkout.",
+          mainEntity: {
+            "@type": "ItemList",
+            numberOfItems: PRODUCTS.length,
+            itemListElement: PRODUCTS.map((p, i) => ({
+              "@type": "ListItem",
+              position: i + 1,
+              item: {
+                "@type": "Product",
+                name: p.title,
+                category: p.category,
+                description: p.description,
+                url: `/store/${p.slug}`,
+                offers: {
+                  "@type": "Offer",
+                  price: p.price,
+                  priceCurrency: "USD",
+                  availability: "https://schema.org/InStock",
+                },
+              },
+            })),
+          },
+        }),
+      },
+    ],
   }),
   pendingComponent: StoreSkeleton,
   component: Store,

@@ -1,7 +1,12 @@
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { adminListStripeEvents, type StripeEventRow } from "@/lib/admin-stripe-events.functions";
+import {
+  adminListStripeEvents,
+  adminListWebhookDeliveries,
+  type StripeEventRow,
+  type WebhookDeliveryRow,
+} from "@/lib/admin-stripe-events.functions";
 import { CheckCircle2, RefreshCw, ShieldCheck, Webhook, XCircle } from "@/components/admin/AdminIcons";
 
 const TYPES = [
@@ -233,6 +238,189 @@ function Row({ r }: { r: StripeEventRow }) {
         ) : (
           <span className="text-xs text-muted-foreground">—</span>
         )}
+      </td>
+      <td className="px-4 py-3 whitespace-nowrap text-xs text-muted-foreground" title={r.received_at}>
+        {relTime(r.received_at)}
+      </td>
+    </tr>
+  );
+}
+
+const DELIVERY_STATUSES = [
+  "all",
+  "received",
+  "verified",
+  "processed",
+  "duplicate",
+  "unhandled",
+  "rejected",
+  "error",
+] as const;
+
+const STATUS_TONE: Record<string, string> = {
+  processed: "bg-emerald-500/10 text-emerald-400 ring-emerald-500/30",
+  duplicate: "bg-sky-500/10 text-sky-400 ring-sky-500/30",
+  verified: "bg-sky-500/10 text-sky-400 ring-sky-500/30",
+  unhandled: "bg-slate-500/10 text-slate-300 ring-slate-500/30",
+  rejected: "bg-rose-500/10 text-rose-400 ring-rose-500/30",
+  error: "bg-rose-500/10 text-rose-400 ring-rose-500/30",
+  received: "bg-amber-500/10 text-amber-400 ring-amber-500/30",
+};
+
+export function StripeWebhookDeliveriesAdmin() {
+  const listFn = useServerFn(adminListWebhookDeliveries);
+  const [status, setStatus] = useState<string>("all");
+  const { data, isLoading, isFetching, refetch, error } = useQuery({
+    queryKey: ["admin-webhook-deliveries", status],
+    queryFn: () => listFn({ data: { status, limit: 200 } }),
+    retry: false,
+    refetchInterval: 15000,
+  });
+  const rows: WebhookDeliveryRow[] = data ?? [];
+  const stats = useMemo(() => {
+    const total = rows.length;
+    const ok = rows.filter((r) => r.status === "processed" || r.status === "duplicate").length;
+    const bad = rows.filter((r) => r.status === "rejected" || r.status === "error").length;
+    return { total, ok, bad };
+  }, [rows]);
+
+  return (
+    <section className="rounded-2xl border border-border bg-card">
+      <header className="flex flex-wrap items-center justify-between gap-3 border-b border-border p-4">
+        <div className="flex items-center gap-3">
+          <span className="flex size-9 items-center justify-center rounded-xl bg-emerald-500/15 text-emerald-400 ring-1 ring-emerald-500/30">
+            <Webhook className="size-4" />
+          </span>
+          <div>
+            <h2 className="font-display text-lg font-bold">Webhook delivery log</h2>
+            <p className="text-xs text-muted-foreground">
+              Every inbound POST to <code className="rounded bg-muted px-1 py-0.5">/api/public/webhooks/stripe</code>,
+              including rejected signatures and handler errors. Auto-refreshes every 15s.
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <select
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+            className="rounded-lg border border-border bg-background px-2 py-1.5 text-xs"
+          >
+            {DELIVERY_STATUSES.map((s) => (
+              <option key={s} value={s}>
+                {s}
+              </option>
+            ))}
+          </select>
+          <button
+            onClick={() => refetch()}
+            className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-1.5 text-xs hover:bg-muted"
+          >
+            <RefreshCw className={`size-3.5 ${isFetching ? "animate-spin" : ""}`} />
+            Refresh
+          </button>
+        </div>
+      </header>
+
+      <div className="grid grid-cols-3 gap-px border-b border-border bg-border text-center text-xs">
+        <Stat label="Deliveries" value={stats.total} />
+        <Stat label="OK" value={stats.ok} tone="ok" />
+        <Stat label="Failed" value={stats.bad} tone={stats.bad ? "warn" : "ok"} />
+      </div>
+
+      {error ? (
+        <div className="p-4 text-sm text-rose-400">{(error as Error).message || "Failed to load deliveries."}</div>
+      ) : isLoading ? (
+        <div className="p-6 text-sm text-muted-foreground">Loading deliveries…</div>
+      ) : rows.length === 0 ? (
+        <div className="p-6 text-sm text-muted-foreground">
+          No webhook deliveries recorded yet. Once Stripe posts to your endpoint they'll appear here — verified
+          or not.
+        </div>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead className="bg-muted/40 text-left text-xs uppercase tracking-wide text-muted-foreground">
+              <tr>
+                <th className="px-4 py-2 font-medium">Status</th>
+                <th className="px-4 py-2 font-medium">Event</th>
+                <th className="px-4 py-2 font-medium">Sig</th>
+                <th className="px-4 py-2 font-medium">HTTP</th>
+                <th className="px-4 py-2 font-medium">Outcome</th>
+                <th className="px-4 py-2 font-medium">Order</th>
+                <th className="px-4 py-2 font-medium">Latency</th>
+                <th className="px-4 py-2 font-medium">When</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((r) => (
+                <DeliveryRow key={r.id} r={r} />
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </section>
+  );
+}
+
+function DeliveryRow({ r }: { r: WebhookDeliveryRow }) {
+  const tone = STATUS_TONE[r.status] ?? "bg-muted text-muted-foreground ring-border";
+  return (
+    <tr className="border-t border-border align-top">
+      <td className="px-4 py-3">
+        <span className={`inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[11px] font-medium ring-1 ${tone}`}>
+          {r.status}
+        </span>
+      </td>
+      <td className="px-4 py-3">
+        <div className="font-mono text-xs">{r.event_type ?? "—"}</div>
+        {r.event_id ? (
+          <div className="mt-0.5 truncate font-mono text-[10px] text-muted-foreground" title={r.event_id}>
+            {r.event_id}
+          </div>
+        ) : null}
+        {r.stripe_ref ? (
+          <div className="mt-0.5 truncate font-mono text-[10px] text-muted-foreground">{r.stripe_ref}</div>
+        ) : null}
+      </td>
+      <td className="px-4 py-3">
+        {r.verified ? (
+          <span
+            className="inline-flex items-center gap-1 rounded-md bg-emerald-500/10 px-1.5 py-0.5 text-[11px] font-medium text-emerald-400 ring-1 ring-emerald-500/30"
+            title="HMAC verified"
+          >
+            <ShieldCheck className="size-3" /> valid
+          </span>
+        ) : (
+          <span
+            className="inline-flex items-center gap-1 rounded-md bg-rose-500/10 px-1.5 py-0.5 text-[11px] font-medium text-rose-400 ring-1 ring-rose-500/30"
+            title={r.signature_present ? "signature failed verification" : "no stripe-signature header"}
+          >
+            <XCircle className="size-3" /> {r.signature_present ? "invalid" : "missing"}
+          </span>
+        )}
+      </td>
+      <td className="px-4 py-3 font-mono text-xs">{r.http_status}</td>
+      <td className="px-4 py-3 text-xs">
+        {r.outcome ? <div className="text-foreground">{r.outcome}</div> : null}
+        {r.error_message ? <div className="text-rose-400">{r.error_message}</div> : null}
+        {!r.outcome && !r.error_message ? <span className="text-muted-foreground">—</span> : null}
+      </td>
+      <td className="px-4 py-3">
+        {r.matched_order_id ? (
+          <a
+            href={`/_authenticated/invoice/${r.matched_order_id}`}
+            className="inline-flex items-center gap-1.5 text-xs hover:underline"
+          >
+            <CheckCircle2 className="size-3.5 text-emerald-400" />
+            <span className="font-mono">{r.matched_order_id.slice(0, 8)}…</span>
+          </a>
+        ) : (
+          <span className="text-xs text-muted-foreground">—</span>
+        )}
+      </td>
+      <td className="px-4 py-3 whitespace-nowrap text-xs text-muted-foreground">
+        {r.duration_ms != null ? `${r.duration_ms}ms` : "—"}
       </td>
       <td className="px-4 py-3 whitespace-nowrap text-xs text-muted-foreground" title={r.received_at}>
         {relTime(r.received_at)}

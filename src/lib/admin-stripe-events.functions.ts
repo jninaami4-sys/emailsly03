@@ -128,3 +128,48 @@ export const adminListStripeEvents = createServerFn({ method: "GET" })
       };
     });
   });
+
+export type WebhookDeliveryRow = {
+  id: string;
+  received_at: string;
+  event_id: string | null;
+  event_type: string | null;
+  verified: boolean;
+  status: string;
+  http_status: number;
+  outcome: string | null;
+  error_message: string | null;
+  duration_ms: number | null;
+  stripe_ref: string | null;
+  matched_order_id: string | null;
+  source_ip: string | null;
+  signature_present: boolean;
+  payload_bytes: number | null;
+};
+
+export const adminListWebhookDeliveries = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d) =>
+    z
+      .object({
+        limit: z.number().int().min(1).max(500).optional(),
+        status: z.string().optional(),
+      })
+      .parse(d ?? {}),
+  )
+  .handler(async ({ context, data }): Promise<WebhookDeliveryRow[]> => {
+    assertAdmin((context.claims as { email?: string }).email);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const sb = supabaseAdmin as any;
+    let q = sb
+      .from("stripe_webhook_deliveries")
+      .select(
+        "id,received_at,event_id,event_type,verified,status,http_status,outcome,error_message,duration_ms,stripe_ref,matched_order_id,source_ip,signature_present,payload_bytes",
+      )
+      .order("received_at", { ascending: false })
+      .limit(data.limit ?? 100);
+    if (data.status && data.status !== "all") q = q.eq("status", data.status);
+    const { data: rows, error } = await q;
+    if (error) throw new Error(error.message);
+    return (rows ?? []) as WebhookDeliveryRow[];
+  });

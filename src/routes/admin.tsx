@@ -466,23 +466,9 @@ function DropZone({ onFile }: { onFile: (file: File) => void }) {
   );
 }
 
-function AuroraBackdrop({ children }: { children: React.ReactNode }) {
+function PlainBackdrop({ children }: { children: React.ReactNode }) {
   return (
-    <div className="relative min-h-[calc(100vh-4rem)] overflow-hidden">
-      <div aria-hidden className="pointer-events-none absolute inset-0">
-        <div className="absolute -left-32 top-10 size-[420px] rounded-full bg-violet/25 blur-[120px] animate-aurora-slow" />
-        <div className="absolute right-[-10%] top-1/3 size-[380px] rounded-full bg-neon-orange/20 blur-[120px] animate-aurora-med" />
-        <div className="absolute bottom-[-20%] left-1/3 size-[460px] rounded-full bg-emerald/15 blur-[140px] animate-aurora-fast" />
-        <div
-          className="absolute inset-0 opacity-[0.05]"
-          style={{
-            backgroundImage:
-              "linear-gradient(var(--foreground) 1px, transparent 1px), linear-gradient(90deg, var(--foreground) 1px, transparent 1px)",
-            backgroundSize: "40px 40px",
-            maskImage: "radial-gradient(ellipse at center, black 40%, transparent 75%)",
-          }}
-        />
-      </div>
+    <div className="relative min-h-[calc(100vh-4rem)] bg-background">
       <div className="relative">{children}</div>
     </div>
   );

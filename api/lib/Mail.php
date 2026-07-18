@@ -37,13 +37,14 @@ final class Mail
     }
 
 
-    private static function log(string $to, string $subject, string $html): void
+    private static function log(string $to, string $subject, string $html, string $kind = 'auth', string $from = '', string $transport = 'log'): void
     {
         $dir = __DIR__ . '/../logs';
         if (!is_dir($dir)) @mkdir($dir, 0775, true);
+        $meta = json_encode(['ts'=>date('c'),'to'=>$to,'subject'=>$subject,'kind'=>$kind,'from'=>$from,'transport'=>$transport,'bytes'=>strlen($html)], JSON_UNESCAPED_SLASHES);
         file_put_contents(
             $dir . '/mail.log',
-            "[" . date('c') . "] TO $to :: $subject\n$html\n\n---\n",
+            "[" . date('c') . "] KIND=$kind FROM=$from TO=$to :: $subject\nMETA: $meta\n$html\n\n---\n",
             FILE_APPEND
         );
     }

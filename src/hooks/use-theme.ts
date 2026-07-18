@@ -116,8 +116,19 @@ export function useTheme() {
     } catch {
       /* ignore quota / privacy mode */
     }
+    // Mirror to a cookie so subsequent SSR renders (shared links, hard
+    // reloads) can bake the correct theme into HTML, meta tags, and
+    // Open Graph asset URLs before hydration.
+    try {
+      const secure = window.location.protocol === "https:" ? "; Secure" : "";
+      const oneYear = 60 * 60 * 24 * 365;
+      document.cookie = `${STORAGE_KEY}=${next}; Max-Age=${oneYear}; Path=/; SameSite=Lax${secure}`;
+    } catch {
+      /* ignore */
+    }
     apply(next);
   }, []);
+
 
   const toggle = useCallback(() => {
     setTheme(theme === "light" ? "dark" : "light");

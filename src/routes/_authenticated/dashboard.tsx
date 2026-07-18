@@ -410,6 +410,8 @@ function OrdersTab({ orders, loading }: { orders: any[]; loading: boolean }) {
   const [openId, setOpenId] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<string>("all");
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
 
   const filtered = useMemo(() => {
     let list = orders;
@@ -420,8 +422,18 @@ function OrdersTab({ orders, loading }: { orders: any[]; loading: boolean }) {
         [o.service_label, o.promo_code, o.id].some((v) => String(v || "").toLowerCase().includes(q))
       );
     }
+    if (dateFrom) {
+      const from = new Date(dateFrom).getTime();
+      list = list.filter((o) => new Date(o.created_at).getTime() >= from);
+    }
+    if (dateTo) {
+      const to = new Date(dateTo);
+      to.setHours(23, 59, 59, 999);
+      const toMs = to.getTime();
+      list = list.filter((o) => new Date(o.created_at).getTime() <= toMs);
+    }
     return list;
-  }, [orders, filter, query]);
+  }, [orders, filter, query, dateFrom, dateTo]);
 
   if (loading)
     return (
@@ -434,7 +446,7 @@ function OrdersTab({ orders, loading }: { orders: any[]; loading: boolean }) {
 
   return (
     <>
-      <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+      <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
         <div className="relative w-full sm:max-w-xs">
           <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           <input
@@ -456,6 +468,37 @@ function OrdersTab({ orders, loading }: { orders: any[]; loading: boolean }) {
               {s.replace("_", " ")}
             </button>
           ))}
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <label className="inline-flex items-center gap-1.5 font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+            From
+            <input
+              type="date"
+              value={dateFrom}
+              onChange={(e) => setDateFrom(e.target.value)}
+              className="rounded-lg border border-border bg-card px-2 py-1.5 text-xs focus:border-violet focus:outline-none"
+            />
+          </label>
+          <label className="inline-flex items-center gap-1.5 font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+            To
+            <input
+              type="date"
+              value={dateTo}
+              onChange={(e) => setDateTo(e.target.value)}
+              className="rounded-lg border border-border bg-card px-2 py-1.5 text-xs focus:border-violet focus:outline-none"
+            />
+          </label>
+          {(dateFrom || dateTo) && (
+            <button
+              onClick={() => {
+                setDateFrom("");
+                setDateTo("");
+              }}
+              className="rounded-lg border border-border bg-card px-2 py-1.5 font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground hover:text-foreground"
+            >
+              Clear
+            </button>
+          )}
         </div>
       </div>
 

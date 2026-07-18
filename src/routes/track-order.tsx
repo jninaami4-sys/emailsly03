@@ -1,5 +1,6 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
+
 import { SiteShell } from "@/components/site/SiteShell";
 import { TrackOrderSkeleton } from "@/components/site/TrackOrderSkeleton";
 import { TrackResultSkeleton } from "@/components/site/TrackResultSkeleton";

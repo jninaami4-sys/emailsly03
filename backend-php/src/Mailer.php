@@ -58,6 +58,32 @@ final class Mailer
         ]);
     }
 
+    public static function support(): self
+    {
+        return new self([
+            'host'   => $_ENV['SMTP_HOST'] ?? 'localhost',
+            'port'   => $_ENV['SMTP_PORT'] ?? 587,
+            'secure' => $_ENV['SMTP_SECURE'] ?? 'tls',
+            'user'   => $_ENV['SMTP_SUPPORT_USER'] ?? 'support@mail.emailsly.com',
+            'pass'   => $_ENV['SMTP_SUPPORT_PASS'] ?? '',
+            'from'   => $_ENV['SMTP_SUPPORT_FROM'] ?? 'support@mail.emailsly.com',
+            'name'   => $_ENV['SMTP_SUPPORT_FROM_NAME'] ?? 'Emailsly Support',
+        ]);
+    }
+
+    public static function contact(): self
+    {
+        return new self([
+            'host'   => $_ENV['SMTP_HOST'] ?? 'localhost',
+            'port'   => $_ENV['SMTP_PORT'] ?? 587,
+            'secure' => $_ENV['SMTP_SECURE'] ?? 'tls',
+            'user'   => $_ENV['SMTP_CONTACT_USER'] ?? 'hello@emailsly.com',
+            'pass'   => $_ENV['SMTP_CONTACT_PASS'] ?? '',
+            'from'   => $_ENV['SMTP_CONTACT_FROM'] ?? 'hello@emailsly.com',
+            'name'   => $_ENV['SMTP_CONTACT_FROM_NAME'] ?? 'Emailsly',
+        ]);
+    }
+
     /** Send one message. Returns true on success. Never throws to callers. */
     public function send(string $to, string $subject, string $body, bool $html = false, ?string $replyTo = null): bool
     {

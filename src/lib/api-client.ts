@@ -642,6 +642,12 @@ export default {
   uploads: uploadsApi,
   blog: blogApi,
   adminBlog: adminBlogApi,
+  blogSeo: blogSeoApi,
+  adminBlogSeo: adminBlogSeoApi,
+  blogAnalytics: blogAnalyticsApi,
+  adminBlogAnalytics: adminBlogAnalyticsApi,
+  productDetails: productDetailsApi,
+  adminProductDetails: adminProductDetailsApi,
   reviews: reviewsApi,
   adminReviews: adminReviewsApi,
   tickets: ticketsApi,
@@ -663,3 +669,4 @@ export default {
   adminSocialLinks: adminSocialLinksApi,
   stripe: stripeApi,
 };
+

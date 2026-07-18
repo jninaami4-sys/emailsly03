@@ -7,6 +7,8 @@ import { getMyReferralBalance } from "@/lib/referrals.functions";
 import { useAuth } from "@/hooks/use-auth";
 import { ReferralErrorBoundary } from "@/components/site/ReferralErrorBoundary";
 import { usePricingOverrides } from "@/hooks/use-pricing-overrides";
+import { SERVICE_CATALOG } from "@/lib/service-catalog";
+
 import { isDisposableEmail, DISPOSABLE_EMAIL_MESSAGE } from "@/lib/disposable-emails";
 import {
   PremiumShieldCheck,

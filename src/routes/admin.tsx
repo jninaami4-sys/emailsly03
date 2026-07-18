@@ -371,6 +371,7 @@ function AdminPage() {
         { id: "datasets", label: "Sample Datasets", desc: "Seeded demo datasets shown across the site.", icon: Database, keywords: "sample datasets" },
         { id: "audit", label: "Audit Log", desc: "History of sample dataset changes.", icon: Server, keywords: "audit history" },
         { id: "import-export", label: "Import / Export", desc: "Bulk import or export data via CSV/JSON.", icon: Users, keywords: "import export csv" },
+        { id: "email-test", label: "Email Diagnostics", desc: "Send test emails through each SMTP sender.", icon: Mail, keywords: "email smtp test diagnostics deliverability" },
       ],
     },
   ];

@@ -21,7 +21,9 @@ const TABS: TabDef[] = [
   { id: "hero", label: "Hero", icon: Layout, description: "Homepage hero — badge, headline, subtitle, CTAs." },
   { id: "popup", label: "Popup", icon: BellRing, description: "Welcome/promo popup shown on first visit." },
   { id: "trust", label: "Trust", icon: ShieldCheck, description: "Trust bar stats under the hero." },
-  { id: "services", label: "Services", icon: Boxes, description: "Services carousel heading & subheading." },
+  { id: "services", label: "Services heading", icon: Boxes, description: "Services carousel heading & subheading." },
+  { id: "service_cards", label: "Service cards", icon: Boxes, description: "Every service card — icon, price, bullets, gradient." },
+
   { id: "competitors", label: "Competitors", icon: BarChart3, description: "Comparison table copy vs. competitors." },
   { id: "faq", label: "FAQ", icon: HelpCircle, description: "Homepage FAQ questions & answers." },
   { id: "notices", label: "Notices", icon: Megaphone, description: "Top banner / global notices." },

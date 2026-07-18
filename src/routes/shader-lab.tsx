@@ -222,7 +222,7 @@ function ShaderLabPage() {
               <span className="relative mt-2 block">
                 <span
                   key={morphIndex}
-                  className="inline-block animate-fade-in bg-gradient-to-r from-violet-400 via-fuchsia-400 to-amber-300 bg-clip-text text-transparent"
+                  className="inline-block animate-fade-in bg-gradient-to-r from-blue-400 via-blue-400 to-amber-300 bg-clip-text text-transparent"
                   style={{ backgroundSize: "200% 200%" }}
                 >
                   {MORPHS[morphIndex]}

@@ -8,8 +8,6 @@ import { ArrowRight, Loader2, Mail, Lock, ShieldCheck, Zap, BadgeCheck, Eye, Eye
 import { PremiumSparkles as Sparkles } from "@/components/site/PremiumIcons";
 import { useSiteContent } from "@/hooks/use-site-content";
 
-const DEMO_EMAIL = "demo@emailsly.com";
-const DEMO_PASSWORD = "Demo!2024Pass";
 
 const searchSchema = z.object({
   mode: z.enum(["signin", "signup", "forgot"]).optional(),

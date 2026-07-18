@@ -230,16 +230,16 @@ function ModalContent({ a, onClose, preview = false }: { a: Announcement; onClos
         />
       )}
       <div
-        className={`relative w-full max-w-lg overflow-hidden rounded-[28px] animate-in fade-in zoom-in-95 before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-px ${p.hairline} ${cardClassByStyle[cardStyle]}`}
+        className={`relative w-full max-w-md overflow-hidden rounded-2xl animate-in fade-in zoom-in-95 before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-px ${p.hairline} ${cardClassByStyle[cardStyle]}`}
       >
         {!preview && (
           <button
             type="button"
             onClick={onClose}
             aria-label="Close"
-            className="absolute right-4 top-4 z-10 flex size-8 items-center justify-center rounded-full border border-white/10 bg-background/60 text-muted-foreground backdrop-blur-md transition-all hover:border-white/20 hover:bg-background/80 hover:text-foreground"
+            className="absolute right-3 top-3 z-10 flex size-7 items-center justify-center rounded-full border border-white/10 bg-background/60 text-muted-foreground backdrop-blur-md transition-all hover:border-white/20 hover:bg-background/80 hover:text-foreground"
           >
-            <X className="size-4" />
+            <X className="size-3.5" />
           </button>
         )}
 
@@ -249,27 +249,24 @@ function ModalContent({ a, onClose, preview = false }: { a: Announcement; onClos
             return (
               <div className="relative aspect-[16/9] w-full overflow-hidden bg-secondary">
                 <img src={a.image_url} alt="" className="h-full w-full object-cover" loading="eager" />
-                <div className="absolute inset-0 bg-gradient-to-t from-card via-card/40 to-transparent" />
-                <div className={`pointer-events-none absolute -bottom-24 left-1/2 h-48 w-[140%] -translate-x-1/2 rounded-full bg-gradient-to-t ${p.glowFrom} ${p.glowTo} blur-3xl opacity-70`} />
+                <div className="absolute inset-0 bg-gradient-to-t from-card/90 via-card/20 to-transparent" />
               </div>
             );
           }
-          // Elegant, iconless header: layered gradient orbs behind a soft veil.
+          // Minimal: a single soft accent glow at the top corner.
           return (
-            <div className="relative h-32 w-full overflow-hidden">
-              <div className={`absolute -top-20 left-1/2 size-72 -translate-x-1/2 rounded-full bg-gradient-to-br ${p.glowFrom} ${p.glowTo} blur-3xl`} />
-              <div className={`absolute -bottom-24 right-0 size-56 rounded-full bg-gradient-to-tr ${p.glowFrom} to-transparent blur-3xl opacity-70`} />
-              <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-card to-transparent" />
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-24 overflow-hidden">
+              <div className={`absolute -top-16 -left-10 size-40 rounded-full bg-gradient-to-br ${p.glowFrom} ${p.glowTo} blur-3xl opacity-60`} />
             </div>
           );
         })()}
 
-        <div className="relative -mt-6 p-6 sm:p-8">
+        <div className="relative p-6 sm:p-7">
           {(() => {
             const style = a.image_style || (a.image_url ? "cover" : "none");
             if (style === "thumbnail" && a.image_url) {
               return (
-                <div className={`mb-4 inline-flex size-20 overflow-hidden rounded-2xl border ${p.ring} bg-secondary shadow-lg`}>
+                <div className={`mb-4 inline-flex size-14 overflow-hidden rounded-xl border ${p.ring} bg-secondary`}>
                   <img src={a.image_url} alt="" className="h-full w-full object-cover" loading="eager" />
                 </div>
               );
@@ -278,40 +275,39 @@ function ModalContent({ a, onClose, preview = false }: { a: Announcement; onClos
           })()}
           {a.badge && (
             <span
-              className={`inline-flex items-center gap-2 rounded-full border ${p.ring} ${p.soft} px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.18em] ${p.text} backdrop-blur`}
+              className={`inline-flex items-center gap-1.5 rounded-full ${p.soft} px-2.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.16em] ${p.text}`}
             >
-              <span className={`size-1.5 rounded-full ${p.text.replace("text-", "bg-")} shadow-[0_0_8px_currentColor]`} />
+              <span className={`size-1 rounded-full ${p.text.replace("text-", "bg-")}`} />
               {a.badge}
             </span>
           )}
           <h2
             id="announcement-title"
-            className="mt-4 font-display text-[26px] font-bold leading-[1.1] tracking-tight sm:text-[32px]"
+            className="mt-3 font-display text-[22px] font-semibold leading-tight tracking-tight sm:text-[26px]"
           >
             {titleEmoji ? <span className="mr-2 align-middle">{titleEmoji}</span> : null}
             {a.title}
           </h2>
           {a.body && (
-            <p className="mt-3 whitespace-pre-line text-[15px] leading-relaxed text-muted-foreground">
+            <p className="mt-2 whitespace-pre-line text-[14px] leading-relaxed text-muted-foreground">
               {a.body}
             </p>
           )}
 
-          <div className="mt-7 flex flex-wrap items-center gap-2.5">
+          <div className="mt-5 flex flex-wrap items-center gap-2">
             {a.cta_url && a.cta_label && (
               <a
                 href={a.cta_url}
                 onClick={onClose}
-                className={`group relative inline-flex items-center justify-center overflow-hidden rounded-xl ${p.bg} px-5 py-2.5 text-sm font-semibold text-white ${p.shadow} ring-1 ring-white/15 transition-all hover:-translate-y-0.5 hover:brightness-110`}
+                className={`group relative inline-flex items-center justify-center rounded-lg ${p.bg} px-4 py-2 text-sm font-semibold text-white ring-1 ring-white/15 transition-all hover:brightness-110`}
               >
-                <span className="absolute inset-x-0 top-0 h-px bg-white/40" />
-                <span className="relative">{a.cta_label}</span>
+                {a.cta_label}
               </a>
             )}
             <button
               type="button"
               onClick={onClose}
-              className="inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/[0.03] px-5 py-2.5 text-sm font-medium text-foreground/80 backdrop-blur transition-colors hover:border-white/20 hover:bg-white/[0.06] hover:text-foreground"
+              className="inline-flex items-center justify-center rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
             >
               Maybe later
             </button>

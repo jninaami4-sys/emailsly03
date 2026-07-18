@@ -30,6 +30,7 @@ import { ReferralCapture } from "@/components/site/ReferralCapture";
 import { BrandingApplier } from "@/components/site/BrandingApplier";
 import { ProfileRealtimeSync } from "@/hooks/use-my-profile";
 import { CursorGlow } from "@/components/site/CursorGlow";
+import { ApiHealthBanner } from "@/components/site/ApiHealthBanner";
 
 function NotFoundComponent() {
   return (

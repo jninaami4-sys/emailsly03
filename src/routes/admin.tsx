@@ -341,6 +341,7 @@ function AdminPage() {
       items: [
         { id: "site-content", label: "Site Content", desc: "Editable copy for every landing section.", icon: Globe, keywords: "hero faq footer copy" },
         { id: "brand", label: "Brand Identity", desc: "Logo, colors, and global brand tokens.", icon: Palette, keywords: "logo brand color" },
+        { id: "products", label: "Products", desc: "Add, edit, or delete products in the store.", icon: Package, keywords: "products add edit delete catalog store" },
         { id: "product-details", label: "Product Details", desc: "Long descriptions and hero images per product.", icon: Boxes, keywords: "product descriptions" },
         { id: "product-covers", label: "Product Covers", desc: "Upload storefront cover images.", icon: ImageIcon, keywords: "product covers images" },
         { id: "announcements", label: "Announcements", desc: "Marketing banners and popups.", icon: Megaphone, keywords: "banner popup" },

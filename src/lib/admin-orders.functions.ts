@@ -17,6 +17,8 @@ export const adminListOrders = createServerFn({ method: "GET" })
         search: z.string().optional(),
         limit: z.number().int().min(1).max(500).optional(),
         view: z.enum(["active", "archived"]).optional(),
+        dateFrom: z.string().optional(),
+        dateTo: z.string().optional(),
       })
       .parse(d ?? {}),
   )
@@ -29,6 +31,12 @@ export const adminListOrders = createServerFn({ method: "GET" })
     else q = q.is("archived_at", null);
     if (data.status && data.status !== "all") q = q.eq("status", data.status);
     if (data.search) q = q.or(`email.ilike.%${data.search}%,service_label.ilike.%${data.search}%,promo_code.ilike.%${data.search}%`);
+    if (data.dateFrom) q = q.gte("created_at", new Date(data.dateFrom).toISOString());
+    if (data.dateTo) {
+      const to = new Date(data.dateTo);
+      to.setHours(23, 59, 59, 999);
+      q = q.lte("created_at", to.toISOString());
+    }
     const { data: rows, error } = await q;
     if (error) throw new Error(error.message);
 

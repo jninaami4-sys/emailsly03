@@ -36,14 +36,26 @@ export function OrdersAdmin() {
   const [view, setView] = useState<"active" | "archived">("active");
   const [status, setStatus] = useState("all");
   const [search, setSearch] = useState("");
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [undo, setUndo] = useState<{ ids: string[]; label: string } | null>(null);
   const [confirmBulkDelete, setConfirmBulkDelete] = useState(false);
 
   const stats = useQuery({ queryKey: ["admin-order-stats"], queryFn: () => statsFn() });
   const orders = useQuery({
-    queryKey: ["admin-orders", view, status, search],
-    queryFn: () => listFn({ data: { view, status, search: search || undefined, limit: 200 } }),
+    queryKey: ["admin-orders", view, status, search, dateFrom, dateTo],
+    queryFn: () =>
+      listFn({
+        data: {
+          view,
+          status,
+          search: search || undefined,
+          dateFrom: dateFrom || undefined,
+          dateTo: dateTo || undefined,
+          limit: 200,
+        },
+      }),
   });
 
   const [deliverFor, setDeliverFor] = useState<any | null>(null);
@@ -59,7 +71,7 @@ export function OrdersAdmin() {
 
   useEffect(() => {
     setSelected(new Set());
-  }, [view, status, search]);
+  }, [view, status, search, dateFrom, dateTo]);
 
   // Auto-dismiss undo after 8s
   useEffect(() => {
@@ -187,6 +199,35 @@ export function OrdersAdmin() {
           placeholder="Search email, service, promo..."
           className="min-w-[220px] flex-1 rounded-lg border border-border bg-background px-3 py-1.5 text-xs outline-none"
         />
+        <label className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+          From
+          <input
+            type="date"
+            value={dateFrom}
+            onChange={(e) => setDateFrom(e.target.value)}
+            className="rounded-lg border border-border bg-background px-2 py-1.5 text-xs"
+          />
+        </label>
+        <label className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+          To
+          <input
+            type="date"
+            value={dateTo}
+            onChange={(e) => setDateTo(e.target.value)}
+            className="rounded-lg border border-border bg-background px-2 py-1.5 text-xs"
+          />
+        </label>
+        {(dateFrom || dateTo) && (
+          <button
+            onClick={() => {
+              setDateFrom("");
+              setDateTo("");
+            }}
+            className="rounded-lg border border-border bg-background px-2 py-1.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground hover:text-foreground"
+          >
+            Clear dates
+          </button>
+        )}
       </div>
 
       {/* Bulk toolbar */}

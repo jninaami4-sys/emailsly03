@@ -194,6 +194,8 @@ export function ServicesCarousel() {
     staleTime: 60_000,
   });
 
+  const overrides = usePricingOverrides();
+
   const services = useMemo<Service[]>(() => {
     const raw = (siteContent as Record<string, { items?: EditableServiceCard[] } | undefined> | undefined)
       ?.service_cards?.items;
@@ -209,15 +211,21 @@ export function ServicesCarousel() {
               <img src={c.iconUrl} alt="" className={className} style={{ objectFit: "contain" }} />
             )
           : getServiceIcon(c.icon);
+        // Prices ALWAYS come from the canonical catalog + admin overrides so
+        // cards / order form / pricing page / invoices never drift.
+        const inCatalog = c.serviceId in SERVICE_CATALOG;
+        const price = inCatalog ? formatUnitPrice(c.serviceId, overrides) : c.price;
+        const perUnit = inCatalog ? formatPerUnit(c.serviceId, overrides) : c.perUnit;
+        const minOrder = inCatalog ? formatMinOrder(c.serviceId, overrides) : c.minOrder;
         return {
           serviceId: c.serviceId,
           title: c.title,
           tagline: c.tagline,
           badge: c.badge,
-          price: c.price,
-          perUnit: c.perUnit,
+          price,
+          perUnit,
           unit: c.unit ?? fb?.unit,
-          minOrder: c.minOrder,
+          minOrder,
           turnaround: c.turnaround,
           bullets: c.bullets,
           gradient: fb?.gradient ?? preset.gradient,
@@ -228,7 +236,8 @@ export function ServicesCarousel() {
           tiers: fb?.tiers,
         };
       });
-  }, [siteContent]);
+  }, [siteContent, overrides]);
+
 
 
   useEffect(() => {

@@ -27,12 +27,22 @@ export const Route = createFileRoute("/login")({
 });
 
 const credentials = z.object({
-  email: z.string().trim().email({ message: "Enter a valid email" }).max(255),
+  email: z
+    .string()
+    .trim()
+    .email({ message: "Enter a valid email" })
+    .max(255)
+    .refine((v) => !isDisposableEmail(v), { message: DISPOSABLE_EMAIL_MESSAGE }),
   password: z.string().min(6, { message: "At least 6 characters" }).max(72),
 });
 
 const forgotSchema = z.object({
-  email: z.string().trim().email({ message: "Enter a valid email" }).max(255),
+  email: z
+    .string()
+    .trim()
+    .email({ message: "Enter a valid email" })
+    .max(255)
+    .refine((v) => !isDisposableEmail(v), { message: DISPOSABLE_EMAIL_MESSAGE }),
 });
 
 type FieldErrors = { email?: string; password?: string };

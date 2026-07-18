@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { Product } from "@/lib/products";
 import { useCart } from "@/lib/cart";
-import { ArrowUpRight, Check, Globe, ShieldCheck, X, Eye } from "lucide-react";
+import { ArrowUpRight, Check, Globe, ShieldCheck, Eye } from "lucide-react";
 import { PremiumImageIcon, PremiumFileText } from "./PremiumIcons";
 import { ProductDetailsModal } from "./ProductDetailsModal";
 

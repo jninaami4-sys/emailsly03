@@ -183,32 +183,36 @@ function ResetPasswordPage() {
 
     setBusy(true);
     try {
-      const { error } = await supabase.auth.updateUser({ password });
-      if (error) {
-        const msg = error.message || "";
+      if (!resetToken) {
+        setLinkState("invalid");
+        setLinkMessage("Missing reset token. Please request a new link.");
+        return;
+      }
+      await authApi.resetPassword(resetToken, password);
+      setSuccess(true);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Something went wrong";
+      if (err instanceof ApiError) {
         if (/same_password|different from the old|should be different/i.test(msg)) {
           setErrors({ password: "New password must be different from your current password" });
         } else if (/weak|pwned|breach|leaked/i.test(msg)) {
           setErrors({ password: "This password has appeared in a data breach — choose a different one" });
-        } else if (/rate|too many|throttle/i.test(msg)) {
+        } else if (err.status === 429 || /rate|too many|throttle/i.test(msg)) {
           setErrors({ form: "Too many attempts. Please wait a moment and try again." });
-        } else if (/network|fetch|failed to fetch/i.test(msg)) {
-          setErrors({ form: "Network error — check your connection and try again." });
-        } else if (/expired|invalid|session|jwt|token/i.test(msg)) {
+        } else if (err.status === 400 || err.status === 401 || err.status === 410 || /expired|invalid|jwt|token/i.test(msg)) {
           setLinkState("expired");
-          setLinkMessage("Your reset session has expired. Please request a new link.");
+          setLinkMessage("Your reset link has expired or is invalid. Please request a new one.");
         } else {
           setErrors({ form: msg || "Something went wrong. Please try again." });
         }
-        return;
+      } else {
+        setErrors({ form: msg });
       }
-      setSuccess(true);
-    } catch (err) {
-      setErrors({ form: err instanceof Error ? err.message : "Something went wrong" });
     } finally {
       setBusy(false);
     }
   }
+
 
   const invalidLink = linkState === "invalid" || linkState === "expired" || linkState === "used";
 

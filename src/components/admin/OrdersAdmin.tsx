@@ -567,7 +567,7 @@ function CancelDialog({ order, onClose, onDone }: { order: any; onClose: () => v
   const shortId = order.short_id ?? `ORD-${String(order.id).slice(0, 8).toUpperCase()}`;
   const customer = order.customer_name || order.email?.split("@")[0] || "Guest";
   return (
-    <Modal onClose={onClose} title={`Cancel ${shortId}`}>
+    <Modal onClose={onClose} size="lg" title={`Cancel ${shortId}`}>
       <div className="mb-3 rounded-lg border border-border bg-background/50 p-2.5 text-xs">
         <div className="font-bold text-foreground">{customer}</div>
         <div className="text-muted-foreground">{order.email}</div>

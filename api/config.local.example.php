@@ -25,14 +25,20 @@ return [
     // CORS — allow your frontend origin(s). Use ['*'] to allow all.
     'CORS_ORIGINS'       => ['https://yourdomain.com'],
 
-    // SMTP (for OTP + reset emails). Leave SMTP_HOST empty to log codes to /api/logs/mail.log instead.
-    'SMTP_HOST'          => '',
+    // SMTP. Leave SMTP_HOST empty to log codes to /api/logs/mail.log instead.
+    // Point your MX / SMTP relay at the `mail.emailsly.com` subdomain and create
+    // the two mailboxes below. SMTP_FROM is the generic fallback; auth codes and
+    // order emails use their dedicated From address so deliverability is isolated.
+    'SMTP_HOST'          => '',                               // e.g. smtp.mail.emailsly.com
     'SMTP_PORT'          => 587,
-    'SMTP_USER'          => '',
-    'SMTP_PASS'          => '',
-    'SMTP_FROM'          => 'no-reply@yourdomain.com',
+    'SMTP_USER'          => '',                               // usually the full mailbox address
+    'SMTP_PASS'          => '',                               // add on the server, never commit
+    'SMTP_FROM'          => 'noreply@mail.emailsly.com',      // generic fallback
+    'SMTP_FROM_AUTH'     => 'noreply@mail.emailsly.com',      // OTP codes, verification, password reset
+    'SMTP_FROM_ORDERS'   => 'orders@mail.emailsly.com',       // order confirmation, invoice, status updates
     'SMTP_FROM_NAME'     => 'Emailsly',
     'SMTP_SECURE'        => 'tls', // '', 'tls', or 'ssl'
+
 
     // Stripe (server-only)
     'STRIPE_SECRET_KEY'    => '',

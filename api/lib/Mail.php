@@ -8,14 +8,28 @@ declare(strict_types=1);
  */
 final class Mail
 {
-    public static function send(string $to, string $subject, string $html, ?string $text = null): void
+    /**
+     * Send an email. $kind selects the From address:
+     *   'auth'   -> SMTP_FROM_AUTH   (OTP codes, verification links, password resets)
+     *   'orders' -> SMTP_FROM_ORDERS (order confirmation, invoice, status updates)
+     *   default  -> SMTP_FROM        (fallback / generic)
+     */
+    public static function send(string $to, string $subject, string $html, ?string $text = null, string $kind = 'auth'): void
     {
         if (defined('SMTP_HOST') && SMTP_HOST) {
-            self::sendSmtp($to, $subject, $html, $text);
+            self::sendSmtp($to, $subject, $html, $text, $kind);
         } else {
             self::log($to, $subject, $html);
         }
     }
+
+    private static function resolveFrom(string $kind): string
+    {
+        if ($kind === 'auth' && defined('SMTP_FROM_AUTH') && SMTP_FROM_AUTH) return SMTP_FROM_AUTH;
+        if ($kind === 'orders' && defined('SMTP_FROM_ORDERS') && SMTP_FROM_ORDERS) return SMTP_FROM_ORDERS;
+        return SMTP_FROM;
+    }
+
 
     private static function log(string $to, string $subject, string $html): void
     {
@@ -28,7 +42,7 @@ final class Mail
         );
     }
 
-    private static function sendSmtp(string $to, string $subject, string $html, ?string $text): void
+    private static function sendSmtp(string $to, string $subject, string $html, ?string $text, string $kind = 'auth'): void
     {
         $secure = defined('SMTP_SECURE') ? SMTP_SECURE : '';
         $host = ($secure === 'ssl') ? 'ssl://' . SMTP_HOST : SMTP_HOST;
@@ -59,8 +73,9 @@ final class Mail
             $cmd(base64_encode(SMTP_USER));
             $cmd(base64_encode(SMTP_PASS));
         }
-        $from = SMTP_FROM;
+        $from = self::resolveFrom($kind);
         $fromName = defined('SMTP_FROM_NAME') ? SMTP_FROM_NAME : $from;
+
         $cmd("MAIL FROM: <$from>");
         $cmd("RCPT TO: <$to>");
         $cmd('DATA');

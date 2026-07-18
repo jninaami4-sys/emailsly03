@@ -544,34 +544,9 @@ export function OrderBuilder() {
                 )}
 
                 {service.id === "apollo" && (
-                  <div className="mt-6 grid gap-4 sm:mt-8 md:grid-cols-2 md:gap-6">
-                    <div>
-                      <SectionLabel icon={PremiumZap} rightText="1st free · +$5 each extra">
-                        Apollo search URLs
-                      </SectionLabel>
-                      <div className="inline-flex items-center gap-4 rounded-xl border border-input bg-background px-2 py-2">
-                        <button
-                          type="button"
-                          onClick={() => setExtraUrls((n) => Math.max(1, n - 1))}
-                          className="grid size-9 place-items-center rounded-lg text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-                          aria-label="Decrease"
-                        >
-                          <PremiumMinus className="size-4" />
-                        </button>
-                        <span className="min-w-6 text-center font-mono text-lg font-bold">{extraUrls}</span>
-                        <button
-                          type="button"
-                          onClick={() => setExtraUrls((n) => n + 1)}
-                          className="grid size-9 place-items-center rounded-lg text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-                          aria-label="Increase"
-                        >
-                          <PremiumPlus className="size-4" />
-                        </button>
-                      </div>
-                    </div>
-
-                    <div>
-                      <span className="mb-2 block font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                  <div className="mt-6 space-y-6 sm:mt-8">
+                    <div className="rounded-2xl border border-border bg-secondary/40 p-4 sm:p-6">
+                      <span className="mb-3 block font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
                         Apollo search links
                       </span>
                       <div className="grid gap-3">
@@ -590,10 +565,38 @@ export function OrderBuilder() {
                                 setApolloUrls((prev) => prev.map((u, idx) => (idx === i ? e.target.value : u)))
                               }
                               placeholder="https://app.apollo.io/#/people?..."
-                              className="w-full rounded-xl bg-transparent py-3 pl-10 pr-4 font-mono text-sm outline-none placeholder:text-muted-foreground"
+                              className="w-full rounded-xl bg-transparent py-4 pl-10 pr-4 font-mono text-sm outline-none placeholder:text-muted-foreground"
                             />
                           </div>
                         ))}
+                      </div>
+                    </div>
+
+                    <div className="rounded-2xl border border-border bg-secondary/40 p-4 sm:p-6">
+                      <SectionLabel icon={PremiumZap} rightText="1st free · +$5 each extra">
+                        URLs quantity
+                      </SectionLabel>
+                      <div className="mt-4 flex w-full items-center justify-between gap-4 rounded-2xl border border-input bg-background px-4 py-3">
+                        <button
+                          type="button"
+                          onClick={() => setExtraUrls((n) => Math.max(1, n - 1))}
+                          className="grid size-11 place-items-center rounded-xl text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+                          aria-label="Decrease"
+                        >
+                          <PremiumMinus className="size-5" />
+                        </button>
+                        <div className="text-center">
+                          <span className="block font-display text-3xl font-bold tracking-tight">{extraUrls}</span>
+                          <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">search URLs</span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setExtraUrls((n) => n + 1)}
+                          className="grid size-11 place-items-center rounded-xl text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+                          aria-label="Increase"
+                        >
+                          <PremiumPremiumPlus className="size-5" />
+                        </button>
                       </div>
                     </div>
                   </div>

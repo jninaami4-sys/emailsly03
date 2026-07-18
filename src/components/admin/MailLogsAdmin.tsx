@@ -199,43 +199,41 @@ export function MailLogsAdmin() {
               </tr>
             </thead>
             <tbody>
-              {data.entries.map((e, i) => (
-                <>
-                  <tr key={i} onClick={() => setOpenIdx(openIdx === i ? null : i)}
-                    className="cursor-pointer border-b border-white/5 hover:bg-white/[0.03]">
-                    <td className="px-4 py-2.5 font-mono text-[11px] text-white/60">{e.ts ? new Date(e.ts).toLocaleString() : "—"}</td>
-                    <td className="px-4 py-2.5">{kindBadge(e.kind)}</td>
-                    <td className="px-4 py-2.5 font-mono text-[11px] text-white/70">{e.from || "—"}</td>
-                    <td className="px-4 py-2.5 text-white/90">{e.to || "—"}</td>
-                    <td className="px-4 py-2.5 text-white/80">{e.subject || "—"}</td>
-                    <td className="px-4 py-2.5 text-right font-mono text-[11px] text-white/50">{fmtBytes(e.bytes)}</td>
-                  </tr>
-                  {openIdx === i && (
-                    <tr key={`${i}-detail`} className="bg-black/40">
-                      <td colSpan={6} className="px-4 py-4">
-                        <div className="grid gap-4 lg:grid-cols-2">
-                          <div>
-                            <div className="mb-1 font-mono text-[10px] uppercase tracking-widest text-white/40">Text</div>
-                            <pre className="max-h-72 overflow-auto whitespace-pre-wrap rounded-lg border border-white/10 bg-black/40 p-3 text-[12px] text-white/80">{e.text || "(empty)"}</pre>
-                          </div>
-                          <div>
-                            <div className="mb-1 flex items-center justify-between">
-                              <span className="font-mono text-[10px] uppercase tracking-widest text-white/40">Rendered HTML</span>
-                              <span className="font-mono text-[10px] text-white/40">transport: {e.transport || "log"}</span>
-                            </div>
-                            <iframe
-                              title={`mail-${i}`}
-                              className="h-72 w-full rounded-lg border border-white/10 bg-white"
-                              sandbox=""
-                              srcDoc={e.html}
-                            />
-                          </div>
+              {data.entries.map((e, i) => [
+                <tr key={`row-${i}`} onClick={() => setOpenIdx(openIdx === i ? null : i)}
+                  className="cursor-pointer border-b border-white/5 hover:bg-white/[0.03]">
+                  <td className="px-4 py-2.5 font-mono text-[11px] text-white/60">{e.ts ? new Date(e.ts).toLocaleString() : "—"}</td>
+                  <td className="px-4 py-2.5">{kindBadge(e.kind)}</td>
+                  <td className="px-4 py-2.5 font-mono text-[11px] text-white/70">{e.from || "—"}</td>
+                  <td className="px-4 py-2.5 text-white/90">{e.to || "—"}</td>
+                  <td className="px-4 py-2.5 text-white/80">{e.subject || "—"}</td>
+                  <td className="px-4 py-2.5 text-right font-mono text-[11px] text-white/50">{fmtBytes(e.bytes)}</td>
+                </tr>,
+                openIdx === i ? (
+                  <tr key={`detail-${i}`} className="bg-black/40">
+                    <td colSpan={6} className="px-4 py-4">
+                      <div className="grid gap-4 lg:grid-cols-2">
+                        <div>
+                          <div className="mb-1 font-mono text-[10px] uppercase tracking-widest text-white/40">Text</div>
+                          <pre className="max-h-72 overflow-auto whitespace-pre-wrap rounded-lg border border-white/10 bg-black/40 p-3 text-[12px] text-white/80">{e.text || "(empty)"}</pre>
                         </div>
-                      </td>
-                    </tr>
-                  )}
-                </>
-              ))}
+                        <div>
+                          <div className="mb-1 flex items-center justify-between">
+                            <span className="font-mono text-[10px] uppercase tracking-widest text-white/40">Rendered HTML</span>
+                            <span className="font-mono text-[10px] text-white/40">transport: {e.transport || "log"}</span>
+                          </div>
+                          <iframe
+                            title={`mail-${i}`}
+                            className="h-72 w-full rounded-lg border border-white/10 bg-white"
+                            sandbox=""
+                            srcDoc={e.html}
+                          />
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                ) : null,
+              ])}
             </tbody>
           </table>
         )}

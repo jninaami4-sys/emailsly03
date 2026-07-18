@@ -123,7 +123,7 @@ function Consent() {
             type="button"
             disabled={busy}
             onClick={() => decide(true)}
-            className="flex-1 rounded-full bg-violet-500 hover:bg-violet-400 text-white px-4 py-2.5 text-sm font-medium disabled:opacity-60"
+            className="flex-1 rounded-full bg-blue-500 hover:bg-blue-400 text-white px-4 py-2.5 text-sm font-medium disabled:opacity-60"
           >
             {busy ? "Working…" : "Approve"}
           </button>

@@ -35,7 +35,7 @@ export const Route = createFileRoute("/sample-data")({
 
 const SOURCE_ACCENT: Record<string, string> = {
   apollo: "from-blue-500/20 to-indigo-500/20 border-blue-400/30",
-  linkedin: "from-indigo-500/20 to-violet-500/20 border-indigo-400/30",
+  linkedin: "from-indigo-500/20 to-blue-500/20 border-indigo-400/30",
   zoominfo: "from-amber-500/20 to-orange-500/20 border-amber-400/30",
 };
 
@@ -206,7 +206,7 @@ function SampleDataPage() {
 
         {/* LinkedIn spotlight */}
         <section className="px-6 pb-24">
-          <div className="mx-auto max-w-7xl overflow-hidden rounded-[32px] border border-indigo-400/20 bg-gradient-to-br from-indigo-500/10 via-violet-500/5 to-transparent p-8 backdrop-blur-xl md:p-12">
+          <div className="mx-auto max-w-7xl overflow-hidden rounded-[32px] border border-indigo-400/20 bg-gradient-to-br from-indigo-500/10 via-blue-500/5 to-transparent p-8 backdrop-blur-xl md:p-12">
             <div className="grid gap-8 md:grid-cols-[minmax(0,1fr)_320px] md:items-center">
               <div>
                 <div className="font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-indigo-300">

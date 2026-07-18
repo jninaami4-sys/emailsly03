@@ -47,7 +47,7 @@ function StatusBadge({ status }: { status: string }) {
   const styles: Record<string, string> = {
     pending: "bg-amber-500/10 text-amber-400 border-amber-500/30",
     qualified: "bg-sky-500/10 text-sky-400 border-sky-500/30",
-    rewarded: "bg-violet-500/10 text-violet-300 border-violet-500/30",
+    rewarded: "bg-blue-500/10 text-blue-300 border-blue-500/30",
     paid_out: "bg-emerald-500/10 text-emerald-400 border-emerald-500/30",
     cancelled: "bg-rose-500/10 text-rose-400 border-rose-500/30",
   };
@@ -170,7 +170,7 @@ export function ReferralsAdmin() {
 
   const statCards = useMemo(
     () => [
-      { label: "Total referrals", value: s?.total ?? 0, icon: Users, tint: "text-violet-400" },
+      { label: "Total referrals", value: s?.total ?? 0, icon: Users, tint: "text-blue-400" },
       { label: "Flagged", value: s?.byReview?.flagged ?? 0, icon: ShieldAlert, tint: "text-orange-400" },
       { label: "Outstanding reward", value: money(s?.outstandingCents ?? 0), icon: Wallet, tint: "text-amber-400" },
       { label: "Paid out", value: money(s?.paidOutCents ?? 0), icon: DollarSign, tint: "text-emerald-400" },
@@ -236,7 +236,7 @@ export function ReferralsAdmin() {
               <button
                 key={d}
                 onClick={() => setFunnelDays(d)}
-                className={`rounded border px-2 py-0.5 font-mono text-[10px] uppercase ${funnelDays === d ? "border-violet bg-violet/20 text-violet-200" : "border-border bg-background text-muted-foreground hover:bg-secondary"}`}
+                className={`rounded border px-2 py-0.5 font-mono text-[10px] uppercase ${funnelDays === d ? "border-violet bg-violet/20 text-blue-200" : "border-border bg-background text-muted-foreground hover:bg-secondary"}`}
               >
                 {d}d
               </button>
@@ -245,7 +245,7 @@ export function ReferralsAdmin() {
         </div>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           <FunnelCard icon={MousePointerClick} label="Clicks" value={f?.clicks ?? 0} tint="text-sky-400" />
-          <FunnelCard icon={UserPlus} label="Signups" value={f?.signups ?? 0} tint="text-violet-400" />
+          <FunnelCard icon={UserPlus} label="Signups" value={f?.signups ?? 0} tint="text-blue-400" />
           <FunnelCard icon={CreditCard} label="Paid conversions" value={f?.paid_conversions ?? 0} tint="text-amber-400" />
           <FunnelCard icon={DollarSign} label="Credits outstanding" value={money(f?.credits_outstanding_cents ?? 0)} tint="text-emerald-400" />
         </div>
@@ -293,7 +293,7 @@ export function ReferralsAdmin() {
                       <div className="text-sm">{r.full_name || r.email}</div>
                       <div className="text-[10px] text-muted-foreground">
                         {r.email}{" "}
-                        {r.referral_code && <span className="text-violet-300">· {r.referral_code}</span>}
+                        {r.referral_code && <span className="text-blue-300">· {r.referral_code}</span>}
                       </div>
                     </td>
                     <td className="py-1.5 text-right font-mono text-xs">{r.conversions}</td>
@@ -332,7 +332,7 @@ export function ReferralsAdmin() {
               key={st}
               onClick={() => setStatus(st)}
               className={`rounded-md border px-2.5 py-1 font-mono text-[10px] font-semibold uppercase tracking-wider transition-colors ${
-                status === st ? "border-violet bg-violet/20 text-violet-200" : "border-border bg-background text-muted-foreground hover:bg-secondary"
+                status === st ? "border-violet bg-violet/20 text-blue-200" : "border-border bg-background text-muted-foreground hover:bg-secondary"
               }`}
             >
               {st.replace("_", " ")}
@@ -399,7 +399,7 @@ export function ReferralsAdmin() {
                       <div className="font-medium">{r.referrer?.full_name || r.referrer?.email || "—"}</div>
                       <div className="text-xs text-muted-foreground">{r.referrer?.email}</div>
                       {r.referrer?.referral_code && (
-                        <div className="mt-0.5 font-mono text-[10px] text-violet-300">code: {r.referrer.referral_code}</div>
+                        <div className="mt-0.5 font-mono text-[10px] text-blue-300">code: {r.referrer.referral_code}</div>
                       )}
                     </td>
                     <td className="px-2 py-3 text-muted-foreground">
@@ -541,7 +541,7 @@ function ReferrerChainPanel({ referrerId, chainFn }: { referrerId: string; chain
     <div>
       <div className="mb-2 text-xs text-muted-foreground">
         Full chain for <span className="font-semibold text-foreground">{c.referrer.email}</span>
-        {c.referrer.referral_code && <span className="ml-1 font-mono text-violet-300">· {c.referrer.referral_code}</span>}
+        {c.referrer.referral_code && <span className="ml-1 font-mono text-blue-300">· {c.referrer.referral_code}</span>}
       </div>
       <div className="space-y-2">
         {c.referrals.map((r) => (

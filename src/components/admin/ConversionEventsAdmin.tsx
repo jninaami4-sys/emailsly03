@@ -332,7 +332,7 @@ function EventEditor({
         />
         <ProviderBlock
           title="TikTok Pixel"
-          accent="text-pink-500 bg-pink-500/10"
+          accent="text-blue-500 bg-blue-500/10"
           name={draft.tiktok_event_name}
           onName={(v) => set("tiktok_event_name", v)}
           params={draft.tiktok_params_text}

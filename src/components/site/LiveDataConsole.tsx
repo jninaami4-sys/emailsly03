@@ -14,7 +14,7 @@ const SOURCE_META: Record<SourceKey, { label: string; dot: string }> = {
 
 const SOURCE_ACCENTS: Record<SourceKey, string> = {
   apollo: "from-blue-500 to-indigo-600",
-  linkedin: "from-indigo-500 to-violet-600",
+  linkedin: "from-indigo-500 to-blue-600",
   zoominfo: "from-amber-500 to-orange-600",
 };
 

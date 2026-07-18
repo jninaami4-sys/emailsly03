@@ -1,0 +1,11 @@
+REVOKE EXECUTE ON FUNCTION public.handle_new_user() FROM anon, authenticated, PUBLIC;
+REVOKE EXECUTE ON FUNCTION public.orders_qualify_referral() FROM anon, authenticated, PUBLIC;
+REVOKE EXECUTE ON FUNCTION public.referrals_issue_credits() FROM anon, authenticated, PUBLIC;
+REVOKE EXECUTE ON FUNCTION public.profiles_create_pending_referral() FROM anon, authenticated, PUBLIC;
+REVOKE EXECUTE ON FUNCTION public.pricing_settings_log_change() FROM anon, authenticated, PUBLIC;
+REVOKE EXECUTE ON FUNCTION public.support_ticket_touch_last_message() FROM anon, authenticated, PUBLIC;
+REVOKE EXECUTE ON FUNCTION public.reviews_touch_approved_at() FROM anon, authenticated, PUBLIC;
+REVOKE EXECUTE ON FUNCTION public.set_updated_at() FROM anon, authenticated, PUBLIC;
+REVOKE EXECUTE ON FUNCTION public.touch_blog_seo_overrides_updated_at() FROM anon, authenticated, PUBLIC;
+REVOKE EXECUTE ON FUNCTION public.generate_referral_code() FROM anon, authenticated, PUBLIC;
+REVOKE EXECUTE ON FUNCTION public.profiles_set_referral_code() FROM anon, authenticated, PUBLIC;

@@ -104,5 +104,9 @@ try {
   if (t === 'light') document.documentElement.classList.add('site-light');
   else document.documentElement.classList.remove('site-light');
   document.documentElement.dataset.theme = t;
+  var c = t === 'light' ? '#fdfcff' : '#0a0b14';
+  var m = document.querySelector('meta[name="theme-color"]');
+  if (!m) { m = document.createElement('meta'); m.setAttribute('name', 'theme-color'); document.head.appendChild(m); }
+  m.setAttribute('content', c);
 } catch (e) {}
 `;

@@ -11,6 +11,7 @@ import { ConversionEventsAdmin } from "@/components/admin/ConversionEventsAdmin"
 import { DebugModeAdmin } from "@/components/admin/DebugModeAdmin";
 import { ServerTrackingAdmin } from "@/components/admin/ServerTrackingAdmin";
 import { ProductDetailsAdmin } from "@/components/admin/ProductDetailsAdmin";
+import { ProductsAdmin } from "@/components/admin/ProductsAdmin";
 import { ChatbotAdmin } from "@/components/admin/ChatbotAdmin";
 import { ReviewsAdmin } from "@/components/admin/ReviewsAdmin";
 import { ContactLeadsAdmin } from "@/components/admin/ContactLeadsAdmin";

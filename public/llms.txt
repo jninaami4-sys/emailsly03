@@ -1,0 +1,31 @@
+# EmailsLy
+
+> Verified B2B lead data on demand. EmailsLy delivers clean, ready-to-use contact exports from Apollo, ZoomInfo, and LinkedIn — straight to your CRM in 24 hours. No subscriptions, no manual cleaning, pay only for what you need.
+
+## Pages
+
+- [Home](/): Verified B2B leads from Apollo, ZoomInfo & LinkedIn delivered in 24 hours.
+- [About](/about): Who EmailsLy is for, data accuracy claims, and company background.
+- [Pricing](/pricing): Transparent per-lead and flat-rate pricing with no hidden fees.
+- [Lead Store](/store): Prebuilt, verified B2B lead lists available for instant download.
+- [Blog](/blog): Field-tested playbooks on cold email deliverability, B2B data, ICP scoring, and RevOps.
+- [Contact](/contact): Get in touch with the EmailsLy team.
+- [Track Order](/track-order): Look up order status by order ID or email.
+- [Sample Data](/sample-data): Preview free lead list samples before buying.
+
+## Products & Services
+
+- Apollo lead exports — bulk B2B contact CSVs from Apollo search filters.
+- ZoomInfo lead exports — verified executive and company data.
+- LinkedIn Sales Navigator lead exports — targeted prospect lists.
+- Manual lead research — 100% human-verified custom ICP research.
+- Prebuilt lead lists — SaaS founders, Shopify Plus owners, Fortune 1000 execs, startup founders, real estate agents, healthcare providers, and more.
+
+## Key Facts
+
+- 100M+ verified B2B contacts sourced.
+- 99% data accuracy rate.
+- 24-hour average delivery time.
+- Delivery format: clean, ready-to-import CSV.
+- Payment methods: card, bank transfer, and crypto.
+- Built for sales teams, agencies, recruiters, and founders.

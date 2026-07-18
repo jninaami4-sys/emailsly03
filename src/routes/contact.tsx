@@ -44,7 +44,11 @@ function Contact() {
     };
     setSubmitting(true);
     setError(null);
-    try {
+    if (isDisposableEmail(payload.email)) {
+      setError(DISPOSABLE_EMAIL_MESSAGE);
+      setSubmitting(false);
+      return;
+    }
       await submit({ data: payload });
       setSent(true);
     } catch (err) {

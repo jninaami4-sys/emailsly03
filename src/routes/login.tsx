@@ -5,7 +5,7 @@ import { authApi, ApiError } from "@/lib/api-client";
 import { useAuth } from "@/hooks/use-auth";
 import { isDisposableEmail, DISPOSABLE_EMAIL_MESSAGE } from "@/lib/disposable-emails";
 import { ArrowRight, Loader2, Mail, Lock, ShieldCheck, Zap, BadgeCheck, Eye, EyeOff, AlertCircle, CheckCircle2, ArrowLeft } from "lucide-react";
-import { PremiumSparkles as Sparkles } from "@/components/site/PremiumIcons";
+
 import { useSiteContent } from "@/hooks/use-site-content";
 
 

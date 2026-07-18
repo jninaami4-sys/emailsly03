@@ -8,14 +8,28 @@ declare(strict_types=1);
  */
 final class Mail
 {
-    public static function send(string $to, string $subject, string $html, ?string $text = null): void
+    /**
+     * Send an email. $kind selects the From address:
+     *   'auth'   -> SMTP_FROM_AUTH   (OTP codes, verification links, password resets)
+     *   'orders' -> SMTP_FROM_ORDERS (order confirmation, invoice, status updates)
+     *   default  -> SMTP_FROM        (fallback / generic)
+     */
+    public static function send(string $to, string $subject, string $html, ?string $text = null, string $kind = 'auth'): void
     {
         if (defined('SMTP_HOST') && SMTP_HOST) {
-            self::sendSmtp($to, $subject, $html, $text);
+            self::sendSmtp($to, $subject, $html, $text, $kind);
         } else {
             self::log($to, $subject, $html);
         }
     }
+
+    private static function resolveFrom(string $kind): string
+    {
+        if ($kind === 'auth' && defined('SMTP_FROM_AUTH') && SMTP_FROM_AUTH) return SMTP_FROM_AUTH;
+        if ($kind === 'orders' && defined('SMTP_FROM_ORDERS') && SMTP_FROM_ORDERS) return SMTP_FROM_ORDERS;
+        return SMTP_FROM;
+    }
+
 
     private static function log(string $to, string $subject, string $html): void
     {

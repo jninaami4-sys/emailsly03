@@ -512,7 +512,7 @@ function DeliverDialog({ order, onClose, onDone }: { order: any; onClose: () => 
   const shortId = order.short_id ?? `ORD-${String(order.id).slice(0, 8).toUpperCase()}`;
   const customer = order.customer_name || order.email?.split("@")[0] || "Guest";
   return (
-    <Modal onClose={onClose} title={`Deliver ${shortId}`}>
+    <Modal onClose={onClose} size="lg" title={`Deliver ${shortId}`}>
       <div className="mb-3 rounded-lg border border-border bg-background/50 p-2.5 text-xs">
         <div className="font-bold text-foreground">{customer}</div>
         <div className="text-muted-foreground">{order.email}</div>
@@ -567,7 +567,7 @@ function CancelDialog({ order, onClose, onDone }: { order: any; onClose: () => v
   const shortId = order.short_id ?? `ORD-${String(order.id).slice(0, 8).toUpperCase()}`;
   const customer = order.customer_name || order.email?.split("@")[0] || "Guest";
   return (
-    <Modal onClose={onClose} title={`Cancel ${shortId}`}>
+    <Modal onClose={onClose} size="lg" title={`Cancel ${shortId}`}>
       <div className="mb-3 rounded-lg border border-border bg-background/50 p-2.5 text-xs">
         <div className="font-bold text-foreground">{customer}</div>
         <div className="text-muted-foreground">{order.email}</div>
@@ -617,11 +617,12 @@ function MagicLinkButton({ email }: { email: string }) {
   );
 }
 
-function Modal({ children, title, onClose }: { children: React.ReactNode; title: string; onClose: () => void }) {
+function Modal({ children, title, onClose, size = "md" }: { children: React.ReactNode; title: string; onClose: () => void; size?: "md" | "lg" | "xl" }) {
+  const width = size === "xl" ? "max-w-5xl" : size === "lg" ? "max-w-2xl" : "max-w-md";
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4" onClick={onClose}>
-      <div className="max-h-[90vh] w-full max-w-md overflow-y-auto rounded-2xl border border-border bg-card p-5 shadow-xl" onClick={(e) => e.stopPropagation()}>
-        <h3 className="mb-3 font-display text-lg font-bold">{title}</h3>
+      <div className={`max-h-[92vh] w-full ${width} overflow-y-auto rounded-2xl border border-border bg-card p-6 shadow-xl`} onClick={(e) => e.stopPropagation()}>
+        <h3 className="mb-4 font-display text-lg font-bold">{title}</h3>
         {children}
       </div>
     </div>
@@ -697,7 +698,7 @@ function OrderFormDialog({
   });
 
   return (
-    <Modal onClose={onClose} title={isEdit ? `Edit ${order.short_id ?? "order"}` : "Create order"}>
+    <Modal onClose={onClose} size="xl" title={isEdit ? `Edit ${order.short_id ?? "order"}` : "Create order"}>
       <div className="grid gap-2.5 text-xs">
         <Field label="Customer email" required>
           <input value={form.email} onChange={(e) => set("email", e.target.value)} type="email" className={inp} placeholder="client@example.com" />

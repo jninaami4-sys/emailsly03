@@ -18,21 +18,33 @@ const THEME_COLORS: Record<SiteTheme, string> = {
   dark: "#0a0b14",
 };
 
-function ensureThemeColorMeta(): HTMLMetaElement {
-  let el = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
+function ensureMeta(name: string): HTMLMetaElement {
+  let el = document.querySelector<HTMLMetaElement>(`meta[name="${name}"]`);
   if (!el) {
     el = document.createElement("meta");
-    el.name = "theme-color";
+    el.setAttribute("name", name);
     document.head.appendChild(el);
   }
   return el;
 }
 
+/** iOS Safari only recognizes: default | black | black-translucent. */
+const IOS_STATUS_STYLE: Record<SiteTheme, string> = {
+  light: "default",
+  dark: "black-translucent",
+};
+
 function apply(theme: SiteTheme) {
   const root = document.documentElement;
   root.classList.toggle("site-light", theme === "light");
   root.dataset.theme = theme;
-  ensureThemeColorMeta().setAttribute("content", THEME_COLORS[theme]);
+  const color = THEME_COLORS[theme];
+  ensureMeta("theme-color").setAttribute("content", color);
+  ensureMeta("apple-mobile-web-app-status-bar-style").setAttribute("content", IOS_STATUS_STYLE[theme]);
+  ensureMeta("apple-mobile-web-app-capable").setAttribute("content", "yes");
+  ensureMeta("mobile-web-app-capable").setAttribute("content", "yes");
+  ensureMeta("msapplication-navbutton-color").setAttribute("content", color);
+  ensureMeta("color-scheme").setAttribute("content", theme === "light" ? "light" : "dark");
 }
 
 export function useTheme() {

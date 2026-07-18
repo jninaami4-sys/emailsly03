@@ -60,10 +60,12 @@ export function Header() {
   const cartLabel = count > 0 ? `Open cart, ${count} item${count === 1 ? "" : "s"}` : "Open cart";
 
   function handleLogoClick(e: React.MouseEvent<HTMLAnchorElement>) {
-    if (pathname === "/") {
-      e.preventDefault();
-      window.scrollTo({ top: 0, behavior: "smooth" });
+    e.preventDefault();
+    setMobileOpen(false);
+    if (pathname !== "/") {
+      navigate({ to: "/", replace: true });
     }
+    window.scrollTo({ top: 0, behavior: "instant" });
   }
 
   return (

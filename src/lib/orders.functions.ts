@@ -130,6 +130,7 @@ export const recordMyOrder = createServerFn({ method: "POST" })
   )
   .handler(async ({ context, data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { computePromoDiscountCents } = await import("@/lib/promos.functions");
     const sb = supabaseAdmin as any;
     const email = (context.claims as { email?: string }).email ?? "";
     // idempotency: payment_ref
@@ -139,6 +140,14 @@ export const recordMyOrder = createServerFn({ method: "POST" })
       .eq("payment_ref", data.payment_ref)
       .maybeSingle();
     if (existing) return { ok: true, id: existing.id, duplicate: true, credit_spent_cents: 0 };
+
+    // Re-validate promo server-side; never trust client-supplied discount amount.
+    const { discountCents: trustedDiscount, normalizedCode } = computePromoDiscountCents(
+      data.promo_code ?? null,
+      data.subtotal_cents,
+    );
+    const cappedDiscount = Math.min(trustedDiscount, data.subtotal_cents);
+
     const { data: row, error } = await sb
       .from("orders")
       .insert({
@@ -148,8 +157,8 @@ export const recordMyOrder = createServerFn({ method: "POST" })
         service_label: data.service_label,
         quantity: data.quantity,
         subtotal_cents: data.subtotal_cents,
-        discount_cents: data.discount_cents,
-        promo_code: data.promo_code ?? null,
+        discount_cents: cappedDiscount,
+        promo_code: normalizedCode,
         total_cents: data.total_cents,
         currency: data.currency,
         status: "pending",
@@ -160,6 +169,7 @@ export const recordMyOrder = createServerFn({ method: "POST" })
       .select("id")
       .single();
     if (error) throw new Error(error.message);
+
     await sb.from("order_events").insert({
       order_id: row.id,
       actor_id: context.userId,

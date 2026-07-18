@@ -386,6 +386,7 @@ function AdminPage() {
         { id: "import-legacy-orders", label: "Import Legacy Orders", desc: "Bulk-import old orders from a CSV file.", icon: Users, keywords: "import legacy orders csv old" },
         { id: "backup-restore", label: "Backup / Restore", desc: "Download or restore a JSON backup of site data.", icon: Database, keywords: "backup restore json export" },
         { id: "email-test", label: "Email Diagnostics", desc: "Send test emails through each SMTP sender.", icon: Mail, keywords: "email smtp test diagnostics deliverability" },
+        { id: "mail-logs", label: "Mail Log", desc: "Recent auth & order email sends with metadata and preview.", icon: Mail, keywords: "mail log emails sent history outbox" },
       ],
     },
   ];

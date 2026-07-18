@@ -34,6 +34,7 @@ $routes = [
     ['POST',   '#^/admin/test-email$#',             'admin/test_email.php'],
     ['GET',    '#^/admin/mail-logs$#',              'admin/mail_logs.php'],
     ['DELETE', '#^/admin/mail-logs$#',              'admin/mail_logs_clear.php'],
+    ['GET',    '#^/admin/dns-check$#',              'admin/dns_check.php'],
 
     // Uploads
     ['POST',   '#^/uploads$#',                      'uploads/upload.php'],

@@ -257,6 +257,12 @@ export const authApi = {
 
 // -------- Orders (customer) --------
 export const ordersApi = {
+  track: (query: string) =>
+    api<{ order: any; stageIndex: number; stages?: any[] }>(
+      `/api/public/track`,
+      { method: "POST", body: { query }, auth: false },
+    ),
+
   list: (query?: { from?: string; to?: string; status?: string }) =>
     g<{ orders: any[] }>("/api/orders", query),
   get: (id: string) => g<{ order: any }>(`/api/orders/${id}`),

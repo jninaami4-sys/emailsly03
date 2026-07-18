@@ -965,15 +965,7 @@ function ProfileTab() {
   const save = useMutation({
     mutationFn: () => updateFn({ data: { ...form, avatar_url: avatarUrl ?? null } }),
     onSuccess: async () => {
-      // Keep auth.user_metadata in sync so components that read it
-      // (chatbot prefill, review modal, etc.) reflect the new name/avatar.
-      try {
-        await supabase.auth.updateUser({
-          data: { full_name: form.full_name, avatar_url: avatarUrl ?? null },
-        });
-      } catch {
-        /* non-fatal — profile row is the source of truth */
-      }
+      // Profile row (via PHP API) is the source of truth for full_name / avatar.
       qc.invalidateQueries({ queryKey: ["my-profile"] });
     },
   });

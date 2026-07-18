@@ -158,32 +158,23 @@ export function ChatbotWidget() {
       .catch(() => setKb([]));
   }, [cfgFn, kbFn]);
 
-  // Prefill from Supabase auth + live profile row (reacts to realtime edits)
+  // Prefill from PHP-API auth + live profile row
   const { data: profile } = useMyProfile();
+  const { user } = useAuth();
   useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      try {
-        const { data } = await supabase.auth.getUser();
-        const u = data.user;
-        if (!cancelled && u?.email) {
-          const meta = (u.user_metadata || {}) as Record<string, string>;
-          const displayName =
-            (profile?.full_name as string | undefined) ||
-            meta.full_name ||
-            meta.name ||
-            meta.display_name ||
-            u.email.split("@")[0];
-          if (!name) setName(displayName);
-          if (!email) setEmail(u.email);
-        }
-      } catch {}
-      if (!cancelled) setAuthChecked(true);
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [profile?.full_name]); // eslint-disable-line react-hooks/exhaustive-deps
+    if (user?.email) {
+      const meta = (user.user_metadata || {}) as Record<string, string>;
+      const displayName =
+        (profile?.full_name as string | undefined) ||
+        meta.full_name ||
+        (meta as Record<string, string>).name ||
+        (meta as Record<string, string>).display_name ||
+        user.email.split("@")[0];
+      if (!name) setName(displayName);
+      if (!email) setEmail(user.email);
+    }
+    setAuthChecked(true);
+  }, [profile?.full_name, user?.email]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Bootstrap session on open
   useEffect(() => {
@@ -227,48 +218,35 @@ export function ChatbotWidget() {
     }
   }, [open, authChecked]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Realtime — subscribe to admin/bot messages
+  // Poll for new messages + conversation status (Supabase realtime removed
+  // as part of the PHP migration). Every 4s while the widget is open.
   useEffect(() => {
     if (!conversationId) return;
-    const channel = supabase
-      .channel(`chatbot:${conversationId}`)
-      .on(
-        "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "chatbot_messages",
-          filter: `conversation_id=eq.${conversationId}`,
-        },
-        (payload) => {
-          const row = payload.new as ChatMessage;
-          setMessages((prev) => {
-            if (prev.find((m) => (m as any).id === row.id)) return prev;
-            // Skip user echoes (we already appended optimistically)
-            if (row.sender === "user") return prev;
-            return [...prev, row];
-          });
-        },
-      )
-      .on(
-        "postgres_changes",
-        {
-          event: "UPDATE",
-          schema: "public",
-          table: "chatbot_conversations",
-          filter: `id=eq.${conversationId}`,
-        },
-        (payload) => {
-          const status = (payload.new as any).status;
-          setLiveStatus(status);
-          if (status === "live") setScreen({ name: "live" });
-        },
-      )
-      .subscribe();
-    return () => {
-      supabase.removeChannel(channel);
+    let cancelled = false;
+    const tick = async () => {
+      if (cancelled || !sessionId) return;
+      try {
+        const rows = await listMsgFn({ data: { sessionId } });
+        setMessages((prev) => {
+          // Merge new rows we haven't seen yet
+          const seen = new Set(prev.map((m) => (m as { id?: string }).id).filter(Boolean));
+          const merged = [...prev];
+          for (const r of rows) {
+            const id = (r as { id?: string }).id;
+            if (id && !seen.has(id)) merged.push(r);
+          }
+          return merged;
+        });
+      } catch {
+        /* ignore transient errors */
+      }
     };
-  }, [conversationId]);
+    const iv = window.setInterval(tick, 4000);
+    return () => {
+      cancelled = true;
+      window.clearInterval(iv);
+    };
+  }, [conversationId, sessionId, listMsgFn]);
 
   // Auto-scroll
   useEffect(() => {

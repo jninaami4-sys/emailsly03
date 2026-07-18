@@ -22,6 +22,32 @@ export const Route = createFileRoute("/pricing")({
       },
       ...ogImageMeta(OG_IMAGES.pricing),
     ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          name: "Pricing — EmailsLy",
+          url: "/pricing",
+          description:
+            "Transparent per-lead and flat-rate pricing. No hidden fees, no subscriptions.",
+          mainEntity: {
+            "@type": "Service",
+            name: "EmailsLy B2B Lead Data",
+            provider: { "@type": "Organization", name: "EmailsLy" },
+            areaServed: "Worldwide",
+            offers: {
+              "@type": "AggregateOffer",
+              priceCurrency: "USD",
+              lowPrice: "49",
+              highPrice: "249",
+              offerCount: "4",
+            },
+          },
+        }),
+      },
+    ],
   }),
   component: Pricing,
 });

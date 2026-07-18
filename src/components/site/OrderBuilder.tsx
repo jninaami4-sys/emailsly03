@@ -513,29 +513,35 @@ export function OrderBuilder() {
                       <input
                         type="range"
                         min={service.minQty}
-                        max={1_000_000}
-                        step={Math.max(Math.round(service.minQty / 20), 1)}
+                        max={service.unit === "mailboxes" ? 100 : 1_000_000}
+                        step={service.unit === "mailboxes" ? 1 : Math.max(Math.round(service.minQty / 20), 1)}
                         value={effectiveQty}
                         onChange={(e) => setQuantity(Number(e.target.value))}
                         className="mt-4 w-full accent-violet"
                         aria-label="Quantity"
                       />
                       <div className="mt-4 flex flex-wrap gap-1.5">
-                        {QTY_PRESETS.filter((q) => q >= service.minQty).map((q) => (
-                          <button
-                            key={q}
-                            type="button"
-                            onClick={() => setQuantity(q)}
-                            className={`rounded-full px-3 py-1.5 font-mono text-[11px] font-bold uppercase transition-all ${
-                              effectiveQty === q
-                                ? "bg-violet text-white shadow-sm shadow-violet/30"
-                                : "bg-background text-muted-foreground hover:bg-secondary hover:text-foreground"
-                            }`}
-                          >
-                            {formatCompact(q)}
-                          </button>
-                        ))}
+                        {(service.unit === "mailboxes"
+                          ? [2, 5, 10, 20, 50, 100]
+                          : QTY_PRESETS
+                        )
+                          .filter((q) => q >= service.minQty)
+                          .map((q) => (
+                            <button
+                              key={q}
+                              type="button"
+                              onClick={() => setQuantity(q)}
+                              className={`rounded-full px-3 py-1.5 font-mono text-[11px] font-bold uppercase transition-all ${
+                                effectiveQty === q
+                                  ? "bg-violet text-white shadow-sm shadow-violet/30"
+                                  : "bg-background text-muted-foreground hover:bg-secondary hover:text-foreground"
+                              }`}
+                            >
+                              {service.unit === "mailboxes" ? q.toString() : formatCompact(q)}
+                            </button>
+                          ))}
                       </div>
+
                     </div>
 
                     <div className="mt-6 sm:mt-8">

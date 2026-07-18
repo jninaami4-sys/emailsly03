@@ -12,7 +12,8 @@
     "format": "prettier --write .",
     "vr:snapshot": "node visual-regression/run.mjs snapshot",
     "vr:compare": "node visual-regression/run.mjs compare",
-    "vr:update": "VR_UPDATE=1 node visual-regression/run.mjs compare"
+    "vr:update": "VR_UPDATE=1 node visual-regression/run.mjs compare",
+    "check:mobile": "python3 scripts/check_mobile_overflow.py"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

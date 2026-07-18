@@ -4,6 +4,7 @@ import { CheckCircle2, Download, Printer, ArrowRight, Mail, ShieldCheck, Clock }
 import { PremiumSparkles as Sparkles } from "@/components/site/PremiumIcons";
 import { PremiumLogoMark } from "@/components/site/PremiumIcons";
 import { EmailslyLoaderInline } from "@/components/site/EmailslyLoaderInline";
+import emailslyLogo from "@/assets/emailsly-logo-trim.png.asset.json";
 import { useServerFn } from "@tanstack/react-start";
 import { recordMyOrder } from "@/lib/orders.functions";
 import { useAuth } from "@/hooks/use-auth";
@@ -477,11 +478,14 @@ function Invoice(props: {
         {/* Left: brand + billing */}
         <div className="min-w-0">
           <div className="flex items-center gap-3">
-            <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-violet to-indigo text-white shadow-md">
-              <PremiumLogoMark className="size-6" />
-            </div>
+            <img
+              src={emailslyLogo.url}
+              alt="EmailsLy"
+              crossOrigin="anonymous"
+              className="block h-10 w-auto max-w-[160px] object-contain select-none"
+              draggable={false}
+            />
             <div className="min-w-0">
-              <div className="font-display text-lg font-bold leading-none">EmailsLy</div>
               <div className="text-[11px] uppercase tracking-widest text-neutral-500">
                 Official Receipt
               </div>
@@ -500,11 +504,11 @@ function Invoice(props: {
               <div className="mb-1 font-mono text-[10px] font-semibold uppercase tracking-widest text-neutral-400">
                 From
               </div>
-              <div className="font-semibold">EmailsLy, Inc.</div>
+              <div className="font-semibold">EmailsLy</div>
               <div className="text-neutral-600">
-                548 Market St #92384
+                House 42, Road 11, Banani
                 <br />
-                San Francisco, CA 94104
+                Dhaka 1213, Bangladesh
               </div>
             </div>
           </div>
@@ -804,9 +808,8 @@ function buildReceiptHtml(r: {
     <div class="pad">
       <div class="row">
         <div class="brand">
-          <div class="mark">L</div>
+          <img src="${window.location.origin}${emailslyLogo.url}" alt="EmailsLy" style="height:40px;width:auto;object-fit:contain;" />
           <div>
-            <h1>EmailsLy</h1>
             <div class="muted">Official Receipt</div>
           </div>
         </div>
@@ -825,8 +828,8 @@ function buildReceiptHtml(r: {
         </div>
         <div>
           <div class="muted">From</div>
-          <div style="font-weight:600; margin-top:4px;">EmailsLy, Inc.</div>
-          <div style="color:#4b5563;">548 Market St #92384<br />San Francisco, CA 94104</div>
+          <div style="font-weight:600; margin-top:4px;">EmailsLy</div>
+          <div style="color:#4b5563;">House 42, Road 11, Banani<br />Dhaka 1213, Bangladesh</div>
         </div>
         <div>
           <div class="muted">Order #</div>

@@ -78,14 +78,12 @@ export function BlogSeoAdmin() {
     setSaved(null);
     try {
       await upsertFn({
-        data: {
           slug: post.slug,
           meta_description: draft.meta_description.trim() || null,
           canonical_url: draft.canonical_url.trim() || null,
           og_image: draft.og_image.trim() || null,
           social_title: draft.social_title.trim() || null,
-        },
-      });
+        });
       await refetch();
       setSaved("Saved");
       setTimeout(() => setSaved(null), 2000);
@@ -100,7 +98,7 @@ export function BlogSeoAdmin() {
     if (!confirm("Remove overrides and restore defaults for this post?")) return;
     setBusy(true);
     try {
-      await resetFn({ data: { slug: post.slug } });
+      await resetFn({ slug: post.slug });
       await refetch();
       setDraft(BLANK);
       setSaved("Reset to defaults");

@@ -42,7 +42,7 @@ export function ReviewsAdmin() {
   async function moderate(id: string, action: "approve" | "reject" | "delete", reason?: string) {
     setBusy(id);
     try {
-      await moderateFn({ data: { id, action, reason: reason ?? null } });
+      await moderateFn({ id, action, reason: reason ?? null });
       await refetch();
       setRejectFor(null);
       setRejectReason("");

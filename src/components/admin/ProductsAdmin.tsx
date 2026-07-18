@@ -117,7 +117,7 @@ export function ProductsAdmin() {
 
   const upsertMut = useMutation({
     mutationFn: (payload: Record<string, unknown>) =>
-      upsertFn({ data: payload as never }),
+      upsertFn(payload as never),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin-products"] });
       qc.invalidateQueries({ queryKey: ["public-products"] });
@@ -130,7 +130,7 @@ export function ProductsAdmin() {
   });
 
   const deleteMut = useMutation({
-    mutationFn: (id: string) => deleteFn({ data: { id } }),
+    mutationFn: (id: string) => deleteFn({ id }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin-products"] });
       qc.invalidateQueries({ queryKey: ["public-products"] });

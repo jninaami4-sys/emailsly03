@@ -239,7 +239,6 @@ function SubmitFlow({
       }
 
       await submitFn({
-        data: {
           kind,
           rating,
           body: body.trim() || null,
@@ -249,8 +248,7 @@ function SubmitFlow({
           videoPath,
           videoPosterPath: posterPath,
           durationSec: compressed?.durationSec ?? null,
-        },
-      });
+        });
 
       onSubmitted?.();
       setStep("done");

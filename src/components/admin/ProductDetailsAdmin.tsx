@@ -74,7 +74,7 @@ export function ProductDetailsAdmin() {
   };
 
   const saveMut = useMutation({
-    mutationFn: () => upsertFn({ data: { slug: selectedSlug, ...form } }),
+    mutationFn: () => upsertFn({ slug: selectedSlug, ...form }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin-product-details"] });
       qc.invalidateQueries({ queryKey: ["product-details", selectedSlug] });
@@ -83,7 +83,7 @@ export function ProductDetailsAdmin() {
   });
 
   const deleteMut = useMutation({
-    mutationFn: () => deleteFn({ data: { slug: selectedSlug } }),
+    mutationFn: () => deleteFn({ slug: selectedSlug }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin-product-details"] });
       qc.invalidateQueries({ queryKey: ["product-details", selectedSlug] });

@@ -30,9 +30,7 @@ export function BlogAnalyticsTracker({ slug }: { slug: string }) {
 
     const send = (event_type: BlogEventType, meta?: Record<string, unknown>) => {
       trackRef
-        .current({
-          data: { slug, event_type, session_id: sessionId, path, referrer, meta },
-        })
+        .current({ slug, event_type, session_id: sessionId, path, referrer, meta })
         .catch(() => {});
     };
 

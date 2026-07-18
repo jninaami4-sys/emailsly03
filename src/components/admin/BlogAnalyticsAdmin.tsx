@@ -24,13 +24,13 @@ export function BlogAnalyticsAdmin() {
 
   const summary = useQuery({
     queryKey: ["admin-blog-analytics", days],
-    queryFn: () => summaryFn({ data: { days } }),
+    queryFn: () => summaryFn({ days }),
     staleTime: 30_000,
   });
 
   const detail = useQuery({
     queryKey: ["admin-blog-analytics-detail", slug, days],
-    queryFn: () => detailFn({ data: { slug: slug!, days } }),
+    queryFn: () => detailFn({ slug: slug!, days }),
     enabled: !!slug,
     staleTime: 30_000,
   });

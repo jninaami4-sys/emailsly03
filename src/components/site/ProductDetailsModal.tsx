@@ -19,7 +19,7 @@ export function ProductDetailsModal({
   const getDetailsFn = getProductDetails;
   const { data, isLoading } = useQuery({
     queryKey: ["product-details", product.slug],
-    queryFn: () => getDetailsFn({ data: { slug: product.slug } }),
+    queryFn: () => getDetailsFn({ slug: product.slug }),
     enabled: open,
     staleTime: 60_000,
   });

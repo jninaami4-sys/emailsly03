@@ -212,7 +212,7 @@ export function ServicesCarousel() {
           minOrder: c.minOrder,
           turnaround: c.turnaround,
           bullets: c.bullets,
-          gradient: fb?.gradient ?? `bg-gradient-to-br ${preset.gradient}`,
+          gradient: fb?.gradient ?? preset.gradient,
           glow: fb?.glow ?? "",
           ring: fb?.ring ?? "ring-1 ring-white/10",
           accent: fb?.accent ?? preset.accent,

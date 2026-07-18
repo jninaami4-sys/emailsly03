@@ -45,7 +45,6 @@ import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]
 import { Route as ApiPublicReferralClickRouteImport } from './routes/api/public/referral-click'
 import { Route as AuthenticatedInvoiceOrderIdRouteImport } from './routes/_authenticated/invoice.$orderId'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
-import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 import { Route as ApiPublicWebhooksStripeRouteImport } from './routes/api/public/webhooks/stripe'
 import { Route as ApiPublicTelegramWebhookRouteImport } from './routes/api/public/telegram/webhook'
 import { Route as ApiPublicHooksKbSyncRouteImport } from './routes/api/public/hooks/kb-sync'
@@ -234,11 +233,6 @@ const Char91DotmcpChar93InvokeToolToolRoute =
     path: '/.mcp/invoke-tool/$tool',
     getParentRoute: () => rootRouteImport,
   } as any)
-const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
-  id: '/.lovable/oauth/consent',
-  path: '/.lovable/oauth/consent',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ApiPublicWebhooksStripeRoute = ApiPublicWebhooksStripeRouteImport.update({
   id: '/api/public/webhooks/stripe',
   path: '/api/public/webhooks/stripe',
@@ -289,7 +283,6 @@ export interface FileRoutesByFullPath {
   '/api/health': typeof ApiHealthRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/blog/': typeof BlogIndexRoute
-  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/invoice/$orderId': typeof AuthenticatedInvoiceOrderIdRoute
   '/api/public/referral-click': typeof ApiPublicReferralClickRoute
@@ -330,7 +323,6 @@ export interface FileRoutesByTo {
   '/api/health': typeof ApiHealthRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/blog': typeof BlogIndexRoute
-  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/invoice/$orderId': typeof AuthenticatedInvoiceOrderIdRoute
   '/api/public/referral-click': typeof ApiPublicReferralClickRoute
@@ -373,7 +365,6 @@ export interface FileRoutesById {
   '/api/health': typeof ApiHealthRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/blog/': typeof BlogIndexRoute
-  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/_authenticated/invoice/$orderId': typeof AuthenticatedInvoiceOrderIdRoute
   '/api/public/referral-click': typeof ApiPublicReferralClickRoute
@@ -416,7 +407,6 @@ export interface FileRouteTypes {
     | '/api/health'
     | '/blog/$slug'
     | '/blog/'
-    | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/invoice/$orderId'
     | '/api/public/referral-click'
@@ -457,7 +447,6 @@ export interface FileRouteTypes {
     | '/api/health'
     | '/blog/$slug'
     | '/blog'
-    | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/invoice/$orderId'
     | '/api/public/referral-click'
@@ -499,7 +488,6 @@ export interface FileRouteTypes {
     | '/api/health'
     | '/blog/$slug'
     | '/blog/'
-    | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/_authenticated/invoice/$orderId'
     | '/api/public/referral-click'
@@ -541,7 +529,6 @@ export interface RootRouteChildren {
   ApiHealthRoute: typeof ApiHealthRoute
   BlogSlugRoute: typeof BlogSlugRoute
   BlogIndexRoute: typeof BlogIndexRoute
-  DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
   ApiPublicReferralClickRoute: typeof ApiPublicReferralClickRoute
   ApiPublicHooksKbSyncRoute: typeof ApiPublicHooksKbSyncRoute
@@ -803,13 +790,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char91DotmcpChar93InvokeToolToolRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/.lovable/oauth/consent': {
-      id: '/.lovable/oauth/consent'
-      path: '/.lovable/oauth/consent'
-      fullPath: '/.lovable/oauth/consent'
-      preLoaderRoute: typeof DotlovableOauthConsentRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/api/public/webhooks/stripe': {
       id: '/api/public/webhooks/stripe'
       path: '/api/public/webhooks/stripe'
@@ -881,7 +861,6 @@ const rootRouteChildren: RootRouteChildren = {
   ApiHealthRoute: ApiHealthRoute,
   BlogSlugRoute: BlogSlugRoute,
   BlogIndexRoute: BlogIndexRoute,
-  DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
   ApiPublicReferralClickRoute: ApiPublicReferralClickRoute,
   ApiPublicHooksKbSyncRoute: ApiPublicHooksKbSyncRoute,

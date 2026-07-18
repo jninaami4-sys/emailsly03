@@ -1,7 +1,12 @@
 import { createStart, createMiddleware } from "@tanstack/react-start";
 
 import { renderErrorPage } from "./lib/error-page";
-import { attachSupabaseAuth } from "@/integrations/supabase/auth-attacher";
+
+// NOTE: Supabase bearer attacher removed as part of the PHP/MySQL migration.
+// Any remaining `*.functions.ts` server function that expects a Supabase
+// bearer will 401 until it's rewritten to call the PHP API via `api-client`.
+// That rewrite is the next batches in the migration plan; the client itself
+// sends `Authorization: Bearer <jwt>` on every /api/* call via api-client.ts.
 
 const errorMiddleware = createMiddleware().server(async ({ next }) => {
   try {
@@ -19,6 +24,5 @@ const errorMiddleware = createMiddleware().server(async ({ next }) => {
 });
 
 export const startInstance = createStart(() => ({
-  functionMiddleware: [attachSupabaseAuth],
   requestMiddleware: [errorMiddleware],
 }));

@@ -307,26 +307,26 @@
   font-size: 13px;
 }
 .admin-theme thead th {
-  background: oklch(0.965 0.004 260);
-  color: oklch(0.28 0.01 260);
+  background: oklch(0.22 0.008 260);
+  color: oklch(0.85 0.008 260);
   font-weight: 800;
   font-size: 11px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   padding: 10px 14px;
   text-align: left;
-  border-bottom: 1px solid oklch(0.18 0.01 260 / 0.10);
+  border-bottom: 1px solid oklch(1 0 0 / 0.08);
   position: sticky;
   top: 0;
 }
 .admin-theme tbody td {
   padding: 12px 14px;
-  border-bottom: 1px solid oklch(0.18 0.01 260 / 0.06);
-  color: oklch(0.18 0.01 260);
+  border-bottom: 1px solid oklch(1 0 0 / 0.06);
+  color: oklch(0.96 0 0);
   vertical-align: middle;
 }
 .admin-theme tbody tr:hover td {
-  background: oklch(0.55 0.18 258 / 0.05);
+  background: oklch(0.65 0.17 258 / 0.10);
 }
 .admin-theme tbody tr:last-child td {
   border-bottom: none;
@@ -336,9 +336,9 @@
 .admin-theme input:not([type="checkbox"]):not([type="radio"]),
 .admin-theme select,
 .admin-theme textarea {
-  background: #ffffff;
-  border: 1px solid oklch(0.18 0.01 260 / 0.14);
-  color: oklch(0.16 0.01 260);
+  background: oklch(0.22 0.008 260);
+  border: 1px solid oklch(1 0 0 / 0.10);
+  color: oklch(0.98 0 0);
   font-weight: 600;
   border-radius: 8px;
 }
@@ -346,13 +346,14 @@
 .admin-theme select:focus,
 .admin-theme textarea:focus {
   outline: none;
-  border-color: oklch(0.55 0.18 258 / 0.7);
-  box-shadow: 0 0 0 3px oklch(0.55 0.18 258 / 0.15);
+  border-color: oklch(0.65 0.17 258 / 0.8);
+  box-shadow: 0 0 0 3px oklch(0.65 0.17 258 / 0.22) !important;
 }
 .admin-theme input::placeholder,
 .admin-theme textarea::placeholder {
-  color: oklch(0.55 0.012 260);
+  color: oklch(0.60 0.01 260);
 }
+
 
 
 

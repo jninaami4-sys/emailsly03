@@ -199,6 +199,35 @@ export function OrdersAdmin() {
           placeholder="Search email, service, promo..."
           className="min-w-[220px] flex-1 rounded-lg border border-border bg-background px-3 py-1.5 text-xs outline-none"
         />
+        <label className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+          From
+          <input
+            type="date"
+            value={dateFrom}
+            onChange={(e) => setDateFrom(e.target.value)}
+            className="rounded-lg border border-border bg-background px-2 py-1.5 text-xs"
+          />
+        </label>
+        <label className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+          To
+          <input
+            type="date"
+            value={dateTo}
+            onChange={(e) => setDateTo(e.target.value)}
+            className="rounded-lg border border-border bg-background px-2 py-1.5 text-xs"
+          />
+        </label>
+        {(dateFrom || dateTo) && (
+          <button
+            onClick={() => {
+              setDateFrom("");
+              setDateTo("");
+            }}
+            className="rounded-lg border border-border bg-background px-2 py-1.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground hover:text-foreground"
+          >
+            Clear dates
+          </button>
+        )}
       </div>
 
       {/* Bulk toolbar */}

@@ -275,10 +275,31 @@ html.site-light .admin-theme {
 /* Premium light-mode polish: soft branded ambient wash, refined shadows,
  * gentle gradient text for headings, crisp hairline borders. */
 html.site-light body {
+  background-color: #fbfaff;
+  background-image:
+    /* soft aurora blobs — violet + magenta + sky, low opacity */
+    radial-gradient(60rem 40rem at 85% -8%, rgba(217, 70, 239, 0.14), transparent 60%),
+    radial-gradient(55rem 38rem at -10% 8%, rgba(124, 58, 237, 0.14), transparent 62%),
+    radial-gradient(50rem 34rem at 50% 110%, rgba(56, 189, 248, 0.10), transparent 60%),
+    /* faint dot grid for premium texture */
+    radial-gradient(rgba(15, 23, 42, 0.045) 1px, transparent 1px),
+    /* base warm-cool wash */
+    linear-gradient(180deg, #fbfaff 0%, #f4f2fb 100%);
+  background-size:
+    auto, auto, auto,
+    22px 22px,
+    auto;
+  background-attachment: fixed, fixed, fixed, fixed, fixed;
+  background-repeat: no-repeat, no-repeat, no-repeat, repeat, no-repeat;
+}
+html.site-light body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
   background:
-    radial-gradient(1200px 600px at 85% -10%, rgba(217, 70, 239, 0.08), transparent 60%),
-    radial-gradient(900px 500px at -10% 10%, rgba(124, 58, 237, 0.08), transparent 60%),
-    var(--background);
+    linear-gradient(180deg, rgba(255,255,255,0.6) 0%, transparent 20%, transparent 80%, rgba(255,255,255,0.7) 100%);
 }
 html.site-light .theme-midnight h1,
 html.site-light .theme-midnight h2 {

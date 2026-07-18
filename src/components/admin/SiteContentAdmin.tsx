@@ -4,9 +4,10 @@ import { useServerFn } from "@tanstack/react-start";
 import { listSiteContent, upsertSiteContent } from "@/lib/site-content.functions";
 import { SITE_CONTENT_DEFAULTS, type SiteContentSection } from "@/lib/site-content-defaults";
 import { ServiceCardsEditor } from "@/components/admin/ServiceCardsEditor";
+import { MediaItemsEditor, type FieldDef } from "@/components/admin/MediaItemsEditor";
 import {
   Globe, Layout, BellRing, ShieldCheck, Boxes, BarChart3, HelpCircle,
-  Megaphone, PanelBottom, Sparkles, Palette, Mail, Save, Loader2, RefreshCw,
+  Megaphone, PanelBottom, Sparkles, Palette, Mail, Save, Loader2, RefreshCw, Star,
 } from "@/components/admin/AdminIcons";
 
 

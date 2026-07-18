@@ -63,47 +63,65 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  head: () => ({
-    meta: [
-      { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "EmailsLy — Verified B2B lead data, on-demand" },
-      {
-        name: "description",
-        content:
-          "Verified B2B lead data from Apollo, LinkedIn, and ZoomInfo. Pay per lead, no subscription, delivered in 24 hours with 99% accuracy.",
-      },
-      { property: "og:title", content: "EmailsLy — Verified B2B lead data, on-demand" },
-      {
-        property: "og:description",
-        content:
-          "Verified B2B lead data. Pay per lead, no subscription, 24-hour delivery, 99% accuracy.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "theme-color", content: "#7C3AED" },
-      // og:image / twitter:image are set per-leaf-route via ogImageMeta()
-      // from '@/lib/og-images' so each page can pick a branded template.
-    ],
-    links: [
-      { rel: "stylesheet", href: appCss },
-      { rel: "icon", href: "/favicon.ico", sizes: "any" },
-      { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon-32.png" },
-      { rel: "icon", type: "image/png", sizes: "16x16", href: "/favicon-16.png" },
-      { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png" },
-      { rel: "manifest", href: "/site.webmanifest" },
-      { rel: "preconnect", href: "https://fonts.googleapis.com" },
-      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      {
-        rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap",
-      },
-    ],
-  }),
+  // Resolve the request theme on the server so SSR HTML (html class,
+  // theme-color meta, share-preview URL variants) matches what the
+  // browser will render after hydration. Client navigations return null
+  // here — the browser hook owns retagging post-hydration.
+  loader: async () => {
+    if (typeof window !== "undefined") return { theme: null as null | "light" | "dark" };
+    try {
+      const { readSSRTheme } = await import("@/lib/ssr-theme.server");
+      return { theme: readSSRTheme() };
+    } catch {
+      return { theme: null as null | "light" | "dark" };
+    }
+  },
+  head: ({ loaderData }) => {
+    const theme = loaderData?.theme ?? null;
+    const themeColor = theme === "light" ? "#fdfcff" : theme === "dark" ? "#0a0b14" : "#7C3AED";
+    return {
+      meta: [
+        { charSet: "utf-8" },
+        { name: "viewport", content: "width=device-width, initial-scale=1" },
+        { title: "EmailsLy — Verified B2B lead data, on-demand" },
+        {
+          name: "description",
+          content:
+            "Verified B2B lead data from Apollo, LinkedIn, and ZoomInfo. Pay per lead, no subscription, delivered in 24 hours with 99% accuracy.",
+        },
+        { property: "og:title", content: "EmailsLy — Verified B2B lead data, on-demand" },
+        {
+          property: "og:description",
+          content:
+            "Verified B2B lead data. Pay per lead, no subscription, 24-hour delivery, 99% accuracy.",
+        },
+        { property: "og:type", content: "website" },
+        { name: "theme-color", content: themeColor },
+        { name: "color-scheme", content: theme === "light" ? "light" : theme === "dark" ? "dark" : "light dark" },
+        // og:image / twitter:image are set per-leaf-route via ogImageMeta().
+      ],
+      links: [
+        { rel: "stylesheet", href: appCss },
+        { rel: "icon", href: "/favicon.ico", sizes: "any" },
+        { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon-32.png" },
+        { rel: "icon", type: "image/png", sizes: "16x16", href: "/favicon-16.png" },
+        { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png" },
+        { rel: "manifest", href: "/site.webmanifest" },
+        { rel: "preconnect", href: "https://fonts.googleapis.com" },
+        { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+        {
+          rel: "stylesheet",
+          href: "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap",
+        },
+      ],
+    };
+  },
   shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,
   errorComponent: ErrorComponent,
 });
+
 
 function RootShell({ children }: { children: ReactNode }) {
   return (

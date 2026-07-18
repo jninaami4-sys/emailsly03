@@ -1,0 +1,1 @@
+UPDATE public.pricing_settings SET rate = 0.15 WHERE service_id = 'mobile' AND name IN ('Apollo Mobiles', 'Apollo Mobile Numbers');

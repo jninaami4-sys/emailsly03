@@ -124,8 +124,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 
 function RootShell({ children }: { children: ReactNode }) {
+  const loaderData = Route.useLoaderData();
+  const theme = loaderData?.theme ?? null;
   return (
-    <html lang="en">
+    <html
+      lang="en"
+      className={theme === "light" ? "site-light" : undefined}
+      data-theme={theme ?? undefined}
+      suppressHydrationWarning
+    >
       <head>
         {/* Applies the persisted theme class before hydration to prevent flash */}
         <script dangerouslySetInnerHTML={{ __html: themeBootScript }} />
@@ -138,6 +145,7 @@ function RootShell({ children }: { children: ReactNode }) {
     </html>
   );
 }
+
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();

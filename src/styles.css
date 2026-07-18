@@ -481,6 +481,11 @@
   50%      { opacity: 0.65; transform: scale(1.05); }
 }
 
+@keyframes pulse-bar {
+  0%   { transform: scaleY(0.65); opacity: 0.5; }
+  100% { transform: scaleY(1); opacity: 1; }
+}
+
 @keyframes route-progress {
   0%   { transform: translateX(-100%); }
   60%  { transform: translateX(20%); }

@@ -16,7 +16,9 @@ if ($user) {
     ]);
     $link = rtrim(FRONTEND_URL, '/') . '/reset-password?token=' . $tokenRaw . '&email=' . urlencode($email);
     Mail::send($email, 'Reset your password',
-        "<p>Click the link below to reset your password (valid for 60 minutes):</p><p><a href=\"$link\">$link</a></p>"
+        "<p>Click the link below to reset your password (valid for 60 minutes):</p><p><a href=\"$link\">$link</a></p>",
+        null,
+        'auth'
     );
 }
 Response::json(['ok' => true]);

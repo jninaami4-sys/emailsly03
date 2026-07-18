@@ -27,6 +27,7 @@ import { BlogSeoAdmin } from "@/components/admin/BlogSeoAdmin";
 import { BlogAnalyticsAdmin } from "@/components/admin/BlogAnalyticsAdmin";
 import { BlogPostsAdmin } from "@/components/admin/BlogPostsAdmin";
 import { EmailTestAdmin } from "@/components/admin/EmailTestAdmin";
+import { MailLogsAdmin } from "@/components/admin/MailLogsAdmin";
 import { StoreOffersAdmin } from "@/components/admin/StoreOffersAdmin";
 import { TelegramBotsAdmin } from "@/components/admin/TelegramBotsAdmin";
 import { BackupRestoreAdmin } from "@/components/admin/BackupRestoreAdmin";

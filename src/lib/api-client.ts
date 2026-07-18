@@ -106,13 +106,32 @@ export async function api<T = unknown>(path: string, init: Init = {}): Promise<T
     credentials: "include",
   });
   const text = await res.text();
+  const ct = res.headers.get("content-type") || "";
+  const looksHtml = ct.includes("text/html") || text.trimStart().startsWith("<");
   const data = text ? safeJson(text) : null;
   if (!res.ok) {
+    // HTML at an /api/* path almost always means the PHP backend isn't
+    // reachable at this origin (wrong VITE_API_BASE_URL, missing /api
+    // directory on cPanel, or dev server with no PHP mounted).
+    if (looksHtml) {
+      throw new ApiError(
+        res.status,
+        `API unreachable at ${BASE || window.location.origin}${path} — expected JSON, got HTML (HTTP ${res.status}). Check VITE_API_BASE_URL or window.__API_BASE__.`,
+        null,
+      );
+    }
     const msg =
       (data && typeof data === "object" && "error" in data
         ? String((data as { error: unknown }).error)
         : res.statusText) || "Request failed";
     throw new ApiError(res.status, msg, data);
+  }
+  if (looksHtml) {
+    throw new ApiError(
+      res.status,
+      `API unreachable at ${BASE || window.location.origin}${path} — expected JSON, got HTML. Check VITE_API_BASE_URL or window.__API_BASE__.`,
+      null,
+    );
   }
   return data as T;
 }

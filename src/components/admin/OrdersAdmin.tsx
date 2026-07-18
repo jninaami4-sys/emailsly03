@@ -617,11 +617,12 @@ function MagicLinkButton({ email }: { email: string }) {
   );
 }
 
-function Modal({ children, title, onClose }: { children: React.ReactNode; title: string; onClose: () => void }) {
+function Modal({ children, title, onClose, size = "md" }: { children: React.ReactNode; title: string; onClose: () => void; size?: "md" | "lg" | "xl" }) {
+  const width = size === "xl" ? "max-w-5xl" : size === "lg" ? "max-w-2xl" : "max-w-md";
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4" onClick={onClose}>
-      <div className="max-h-[90vh] w-full max-w-md overflow-y-auto rounded-2xl border border-border bg-card p-5 shadow-xl" onClick={(e) => e.stopPropagation()}>
-        <h3 className="mb-3 font-display text-lg font-bold">{title}</h3>
+      <div className={`max-h-[92vh] w-full ${width} overflow-y-auto rounded-2xl border border-border bg-card p-6 shadow-xl`} onClick={(e) => e.stopPropagation()}>
+        <h3 className="mb-4 font-display text-lg font-bold">{title}</h3>
         {children}
       </div>
     </div>

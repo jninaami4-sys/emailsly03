@@ -247,23 +247,51 @@ function TrackOrderPage() {
             </div>
           </form>
 
-          {/* Validation / not-found state */}
-          {errorMsg && (
+          {/* Error state — validation / not-found / network / server */}
+          {error && (
             <div
               id="track-error"
               role="alert"
-              className="mx-auto mt-6 flex max-w-2xl items-start gap-3 rounded-2xl border border-coral/30 bg-coral-soft/60 p-4 text-left"
+              className={`mx-auto mt-6 max-w-2xl rounded-2xl border p-4 text-left ${
+                error.kind === "not_found"
+                  ? "border-amber-300/40 bg-amber-50/60 dark:bg-amber-950/20"
+                  : error.kind === "network" || error.kind === "server"
+                    ? "border-coral/30 bg-coral-soft/60"
+                    : "border-coral/30 bg-coral-soft/60"
+              }`}
             >
-              <AlertCircle className="mt-0.5 size-5 shrink-0 text-coral" />
-              <div className="text-sm">
-                <div className="font-semibold text-foreground">Check your input</div>
-                <div className="mt-1 text-muted-foreground">
-                  {errorMsg}{" "}
-                  Still stuck? <Link to="/contact" className="font-semibold text-violet hover:underline">Contact support</Link>.
+              <div className="flex items-start gap-3">
+                <AlertCircle className="mt-0.5 size-5 shrink-0 text-coral" />
+                <div className="min-w-0 flex-1 text-sm">
+                  <div className="font-semibold text-foreground">{error.title}</div>
+                  <div className="mt-1 break-words text-muted-foreground">{error.message}</div>
+                  {error.hint && (
+                    <div className="mt-2 text-muted-foreground">{error.hint}</div>
+                  )}
+                  {error.detail && (
+                    <div className="mt-2 rounded-lg bg-background/60 px-3 py-2 font-mono text-[11px] text-muted-foreground">
+                      {error.detail}
+                    </div>
+                  )}
+                  <div className="mt-3 flex flex-wrap items-center gap-3">
+                    {(error.kind === "network" || error.kind === "server") && lastQuery && (
+                      <button
+                        type="button"
+                        onClick={() => void runLookup(lastQuery)}
+                        className="inline-flex items-center gap-2 rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-semibold hover:border-violet hover:text-violet"
+                      >
+                        <RefreshCcw className="size-3.5" /> Retry
+                      </button>
+                    )}
+                    <Link to="/contact" className="text-xs font-semibold text-violet hover:underline">
+                      Contact support
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>
           )}
+
 
           {/* Loading state */}
           {loading && <TrackResultSkeleton />}

@@ -62,7 +62,7 @@ const values = [
 const stats = [
   { value: "99%", label: "Data accuracy rate" },
   { value: "24h", label: "Average delivery" },
-  { value: "50M+", label: "Contacts sourced" },
+  { value: "100M+", label: "Contacts sourced" },
   { value: "0", label: "Subscription required" },
 ];
 

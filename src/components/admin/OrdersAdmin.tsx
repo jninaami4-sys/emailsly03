@@ -158,8 +158,9 @@ export function OrdersAdmin() {
                 </td>
                 <td className="p-2.5 font-mono text-sm">{money(o.total_cents, o.currency)}</td>
                 <td className="p-2.5">
-                  <StatusPill value={o.status} />
+                  <InlineStatusSelect order={o} onDone={refresh} />
                 </td>
+
                 <td className="p-2.5 text-xs">{o.payment_status}</td>
                 <td className="p-2.5">
                   <div className="flex justify-end gap-1.5">

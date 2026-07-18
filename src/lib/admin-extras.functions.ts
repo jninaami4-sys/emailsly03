@@ -172,31 +172,34 @@ const BACKUP_TABLES = [
   "referral_settings",
 ] as const;
 
+type JsonValue = string | number | boolean | null | JsonValue[] | { [k: string]: JsonValue };
 export type BackupBundle = {
   version: number;
   exported_at: string;
-  tables: Record<string, unknown[]>;
+  tables: Record<string, JsonValue[]>;
 };
 
 export const exportBackup = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .handler(async ({ context }): Promise<BackupBundle> => {
+  .handler(async ({ context }) => {
     assertAdmin((context.claims as { email?: string }).email);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const sb = supabaseAdmin as any;
-    const out: Record<string, unknown[]> = {};
+    const out: Record<string, JsonValue[]> = {};
     for (const t of BACKUP_TABLES) {
       const { data, error } = await sb.from(t).select("*");
       // JSON round-trip strips non-serializable values (Dates, functions, etc.)
       // so the RPC layer can safely serialize the response.
-      out[t] = error ? [] : JSON.parse(JSON.stringify(data ?? []));
+      out[t] = error ? [] : (JSON.parse(JSON.stringify(data ?? [])) as JsonValue[]);
     }
-    return {
+    const bundle: BackupBundle = {
       version: 1,
       exported_at: new Date().toISOString(),
       tables: out,
     };
+    return bundle;
   });
+
 
 
 export const restoreBackup = createServerFn({ method: "POST" })

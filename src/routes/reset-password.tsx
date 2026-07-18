@@ -109,7 +109,7 @@ function ResetPasswordPage() {
   const [linkMessage, setLinkMessage] = useState<string | null>(null);
   const [redirectSeconds, setRedirectSeconds] = useState(3);
   const [capsLock, setCapsLock] = useState(false);
-  const { redirectTo } = Route.useSearch();
+  const { redirectTo, token } = Route.useSearch();
   const navigate = useNavigate();
   const safeRedirect = useMemo(() => sanitizeRedirect(redirectTo), [redirectTo]);
   const isFormValid = useMemo(
@@ -117,13 +117,21 @@ function ResetPasswordPage() {
     [password, confirm],
   );
 
+  // Prefer ?token=..., fall back to token in the URL hash (some email clients).
+  const resetToken = useMemo(() => {
+    if (token) return token;
+    if (typeof window === "undefined") return "";
+    const hash = window.location.hash.slice(1);
+    const params = new URLSearchParams(hash);
+    return params.get("token") || params.get("access_token") || "";
+  }, [token]);
+
   useEffect(() => {
+    if (typeof window === "undefined") return;
     const hash = window.location.hash.slice(1);
     const params = new URLSearchParams(hash);
     const errCode = params.get("error_code") || params.get("error");
     const errDesc = params.get("error_description");
-    const type = params.get("type");
-    const accessToken = params.get("access_token");
 
     if (errCode) {
       const desc = errDesc ? decodeURIComponent(errDesc.replace(/\+/g, " ")) : "";
@@ -140,24 +148,14 @@ function ResetPasswordPage() {
       return;
     }
 
-    if (type === "recovery" && accessToken) {
+    if (resetToken) {
       setLinkState("valid");
-      return;
+    } else {
+      setLinkState("invalid");
+      setLinkMessage("Missing reset token. Please request a new link.");
     }
+  }, [resetToken]);
 
-    // Fallback: PASSWORD_RECOVERY event fires if Supabase already parsed the hash.
-    const { data: sub } = supabase.auth.onAuthStateChange((event) => {
-      if (event === "PASSWORD_RECOVERY") setLinkState("valid");
-    });
-    const timer = window.setTimeout(() => {
-      setLinkState((s) => (s === "checking" ? "invalid" : s));
-    }, 1200);
-
-    return () => {
-      sub.subscription.unsubscribe();
-      window.clearTimeout(timer);
-    };
-  }, []);
 
   const checks = useMemo(() => getPasswordChecks(password), [password]);
   const strength = useMemo(() => scorePassword(password), [password]);

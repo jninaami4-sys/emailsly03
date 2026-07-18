@@ -417,19 +417,18 @@ html.site-light .bg-card {
 html.site-light .theme-midnight .card:hover,
 html.site-light .theme-midnight [data-card]:hover,
 html.site-light .bg-card:hover {
-  border-color: rgba(59, 91, 219, 0.24);
+  border-color: rgba(201, 90, 74, 0.28);
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.95) inset,
-    0 2px 4px rgba(15, 23, 42, 0.05),
-    0 16px 40px -16px rgba(59, 91, 219, 0.28),
-    0 40px 70px -30px rgba(15, 23, 42, 0.14);
+    0 2px 4px rgba(120, 53, 15, 0.06),
+    0 16px 40px -16px rgba(201, 90, 74, 0.30),
+    0 40px 70px -30px rgba(120, 53, 15, 0.16);
 }
 
-/* Heading gradient — stays inside the indigo/teal family so no muddy
- * mid-tones appear across the transition. */
+/* Editorial heading gradient — espresso → copper → rose, warm family. */
 html.site-light h1,
 html.site-light h2 {
-  background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 45%, #0d9488 100%);
+  background: linear-gradient(135deg, #2b1810 0%, #7c2d12 45%, #c95a4a 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -448,33 +447,32 @@ html.site-light h2 [data-no-gradient] {
 html.site-light input,
 html.site-light textarea,
 html.site-light select {
-  background-color: rgba(255, 255, 255, 0.85);
-  border-color: rgba(15, 23, 42, 0.12);
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+  background-color: rgba(255, 252, 246, 0.9);
+  border-color: rgba(120, 53, 15, 0.14);
+  box-shadow: 0 1px 2px rgba(120, 53, 15, 0.04);
 }
 html.site-light input:focus-visible,
 html.site-light textarea:focus-visible,
 html.site-light select:focus-visible {
-  border-color: rgba(59, 91, 219, 0.55);
-  box-shadow: 0 0 0 3px rgba(59, 91, 219, 0.15);
+  border-color: rgba(201, 90, 74, 0.55);
+  box-shadow: 0 0 0 3px rgba(201, 90, 74, 0.18);
 }
 
-/* Primary buttons — indigo → teal gradient. Both stops in the same cool
- * family so the mid-transition renders as a clean blue-teal, never gray. */
+/* Primary buttons — copper → rose gradient, warm family, no muddy mids. */
 html.site-light .theme-midnight .bg-primary,
 html.site-light .bg-primary {
-  background-image: linear-gradient(135deg, #3b5bdb 0%, #2563eb 50%, #14b8a6 100%);
+  background-image: linear-gradient(135deg, #b8452e 0%, #c95a4a 50%, #d97a55 100%);
   color: #ffffff;
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.35) inset,
-    0 10px 24px -12px rgba(59, 91, 219, 0.55);
+    0 10px 24px -12px rgba(201, 90, 74, 0.55);
 }
 html.site-light .theme-midnight .bg-primary:hover,
 html.site-light .bg-primary:hover {
   filter: brightness(1.05);
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.4) inset,
-    0 14px 30px -12px rgba(59, 91, 219, 0.65);
+    0 14px 30px -12px rgba(201, 90, 74, 0.65);
 }
 
 /* Muted / secondary body text — bump legibility on pearl surface */

@@ -1,6 +1,7 @@
 import { useEffect, useState, type ReactElement, type ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 import { haptic } from "@/lib/haptics";
+import logoAsset from "@/assets/emailsly-logo-trim.png.asset.json";
 import {
   Search, ChevronRight, ExternalLink, Layout, BarChart3, Boxes, Package,
   Users, MessageSquare, Palette, Database, LineChart, Sparkles, HelpCircle,
@@ -83,10 +84,22 @@ export function AdminShell({
             <path d="M4 6h16M4 12h16M4 18h16" strokeLinecap="round" />
           </svg>
         </button>
-        <div className="flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-widest text-foreground">
-          <span className="size-2 rounded-full bg-primary" />
-          Emailsly Admin
-        </div>
+        <Link
+          to="/admin"
+          onClick={() => selectItem("overview")}
+          className="flex items-center gap-2"
+        >
+          <img
+            src={logoAsset.url}
+            alt="Emailsly"
+            className="h-6 w-auto"
+            width={96}
+            height={24}
+          />
+          <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+            Admin
+          </span>
+        </Link>
         <button
           type="button"
           onClick={() => { tap(); onOpenPalette(); }}
@@ -108,18 +121,19 @@ export function AdminShell({
           <div className="flex items-center justify-between border-b border-border px-5 py-4">
             <Link
               to="/admin"
-              className="flex items-center gap-2.5"
+              className="flex items-center gap-3"
               onClick={() => selectItem("overview")}
             >
-              <div className="flex size-8 items-center justify-center rounded-lg bg-primary/10 ring-1 ring-primary/25">
-                <Sparkles className="size-4 text-primary" />
-              </div>
-              <div>
-                <p className="font-display text-sm font-black leading-none text-foreground">Emailsly</p>
-                <p className="mt-1 font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-muted-foreground">
-                  Control Deck
-                </p>
-              </div>
+              <img
+                src={logoAsset.url}
+                alt="Emailsly"
+                className="h-8 w-auto"
+                width={128}
+                height={32}
+              />
+              <span className="rounded-md border border-border bg-secondary px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-muted-foreground">
+                Admin
+              </span>
             </Link>
             <button
               type="button"

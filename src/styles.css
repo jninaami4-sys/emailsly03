@@ -278,16 +278,41 @@
   color: oklch(0.48 0.012 260);
 }
 
-/* Minimal card — clean white surface with hairline border, no glow */
+/* Liquid glass card — frosted white surface with layered highlights */
 .admin-theme .admin-glow-card {
   position: relative;
   isolation: isolate;
-  background: #ffffff;
-  border: 1px solid oklch(0.18 0.01 260 / 0.10);
-  border-radius: 16px;
-  box-shadow: none;
+  background:
+    linear-gradient(180deg, oklch(1 0 0 / 0.85) 0%, oklch(0.99 0.003 260 / 0.72) 100%);
+  border: 1px solid oklch(1 0 0 / 0.7);
+  border-radius: 18px;
+  backdrop-filter: blur(22px) saturate(160%);
+  box-shadow:
+    0 1px 0 oklch(1 0 0 / 0.9) inset,
+    0 0 0 1px oklch(0.18 0.01 260 / 0.05),
+    0 8px 24px -12px oklch(0.18 0.01 260 / 0.18),
+    0 24px 60px -32px oklch(0.55 0.18 258 / 0.18);
 }
-.admin-theme .admin-glow-card::before { content: none; }
+.admin-theme .admin-glow-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    140deg,
+    oklch(1 0 0 / 0.9) 0%,
+    oklch(1 0 0 / 0) 45%,
+    oklch(0.55 0.18 258 / 0.18) 100%
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  pointer-events: none;
+  z-index: 1;
+}
 
 /* Table primitives */
 .admin-theme table {
@@ -1065,4 +1090,68 @@ html { scroll-behavior: smooth; }
 @utility animate-shimmer {
   background-size: 200% 100%;
   animation: shimmer 1.8s linear infinite;
+}
+
+/* ============================================================
+   Liquid glass — dark-theme card sheen (sitewide)
+   Applied to shadcn <Card> and any element marked .liquid-glass.
+   Uses translucent bg + backdrop blur + layered highlights so
+   cards read as elevated surfaces on gradient/blur backdrops.
+   ============================================================ */
+.liquid-glass,
+:not(.admin-theme) > .liquid-glass {
+  position: relative;
+  isolation: isolate;
+  background:
+    linear-gradient(
+      180deg,
+      oklch(from var(--card) l c h / 0.72) 0%,
+      oklch(from var(--card) l c h / 0.55) 100%
+    );
+  border: 1px solid oklch(1 0 0 / 0.08);
+  backdrop-filter: blur(18px) saturate(150%);
+  box-shadow:
+    0 1px 0 oklch(1 0 0 / 0.06) inset,
+    0 10px 30px -18px oklch(0 0 0 / 0.65),
+    0 0 0 1px oklch(1 0 0 / 0.02);
+}
+.liquid-glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    140deg,
+    oklch(1 0 0 / 0.14) 0%,
+    oklch(1 0 0 / 0) 45%,
+    oklch(from var(--primary) l c h / 0.28) 100%
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Admin theme: swap liquid-glass to the frosted-white variant */
+.admin-theme .liquid-glass {
+  background:
+    linear-gradient(180deg, oklch(1 0 0 / 0.85) 0%, oklch(0.99 0.003 260 / 0.72) 100%);
+  border: 1px solid oklch(1 0 0 / 0.7);
+  backdrop-filter: blur(22px) saturate(160%);
+  box-shadow:
+    0 1px 0 oklch(1 0 0 / 0.9) inset,
+    0 0 0 1px oklch(0.18 0.01 260 / 0.05),
+    0 8px 24px -12px oklch(0.18 0.01 260 / 0.18);
+}
+.admin-theme .liquid-glass::before {
+  background: linear-gradient(
+    140deg,
+    oklch(1 0 0 / 0.9) 0%,
+    oklch(1 0 0 / 0) 45%,
+    oklch(0.55 0.18 258 / 0.18) 100%
+  );
 }

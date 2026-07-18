@@ -103,6 +103,8 @@ const DATA_TIERS: Tier[] = [
 
 
 function Pricing() {
+  const overrides = usePricingOverrides();
+
   return (
     <SiteShell>
       {/* Hero — light panel on md+, dark on mobile, buttery gradient into next */}

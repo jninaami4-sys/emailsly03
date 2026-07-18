@@ -1,5 +1,6 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { apiHasToken } from "@/lib/auth-client";
+import { ApiDiagnosticsDrawer } from "@/components/site/ApiDiagnosticsDrawer";
 
 /**
  * Auth gate — accepts a PHP API JWT stored under localStorage `emailsly_jwt`.
@@ -12,5 +13,11 @@ export const Route = createFileRoute("/_authenticated")({
     if (apiHasToken()) return {};
     throw redirect({ to: "/login", search: { mode: "signin", redirect: location.href } });
   },
-  component: () => <Outlet />,
+  component: () => (
+    <>
+      <Outlet />
+      <ApiDiagnosticsDrawer />
+    </>
+  ),
 });
+

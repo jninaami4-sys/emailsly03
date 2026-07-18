@@ -6,63 +6,30 @@ import {
   Server,
   PenTool,
   Globe2,
+  ShieldCheck,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { usePricingOverrides } from "@/hooks/use-pricing-overrides";
+import { formatAddOnPrice } from "@/lib/service-catalog";
 
 export type AddOn = {
   id: string;
   name: string;
   icon: LucideIcon;
-  price: string;
   desc: string;
   link?: string;
 };
 
 export const ADD_ONS: AddOn[] = [
-  {
-    id: "mobile",
-    name: "Apollo Mobiles",
-    icon: Smartphone,
-    price: "$0.15/record",
-    desc: "Mobile number enrichment for existing lists.",
-  },
-  {
-    id: "pixel",
-    name: "Facebook Pixel",
-    icon: MousePointerClick,
-    price: "$100 flat",
-    desc: "Expert Pixel & CAPI setup for conversion tracking.",
-  },
-  {
-    id: "ads",
-    name: "Google Ads Setup",
-    icon: LineChart,
-    price: "$100 flat",
-    desc: "High-ROAS campaign structure with tracking.",
-  },
-  {
-    id: "tracking",
-    name: "Server-Side Tracking",
-    icon: Server,
-    price: "$150 flat",
-    desc: "Bypass ad blockers with Stape.io & GTM Server.",
-  },
-  {
-    id: "logo",
-    name: "Logo Design",
-    icon: PenTool,
-    price: "$50 flat",
-    desc: "Professional brand identity design.",
-  },
-  {
-    id: "webdesign",
-    name: "AI Website Design",
-    icon: Globe2,
-    price: "starting at $200",
-    desc: "Modern, conversion-focused websites in days.",
-    link: "/website-design",
-  },
+  { id: "mobile",    name: "Apollo Mobiles",         icon: Smartphone,        desc: "Mobile number enrichment for existing lists." },
+  { id: "warmup",    name: "Mailbox Warmup",         icon: ShieldCheck,       desc: "15-day warmup with DKIM, SPF & DMARC setup." },
+  { id: "pixel",     name: "Facebook Pixel",         icon: MousePointerClick, desc: "Expert Pixel & CAPI setup for conversion tracking." },
+  { id: "ads",       name: "Google Ads Setup",       icon: LineChart,         desc: "High-ROAS campaign structure with tracking." },
+  { id: "tracking",  name: "Server-Side Tracking",   icon: Server,            desc: "Bypass ad blockers with Stape.io & GTM Server." },
+  { id: "logo",      name: "Logo Design",            icon: PenTool,           desc: "Professional brand identity design." },
+  { id: "webdesign", name: "AI Website Design",      icon: Globe2,            desc: "Modern, conversion-focused websites in days.", link: "/website-design" },
 ];
+
 
 export function AddOns() {
   return (

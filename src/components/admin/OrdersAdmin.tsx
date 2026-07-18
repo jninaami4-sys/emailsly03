@@ -152,6 +152,22 @@ export function OrdersAdmin() {
         </div>
       )}
 
+      {/* View tabs */}
+      <div className="mb-3 inline-flex rounded-xl border border-border bg-background p-1">
+        {(["active", "archived"] as const).map((v) => (
+          <button
+            key={v}
+            onClick={() => setView(v)}
+            className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold capitalize ${
+              view === v ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            {v === "archived" ? <Archive className="size-3.5" /> : <Package className="size-3.5" />}
+            {v}
+          </button>
+        ))}
+      </div>
+
       {/* Filters */}
       <div className="mb-3 flex flex-wrap items-center gap-2">
         <select
@@ -173,11 +189,63 @@ export function OrdersAdmin() {
         />
       </div>
 
+      {/* Bulk toolbar */}
+      {selected.size > 0 && (
+        <div className="mb-3 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-primary/40 bg-primary/5 px-3 py-2">
+          <div className="text-xs font-bold">
+            {selected.size} selected
+            <button
+              onClick={() => setSelected(new Set())}
+              className="ml-3 text-muted-foreground underline underline-offset-2 hover:text-foreground"
+            >
+              Clear
+            </button>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            {view === "active" ? (
+              <button
+                disabled={bulkArchive.isPending}
+                onClick={() => bulkArchive.mutate(Array.from(selected))}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-bold hover:bg-amber-500/10 hover:text-amber-600 disabled:opacity-50"
+              >
+                {bulkArchive.isPending ? <Loader2 className="size-3 animate-spin" /> : <Archive className="size-3" />}
+                Archive
+              </button>
+            ) : (
+              <button
+                disabled={bulkRestore.isPending}
+                onClick={() => bulkRestore.mutate(Array.from(selected))}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-bold hover:bg-emerald/10 hover:text-emerald disabled:opacity-50"
+              >
+                {bulkRestore.isPending ? <Loader2 className="size-3 animate-spin" /> : <ArchiveRestore className="size-3" />}
+                Restore
+              </button>
+            )}
+            <button
+              disabled={bulkDelete.isPending}
+              onClick={() => setConfirmBulkDelete(true)}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-rose-500/40 bg-rose-500/10 px-3 py-1.5 text-xs font-bold text-rose-600 hover:bg-rose-500/20 disabled:opacity-50"
+            >
+              <Trash2 className="size-3" />
+              Delete permanently
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Table */}
       <div className="overflow-x-auto rounded-xl border border-border">
         <table className="w-full text-left text-sm">
           <thead className="bg-secondary/60 text-xs uppercase tracking-wider text-muted-foreground">
             <tr>
+              <th className="p-2.5 w-8">
+                <input
+                  type="checkbox"
+                  checked={allSelected}
+                  onChange={toggleAll}
+                  aria-label="Select all"
+                />
+              </th>
               <th className="p-2.5">Order ID</th>
               <th className="p-2.5">Date</th>
               <th className="p-2.5">Customer</th>
@@ -191,20 +259,28 @@ export function OrdersAdmin() {
           <tbody>
             {orders.isLoading && (
               <tr>
-                <td colSpan={8} className="p-6 text-center text-muted-foreground">
+                <td colSpan={9} className="p-6 text-center text-muted-foreground">
                   <Loader2 className="mx-auto size-4 animate-spin" />
                 </td>
               </tr>
             )}
             {!orders.isLoading && rows.length === 0 && (
               <tr>
-                <td colSpan={8} className="p-6 text-center text-muted-foreground">
-                  No orders match.
+                <td colSpan={9} className="p-6 text-center text-muted-foreground">
+                  {view === "archived" ? "No archived orders." : "No orders match."}
                 </td>
               </tr>
             )}
             {rows.map((o: any) => (
-              <tr key={o.id} className="border-t border-border">
+              <tr key={o.id} className={`border-t border-border ${selected.has(o.id) ? "bg-primary/5" : ""}`}>
+                <td className="p-2.5">
+                  <input
+                    type="checkbox"
+                    checked={selected.has(o.id)}
+                    onChange={() => toggleOne(o.id)}
+                    aria-label={`Select ${o.id}`}
+                  />
+                </td>
                 <td className="p-2.5 font-mono text-xs font-bold text-[#facc15]">
                   {o.short_id ?? `ORD-${String(o.id).slice(0, 8).toUpperCase()}`}
                 </td>
@@ -226,34 +302,62 @@ export function OrdersAdmin() {
                 <td className="p-2.5 text-xs">{o.payment_status}</td>
                 <td className="p-2.5">
                   <div className="flex justify-end gap-1.5">
-                    <button
-                      onClick={() => setDeliverFor(o)}
-                      className="rounded-md border border-border bg-background px-2 py-1 text-[11px] font-semibold hover:bg-emerald/10 hover:text-emerald"
-                      title="Deliver with GDrive URL"
-                    >
-                      <Send className="inline size-3" /> Deliver
-                    </button>
-                    <button
-                      onClick={() => setEditFor(o)}
-                      className="rounded-md border border-border bg-background px-2 py-1 text-[11px] font-semibold hover:bg-primary/10 hover:text-primary"
-                      title="Edit order"
-                    >
-                      <Pencil className="inline size-3" /> Edit
-                    </button>
-                    <button
-                      onClick={() => setCancelFor(o)}
-                      className="rounded-md border border-border bg-background px-2 py-1 text-[11px] font-semibold hover:bg-rose-500/10 hover:text-rose-500"
-                      title="Cancel / refund"
-                    >
-                      <Ban className="inline size-3" /> Cancel
-                    </button>
-                    <button
-                      onClick={() => setDeleteFor(o)}
-                      className="rounded-md border border-border bg-background px-2 py-1 text-[11px] font-semibold hover:bg-rose-500/10 hover:text-rose-500"
-                      title="Delete order"
-                    >
-                      <Trash2 className="inline size-3" />
-                    </button>
+                    {view === "active" ? (
+                      <>
+                        <button
+                          onClick={() => setDeliverFor(o)}
+                          className="rounded-md border border-border bg-background px-2 py-1 text-[11px] font-semibold hover:bg-emerald/10 hover:text-emerald"
+                          title="Deliver with GDrive URL"
+                        >
+                          <Send className="inline size-3" /> Deliver
+                        </button>
+                        <button
+                          onClick={() => setEditFor(o)}
+                          className="rounded-md border border-border bg-background px-2 py-1 text-[11px] font-semibold hover:bg-primary/10 hover:text-primary"
+                          title="Edit order"
+                        >
+                          <Pencil className="inline size-3" /> Edit
+                        </button>
+                        <button
+                          onClick={() => setCancelFor(o)}
+                          className="rounded-md border border-border bg-background px-2 py-1 text-[11px] font-semibold hover:bg-rose-500/10 hover:text-rose-500"
+                          title="Cancel / refund"
+                        >
+                          <Ban className="inline size-3" /> Cancel
+                        </button>
+                        <button
+                          onClick={() => bulkArchive.mutate([o.id])}
+                          className="rounded-md border border-border bg-background px-2 py-1 text-[11px] font-semibold hover:bg-amber-500/10 hover:text-amber-600"
+                          title="Archive order"
+                        >
+                          <Archive className="inline size-3" />
+                        </button>
+                        <button
+                          onClick={() => setDeleteFor(o)}
+                          className="rounded-md border border-border bg-background px-2 py-1 text-[11px] font-semibold hover:bg-rose-500/10 hover:text-rose-500"
+                          title="Delete order"
+                        >
+                          <Trash2 className="inline size-3" />
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button
+                          onClick={() => bulkRestore.mutate([o.id])}
+                          className="rounded-md border border-border bg-background px-2 py-1 text-[11px] font-semibold hover:bg-emerald/10 hover:text-emerald"
+                          title="Restore from archive"
+                        >
+                          <ArchiveRestore className="inline size-3" /> Restore
+                        </button>
+                        <button
+                          onClick={() => setDeleteFor(o)}
+                          className="rounded-md border border-border bg-background px-2 py-1 text-[11px] font-semibold hover:bg-rose-500/10 hover:text-rose-500"
+                          title="Delete permanently"
+                        >
+                          <Trash2 className="inline size-3" /> Delete
+                        </button>
+                      </>
+                    )}
                     <MagicLinkButton email={o.email} />
                   </div>
                 </td>
@@ -263,6 +367,28 @@ export function OrdersAdmin() {
         </table>
       </div>
 
+      {/* Undo toast for archive */}
+      {undo && (
+        <div className="fixed bottom-6 left-1/2 z-[90] -translate-x-1/2 flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-2.5 shadow-lg">
+          <span className="text-xs font-bold">{undo.label}</span>
+          <button
+            onClick={() => {
+              bulkRestore.mutate(undo.ids);
+              setUndo(null);
+            }}
+            className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-2.5 py-1 text-[11px] font-bold text-primary-foreground"
+          >
+            <Undo2 className="size-3" /> Undo
+          </button>
+          <button
+            onClick={() => setUndo(null)}
+            className="text-[11px] font-semibold text-muted-foreground hover:text-foreground"
+          >
+            Dismiss
+          </button>
+        </div>
+      )}
+
       {deliverFor && <DeliverDialog order={deliverFor} onClose={() => setDeliverFor(null)} onDone={refresh} />}
       {cancelFor && <CancelDialog order={cancelFor} onClose={() => setCancelFor(null)} onDone={refresh} />}
       {creating && <OrderFormDialog onClose={() => setCreating(false)} onDone={refresh} />}
@@ -270,9 +396,34 @@ export function OrdersAdmin() {
         <OrderFormDialog order={editFor} onClose={() => setEditFor(null)} onDone={refresh} />
       )}
       {deleteFor && <DeleteDialog order={deleteFor} onClose={() => setDeleteFor(null)} onDone={refresh} />}
+      {confirmBulkDelete && (
+        <Modal onClose={() => setConfirmBulkDelete(false)} title={`Delete ${selected.size} orders?`}>
+          <p className="mb-4 text-xs text-muted-foreground">
+            This permanently removes {selected.size} order{selected.size > 1 ? "s" : ""} and all events/messages. This cannot be undone.
+          </p>
+          {bulkDelete.error && <p className="mb-2 text-xs text-rose-500">{(bulkDelete.error as Error).message}</p>}
+          <div className="flex justify-end gap-2">
+            <button
+              onClick={() => setConfirmBulkDelete(false)}
+              className="rounded-lg border border-border bg-background px-3 py-1.5 text-xs"
+            >
+              Cancel
+            </button>
+            <button
+              disabled={bulkDelete.isPending}
+              onClick={() => bulkDelete.mutate(Array.from(selected))}
+              className="inline-flex items-center gap-1.5 rounded-lg bg-rose-500 px-3 py-1.5 text-xs font-bold text-white disabled:opacity-50"
+            >
+              {bulkDelete.isPending ? <Loader2 className="size-3 animate-spin" /> : <Trash2 className="size-3" />}
+              Delete {selected.size}
+            </button>
+          </div>
+        </Modal>
+      )}
     </section>
   );
 }
+
 
 function StatCard({ icon, label, value, accent }: { icon: React.ReactNode; label: string; value: string; accent: string }) {
   const map: Record<string, string> = {

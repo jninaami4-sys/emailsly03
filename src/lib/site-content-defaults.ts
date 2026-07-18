@@ -32,7 +32,15 @@ export const SITE_CONTENT_DEFAULTS = {
   services: {
     heading: "Our services",
     subheading: "Everything you need to fill your pipeline.",
+    section_eyebrow: "Our services · full stack",
+    section_headline_pre: "Everything you need to",
+    section_headline_accent: "scale outbound.",
+    section_sub: "Swipe through the full stack — tap a service to jump straight into the order builder with it preselected.",
   },
+  service_cards: {
+    items: DEFAULT_SERVICE_CARDS,
+  },
+
   competitors: {
     heading: "Why choose us over the competition",
     row_1_name: "Apollo",

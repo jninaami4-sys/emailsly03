@@ -1057,7 +1057,7 @@ function AccountStatusBanner({
   lastSentAt,
   onCheck,
 }: {
-  user: import("@supabase/supabase-js").User | null;
+  user: { email?: string | null; email_confirmed_at?: string | null } | null;
   pendingEmail: string | null;
   lastSentAt: number | null;
   onCheck: () => Promise<void>;

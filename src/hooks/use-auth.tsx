@@ -1,12 +1,23 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { ensureUserRole } from "@/lib/ensure-admin-role.functions";
+import { apiFetchMe, apiHasToken, apiSignOut, type AuthUser } from "@/lib/auth-client";
 
+/**
+ * Compatibility auth hook. Prefers the PHP API session (JWT in localStorage)
+ * and falls back to the existing Supabase session while individual features
+ * are migrated. Consumers keep reading `user.id` / `user.email` — those
+ * fields exist on both shapes.
+ *
+ * Rewiring plan lives in `.lovable/plan.md`.
+ */
 type AuthCtx = {
-  user: User | null;
+  user: (User | AuthUser) | null;
   session: Session | null;
   loading: boolean;
+  isApiSession: boolean;
+  refresh: () => Promise<void>;
   signOut: () => Promise<void>;
 };
 
@@ -14,84 +25,107 @@ const Ctx = createContext<AuthCtx | null>(null);
 
 const REMEMBER_ME_KEY = "lyra_remember_me";
 
-/**
- * Wipe every trace of the current auth session from the browser:
- * - Remember-me preference
- * - Any Supabase-persisted auth tokens (sb-* keys) in local/session storage
- * - App-scoped caches under the "lyra_" namespace (except the remember-me key,
- *   which we've already removed)
- */
 function clearPersistedAuthState() {
   if (typeof window === "undefined") return;
   try {
     window.localStorage.removeItem(REMEMBER_ME_KEY);
-
     const drop = (storage: Storage) => {
       const keys: string[] = [];
       for (let i = 0; i < storage.length; i++) {
         const k = storage.key(i);
         if (!k) continue;
-        if (
-          k.startsWith("sb-") ||
-          k.startsWith("supabase.") ||
-          k.startsWith("lyra_")
-        ) {
+        if (k.startsWith("sb-") || k.startsWith("supabase.") || k.startsWith("lyra_")) {
           keys.push(k);
         }
       }
       keys.forEach((k) => storage.removeItem(k));
     };
-
     drop(window.localStorage);
     drop(window.sessionStorage);
   } catch {
-    // storage may be unavailable (private mode, quota) — ignore
+    /* noop */
   }
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
+  const [apiUser, setApiUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const refresh = useCallback(async () => {
+    if (apiHasToken()) {
+      const u = await apiFetchMe();
+      setApiUser(u);
+    } else {
+      setApiUser(null);
+    }
+  }, []);
 
   useEffect(() => {
     const { data: sub } = supabase.auth.onAuthStateChange((event, s) => {
       setSession(s);
       if (event === "SIGNED_IN" && s?.user) {
-        // Fire-and-forget: idempotently ensure a user_roles row exists.
-        void ensureUserRole().catch((e) => {
-          console.warn("ensureUserRole failed", e);
-        });
+        void ensureUserRole().catch((e) => console.warn("ensureUserRole failed", e));
       }
     });
-    supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session);
-      setLoading(false);
-    });
-    return () => sub.subscription.unsubscribe();
+
+    (async () => {
+      try {
+        const [{ data }, apiMe] = await Promise.all([
+          supabase.auth.getSession(),
+          apiHasToken() ? apiFetchMe() : Promise.resolve(null),
+        ]);
+        setSession(data.session);
+        setApiUser(apiMe);
+      } finally {
+        setLoading(false);
+      }
+    })();
+
+    // Cross-tab sync: another tab logs in/out via API → refresh here.
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === "emailsly_jwt") void refresh();
+    };
+    if (typeof window !== "undefined") window.addEventListener("storage", onStorage);
+
+    return () => {
+      sub.subscription.unsubscribe();
+      if (typeof window !== "undefined") window.removeEventListener("storage", onStorage);
+    };
+  }, [refresh]);
+
+  const signOut = useCallback(async () => {
+    // Sign out of both stacks so the user is fully logged out during migration.
+    try {
+      await apiSignOut();
+    } catch {
+      /* noop */
+    }
+    try {
+      await supabase.auth.signOut({ scope: "global" });
+    } catch {
+      try {
+        await supabase.auth.signOut({ scope: "local" });
+      } catch {
+        /* noop */
+      }
+    }
+    clearPersistedAuthState();
+    setSession(null);
+    setApiUser(null);
   }, []);
+
+  const user: User | AuthUser | null = apiUser ?? session?.user ?? null;
 
   return (
     <Ctx.Provider
       value={{
-        user: session?.user ?? null,
+        user,
         session,
         loading,
-        signOut: async () => {
-          // Sign out globally so all tabs/devices lose the session.
-          try {
-            await supabase.auth.signOut({ scope: "global" });
-          } catch {
-            // fall back to a local sign-out if the network call fails
-            try {
-              await supabase.auth.signOut({ scope: "local" });
-            } catch {
-              /* noop */
-            }
-          }
-          // Clear locally-persisted state regardless of what the server said.
-          clearPersistedAuthState();
-          setSession(null);
-        },
+        isApiSession: Boolean(apiUser),
+        refresh,
+        signOut,
       }}
     >
       {children}

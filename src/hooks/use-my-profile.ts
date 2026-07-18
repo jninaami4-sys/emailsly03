@@ -17,7 +17,7 @@ export const MY_PROFILE_KEY = ["my-profile"] as const;
 export function useMyProfile() {
   const { user } = useAuth();
   const qc = useQueryClient();
-  const profileFn = useServerFn(getMyProfile);
+  const profileFn = getMyProfile;
 
   const query = useQuery({
     queryKey: MY_PROFILE_KEY,

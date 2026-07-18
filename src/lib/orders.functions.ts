@@ -20,7 +20,17 @@ export async function listMyOrders(_?: { data?: Empty }) {
 }
 
 export async function getMyOrder(args: { data: { id: string } }) {
-  return ordersApi.get(args.data.id);
+  const { order } = await ordersApi.get(args.data.id);
+  // Events feed for customer view — PHP endpoint returns messages; treat as
+  // event log for the timeline UI until a dedicated /events route ships.
+  let events: unknown[] = [];
+  try {
+    const { messages } = await ordersApi.messages(args.data.id);
+    events = messages ?? [];
+  } catch {
+    /* non-fatal */
+  }
+  return { order, events };
 }
 
 export async function getMyProfile(_?: { data?: Empty }) {

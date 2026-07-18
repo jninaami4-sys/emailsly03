@@ -199,6 +199,15 @@ export function OrderBuilder() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [service.id, effectiveQty, extraUrls, verifier, rush, tip]);
 
+  // Keep the list of Apollo URL boxes in sync with the selected count.
+  useEffect(() => {
+    setApolloUrls((prev) => {
+      if (prev.length === extraUrls) return prev;
+      if (prev.length < extraUrls) return [...prev, ...Array(extraUrls - prev.length).fill("")];
+      return prev.slice(0, extraUrls);
+    });
+  }, [extraUrls]);
+
   const applyPromo = async () => {
     const code = promo.trim().toUpperCase();
     if (!code) return;

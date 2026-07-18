@@ -3,10 +3,12 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { listSiteContent, upsertSiteContent } from "@/lib/site-content.functions";
 import { SITE_CONTENT_DEFAULTS, type SiteContentSection } from "@/lib/site-content-defaults";
+import { ServiceCardsEditor } from "@/components/admin/ServiceCardsEditor";
 import {
   Globe, Layout, BellRing, ShieldCheck, Boxes, BarChart3, HelpCircle,
   Megaphone, PanelBottom, Sparkles, Palette, Mail, Save, Loader2, RefreshCw,
 } from "@/components/admin/AdminIcons";
+
 
 type TabDef = {
   id: SiteContentSection;
@@ -19,7 +21,9 @@ const TABS: TabDef[] = [
   { id: "hero", label: "Hero", icon: Layout, description: "Homepage hero — badge, headline, subtitle, CTAs." },
   { id: "popup", label: "Popup", icon: BellRing, description: "Welcome/promo popup shown on first visit." },
   { id: "trust", label: "Trust", icon: ShieldCheck, description: "Trust bar stats under the hero." },
-  { id: "services", label: "Services", icon: Boxes, description: "Services carousel heading & subheading." },
+  { id: "services", label: "Services heading", icon: Boxes, description: "Services carousel heading & subheading." },
+  { id: "service_cards", label: "Service cards", icon: Boxes, description: "Every service card — icon, price, bullets, gradient." },
+
   { id: "competitors", label: "Competitors", icon: BarChart3, description: "Comparison table copy vs. competitors." },
   { id: "faq", label: "FAQ", icon: HelpCircle, description: "Homepage FAQ questions & answers." },
   { id: "notices", label: "Notices", icon: Megaphone, description: "Top banner / global notices." },
@@ -123,12 +127,21 @@ export function SiteContentAdmin() {
           <Loader2 className="size-4 animate-spin" /> Loading content…
         </div>
       ) : (
-        <SectionEditor
-          key={tab}
-          section={tab}
-          initial={(data?.[tab] ?? {}) as Record<string, unknown>}
-          onSaved={() => qc.invalidateQueries({ queryKey: ["site-content"] })}
-        />
+        tab === "service_cards" ? (
+          <ServiceCardsEditor
+            key={tab}
+            initial={(data?.service_cards ?? {}) as Record<string, unknown>}
+            onSaved={() => qc.invalidateQueries({ queryKey: ["site-content"] })}
+          />
+        ) : (
+          <SectionEditor
+            key={tab}
+            section={tab}
+            initial={(data?.[tab] ?? {}) as Record<string, unknown>}
+            onSaved={() => qc.invalidateQueries({ queryKey: ["site-content"] })}
+          />
+        )
+
       )}
     </div>
   );

@@ -1,4 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, EffectCoverflow, FreeMode, Mousewheel, Pagination } from "swiper/modules";
 import "swiper/css";
@@ -16,6 +18,14 @@ import {
   PremiumDatabase,
   PremiumFileText,
 } from "@/components/site/PremiumIcons";
+import { listSiteContent } from "@/lib/site-content.functions";
+import {
+  DEFAULT_SERVICE_CARDS,
+  getServiceIcon,
+  getGradientPreset,
+  type EditableServiceCard,
+} from "@/lib/service-icons";
+
 
 type Service = {
   serviceId: string;
@@ -36,7 +46,7 @@ type Service = {
   tiers?: { qty: string; price: string; unitRate: string }[];
 };
 
-const services: Service[] = [
+const FALLBACK_SERVICES: Service[] = [
   {
     serviceId: "apollo",
     title: "Apollo B2B Data",
@@ -168,6 +178,50 @@ export function ServicesCarousel() {
   const [debug, setDebug] = useState(false);
   const [viewport, setViewport] = useState({ w: 0, h: 0 });
   const [overflowCount, setOverflowCount] = useState(0);
+
+  const listFn = useServerFn(listSiteContent);
+  const { data: siteContent } = useQuery({
+    queryKey: ["site-content"],
+    queryFn: () => listFn(),
+    staleTime: 60_000,
+  });
+
+  const services = useMemo<Service[]>(() => {
+    const raw = (siteContent as Record<string, { items?: EditableServiceCard[] } | undefined> | undefined)
+      ?.service_cards?.items;
+    const items: EditableServiceCard[] = Array.isArray(raw) && raw.length > 0 ? raw : DEFAULT_SERVICE_CARDS;
+    const fallbackById = new Map(FALLBACK_SERVICES.map((s) => [s.serviceId, s]));
+    return items
+      .filter((c) => c.enabled !== false)
+      .map<Service>((c) => {
+        const fb = fallbackById.get(c.serviceId);
+        const preset = getGradientPreset(c.gradientKey);
+        const IconCmp = c.iconUrl
+          ? ({ className }: { className?: string }) => (
+              <img src={c.iconUrl} alt="" className={className} style={{ objectFit: "contain" }} />
+            )
+          : getServiceIcon(c.icon);
+        return {
+          serviceId: c.serviceId,
+          title: c.title,
+          tagline: c.tagline,
+          badge: c.badge,
+          price: c.price,
+          perUnit: c.perUnit,
+          unit: c.unit ?? fb?.unit,
+          minOrder: c.minOrder,
+          turnaround: c.turnaround,
+          bullets: c.bullets,
+          gradient: fb?.gradient ?? preset.gradient,
+          glow: fb?.glow ?? "",
+          ring: fb?.ring ?? "ring-1 ring-white/10",
+          accent: fb?.accent ?? preset.accent,
+          Icon: IconCmp,
+          tiers: fb?.tiers,
+        };
+      });
+  }, [siteContent]);
+
 
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 640px)");

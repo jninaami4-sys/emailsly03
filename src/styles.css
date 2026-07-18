@@ -282,14 +282,14 @@ html.site-light .admin-theme {
   display: block;
 }
 .theme-toggle.is-on {
-  background: linear-gradient(135deg, #3b5bdb, #14b8a6);
+  background: linear-gradient(135deg, #c95a4a, #d97a55);
 }
 .theme-toggle.is-on .theme-toggle__circle {
   margin-left: calc(44px - (2px * 2) - 18px);
-  color: #f59e0b;
+  color: #b45309;
 }
 .theme-toggle:focus-visible {
-  outline: 2px solid #3b5bdb;
+  outline: 2px solid #c95a4a;
   outline-offset: 2px;
 }
 @media (prefers-reduced-motion: reduce) {

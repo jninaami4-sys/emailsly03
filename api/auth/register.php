@@ -53,7 +53,9 @@ Db::insert('email_otps', [
 Mail::send(
     $email,
     'Your verification code',
-    "<p>Your verification code is:</p><p style=\"font-size:24px;font-weight:700;letter-spacing:6px\">$code</p><p>It expires in 15 minutes. If you didn't request this, ignore this email. Check spam/promotions if you don't see it.</p>"
+    "<p>Your verification code is:</p><p style=\"font-size:24px;font-weight:700;letter-spacing:6px\">$code</p><p>It expires in 15 minutes. If you didn't request this, ignore this email. Check spam/promotions if you don't see it.</p>",
+    null,
+    'auth'
 );
 
 Response::json(['ok' => true, 'needs_otp' => true, 'email' => $email]);

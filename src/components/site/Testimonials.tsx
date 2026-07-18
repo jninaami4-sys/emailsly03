@@ -324,7 +324,7 @@ export function Testimonials() {
   }, [allText]);
 
   const videos = [...dynamicVideos, ...staticVideoTestimonials];
-  const totalReviews = approvedCount + curatedTestimonials.length + staticVideoTestimonials.length;
+  const totalReviews = approvedCount + curatedSource.length + staticVideoTestimonials.length;
 
   return (
     <section

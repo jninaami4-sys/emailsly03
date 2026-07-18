@@ -188,13 +188,13 @@ html.site-light body,
 html.site-light .theme-midnight {
   /* Surfaces */
   --background: oklch(0.992 0.004 300);   /* #fdfcff soft off-white */
-  --foreground: oklch(0.22 0.03 265);     /* deep slate ink */
+  --foreground: oklch(0.18 0.03 265);     /* deeper slate ink — sharper AA */
   --card: oklch(1 0 0);                    /* pure white cards */
-  --card-foreground: oklch(0.22 0.03 265);
+  --card-foreground: oklch(0.18 0.03 265);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.22 0.03 265);
+  --popover-foreground: oklch(0.18 0.03 265);
   --muted: oklch(0.968 0.006 285);
-  --muted-foreground: oklch(0.48 0.02 265);
+  --muted-foreground: oklch(0.42 0.02 265); /* darker for AA on white */
   --secondary: oklch(0.965 0.008 290);
   --secondary-foreground: oklch(0.22 0.03 265);
   --accent: oklch(0.55 0.25 293);          /* violet accent */

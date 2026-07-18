@@ -1091,3 +1091,47 @@ html { scroll-behavior: smooth; }
   background-size: 200% 100%;
   animation: shimmer 1.8s linear infinite;
 }
+
+/* ============================================================
+   Liquid glass — dark-theme card sheen (sitewide)
+   Applied to shadcn <Card> and any element marked .liquid-glass.
+   Uses translucent bg + backdrop blur + layered highlights so
+   cards read as elevated surfaces on gradient/blur backdrops.
+   ============================================================ */
+.liquid-glass,
+:not(.admin-theme) > .liquid-glass {
+  position: relative;
+  isolation: isolate;
+  background:
+    linear-gradient(
+      180deg,
+      oklch(from var(--card) l c h / 0.72) 0%,
+      oklch(from var(--card) l c h / 0.55) 100%
+    );
+  border: 1px solid oklch(1 0 0 / 0.08);
+  backdrop-filter: blur(18px) saturate(150%);
+  box-shadow:
+    0 1px 0 oklch(1 0 0 / 0.06) inset,
+    0 10px 30px -18px oklch(0 0 0 / 0.65),
+    0 0 0 1px oklch(1 0 0 / 0.02);
+}
+.liquid-glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    140deg,
+    oklch(1 0 0 / 0.14) 0%,
+    oklch(1 0 0 / 0) 45%,
+    oklch(from var(--primary) l c h / 0.28) 100%
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  pointer-events: none;
+  z-index: 1;
+}

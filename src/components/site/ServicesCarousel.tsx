@@ -437,24 +437,24 @@ export function ServicesCarousel() {
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: 10px;
-          bottom: 8px !important;
+          gap: 8px;
+          bottom: 14px !important;
         }
         .services-swiper-wrapper .swiper-pagination-bullet {
-          width: 8px;
-          height: 8px;
+          width: 6px;
+          height: 6px;
           margin: 0 !important;
-          background: rgba(255,255,255,0.28);
+          background: rgba(255,255,255,0.22);
           opacity: 1;
           border-radius: 999px;
           transition: all 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
         }
         .services-swiper-wrapper .swiper-pagination-bullet-active {
-          width: 32px;
-          height: 8px;
-          background: linear-gradient(90deg, #6366f1, #8b5cf6);
+          width: 26px;
+          height: 6px;
+          background: linear-gradient(90deg, #8b5cf6, #d946ef);
           border-radius: 999px;
-          box-shadow: 0 0 18px rgba(99,102,241,0.55), 0 0 6px rgba(139,92,246,0.4);
+          box-shadow: 0 0 14px rgba(139,92,246,0.45), 0 0 4px rgba(217,70,239,0.35);
         }
         .services-swiper-wrapper .swiper-pagination-bullet-active-main,
         .services-swiper-wrapper .swiper-pagination-bullet-active-prev,

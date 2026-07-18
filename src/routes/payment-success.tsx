@@ -4,6 +4,7 @@ import { CheckCircle2, Download, Printer, ArrowRight, Mail, ShieldCheck, Clock }
 import { PremiumSparkles as Sparkles } from "@/components/site/PremiumIcons";
 import { PremiumLogoMark } from "@/components/site/PremiumIcons";
 import { EmailslyLoaderInline } from "@/components/site/EmailslyLoaderInline";
+import emailslyLogo from "@/assets/emailsly-logo-trim.png.asset.json";
 import { useServerFn } from "@tanstack/react-start";
 import { recordMyOrder } from "@/lib/orders.functions";
 import { useAuth } from "@/hooks/use-auth";

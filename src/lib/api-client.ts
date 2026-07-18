@@ -93,48 +93,117 @@ export async function api<T = unknown>(path: string, init: Init = {}): Promise<T
     const t = getToken();
     if (t) h.set("Authorization", `Bearer ${t}`);
   }
+  const method = (rest.method || "GET").toUpperCase();
   const url = (path.startsWith("http") ? path : `${BASE}${path}`) + qs(query);
-  const res = await fetch(url, {
-    ...rest,
-    headers: h,
-    body:
-      body === undefined
-        ? undefined
-        : body instanceof FormData
-          ? body
-          : JSON.stringify(body),
-    credentials: "include",
-  });
-  const text = await res.text();
-  const ct = res.headers.get("content-type") || "";
-  const looksHtml = ct.includes("text/html") || text.trimStart().startsWith("<");
-  const data = text ? safeJson(text) : null;
-  if (!res.ok) {
-    // HTML at an /api/* path almost always means the PHP backend isn't
-    // reachable at this origin (wrong VITE_API_BASE_URL, missing /api
-    // directory on cPanel, or dev server with no PHP mounted).
+  const startedAt = Date.now();
+  let status = 0;
+  let contentType = "";
+  let ok = false;
+  let errorMessage: string | undefined;
+  try {
+    const res = await fetch(url, {
+      ...rest,
+      headers: h,
+      body:
+        body === undefined
+          ? undefined
+          : body instanceof FormData
+            ? body
+            : JSON.stringify(body),
+      credentials: "include",
+    });
+    status = res.status;
+    contentType = res.headers.get("content-type") || "";
+    const text = await res.text();
+    const looksHtml = contentType.includes("text/html") || text.trimStart().startsWith("<");
+    const data = text ? safeJson(text) : null;
+    if (!res.ok) {
+      if (looksHtml) {
+        errorMessage = `Expected JSON, got HTML (HTTP ${res.status})`;
+        throw new ApiError(
+          res.status,
+          `API unreachable at ${BASE || window.location.origin}${path} — expected JSON, got HTML (HTTP ${res.status}). Check VITE_API_BASE_URL or window.__API_BASE__.`,
+          null,
+        );
+      }
+      const msg =
+        (data && typeof data === "object" && "error" in data
+          ? String((data as { error: unknown }).error)
+          : res.statusText) || "Request failed";
+      errorMessage = msg;
+      throw new ApiError(res.status, msg, data);
+    }
     if (looksHtml) {
+      errorMessage = "Expected JSON, got HTML";
       throw new ApiError(
         res.status,
-        `API unreachable at ${BASE || window.location.origin}${path} — expected JSON, got HTML (HTTP ${res.status}). Check VITE_API_BASE_URL or window.__API_BASE__.`,
+        `API unreachable at ${BASE || window.location.origin}${path} — expected JSON, got HTML. Check VITE_API_BASE_URL or window.__API_BASE__.`,
         null,
       );
     }
-    const msg =
-      (data && typeof data === "object" && "error" in data
-        ? String((data as { error: unknown }).error)
-        : res.statusText) || "Request failed";
-    throw new ApiError(res.status, msg, data);
+    ok = true;
+    return data as T;
+  } catch (e) {
+    if (!errorMessage) errorMessage = e instanceof Error ? e.message : String(e);
+    throw e;
+  } finally {
+    recordApiCall({
+      id: `${startedAt}-${Math.random().toString(36).slice(2, 8)}`,
+      at: startedAt,
+      method,
+      url,
+      path,
+      status,
+      ok,
+      contentType,
+      durationMs: Date.now() - startedAt,
+      error: ok ? undefined : errorMessage,
+    });
   }
-  if (looksHtml) {
-    throw new ApiError(
-      res.status,
-      `API unreachable at ${BASE || window.location.origin}${path} — expected JSON, got HTML. Check VITE_API_BASE_URL or window.__API_BASE__.`,
-      null,
-    );
-  }
-  return data as T;
 }
+
+// -------- Diagnostics: request log ring buffer --------
+export type ApiLogEntry = {
+  id: string;
+  at: number;
+  method: string;
+  url: string;
+  path: string;
+  status: number;
+  ok: boolean;
+  contentType: string;
+  durationMs: number;
+  error?: string;
+};
+
+const API_LOG_LIMIT = 50;
+const apiLog: ApiLogEntry[] = [];
+const apiLogListeners = new Set<(entries: ApiLogEntry[]) => void>();
+
+function recordApiCall(entry: ApiLogEntry) {
+  apiLog.unshift(entry);
+  if (apiLog.length > API_LOG_LIMIT) apiLog.length = API_LOG_LIMIT;
+  for (const l of apiLogListeners) {
+    try { l([...apiLog]); } catch { /* ignore */ }
+  }
+}
+
+export function getApiLog(): ApiLogEntry[] {
+  return [...apiLog];
+}
+
+export function subscribeApiLog(fn: (entries: ApiLogEntry[]) => void): () => void {
+  apiLogListeners.add(fn);
+  return () => { apiLogListeners.delete(fn); };
+}
+
+export function clearApiLog() {
+  apiLog.length = 0;
+  for (const l of apiLogListeners) {
+    try { l([]); } catch { /* ignore */ }
+  }
+}
+
 
 function safeJson(text: string): unknown {
   try {

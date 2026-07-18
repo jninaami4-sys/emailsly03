@@ -67,9 +67,9 @@ function AdminGate() {
     return (
       <div className="theme-midnight min-h-screen bg-background text-foreground">
         <Header />
-        <AuroraBackdrop>
+        <PlainBackdrop>
           <EmailslyLoaderInline label="Checking access" />
-        </AuroraBackdrop>
+        </PlainBackdrop>
       </div>
     );
   }
@@ -78,9 +78,9 @@ function AdminGate() {
     return (
       <div className="theme-midnight min-h-screen bg-background text-foreground">
         <Header />
-        <AuroraBackdrop>
+        <PlainBackdrop>
           <main className="relative mx-auto max-w-md px-4 py-24 text-center">
-            <div className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-violet/15 text-violet ring-1 ring-violet/30">
+            <div className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-primary/15 text-primary ring-1 ring-primary/30">
               <Lock className="size-6" />
             </div>
             <h1 className="mt-4 font-display text-2xl font-bold">Admin sign-in required</h1>
@@ -89,12 +89,12 @@ function AdminGate() {
             </p>
             <Link
               to="/login"
-              className="mt-6 inline-flex rounded-xl bg-violet px-5 py-2.5 text-sm font-semibold text-white shadow-[0_10px_30px_-10px_oklch(0.52_0.24_293/0.6)] transition-transform hover:-translate-y-0.5"
+              className="mt-6 inline-flex rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground"
             >
               Go to sign in
             </Link>
           </main>
-        </AuroraBackdrop>
+        </PlainBackdrop>
       </div>
     );
   }
@@ -103,9 +103,9 @@ function AdminGate() {
     return (
       <div className="theme-midnight min-h-screen bg-background text-foreground">
         <Header />
-        <AuroraBackdrop>
+        <PlainBackdrop>
           <main className="relative mx-auto max-w-md px-4 py-24 text-center">
-            <div className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-rose-500/10 text-rose-400 ring-1 ring-rose-500/30">
+            <div className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-destructive/10 text-destructive ring-1 ring-destructive/30">
               <ShieldAlert className="size-6" />
             </div>
             <h1 className="mt-4 font-display text-2xl font-bold">Not authorized</h1>
@@ -113,7 +113,7 @@ function AdminGate() {
               {user.email} isn't the admin account. Sign in with the admin email.
             </p>
           </main>
-        </AuroraBackdrop>
+        </PlainBackdrop>
       </div>
     );
   }
@@ -466,23 +466,9 @@ function DropZone({ onFile }: { onFile: (file: File) => void }) {
   );
 }
 
-function AuroraBackdrop({ children }: { children: React.ReactNode }) {
+function PlainBackdrop({ children }: { children: React.ReactNode }) {
   return (
-    <div className="relative min-h-[calc(100vh-4rem)] overflow-hidden">
-      <div aria-hidden className="pointer-events-none absolute inset-0">
-        <div className="absolute -left-32 top-10 size-[420px] rounded-full bg-violet/25 blur-[120px] animate-aurora-slow" />
-        <div className="absolute right-[-10%] top-1/3 size-[380px] rounded-full bg-neon-orange/20 blur-[120px] animate-aurora-med" />
-        <div className="absolute bottom-[-20%] left-1/3 size-[460px] rounded-full bg-emerald/15 blur-[140px] animate-aurora-fast" />
-        <div
-          className="absolute inset-0 opacity-[0.05]"
-          style={{
-            backgroundImage:
-              "linear-gradient(var(--foreground) 1px, transparent 1px), linear-gradient(90deg, var(--foreground) 1px, transparent 1px)",
-            backgroundSize: "40px 40px",
-            maskImage: "radial-gradient(ellipse at center, black 40%, transparent 75%)",
-          }}
-        />
-      </div>
+    <div className="relative min-h-[calc(100vh-4rem)] bg-background">
       <div className="relative">{children}</div>
     </div>
   );

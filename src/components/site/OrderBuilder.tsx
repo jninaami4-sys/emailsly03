@@ -56,18 +56,19 @@ type Service = {
 };
 
 const SERVICES: Service[] = [
-  { id: "apollo",    name: "Apollo B2B Data",           ...SERVICE_CATALOG.apollo,    helper: "$20 / 5K · $35 / 10K+",                                          icon: PremiumTarget,             group: "data" },
-  { id: "zoominfo",  name: "ZoomInfo Data",             ...SERVICE_CATALOG.zoominfo,                                                                            icon: PremiumBuilding,           group: "data" },
-  { id: "linkedin",  name: "LinkedIn Lead Lists",       ...SERVICE_CATALOG.linkedin,  helper: "~70% include verified emails",                                   icon: PremiumLinkedin,           group: "data" },
-  { id: "manual",    name: "Hand-Picked Leads",         ...SERVICE_CATALOG.manual,    helper: "Min 100 leads · enter any quantity",                             icon: PremiumUserSearch,         group: "data" },
-  { id: "mobile",    name: "Apollo Mobile Numbers",     ...SERVICE_CATALOG.mobile,    helper: "Min 100 numbers · enter any quantity",                           icon: PremiumPhone,              group: "data" },
-  { id: "pixel",     name: "Facebook Pixel",            ...SERVICE_CATALOG.pixel,                                                                                icon: PremiumMousePointerClick,  group: "growth" },
-  { id: "warmup",    name: "Mailbox Warmup + DKIM/SPF", ...SERVICE_CATALOG.warmup,    helper: "2 mailboxes · 15-day warmup · DKIM, SPF, DMARC setup",           icon: PremiumShieldCheck,        group: "growth" },
-  { id: "ads",       name: "Google Ads Launch",         ...SERVICE_CATALOG.ads,                                                                                  icon: PremiumLineChart,          group: "growth" },
-  { id: "tracking",  name: "Server-Side Tracking",      ...SERVICE_CATALOG.tracking,                                                                             icon: PremiumServerCog,          group: "growth" },
-  { id: "logo",      name: "Logo & Brand Kit",          ...SERVICE_CATALOG.logo,                                                                                 icon: PremiumPenTool,            group: "design" },
-  { id: "webdesign", name: "Custom Website Build",      ...SERVICE_CATALOG.webdesign,                                                                            icon: PremiumGlobe,              group: "design" },
+  { ...SERVICE_CATALOG.apollo,    name: "Apollo B2B Data",           helper: "$20 / 5K · $35 / 10K+",                                icon: PremiumTarget,             group: "data" },
+  { ...SERVICE_CATALOG.zoominfo,  name: "ZoomInfo Data",                                                                             icon: PremiumBuilding,           group: "data" },
+  { ...SERVICE_CATALOG.linkedin,  name: "LinkedIn Lead Lists",       helper: "~70% include verified emails",                         icon: PremiumLinkedin,           group: "data" },
+  { ...SERVICE_CATALOG.manual,    name: "Hand-Picked Leads",         helper: "Min 100 leads · enter any quantity",                   icon: PremiumUserSearch,         group: "data" },
+  { ...SERVICE_CATALOG.mobile,    name: "Apollo Mobile Numbers",     helper: "Min 100 numbers · enter any quantity",                 icon: PremiumPhone,              group: "data" },
+  { ...SERVICE_CATALOG.pixel,     name: "Facebook Pixel",                                                                            icon: PremiumMousePointerClick,  group: "growth" },
+  { ...SERVICE_CATALOG.warmup,    name: "Mailbox Warmup + DKIM/SPF", helper: "2 mailboxes · 15-day warmup · DKIM, SPF, DMARC setup", icon: PremiumShieldCheck,        group: "growth" },
+  { ...SERVICE_CATALOG.ads,       name: "Google Ads Launch",                                                                         icon: PremiumLineChart,          group: "growth" },
+  { ...SERVICE_CATALOG.tracking,  name: "Server-Side Tracking",                                                                      icon: PremiumServerCog,          group: "growth" },
+  { ...SERVICE_CATALOG.logo,      name: "Logo & Brand Kit",                                                                          icon: PremiumPenTool,            group: "design" },
+  { ...SERVICE_CATALOG.webdesign, name: "Custom Website Build",                                                                      icon: PremiumGlobe,              group: "design" },
 ];
+
 
 
 const QTY_PRESETS = [5000, 10000, 15000, 20000, 50000, 100000, 250000, 500000, 1000000];

@@ -418,6 +418,11 @@ function AdminPage() {
     datasets: <SampleDatasetsAdmin />,
     audit: <SampleDatasetAuditLog />,
     "import-export": <ImportExportAdmin />,
+    "import-legacy-orders": <ImportOrdersAdmin />,
+    "backup-restore": <BackupRestoreAdmin />,
+    "store-offers": <StoreOffersAdmin />,
+    campaigns: <CampaignsAdmin />,
+    telegram: <TelegramBotsAdmin />,
     "email-test": <EmailTestAdmin />,
   };
 

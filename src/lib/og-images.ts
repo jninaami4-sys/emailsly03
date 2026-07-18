@@ -69,11 +69,14 @@ export function matchTheme(matches: ReadonlyArray<{ routeId?: string; id?: strin
  */
 export function ogImageMeta(image: string = OG_IMAGES.default, theme?: SiteTheme | null) {
   const url = theme ? withThemeQuery(image, theme) : image;
+  const dbg = (typeof window === "undefined" ? (globalThis as any).__mt : null) as string | null;
   return [
     { name: "twitter:card", content: "summary_large_image" },
     { property: "og:image", content: url },
     { property: "og:image:width", content: "1200" },
     { property: "og:image:height", content: "630" },
     { name: "twitter:image", content: url },
+    ...(dbg ? [{ name: "x-debug-matches", content: dbg }] : []),
   ] as const;
 }
+

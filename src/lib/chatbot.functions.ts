@@ -1,10 +1,9 @@
-import { createServerFn } from "@tanstack/react-start";
-import { requireAdmin } from "@/lib/require-admin";
-import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+/**
+ * Chatbot — thin proxies to PHP API (Batch 5 migration).
+ * Public widget + admin surfaces.
+ */
+import { chatbotApi, adminChatbotApi } from "@/lib/api-client";
 
-// -----------------------------------------------------------------------------
-// Types
-// -----------------------------------------------------------------------------
 export type ChatSender = "user" | "bot" | "admin";
 
 export type ChatMessage = {
@@ -70,630 +69,204 @@ export type ChatbotConfig = {
   ticket_webhook_url: string;
 };
 
-// -----------------------------------------------------------------------------
-// Admin gate (matches existing project pattern using ADMIN_EMAIL)
-// -----------------------------------------------------------------------------
+type Empty = Record<string, never>;
 
-// -----------------------------------------------------------------------------
-// Telegram helpers (uses Lovable connector gateway)
-// -----------------------------------------------------------------------------
-const TG_GATEWAY = "https://connector-gateway.lovable.dev/telegram";
+/* -------------------- Public widget -------------------- */
 
-async function telegramCall(
-  method: string,
-  body: Record<string, unknown>,
-): Promise<{ ok: boolean; result?: any; description?: string }> {
-  const lovable = process.env.LOVABLE_API_KEY;
-  const tgKey = process.env.TELEGRAM_API_KEY;
-  if (!lovable || !tgKey) {
-    return { ok: false, description: "Telegram connector is not configured" };
-  }
-  const r = await fetch(`${TG_GATEWAY}/${method}`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${lovable}`,
-      "X-Connection-Api-Key": tgKey,
-    },
-    body: JSON.stringify(body),
-  });
-  const text = await r.text();
-  let parsed: any;
+export async function getChatbotPublicConfig(
+  _?: { data?: Empty },
+): Promise<{ enabled: boolean; greeting: string; human_hours_note: string }> {
   try {
-    parsed = JSON.parse(text);
+    return await chatbotApi.config();
   } catch {
-    parsed = { ok: false, description: text };
+    return { enabled: true, greeting: "Hi! What's your name?", human_hours_note: "" };
   }
-  if (!r.ok || parsed?.ok === false) {
-    console.error(`telegram ${method} failed [${r.status}]:`, text);
-    return { ok: false, description: parsed?.description || text };
-  }
-  return parsed;
 }
 
-// -----------------------------------------------------------------------------
-// Public config (safe subset for widget)
-// -----------------------------------------------------------------------------
-export const getChatbotPublicConfig = createServerFn({ method: "GET" }).handler(
-  async (): Promise<{ enabled: boolean; greeting: string; human_hours_note: string }> => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data } = await (supabaseAdmin as any)
-      .from("chatbot_config")
-      .select("enabled, greeting, human_hours_note")
-      .eq("id", true)
-      .maybeSingle();
-    return {
-      enabled: data?.enabled ?? true,
-      greeting: data?.greeting ?? "Hi! What's your name?",
-      human_hours_note: data?.human_hours_note ?? "",
-    };
-  },
-);
+export async function listKb(_?: { data?: Empty }): Promise<KbEntry[]> {
+  try {
+    const { items } = await chatbotApi.listKb();
+    return (items ?? []) as KbEntry[];
+  } catch {
+    return [];
+  }
+}
 
-// -----------------------------------------------------------------------------
-// Knowledge base (public read)
-// -----------------------------------------------------------------------------
-export const listKb = createServerFn({ method: "GET" }).handler(
-  async (): Promise<KbEntry[]> => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data } = await (supabaseAdmin as any)
-      .from("chatbot_kb")
-      .select("*")
-      .eq("enabled", true)
-      .order("sort_order", { ascending: true });
-    return (data ?? []) as KbEntry[];
-  },
-);
+export async function startConversation(args: {
+  data: { sessionId: string; visitorName: string; orderId?: string; email?: string };
+}): Promise<ChatConversation> {
+  const { conversation } = await chatbotApi.startConversation(args.data);
+  return conversation as ChatConversation;
+}
 
-// -----------------------------------------------------------------------------
-// Conversation start / message posting
-// -----------------------------------------------------------------------------
-export const startConversation = createServerFn({ method: "POST" })
-  .inputValidator(
-    (d: { sessionId: string; visitorName: string; orderId?: string; email?: string }) => d,
-  )
-  .handler(async ({ data }): Promise<ChatConversation> => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    // Upsert on session_id
-    const { data: existing } = await (supabaseAdmin as any)
-      .from("chatbot_conversations")
-      .select("*")
-      .eq("session_id", data.sessionId)
-      .maybeSingle();
-    if (existing) return existing as ChatConversation;
+export async function listMessages(args: { data: { sessionId: string } }): Promise<ChatMessage[]> {
+  const { messages } = await chatbotApi.listMessages(args.data.sessionId);
+  return (messages ?? []) as ChatMessage[];
+}
 
-    const { data: row, error } = await (supabaseAdmin as any)
-      .from("chatbot_conversations")
-      .insert({
-        session_id: data.sessionId,
-        visitor_name: (data.visitorName || "Visitor").slice(0, 80),
-        order_id: data.orderId ?? null,
-        email: data.email ?? null,
-      })
-      .select("*")
-      .single();
-    if (error) throw new Error(error.message);
-    return row as ChatConversation;
-  });
+export async function postMessage(args: {
+  data: { sessionId: string; sender: ChatSender; text: string };
+}): Promise<{ ok: boolean }> {
+  return chatbotApi.postMessage(args.data);
+}
 
-export const listMessages = createServerFn({ method: "GET" })
-  .inputValidator((d: { sessionId: string }) => d)
-  .handler(async ({ data }): Promise<ChatMessage[]> => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: conv } = await (supabaseAdmin as any)
-      .from("chatbot_conversations")
-      .select("id")
-      .eq("session_id", data.sessionId)
-      .maybeSingle();
-    if (!conv) return [];
-    const { data: rows } = await (supabaseAdmin as any)
-      .from("chatbot_messages")
-      .select("*")
-      .eq("conversation_id", conv.id)
-      .order("created_at", { ascending: true });
-    return (rows ?? []) as ChatMessage[];
-  });
+export async function lookupOrder(args: {
+  data: { orderId: string; verify?: string };
+}): Promise<{
+  found: boolean;
+  order?: Pick<OrderRow, "order_id" | "customer_name" | "service" | "status" | "notes" | "amount">;
+}> {
+  return chatbotApi.lookupOrder(args.data);
+}
 
-export const postMessage = createServerFn({ method: "POST" })
-  .inputValidator((d: { sessionId: string; sender: ChatSender; text: string }) => d)
-  .handler(async ({ data }): Promise<{ ok: boolean }> => {
-    if (!data.text?.trim()) return { ok: false };
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: conv } = await (supabaseAdmin as any)
-      .from("chatbot_conversations")
-      .select("*")
-      .eq("session_id", data.sessionId)
-      .maybeSingle();
-    if (!conv) throw new Error("Conversation not found");
+export async function createOrder(args: {
+  data: {
+    customer_name: string;
+    email: string;
+    service: string;
+    details: string;
+    quantity: number;
+    amount: number;
+  };
+}): Promise<{ order_id: string }> {
+  return chatbotApi.createOrder(args.data);
+}
 
-    const text = data.text.slice(0, 4000);
-    await (supabaseAdmin as any).from("chatbot_messages").insert({
-      conversation_id: conv.id,
-      sender: data.sender,
-      text,
-    });
-    await (supabaseAdmin as any)
-      .from("chatbot_conversations")
-      .update({ last_message: text, updated_at: new Date().toISOString() })
-      .eq("id", conv.id);
+export async function createTicket(args: {
+  data: { name: string; email: string; issue: string };
+}): Promise<{ ticket_no: string }> {
+  return chatbotApi.createTicket(args.data);
+}
 
-    // If conversation is live and user is speaking, relay to Telegram thread
-    if (data.sender === "user" && conv.status === "live") {
-      const { data: mapRow } = await (supabaseAdmin as any)
-        .from("chatbot_telegram_map")
-        .select("telegram_message_id, telegram_chat_id")
-        .eq("conversation_id", conv.id)
-        .order("created_at", { ascending: false })
-        .limit(1)
-        .maybeSingle();
-      if (mapRow) {
-        await telegramCall("sendMessage", {
-          chat_id: mapRow.telegram_chat_id,
-          text: `💬 ${conv.visitor_name} [${conv.short_code}]:\n${text}`,
-          reply_to_message_id: mapRow.telegram_message_id,
-        });
-      }
-    }
-    return { ok: true };
-  });
+export async function requestHumanHandoff(args: {
+  data: { sessionId: string; lastMessage?: string };
+}): Promise<{ ok: boolean; note?: string }> {
+  return chatbotApi.handoff(args.data);
+}
 
-// -----------------------------------------------------------------------------
-// Order lookup + creation
-// -----------------------------------------------------------------------------
-export const lookupOrder = createServerFn({ method: "POST" })
-  .inputValidator((d: { orderId: string; verify?: string }) => d)
-  .handler(
-    async ({
-      data,
-    }): Promise<{
-      found: boolean;
-      order?: Pick<OrderRow, "order_id" | "customer_name" | "service" | "status" | "notes" | "amount">;
-    }> => {
-      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-      const id = data.orderId.trim().toUpperCase();
-      const { data: row } = await (supabaseAdmin as any)
-        .from("chatbot_orders")
-        .select("order_id, customer_name, email, service, status, notes, amount")
-        .eq("order_id", id)
-        .maybeSingle();
-      if (!row) return { found: false };
-      if (data.verify) {
-        const v = data.verify.trim().toLowerCase();
-        const okName = row.customer_name?.toLowerCase().includes(v);
-        const okEmail = row.email?.toLowerCase() === v;
-        if (!okName && !okEmail) return { found: false };
-      }
-      return {
-        found: true,
-        order: {
-          order_id: row.order_id,
-          customer_name: row.customer_name,
-          service: row.service,
-          status: row.status,
-          notes: row.notes,
-          amount: row.amount,
-        },
-      };
-    },
-  );
+/* -------------------- Admin -------------------- */
 
-export const createOrder = createServerFn({ method: "POST" })
-  .inputValidator(
-    (d: {
-      customer_name: string;
-      email: string;
-      service: string;
-      details: string;
-      quantity: number;
-      amount: number;
-    }) => d,
-  )
-  .handler(async ({ data }): Promise<{ order_id: string }> => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: row, error } = await (supabaseAdmin as any)
-      .from("chatbot_orders")
-      .insert({
-        customer_name: (data.customer_name || "").slice(0, 120),
-        email: (data.email || "").slice(0, 200),
-        service: (data.service || "").slice(0, 120),
-        details: (data.details || "").slice(0, 2000),
-        quantity: Math.max(0, Math.floor(data.quantity || 0)),
-        amount: Number(data.amount) || 0,
-      })
-      .select("order_id")
-      .single();
-    if (error) throw new Error(error.message);
-    return { order_id: row.order_id };
-  });
+export async function adminGetConfig(_?: { data?: Empty }): Promise<ChatbotConfig> {
+  const { config } = await adminChatbotApi.getConfig();
+  return (config ?? {
+    enabled: true,
+    greeting: "",
+    human_hours_note: "",
+    telegram_admin_chat_id: "",
+    ticket_webhook_url: "",
+  }) as ChatbotConfig;
+}
 
-// -----------------------------------------------------------------------------
-// Tickets — save to DB and forward to Telegram (email path optional via webhook)
-// -----------------------------------------------------------------------------
-export const createTicket = createServerFn({ method: "POST" })
-  .inputValidator((d: { name: string; email: string; issue: string }) => d)
-  .handler(async ({ data }): Promise<{ ticket_no: string }> => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: row, error } = await (supabaseAdmin as any)
-      .from("chatbot_tickets")
-      .insert({
-        name: (data.name || "").slice(0, 120),
-        email: (data.email || "").slice(0, 200),
-        issue: (data.issue || "").slice(0, 4000),
-      })
-      .select("ticket_no")
-      .single();
-    if (error) throw new Error(error.message);
+export async function adminSaveConfig(args: { data: ChatbotConfig }): Promise<{ ok: true }> {
+  await adminChatbotApi.saveConfig(args.data);
+  return { ok: true };
+}
 
-    // Fire-and-forget notifications
-    try {
-      const { data: cfg } = await (supabaseAdmin as any)
-        .from("chatbot_config")
-        .select("telegram_admin_chat_id, ticket_webhook_url")
-        .eq("id", true)
-        .maybeSingle();
+export async function adminListConversations(_?: { data?: Empty }): Promise<ChatConversation[]> {
+  const { conversations } = await adminChatbotApi.conversations();
+  return (conversations ?? []) as ChatConversation[];
+}
 
-      if (cfg?.telegram_admin_chat_id) {
-        await telegramCall("sendMessage", {
-          chat_id: cfg.telegram_admin_chat_id,
-          text: `🎫 New support ticket ${row.ticket_no}\n👤 ${data.name}\n📧 ${data.email}\n─────\n${data.issue}`,
-        });
-      }
-      if (cfg?.ticket_webhook_url) {
-        fetch(cfg.ticket_webhook_url, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            ticket_no: row.ticket_no,
-            name: data.name,
-            email: data.email,
-            issue: data.issue,
-            created_at: new Date().toISOString(),
-          }),
-        }).catch((e) => console.error("ticket webhook failed", e));
-      }
-    } catch (e) {
-      console.error("ticket notify failed", e);
-    }
-    return { ticket_no: row.ticket_no };
-  });
+export async function adminListMessages(args: {
+  data: { conversationId: string };
+}): Promise<ChatMessage[]> {
+  const { messages } = await adminChatbotApi.messages(args.data.conversationId);
+  return (messages ?? []) as ChatMessage[];
+}
 
-// -----------------------------------------------------------------------------
-// Human handoff — flip conversation to "live" and post Telegram thread
-// -----------------------------------------------------------------------------
-export const requestHumanHandoff = createServerFn({ method: "POST" })
-  .inputValidator((d: { sessionId: string; lastMessage?: string }) => d)
-  .handler(async ({ data }): Promise<{ ok: boolean; note?: string }> => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: conv } = await (supabaseAdmin as any)
-      .from("chatbot_conversations")
-      .select("*")
-      .eq("session_id", data.sessionId)
-      .maybeSingle();
-    if (!conv) throw new Error("Conversation not found");
+export async function adminReply(args: {
+  data: { conversationId: string; text: string };
+}): Promise<{ ok: true }> {
+  await adminChatbotApi.reply(args.data.conversationId, args.data.text);
+  return { ok: true };
+}
 
-    await (supabaseAdmin as any)
-      .from("chatbot_conversations")
-      .update({ status: "live" })
-      .eq("id", conv.id);
+export async function adminCloseConversation(args: {
+  data: { conversationId: string };
+}): Promise<{ ok: true }> {
+  await adminChatbotApi.closeConversation(args.data.conversationId);
+  return { ok: true };
+}
 
-    const { data: cfg } = await (supabaseAdmin as any)
-      .from("chatbot_config")
-      .select("telegram_admin_chat_id")
-      .eq("id", true)
-      .maybeSingle();
+/* KB */
+export async function adminListKb(_?: { data?: Empty }): Promise<KbEntry[]> {
+  const { items } = await adminChatbotApi.kbList();
+  return (items ?? []) as KbEntry[];
+}
 
-    if (!cfg?.telegram_admin_chat_id) {
-      // Post an admin message telling visitor we saved their request
-      await (supabaseAdmin as any).from("chatbot_messages").insert({
-        conversation_id: conv.id,
-        sender: "bot",
-        text: "Our team will reach out shortly. You can also raise a ticket for a written record.",
-      });
-      return { ok: false, note: "Telegram admin chat not configured yet" };
-    }
+export async function adminUpsertKb(args: {
+  data: {
+    id?: string;
+    category: string;
+    title: string;
+    answer: string;
+    sort_order: number;
+    enabled: boolean;
+  };
+}): Promise<{ ok: true }> {
+  await adminChatbotApi.kbUpsert(args.data);
+  return { ok: true };
+}
 
-    const chatId = cfg.telegram_admin_chat_id;
-    const summary = `🔔 Live chat request\n👤 Name: ${conv.visitor_name}\n🧾 Order: ${conv.order_id ?? "none"}\n💬 ${data.lastMessage || conv.last_message || "(no message yet)"}\n─────\nReply to THIS message, or type: /reply ${conv.short_code} your text\nCode: ${conv.short_code}`;
-    const sent = await telegramCall("sendMessage", { chat_id: chatId, text: summary });
-    const msgId = sent?.result?.message_id;
-    const resChat = sent?.result?.chat?.id;
-    if (msgId && resChat) {
-      await (supabaseAdmin as any).from("chatbot_telegram_map").insert({
-        telegram_message_id: msgId,
-        telegram_chat_id: resChat,
-        conversation_id: conv.id,
-      });
-    }
-    await (supabaseAdmin as any).from("chatbot_messages").insert({
-      conversation_id: conv.id,
-      sender: "bot",
-      text: "You're now connected to our team. A human will reply here shortly.",
-    });
-    return { ok: sent.ok };
-  });
+export async function adminDeleteKb(args: { data: { id: string } }): Promise<{ ok: true }> {
+  await adminChatbotApi.kbDelete(args.data.id);
+  return { ok: true };
+}
 
-// -----------------------------------------------------------------------------
-// Admin: config, conversations, replies, KB CRUD, orders CRUD, tickets CRUD
-// -----------------------------------------------------------------------------
-export const adminGetConfig = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
-  .handler(async ({ context }): Promise<ChatbotConfig> => {
-    await requireAdmin(context);
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data } = await (supabaseAdmin as any)
-      .from("chatbot_config")
-      .select("*")
-      .eq("id", true)
-      .maybeSingle();
-    return (data ?? {
-      enabled: true,
-      greeting: "",
-      human_hours_note: "",
-      telegram_admin_chat_id: "",
-      ticket_webhook_url: "",
-    }) as ChatbotConfig;
-  });
+/* Orders */
+export async function adminListOrders(_?: { data?: Empty }): Promise<OrderRow[]> {
+  const { orders } = await adminChatbotApi.ordersList();
+  return (orders ?? []) as OrderRow[];
+}
 
-export const adminSaveConfig = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
-  .inputValidator((d: ChatbotConfig) => d)
-  .handler(async ({ context, data }): Promise<{ ok: true }> => {
-    await requireAdmin(context);
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    await (supabaseAdmin as any)
-      .from("chatbot_config")
-      .update({
-        enabled: data.enabled,
-        greeting: data.greeting,
-        human_hours_note: data.human_hours_note,
-        telegram_admin_chat_id: data.telegram_admin_chat_id.trim(),
-        ticket_webhook_url: data.ticket_webhook_url.trim(),
-      })
-      .eq("id", true);
-    return { ok: true };
-  });
+export async function adminUpsertOrder(args: {
+  data: {
+    id?: string;
+    order_id?: string;
+    customer_name: string;
+    email: string;
+    service: string;
+    details?: string;
+    quantity?: number;
+    amount: number;
+    status: OrderRow["status"];
+    notes: string;
+  };
+}): Promise<{ ok: true }> {
+  await adminChatbotApi.orderUpsert(args.data);
+  return { ok: true };
+}
 
-export const adminListConversations = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
-  .handler(async ({ context }): Promise<ChatConversation[]> => {
-    await requireAdmin(context);
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data } = await (supabaseAdmin as any)
-      .from("chatbot_conversations")
-      .select("*")
-      .order("updated_at", { ascending: false })
-      .limit(200);
-    return (data ?? []) as ChatConversation[];
-  });
+export async function adminDeleteOrder(args: { data: { id: string } }): Promise<{ ok: true }> {
+  await adminChatbotApi.orderDelete(args.data.id);
+  return { ok: true };
+}
 
-export const adminListMessages = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
-  .inputValidator((d: { conversationId: string }) => d)
-  .handler(async ({ context, data }): Promise<ChatMessage[]> => {
-    await requireAdmin(context);
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: rows } = await (supabaseAdmin as any)
-      .from("chatbot_messages")
-      .select("*")
-      .eq("conversation_id", data.conversationId)
-      .order("created_at", { ascending: true });
-    return (rows ?? []) as ChatMessage[];
-  });
+/* Tickets */
+export async function adminListTickets(_?: { data?: Empty }): Promise<TicketRow[]> {
+  const { tickets } = await adminChatbotApi.ticketsList();
+  return (tickets ?? []) as TicketRow[];
+}
 
-export const adminReply = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
-  .inputValidator((d: { conversationId: string; text: string }) => d)
-  .handler(async ({ context, data }): Promise<{ ok: true }> => {
-    await requireAdmin(context);
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    await (supabaseAdmin as any).from("chatbot_messages").insert({
-      conversation_id: data.conversationId,
-      sender: "admin",
-      text: data.text.slice(0, 4000),
-    });
-    await (supabaseAdmin as any)
-      .from("chatbot_conversations")
-      .update({ status: "live", last_message: data.text.slice(0, 200) })
-      .eq("id", data.conversationId);
-    return { ok: true };
-  });
+export async function adminUpdateTicket(args: {
+  data: { id: string; status: "Open" | "Closed" };
+}): Promise<{ ok: true }> {
+  await adminChatbotApi.ticketUpdate(args.data.id, { status: args.data.status });
+  return { ok: true };
+}
 
-export const adminCloseConversation = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
-  .inputValidator((d: { conversationId: string }) => d)
-  .handler(async ({ context, data }): Promise<{ ok: true }> => {
-    await requireAdmin(context);
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    await (supabaseAdmin as any)
-      .from("chatbot_conversations")
-      .update({ status: "closed" })
-      .eq("id", data.conversationId);
-    await (supabaseAdmin as any).from("chatbot_messages").insert({
-      conversation_id: data.conversationId,
-      sender: "bot",
-      text: "This conversation has been closed. Feel free to start a new chat anytime.",
-    });
-    return { ok: true };
-  });
+/* Telegram + sync */
+export async function adminSetTelegramWebhook(args: {
+  data: { webhookUrl: string };
+}): Promise<{ ok: boolean; description?: string }> {
+  return adminChatbotApi.telegramWebhook(args.data.webhookUrl);
+}
 
-// KB CRUD
-export const adminListKb = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
-  .handler(async ({ context }): Promise<KbEntry[]> => {
-    await requireAdmin(context);
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data } = await (supabaseAdmin as any)
-      .from("chatbot_kb")
-      .select("*")
-      .order("category", { ascending: true })
-      .order("sort_order", { ascending: true });
-    return (data ?? []) as KbEntry[];
-  });
-
-export const adminUpsertKb = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
-  .inputValidator(
-    (d: {
-      id?: string;
-      category: string;
-      title: string;
-      answer: string;
-      sort_order: number;
-      enabled: boolean;
-    }) => d,
-  )
-  .handler(async ({ context, data }): Promise<{ ok: true }> => {
-    await requireAdmin(context);
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    if (data.id) {
-      await (supabaseAdmin as any)
-        .from("chatbot_kb")
-        .update({
-          category: data.category,
-          title: data.title,
-          answer: data.answer,
-          sort_order: data.sort_order,
-          enabled: data.enabled,
-        })
-        .eq("id", data.id);
-    } else {
-      await (supabaseAdmin as any).from("chatbot_kb").insert({
-        category: data.category,
-        title: data.title,
-        answer: data.answer,
-        sort_order: data.sort_order,
-        enabled: data.enabled,
-      });
-    }
-    return { ok: true };
-  });
-
-export const adminDeleteKb = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
-  .inputValidator((d: { id: string }) => d)
-  .handler(async ({ context, data }): Promise<{ ok: true }> => {
-    await requireAdmin(context);
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    await (supabaseAdmin as any).from("chatbot_kb").delete().eq("id", data.id);
-    return { ok: true };
-  });
-
-// Orders CRUD
-export const adminListOrders = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
-  .handler(async ({ context }): Promise<OrderRow[]> => {
-    await requireAdmin(context);
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data } = await (supabaseAdmin as any)
-      .from("chatbot_orders")
-      .select("*")
-      .order("created_at", { ascending: false })
-      .limit(500);
-    return (data ?? []) as OrderRow[];
-  });
-
-export const adminUpsertOrder = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
-  .inputValidator(
-    (d: {
-      id?: string;
-      order_id?: string;
-      customer_name: string;
-      email: string;
-      service: string;
-      details?: string;
-      quantity?: number;
-      amount: number;
-      status: OrderRow["status"];
-      notes: string;
-    }) => d,
-  )
-  .handler(async ({ context, data }): Promise<{ ok: true }> => {
-    await requireAdmin(context);
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const payload: Record<string, unknown> = {
-      customer_name: data.customer_name,
-      email: data.email,
-      service: data.service,
-      details: data.details ?? "",
-      quantity: data.quantity ?? 0,
-      amount: data.amount,
-      status: data.status,
-      notes: data.notes,
-    };
-    if (data.order_id) payload.order_id = data.order_id;
-    if (data.id) {
-      await (supabaseAdmin as any).from("chatbot_orders").update(payload).eq("id", data.id);
-    } else {
-      await (supabaseAdmin as any).from("chatbot_orders").insert(payload);
-    }
-    return { ok: true };
-  });
-
-export const adminDeleteOrder = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
-  .inputValidator((d: { id: string }) => d)
-  .handler(async ({ context, data }): Promise<{ ok: true }> => {
-    await requireAdmin(context);
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    await (supabaseAdmin as any).from("chatbot_orders").delete().eq("id", data.id);
-    return { ok: true };
-  });
-
-// Tickets CRUD
-export const adminListTickets = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
-  .handler(async ({ context }): Promise<TicketRow[]> => {
-    await requireAdmin(context);
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data } = await (supabaseAdmin as any)
-      .from("chatbot_tickets")
-      .select("*")
-      .order("created_at", { ascending: false })
-      .limit(500);
-    return (data ?? []) as TicketRow[];
-  });
-
-export const adminUpdateTicket = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
-  .inputValidator((d: { id: string; status: "Open" | "Closed" }) => d)
-  .handler(async ({ context, data }): Promise<{ ok: true }> => {
-    await requireAdmin(context);
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    await (supabaseAdmin as any)
-      .from("chatbot_tickets")
-      .update({ status: data.status })
-      .eq("id", data.id);
-    return { ok: true };
-  });
-
-// -----------------------------------------------------------------------------
-// Telegram webhook setup helper (admin-only)
-// -----------------------------------------------------------------------------
-export const adminSetTelegramWebhook = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
-  .inputValidator((d: { webhookUrl: string }) => d)
-  .handler(async ({ context, data }): Promise<{ ok: boolean; description?: string }> => {
-    await requireAdmin(context);
-    const res = await telegramCall("setWebhook", {
-      url: data.webhookUrl,
-      allowed_updates: ["message", "edited_message"],
-    });
-    return { ok: res.ok, description: res.description };
-  });
-
-// -----------------------------------------------------------------------------
-// KB auto-sync (pulls latest pricing / policies / FAQs / catalog from the site)
-// -----------------------------------------------------------------------------
-export const adminSyncKb = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
-  .handler(async ({ context }): Promise<{
-    ok: true;
-    inserted: number;
-    removed: number;
-    categories: Record<string, number>;
-  }> => {
-    await requireAdmin(context);
-    const { runKbSync } = await import("./chatbot-sync");
-    return runKbSync();
-  });
+export async function adminSyncKb(_?: { data?: Empty }): Promise<{
+  ok: true;
+  inserted: number;
+  removed: number;
+  categories: Record<string, number>;
+}> {
+  return adminChatbotApi.syncKb();
+}

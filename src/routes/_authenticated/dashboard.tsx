@@ -383,17 +383,17 @@ function TabBtn({
   return (
     <button
       onClick={onClick}
-      className={`inline-flex items-center justify-center gap-2 rounded-xl px-3 py-2.5 text-sm font-semibold transition-all ${
+      className={`relative inline-flex flex-col items-center justify-center gap-1 rounded-xl px-1.5 py-2 text-[11px] font-semibold transition-all sm:flex-row sm:gap-2 sm:px-3 sm:py-2.5 sm:text-sm ${
         active
           ? "bg-gradient-to-r from-violet to-indigo text-white shadow-md shadow-violet/20"
           : "text-muted-foreground hover:bg-secondary hover:text-foreground"
       }`}
     >
       {icon}
-      <span>{children}</span>
+      <span className="leading-none">{children}</span>
       {count ? (
         <span
-          className={`grid min-w-4 place-items-center rounded-full px-1.5 py-0 font-mono text-[10px] font-bold ${
+          className={`absolute -right-0.5 -top-0.5 grid min-w-4 place-items-center rounded-full px-1 py-0 font-mono text-[9px] font-bold sm:static sm:px-1.5 sm:text-[10px] ${
             active ? "bg-white/25 text-white" : "bg-violet/15 text-violet"
           }`}
         >

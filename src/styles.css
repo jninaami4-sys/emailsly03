@@ -185,39 +185,40 @@
  * inherits a consistent readable look without touching each component.
  */
 .admin-theme {
-  /* Minimal light admin — soft off-white surface, near-black text, single
-     blue accent. Easy on the eyes for long working sessions. */
-  --background: oklch(0.985 0.002 260);
-  --foreground: oklch(0.18 0.01 260);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.18 0.01 260);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.18 0.01 260);
-  --muted: oklch(0.96 0.004 260);
-  --muted-foreground: oklch(0.45 0.012 260);
-  --secondary: oklch(0.955 0.004 260);
-  --secondary-foreground: oklch(0.22 0.01 260);
-  --accent: oklch(0.55 0.18 258);
-  --accent-foreground: oklch(1 0 0);
-  --border: oklch(0.18 0.01 260 / 0.10);
-  --input: oklch(0.18 0.01 260 / 0.12);
-  --primary: oklch(0.55 0.18 258);
-  --primary-foreground: oklch(1 0 0);
-  --ring: oklch(0.55 0.18 258);
-  --destructive: oklch(0.58 0.22 22);
+  /* Dark admin — near-black surfaces with a single electric blue accent,
+     matching the exportapolloleads.com admin login reference. */
+  --background: oklch(0.14 0.005 260);
+  --foreground: oklch(0.98 0 0);
+  --card: oklch(0.19 0.008 260);
+  --card-foreground: oklch(0.98 0 0);
+  --popover: oklch(0.19 0.008 260);
+  --popover-foreground: oklch(0.98 0 0);
+  --muted: oklch(0.22 0.008 260);
+  --muted-foreground: oklch(0.70 0.01 260);
+  --secondary: oklch(0.22 0.008 260);
+  --secondary-foreground: oklch(0.98 0 0);
+  --accent: oklch(0.65 0.17 258);
+  --accent-foreground: oklch(0.10 0 0);
+  --border: oklch(1 0 0 / 0.08);
+  --input: oklch(1 0 0 / 0.10);
+  --primary: oklch(0.65 0.17 258);
+  --primary-foreground: oklch(0.10 0 0);
+  --ring: oklch(0.65 0.17 258);
+  --destructive: oklch(0.62 0.22 22);
   --destructive-foreground: oklch(1 0 0);
-  --violet: oklch(0.55 0.18 258);
-  --violet-soft: oklch(0.55 0.18 258 / 0.10);
-  --magenta: oklch(0.55 0.18 258);
-  --magenta-soft: oklch(0.55 0.18 258 / 0.10);
-  --coral: oklch(0.55 0.18 258);
-  --coral-soft: oklch(0.55 0.18 258 / 0.10);
-  --emerald: oklch(0.58 0.14 165);
-  --emerald-soft: oklch(0.58 0.14 165 / 0.12);
-  --amber: oklch(0.72 0.16 78);
-  --amber-soft: oklch(0.72 0.16 78 / 0.15);
-  color-scheme: light;
+  --violet: oklch(0.65 0.17 258);
+  --violet-soft: oklch(0.65 0.17 258 / 0.14);
+  --magenta: oklch(0.65 0.17 258);
+  --magenta-soft: oklch(0.65 0.17 258 / 0.14);
+  --coral: oklch(0.65 0.17 258);
+  --coral-soft: oklch(0.65 0.17 258 / 0.14);
+  --emerald: oklch(0.66 0.15 165);
+  --emerald-soft: oklch(0.66 0.15 165 / 0.16);
+  --amber: oklch(0.78 0.15 78);
+  --amber-soft: oklch(0.78 0.15 78 / 0.18);
+  color-scheme: dark;
 }
+
 
 /* Bold sans font, minimal type inside admin */
 .admin-theme {

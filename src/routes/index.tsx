@@ -177,9 +177,12 @@ function Home() {
               </div>
 
               {/* Stat strip */}
-              <div className="mx-auto mt-16 grid max-w-3xl grid-cols-3 gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur">
-                {stats.map((s) => (
-                  <div key={s.v} className="bg-midnight/70 px-2 py-4 text-center sm:px-4 sm:py-5">
+              <div
+                className="mx-auto mt-16 grid max-w-3xl gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur"
+                style={{ gridTemplateColumns: `repeat(${Math.max(1, Math.min(stats.length, 4))}, minmax(0, 1fr))` }}
+              >
+                {stats.map((s, i) => (
+                  <div key={`${s.v}-${i}`} className="bg-midnight/70 px-2 py-4 text-center sm:px-4 sm:py-5">
                     <div className="font-display text-lg font-bold tabular-nums text-foreground sm:text-2xl md:text-3xl">{s.k}</div>
                     <div className="mt-1 font-mono text-[9px] uppercase tracking-widest text-foreground/50 sm:text-[10px]">{s.v}</div>
                   </div>

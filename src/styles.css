@@ -369,13 +369,10 @@ html.site-light .bg-card {
   html.site-light [role="dialog"],
   html.site-light [role="menu"],
   html.site-light [role="listbox"] {
-    background-color: #ffffff !important;
-    border: 1px solid rgba(59, 91, 219, 0.14);
+    background-color: #fffdf7 !important;
+    border: 1px solid rgba(120, 53, 15, 0.14);
   }
 
-  /* Tailwind backdrop-blur-* utilities — neutralize the (unsupported)
-   * filter and replace the translucent surface with a solid pearl tint
-   * so bg-white/60 style overlays don't reveal the aurora underneath. */
   html.site-light [class*="backdrop-blur"] {
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
@@ -383,15 +380,13 @@ html.site-light .bg-card {
   html.site-light [class*="backdrop-blur"][class*="bg-white/"],
   html.site-light [class*="backdrop-blur"][class*="bg-background/"],
   html.site-light [class*="backdrop-blur"][class*="bg-card/"] {
-    background-color: #f7faff !important;
+    background-color: #faf6ef !important;
   }
 
-  /* Ambient aurora blobs — without blur they read as harsh color patches.
-   * Fade them out and let the layered gradient carry the depth. */
   html.site-light body {
     background-image:
-      radial-gradient(rgba(30, 41, 59, 0.045) 1px, transparent 1px),
-      linear-gradient(180deg, #f7faff 0%, #eef3fb 100%);
+      radial-gradient(rgba(120, 53, 15, 0.05) 1px, transparent 1px),
+      linear-gradient(180deg, #faf6ef 0%, #f3ebdc 100%);
     background-size: 22px 22px, auto;
     background-repeat: repeat, no-repeat;
   }

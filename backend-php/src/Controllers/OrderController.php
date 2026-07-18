@@ -51,6 +51,7 @@ final class OrderController
             'customer_email' => $customerEmail,
             'customer_name' => $customerName,
             'notes' => $b['notes'] ?? null,
+            'items' => $b['metadata']['items'] ?? null,
         ]);
         Response::json(['id' => $id]);
     }
@@ -106,14 +107,14 @@ final class OrderController
         $money = strtoupper($o['currency']) . ' ' . number_format($o['total_cents'] / 100, 2);
         $name  = $o['customer_name'] ?: 'there';
         $svc   = $o['service'] ?: 'your order';
-        $ref   = substr($o['id'], 0, 8);
+        $ref   = strtoupper(substr($o['id'], 0, 8));
         $appUrl = rtrim($_ENV['APP_URL'] ?? '', '/');
         $brand  = $_ENV['BRAND_NAME'] ?? 'Emailsly';
         $logo   = $_ENV['BRAND_LOGO_URL'] ?? '';
+        $items  = $o['items'] ?? null;
 
         $mailer = Mailer::orders();
 
-        // 1) Customer confirmation (HTML + text fallback)
         if (!empty($o['customer_email'])) {
             $html = $this->orderEmailHtml([
                 'audience'  => 'customer',
@@ -122,6 +123,7 @@ final class OrderController
                 'name'      => $name,
                 'ref'       => $ref,
                 'service'   => $svc,
+                'items'     => $items,
                 'quantity'  => (int)$o['quantity'],
                 'total'     => $money,
                 'notes'     => $o['notes'] ?? '',
@@ -131,7 +133,6 @@ final class OrderController
             $mailer->send($o['customer_email'], "Order confirmed · #$ref", $html, true);
         }
 
-        // 2) Internal copy for admins — supports comma-separated list
         $adminInboxRaw = $_ENV['ORDERS_ADMIN_INBOX'] ?? ($_ENV['ADMIN_EMAIL'] ?? '');
         $admins = array_filter(array_map('trim', explode(',', $adminInboxRaw)));
         if ($admins) {
@@ -142,6 +143,7 @@ final class OrderController
                 'name'      => $name,
                 'ref'       => $ref,
                 'service'   => $svc,
+                'items'     => $items,
                 'quantity'  => (int)$o['quantity'],
                 'total'     => $money,
                 'notes'     => $o['notes'] ?? '',
@@ -167,65 +169,112 @@ final class OrderController
         $track   = htmlspecialchars($d['trackUrl'] ?? '');
         $custEm  = htmlspecialchars($d['customerEmail'] ?? '');
         $logo    = htmlspecialchars($d['logo'] ?? '');
+        $items   = is_array($d['items'] ?? null) ? $d['items'] : null;
 
-        $accent = '#4F7CFF';
-        $bg     = '#f5f7fb';
-        $card   = '#ffffff';
-        $ink    = '#0f172a';
-        $muted  = '#64748b';
-        $border = '#e5e7eb';
+        // Premium palette — matches site: deep navy + electric blue
+        $bg      = '#0a0f1e';   // page bg
+        $panel   = '#0f1729';   // card bg
+        $panel2  = '#131c33';   // inner rows
+        $ink     = '#e8eefc';
+        $muted   = '#8ea0c4';
+        $border  = '#1e2a44';
+        $accent  = '#418df1';
+        $accent2 = '#6ba7ff';
 
-        $title    = $isAdmin ? "New order received" : "Thanks for your order, $name!";
+        $title    = $isAdmin ? "New order received" : "Thanks for your order, $name";
         $subtitle = $isAdmin
             ? "A new order was placed on $brand and needs your attention."
             : "We've received your order and our team is on it. You'll get delivery details shortly.";
         $ctaLabel = $isAdmin ? 'Open in admin panel' : 'Track your order';
         $badge    = $isAdmin ? 'ADMIN COPY' : 'ORDER CONFIRMED';
 
+        $logoBlock = $logo !== ''
+            ? "<img src=\"$logo\" alt=\"$brand\" style=\"height:40px;display:block\">"
+            : "<div style=\"display:flex;align-items:center;gap:10px\"><div style=\"width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,$accent,$accent2);box-shadow:0 6px 20px rgba(65,141,241,0.45)\"></div><div style=\"font-size:22px;font-weight:800;color:#fff;letter-spacing:-0.6px\">$brand</div></div>";
+
+        // Items table
+        if ($items && count($items) > 0) {
+            $rows = '';
+            foreach ($items as $it) {
+                $iname = htmlspecialchars($it['name'] ?? '');
+                $idesc = htmlspecialchars($it['description'] ?? '');
+                $iqty  = (int)($it['quantity'] ?? 1);
+                $iprice = htmlspecialchars($it['price'] ?? '');
+                $rows .= "<tr>"
+                    . "<td style=\"padding:16px 20px;border-top:1px solid $border;vertical-align:top\">"
+                    . "<div style=\"color:$ink;font-size:14px;font-weight:600;line-height:1.4\">$iname</div>"
+                    . ($idesc ? "<div style=\"color:$muted;font-size:12px;margin-top:4px;line-height:1.5\">$idesc</div>" : "")
+                    . "</td>"
+                    . "<td style=\"padding:16px 12px;border-top:1px solid $border;text-align:center;color:$muted;font-size:13px;vertical-align:top\">×$iqty</td>"
+                    . "<td style=\"padding:16px 20px;border-top:1px solid $border;text-align:right;color:$ink;font-size:14px;font-weight:600;vertical-align:top\">$iprice</td>"
+                    . "</tr>";
+            }
+            $itemsBlock = "<div style=\"margin-top:24px;border:1px solid $border;border-radius:12px;overflow:hidden;background:$panel2\">"
+                . "<table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">"
+                . "<tr><td style=\"padding:12px 20px;background:rgba(65,141,241,0.08);color:$accent2;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase\">Item</td>"
+                . "<td style=\"padding:12px 12px;background:rgba(65,141,241,0.08);text-align:center;color:$accent2;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase\">Qty</td>"
+                . "<td style=\"padding:12px 20px;background:rgba(65,141,241,0.08);text-align:right;color:$accent2;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase\">Price</td></tr>"
+                . $rows
+                . "</table></div>";
+        } else {
+            $itemsBlock = "<div style=\"margin-top:24px;border:1px solid $border;border-radius:12px;overflow:hidden;background:$panel2;padding:20px\">"
+                . "<div style=\"color:$muted;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px\">Service</div>"
+                . "<div style=\"color:$ink;font-size:15px;font-weight:600\">$svc</div>"
+                . "<div style=\"color:$muted;font-size:13px;margin-top:4px\">Quantity: $qty</div>"
+                . "</div>";
+        }
+
         $adminMeta = $isAdmin
-            ? "<tr><td style=\"padding:10px 0;color:$muted;font-size:13px\">Customer</td><td style=\"padding:10px 0;text-align:right;color:$ink;font-size:13px\">$name &lt;$custEm&gt;</td></tr>"
+            ? "<tr><td style=\"padding:12px 0;color:$muted;font-size:13px\">Customer</td><td style=\"padding:12px 0;text-align:right;color:$ink;font-size:13px\">$name &lt;$custEm&gt;</td></tr>"
             : '';
 
-        $logoBlock = $logo !== ''
-            ? "<img src=\"$logo\" alt=\"$brand\" style=\"height:36px;display:block\">"
-            : "<div style=\"font-size:22px;font-weight:800;color:$ink;letter-spacing:-0.5px\">$brand</div>";
-
         $notesBlock = $notes !== ''
-            ? "<div style=\"margin-top:20px;padding:14px 16px;background:#fafbff;border:1px solid $border;border-radius:10px\"><div style=\"font-size:12px;color:$muted;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px\">Notes</div><div style=\"font-size:14px;color:$ink;line-height:1.5\">$notes</div></div>"
+            ? "<div style=\"margin-top:20px;padding:16px 18px;background:$panel2;border:1px solid $border;border-radius:12px\"><div style=\"font-size:11px;color:$accent2;text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:8px\">Notes</div><div style=\"font-size:14px;color:$ink;line-height:1.55\">$notes</div></div>"
             : '';
 
         $ctaBlock = $track !== ''
-            ? "<div style=\"margin:28px 0 8px;text-align:center\"><a href=\"$track\" style=\"display:inline-block;background:$accent;color:#fff;text-decoration:none;font-weight:600;padding:14px 28px;border-radius:10px;font-size:14px\">$ctaLabel →</a></div>"
+            ? "<div style=\"margin:32px 0 8px;text-align:center\"><a href=\"$track\" style=\"display:inline-block;background:linear-gradient(135deg,$accent,$accent2);color:#fff;text-decoration:none;font-weight:700;padding:15px 34px;border-radius:12px;font-size:14px;letter-spacing:0.2px;box-shadow:0 10px 30px rgba(65,141,241,0.4)\">$ctaLabel  →</a></div>"
             : '';
 
         return <<<HTML
 <!doctype html>
 <html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>$title</title></head>
-<body style="margin:0;padding:0;background:$bg;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:$ink">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:$bg;padding:32px 12px">
+<body style="margin:0;padding:0;background:$bg;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',sans-serif;color:$ink">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:$bg;padding:40px 12px">
   <tr><td align="center">
-    <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%">
-      <tr><td style="padding:0 8px 20px">$logoBlock</td></tr>
-      <tr><td style="background:$card;border:1px solid $border;border-radius:16px;overflow:hidden">
-        <div style="background:linear-gradient(135deg,$accent,#7c5cff);padding:6px 0"></div>
-        <div style="padding:36px 40px 32px">
-          <div style="display:inline-block;padding:4px 10px;background:#eef2ff;color:$accent;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:0.8px;margin-bottom:16px">$badge</div>
-          <h1 style="margin:0 0 8px;font-size:24px;font-weight:800;color:$ink;letter-spacing:-0.4px">$title</h1>
-          <p style="margin:0 0 24px;font-size:15px;color:$muted;line-height:1.55">$subtitle</p>
-          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid $border">
-            <tr><td style="padding:14px 0;color:$muted;font-size:13px">Order reference</td><td style="padding:14px 0;text-align:right;color:$ink;font-size:13px;font-weight:600">#$ref</td></tr>
-            <tr><td style="padding:10px 0;border-top:1px solid $border;color:$muted;font-size:13px">Service</td><td style="padding:10px 0;border-top:1px solid $border;text-align:right;color:$ink;font-size:13px">$svc</td></tr>
-            <tr><td style="padding:10px 0;border-top:1px solid $border;color:$muted;font-size:13px">Quantity</td><td style="padding:10px 0;border-top:1px solid $border;text-align:right;color:$ink;font-size:13px">$qty</td></tr>
+    <table role="presentation" width="620" cellpadding="0" cellspacing="0" style="max-width:620px;width:100%">
+      <tr><td style="padding:0 4px 24px">$logoBlock</td></tr>
+      <tr><td style="background:$panel;border:1px solid $border;border-radius:18px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,0.4)">
+        <div style="background:linear-gradient(135deg,$accent 0%,$accent2 50%,#8ab8ff 100%);height:4px"></div>
+        <div style="padding:40px 44px 36px">
+          <div style="display:inline-block;padding:6px 12px;background:rgba(65,141,241,0.15);color:$accent2;border:1px solid rgba(65,141,241,0.35);border-radius:999px;font-size:10px;font-weight:800;letter-spacing:1.2px;margin-bottom:20px">$badge</div>
+          <h1 style="margin:0 0 10px;font-size:26px;font-weight:800;color:#fff;letter-spacing:-0.6px;line-height:1.2">$title</h1>
+          <p style="margin:0 0 8px;font-size:15px;color:$muted;line-height:1.6">$subtitle</p>
+
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:24px;border-top:1px solid $border">
+            <tr><td style="padding:16px 0;color:$muted;font-size:13px">Order reference</td><td style="padding:16px 0;text-align:right;color:#fff;font-size:14px;font-weight:700;font-family:'SF Mono',Menlo,monospace">#$ref</td></tr>
             $adminMeta
-            <tr><td style="padding:14px 0;border-top:2px solid $ink;color:$ink;font-size:15px;font-weight:700">Total</td><td style="padding:14px 0;border-top:2px solid $ink;text-align:right;color:$ink;font-size:18px;font-weight:800">$total</td></tr>
           </table>
+
+          $itemsBlock
+
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:20px">
+            <tr>
+              <td style="padding:18px 20px;background:linear-gradient(135deg,rgba(65,141,241,0.12),rgba(107,167,255,0.08));border:1px solid rgba(65,141,241,0.3);border-radius:12px;color:#fff;font-size:15px;font-weight:700;letter-spacing:0.2px">Total</td>
+              <td style="padding:18px 20px;background:linear-gradient(135deg,rgba(65,141,241,0.12),rgba(107,167,255,0.08));border:1px solid rgba(65,141,241,0.3);border-left:none;border-radius:12px;text-align:right;color:#fff;font-size:22px;font-weight:800;letter-spacing:-0.3px">$total</td>
+            </tr>
+          </table>
+
           $notesBlock
           $ctaBlock
         </div>
       </td></tr>
-      <tr><td style="padding:20px 12px 4px;text-align:center;color:$muted;font-size:12px;line-height:1.6">
-        You're receiving this because an order was placed with $brand.<br>
+      <tr><td style="padding:24px 12px 4px;text-align:center;color:$muted;font-size:12px;line-height:1.7">
+        You're receiving this because an order was placed with <span style="color:$accent2;font-weight:600">$brand</span>.<br>
         Reply to this email if you have any questions — our team responds within a few hours.
+      </td></tr>
+      <tr><td style="padding:14px 12px 0;text-align:center;color:#4a5878;font-size:11px;letter-spacing:0.3px">
+        © $brand · Premium lead data & email infrastructure
       </td></tr>
     </table>
   </td></tr>

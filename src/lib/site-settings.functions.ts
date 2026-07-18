@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { requireAdmin } from "@/lib/require-admin";
 import { createClient } from "@supabase/supabase-js";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import type { Database } from "@/integrations/supabase/types";
@@ -47,13 +48,6 @@ function serverAnonClient() {
   });
 }
 
-function assertAdmin(email: string | undefined | null) {
-  const admin = (process.env.ADMIN_EMAIL || "").trim().toLowerCase();
-  if (!admin) throw new Error("ADMIN_EMAIL is not configured");
-  if (!email || email.trim().toLowerCase() !== admin && email.trim().toLowerCase() !== "demo@emailsly.app") {
-    throw new Error("Forbidden: admin only");
-  }
-}
 
 export const getSiteSettings = createServerFn({ method: "GET" }).handler(
   async (): Promise<SiteSettings> => {
@@ -88,7 +82,7 @@ export const updateSiteSettings = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data: UpdateInput) => data)
   .handler(async ({ data, context }): Promise<SiteSettings> => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const allowedPositions: TawkPosition[] = ["br", "bl", "tr", "tl"];
     const position: TawkPosition = allowedPositions.includes(data.tawk_position)

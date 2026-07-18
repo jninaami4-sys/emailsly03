@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { requireAdmin } from "@/lib/require-admin";
 import { createClient } from "@supabase/supabase-js";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import type { Database } from "@/integrations/supabase/types";
@@ -47,13 +48,6 @@ function serverAnonClient() {
   });
 }
 
-function assertAdmin(email: string | undefined | null) {
-  const admin = (process.env.ADMIN_EMAIL || "").trim().toLowerCase();
-  if (!admin) throw new Error("ADMIN_EMAIL is not configured");
-  if (!email || email.trim().toLowerCase() !== admin && email.trim().toLowerCase() !== "demo@emailsly.app") {
-    throw new Error("Forbidden: admin only");
-  }
-}
 
 /** Public: all currently enabled announcements (targeting applied client-side). */
 export const listActiveAnnouncements = createServerFn({ method: "GET" }).handler(
@@ -96,7 +90,7 @@ export const getActiveAnnouncement = createServerFn({ method: "GET" }).handler(
 export const listAnnouncements = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }): Promise<Announcement[]> => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data, error } = await supabaseAdmin
       .from("announcements")
@@ -130,7 +124,7 @@ export const upsertAnnouncement = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data: UpsertInput) => data)
   .handler(async ({ data, context }): Promise<Announcement> => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const allowedStyles: AnnouncementImageStyle[] = ["cover", "thumbnail", "none"];
     const image_style: AnnouncementImageStyle = allowedStyles.includes(data.image_style)
@@ -195,7 +189,7 @@ export const deleteAnnouncement = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data: { id: string }) => data)
   .handler(async ({ data, context }) => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin.from("announcements").delete().eq("id", data.id);
     if (error) throw new Error(error.message);

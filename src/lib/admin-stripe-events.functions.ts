@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { requireAdmin } from "@/lib/require-admin";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
@@ -24,13 +25,6 @@ export type StripeEventRow = {
   referral_status: string | null;
 };
 
-function assertAdmin(email: string | undefined | null) {
-  const admin = (process.env.ADMIN_EMAIL || "").trim().toLowerCase();
-  if (!admin) throw new Error("ADMIN_EMAIL is not configured");
-  if (!email || email.trim().toLowerCase() !== admin && email.trim().toLowerCase() !== "demo@emailsly.app") {
-    throw new Error("Forbidden: admin only");
-  }
-}
 
 function pickStripeRef(payload: any): string | null {
   const obj = payload?.data?.object;
@@ -61,7 +55,7 @@ export const adminListStripeEvents = createServerFn({ method: "GET" })
       .parse(d ?? {}),
   )
   .handler(async ({ context, data }): Promise<StripeEventRow[]> => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const sb = supabaseAdmin as any;
 
@@ -158,7 +152,7 @@ export const adminListWebhookDeliveries = createServerFn({ method: "GET" })
       .parse(d ?? {}),
   )
   .handler(async ({ context, data }): Promise<WebhookDeliveryRow[]> => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const sb = supabaseAdmin as any;
     let q = sb

@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { requireAdmin } from "@/lib/require-admin";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
@@ -29,13 +30,6 @@ export type ServerEventLogRow = {
 
 type LooseClient = SupabaseClient;
 
-function assertAdmin(email: string | undefined | null) {
-  const admin = (process.env.ADMIN_EMAIL || "").trim().toLowerCase();
-  if (!admin) throw new Error("ADMIN_EMAIL is not configured");
-  if (!email || email.trim().toLowerCase() !== admin && email.trim().toLowerCase() !== "demo@emailsly.app") {
-    throw new Error("Forbidden: admin only");
-  }
-}
 
 async function adminClient(): Promise<LooseClient> {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -60,7 +54,7 @@ const EMPTY: ServerTrackingConfig = {
 export const getServerTrackingConfig = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }): Promise<ServerTrackingConfig> => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const db = await adminClient();
     const { data, error } = await db
       .from("server_tracking_config")
@@ -75,7 +69,7 @@ export const updateServerTrackingConfig = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data: Partial<ServerTrackingConfig>) => data)
   .handler(async ({ data, context }): Promise<ServerTrackingConfig> => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const db = await adminClient();
     const payload = {
       ga4_measurement_id: String(data.ga4_measurement_id ?? "").trim().slice(0, 60),
@@ -103,7 +97,7 @@ export const updateServerTrackingConfig = createServerFn({ method: "POST" })
 export const listServerEventLog = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }): Promise<ServerEventLogRow[]> => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const db = await adminClient();
     const { data, error } = await db
       .from("server_event_log")

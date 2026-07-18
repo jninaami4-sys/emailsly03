@@ -179,6 +179,50 @@ export function ServicesCarousel() {
   const [viewport, setViewport] = useState({ w: 0, h: 0 });
   const [overflowCount, setOverflowCount] = useState(0);
 
+  const listFn = useServerFn(listSiteContent);
+  const { data: siteContent } = useQuery({
+    queryKey: ["site-content"],
+    queryFn: () => listFn(),
+    staleTime: 60_000,
+  });
+
+  const services = useMemo<Service[]>(() => {
+    const raw = (siteContent as Record<string, { items?: EditableServiceCard[] } | undefined> | undefined)
+      ?.service_cards?.items;
+    const items: EditableServiceCard[] = Array.isArray(raw) && raw.length > 0 ? raw : DEFAULT_SERVICE_CARDS;
+    const fallbackById = new Map(FALLBACK_SERVICES.map((s) => [s.serviceId, s]));
+    return items
+      .filter((c) => c.enabled !== false)
+      .map<Service>((c) => {
+        const fb = fallbackById.get(c.serviceId);
+        const preset = getGradientPreset(c.gradientKey);
+        const IconCmp = c.iconUrl
+          ? ({ className }: { className?: string }) => (
+              <img src={c.iconUrl} alt="" className={className} style={{ objectFit: "contain" }} />
+            )
+          : getServiceIcon(c.icon);
+        return {
+          serviceId: c.serviceId,
+          title: c.title,
+          tagline: c.tagline,
+          badge: c.badge,
+          price: c.price,
+          perUnit: c.perUnit,
+          unit: c.unit ?? fb?.unit,
+          minOrder: c.minOrder,
+          turnaround: c.turnaround,
+          bullets: c.bullets,
+          gradient: fb?.gradient ?? `bg-gradient-to-br ${preset.gradient}`,
+          glow: fb?.glow ?? "",
+          ring: fb?.ring ?? "ring-1 ring-white/10",
+          accent: fb?.accent ?? preset.accent,
+          Icon: IconCmp,
+          tiers: fb?.tiers,
+        };
+      });
+  }, [siteContent]);
+
+
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 640px)");
     const update = () => setIsMobile(mq.matches);

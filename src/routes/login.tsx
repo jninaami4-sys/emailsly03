@@ -666,6 +666,76 @@ function AuthPage() {
                       </form>
                     )}
                   </>
+                ) : pendingVerify ? (
+                  <>
+                    <h2 className="font-display text-2xl font-bold tracking-tight">Verify your email</h2>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      We sent a 6-digit code to <span className="font-medium text-foreground">{pendingVerify}</span>.
+                      Enter it below to activate your account.
+                    </p>
+                    <div className="mt-3 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs text-amber-700 dark:text-amber-400">
+                      <strong className="font-semibold">Can't find it?</strong> Please check your
+                      <strong> Spam</strong>, <strong>Junk</strong>, or <strong>Promotions</strong> folder — verification
+                      emails sometimes land there. The code expires in a few minutes.
+                    </div>
+
+                    <form onSubmit={handleVerifyOtp} className="mt-6 space-y-4">
+                      <label className="block">
+                        <span className="mb-1.5 block text-sm font-medium text-muted-foreground">
+                          Verification code
+                        </span>
+                        <input
+                          type="text"
+                          inputMode="numeric"
+                          autoComplete="one-time-code"
+                          maxLength={6}
+                          value={otpCode}
+                          onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                          placeholder="123456"
+                          className={`${inputBase} ${otpError ? inputError : inputNormal} pl-4 tracking-[0.5em] text-center text-xl font-semibold`}
+                          aria-invalid={!!otpError}
+                        />
+                      </label>
+                      {otpError && (
+                        <p className="flex items-center gap-1.5 text-xs text-destructive">
+                          <AlertCircle className="size-3.5" aria-hidden="true" />
+                          {otpError}
+                        </p>
+                      )}
+
+                      <button
+                        type="submit"
+                        disabled={otpBusy || otpCode.length !== 6}
+                        className="group relative inline-flex w-full items-center justify-center gap-2 overflow-hidden rounded-xl bg-primary px-5 py-3 font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/25 active:scale-[0.99] disabled:opacity-70 focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:outline-none"
+                      >
+                        {otpBusy ? <Loader2 className="size-4 animate-spin" aria-hidden="true" /> : <CheckCircle2 className="size-4" aria-hidden="true" />}
+                        Verify & continue
+                      </button>
+
+                      <div className="flex items-center justify-between text-xs">
+                        <button
+                          type="button"
+                          disabled={resendState.busy || resendState.cooldown > 0}
+                          onClick={() => handleResendConfirmation(pendingVerify)}
+                          className="inline-flex items-center gap-1.5 font-medium text-muted-foreground transition-colors hover:text-primary disabled:cursor-not-allowed disabled:opacity-60"
+                        >
+                          {resendState.busy ? <Loader2 className="size-3.5 animate-spin" aria-hidden="true" /> : <Mail className="size-3.5" aria-hidden="true" />}
+                          {resendState.cooldown > 0 ? `Resend in ${resendState.cooldown}s` : "Resend code"}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setPendingVerify(null);
+                            setOtpCode("");
+                            setOtpError(null);
+                          }}
+                          className="font-medium text-muted-foreground transition-colors hover:text-foreground"
+                        >
+                          Use a different email
+                        </button>
+                      </div>
+                    </form>
+                  </>
                 ) : (
                   <>
                     <AccountStatusBanner

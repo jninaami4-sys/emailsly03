@@ -1,8 +1,7 @@
-import { createServerFn } from "@tanstack/react-start";
-import { requireAdmin } from "@/lib/require-admin";
-import { createClient } from "@supabase/supabase-js";
-import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import type { Database } from "@/integrations/supabase/types";
+/**
+ * Pricing settings — thin proxies to PHP API (Batch 5 migration).
+ */
+import { adminPricingApi, pricingApi } from "@/lib/api-client";
 
 export type PricingSetting = {
   service_id: string;
@@ -18,106 +17,6 @@ export type PricingSetting = {
   updated_at: string;
 };
 
-function serverAnonClient() {
-  const url = process.env.SUPABASE_URL!;
-  const key = process.env.SUPABASE_PUBLISHABLE_KEY!;
-  return createClient<Database>(url, key, {
-    auth: { persistSession: false, autoRefreshToken: false, storage: undefined },
-    global: {
-      fetch: (input, init) => {
-        const h = new Headers(init?.headers);
-        if (key.startsWith("sb_") && h.get("Authorization") === `Bearer ${key}`) {
-          h.delete("Authorization");
-        }
-        h.set("apikey", key);
-        return fetch(input, { ...init, headers: h });
-      },
-    },
-  });
-}
-
-
-function normalize(row: Record<string, unknown>): PricingSetting {
-  return {
-    service_id: String(row.service_id),
-    name: String(row.name),
-    rate: Number(row.rate),
-    unit: String(row.unit),
-    min_qty: Number(row.min_qty),
-    min_order: Number(row.min_order),
-    fixed: Boolean(row.fixed),
-    helper: (row.helper as string | null) ?? null,
-    sort_order: Number(row.sort_order ?? 0),
-    published: row.published === undefined || row.published === null ? true : Boolean(row.published),
-    updated_at: String(row.updated_at ?? ""),
-  };
-}
-
-export const getPricingSettings = createServerFn({ method: "GET" }).handler(
-  async (): Promise<PricingSetting[]> => {
-    const supabase = serverAnonClient();
-    const { data, error } = await supabase
-      .from("pricing_settings")
-      .select("service_id, name, rate, unit, min_qty, min_order, fixed, helper, sort_order, published, updated_at")
-      .order("sort_order", { ascending: true });
-    if (error) {
-      console.error("getPricingSettings", error);
-      return [];
-    }
-    return (data ?? []).map((r) => normalize(r as Record<string, unknown>));
-  },
-);
-
-type UpdateInput = {
-  service_id: string;
-  rate: number;
-  min_qty: number;
-  min_order: number;
-  helper?: string | null;
-  published?: boolean;
-};
-
-export const updatePricingSetting = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
-  .inputValidator((data: UpdateInput) => data)
-  .handler(async ({ data, context }): Promise<PricingSetting> => {
-    await requireAdmin(context);
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const payload = {
-      rate: Math.max(0, Number(data.rate) || 0),
-      min_qty: Math.max(1, Math.floor(Number(data.min_qty) || 1)),
-      min_order: Math.max(0, Number(data.min_order) || 0),
-      helper: data.helper?.toString().slice(0, 200) ?? null,
-      ...(typeof data.published === "boolean" ? { published: data.published } : {}),
-    };
-    const { data: row, error } = await supabaseAdmin
-      .from("pricing_settings")
-      .update(payload)
-      .eq("service_id", data.service_id)
-      .select("*")
-      .single();
-    if (error) throw new Error(error.message);
-    return normalize(row as Record<string, unknown>);
-  });
-
-type PublishInput = { service_id: string; published: boolean };
-
-export const setPricingPublished = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
-  .inputValidator((data: PublishInput) => data)
-  .handler(async ({ data, context }): Promise<PricingSetting> => {
-    await requireAdmin(context);
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: row, error } = await supabaseAdmin
-      .from("pricing_settings")
-      .update({ published: Boolean(data.published) })
-      .eq("service_id", data.service_id)
-      .select("*")
-      .single();
-    if (error) throw new Error(error.message);
-    return normalize(row as Record<string, unknown>);
-  });
-
 export type PricingAuditChange = { old: string | number | boolean | null; new: string | number | boolean | null };
 export type PricingAuditEntry = {
   id: string;
@@ -129,24 +28,64 @@ export type PricingAuditEntry = {
   changed_at: string;
 };
 
-export const getPricingAudit = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
-  .handler(async ({ context }): Promise<PricingAuditEntry[]> => {
-    await requireAdmin(context);
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data, error } = await supabaseAdmin
-      .from("pricing_settings_audit")
-      .select("id, service_id, service_name, changed_by, changed_by_email, changes, changed_at")
-      .order("changed_at", { ascending: false })
-      .limit(100);
-    if (error) throw new Error(error.message);
-    return (data ?? []).map((r) => ({
-      id: String(r.id),
-      service_id: String(r.service_id),
-      service_name: (r.service_name as string | null) ?? null,
-      changed_by: (r.changed_by as string | null) ?? null,
-      changed_by_email: (r.changed_by_email as string | null) ?? null,
-      changes: (r.changes ?? {}) as PricingAuditEntry["changes"],
-      changed_at: String(r.changed_at),
-    }));
-  });
+type Empty = Record<string, never>;
+
+function normalize(row: Record<string, unknown>): PricingSetting {
+  return {
+    service_id: String(row.service_id),
+    name: String(row.name ?? ""),
+    rate: Number(row.rate ?? 0),
+    unit: String(row.unit ?? ""),
+    min_qty: Number(row.min_qty ?? 1),
+    min_order: Number(row.min_order ?? 0),
+    fixed: Boolean(row.fixed),
+    helper: (row.helper as string | null) ?? null,
+    sort_order: Number(row.sort_order ?? 0),
+    published: row.published === undefined || row.published === null ? true : Boolean(row.published),
+    updated_at: String(row.updated_at ?? ""),
+  };
+}
+
+export async function getPricingSettings(_?: { data?: Empty }): Promise<PricingSetting[]> {
+  try {
+    const { pricing } = await pricingApi.list();
+    return (pricing ?? []).map((r: Record<string, unknown>) => normalize(r));
+  } catch (e) {
+    console.error("getPricingSettings", e);
+    return [];
+  }
+}
+
+export async function updatePricingSetting(args: {
+  data: {
+    service_id: string;
+    rate: number;
+    min_qty: number;
+    min_order: number;
+    helper?: string | null;
+    published?: boolean;
+  };
+}): Promise<PricingSetting> {
+  const { service_id, ...body } = args.data;
+  const res = (await adminPricingApi.update(service_id, body)) as { pricing?: Record<string, unknown> };
+  return normalize((res?.pricing ?? { ...args.data }) as Record<string, unknown>);
+}
+
+export async function setPricingPublished(args: {
+  data: { service_id: string; published: boolean };
+}): Promise<PricingSetting> {
+  const res = (await adminPricingApi.publish(args.data.service_id, args.data.published)) as {
+    pricing?: Record<string, unknown>;
+  };
+  return normalize((res?.pricing ?? { ...args.data }) as Record<string, unknown>);
+}
+
+export async function getPricingAudit(_?: { data?: Empty }): Promise<PricingAuditEntry[]> {
+  try {
+    const { audit } = await adminPricingApi.audit();
+    return (audit ?? []) as PricingAuditEntry[];
+  } catch (e) {
+    console.error("getPricingAudit", e);
+    return [];
+  }
+}

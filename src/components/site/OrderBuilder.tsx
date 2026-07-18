@@ -3,11 +3,14 @@ import { Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { validatePromo, type PromoResult } from "@/lib/promos.functions";
+import { recordMyOrder } from "@/lib/orders.functions";
 import { getMyReferralBalance } from "@/lib/referrals.functions";
 import { useAuth } from "@/hooks/use-auth";
 import { ReferralErrorBoundary } from "@/components/site/ReferralErrorBoundary";
 import { usePricingOverrides } from "@/hooks/use-pricing-overrides";
 import { SERVICE_CATALOG } from "@/lib/service-catalog";
+import { stripeApi } from "@/lib/api-client";
+
 
 import { isDisposableEmail, DISPOSABLE_EMAIL_MESSAGE } from "@/lib/disposable-emails";
 import {
@@ -121,11 +124,14 @@ export function OrderBuilder() {
   const [promoApplied, setPromoApplied] = useState<PromoResult | null>(null);
   const [promoBusy, setPromoBusy] = useState(false);
   const validatePromoFn = useServerFn(validatePromo);
+  const recordOrderFn = useServerFn(recordMyOrder);
   const [agree, setAgree] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [isDesktop, setIsDesktop] = useState(false);
   const [useCredit, setUseCredit] = useState(false);
+  const [checkoutBusy, setCheckoutBusy] = useState(false);
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
   const { user } = useAuth();
   const balanceFn = useServerFn(getMyReferralBalance);
   const balanceQuery = useQuery({
@@ -882,35 +888,53 @@ export function OrderBuilder() {
                   </div>
                 </div>
 
-                <Link
-                  to="/payment-success"
-                  search={{
-                    order: undefined,
-                    amount: total.toFixed(2),
-                    subtotal: subtotal.toFixed(2),
-                    fee: stripeFee.toFixed(2),
-                    email,
-                    name,
-                    service: service.name,
-                    qty: String(effectiveQty),
-                    unit: service.unit,
-                    base: base.toFixed(2),
-                    extraUrls: String(extraUrls),
-                    verifier: verifier ? "1" : "0",
-                    rush: rush ? "1" : "0",
-                    rushFee: rushFee.toFixed(2),
-                    tip: tip.toFixed(2),
-                    promo: promoApplied?.ok ? promoApplied.code : undefined,
-                    discount: promoApplied?.ok ? discount.toFixed(2) : undefined,
-                    credit: creditApplied > 0 ? creditApplied.toFixed(2) : undefined,
-                  }}
-                  aria-disabled={!agree || name.trim().length < 2 || !/\S+@\S+\.\S+/.test(email) || isDisposableEmail(email)}
-                  onClick={(e: MouseEvent<HTMLAnchorElement>) => {
-                    if (!agree || name.trim().length < 2 || !/\S+@\S+\.\S+/.test(email) || isDisposableEmail(email)) {
-                      e.preventDefault();
+                <button
+                  type="button"
+                  disabled={
+                    checkoutBusy ||
+                    !agree ||
+                    name.trim().length < 2 ||
+                    !/\S+@\S+\.\S+/.test(email) ||
+                    isDisposableEmail(email)
+                  }
+                  onClick={async () => {
+                    setCheckoutError(null);
+                    setCheckoutBusy(true);
+                    try {
+                      // 1. Create the order server-side as UNPAID. The Stripe
+                      //    webhook is the only path that flips it to paid.
+                      const paymentRef = `LD-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`;
+                      const created = await recordOrderFn({
+                        data: {
+                          payment_ref: paymentRef,
+                          service_label: service.name,
+                          service_id: service.id,
+                          quantity: Math.max(1, Math.round(effectiveQty)),
+                          subtotal_cents: Math.round(subtotal * 100),
+                          discount_cents: Math.round(discount * 100),
+                          promo_code: promoApplied?.ok ? promoApplied.code : null,
+                          total_cents: Math.round(total * 100),
+                          currency: "USD",
+                          payment_provider: "stripe",
+                          credit_applied_cents: Math.round(creditApplied * 100),
+                        },
+                      });
+                      // 2. Request a real Stripe Checkout session from the
+                      //    backend and redirect the browser to Stripe. The
+                      //    backend verifies the amount and returns the URL.
+                      const { url } = await stripeApi.checkout(created.id);
+                      if (!url) throw new Error("No checkout URL returned");
+                      window.location.href = url;
+                    } catch (err) {
+                      setCheckoutError(
+                        err instanceof Error
+                          ? err.message
+                          : "Could not start checkout. Please try again.",
+                      );
+                      setCheckoutBusy(false);
                     }
                   }}
-                  className="slide-btn mt-6 w-full aria-disabled:cursor-not-allowed"
+                  className="slide-btn mt-6 w-full disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   <span className="slide-btn-decor" aria-hidden />
                   <span className="slide-btn-content justify-between">
@@ -918,15 +942,20 @@ export function OrderBuilder() {
                       <PremiumLock className="size-4" />
                     </span>
                     <span className="slide-btn-text flex-1 justify-center">
-                      Checkout · Secure demo
+                      {checkoutBusy ? "Redirecting to Stripe…" : "Checkout · Secure payment"}
                     </span>
                     <span className="slide-btn-icon" style={{ background: "color-mix(in oklab, var(--violet) 88%, black)" }}>
                       <PremiumArrowRight className="size-4" />
                     </span>
                   </span>
-                </Link>
+                </button>
+                {checkoutError && (
+                  <p className="mt-2 rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-center text-xs font-medium text-red-300">
+                    {checkoutError}
+                  </p>
+                )}
                 <p className="relative mt-3 flex items-center justify-center gap-1.5 font-mono text-[10px] font-bold uppercase tracking-widest text-white/40">
-                  <PremiumLock className="size-3" /> 256-bit SSL encrypted
+                  <PremiumLock className="size-3" /> 256-bit SSL encrypted · Powered by Stripe
                 </p>
               </div>
             </div>

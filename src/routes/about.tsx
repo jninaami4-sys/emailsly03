@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ogImageMeta } from "@/lib/og-images";
+import { ogImageMeta, matchTheme } from "@/lib/og-images";
 import ogAboutPng from "@/assets/og-about.png";
 import { SiteShell } from "@/components/site/SiteShell";
 import {
@@ -12,7 +12,7 @@ import {
 } from "@/components/site/PremiumIcons";
 
 export const Route = createFileRoute("/about")({
-  head: () => ({
+  head: ({ matches }) => ({
     meta: [
       { title: "About EmailsLy — Verified B2B Lead Data Platform" },
       {
@@ -30,7 +30,8 @@ export const Route = createFileRoute("/about")({
           "100M+ contacts sourced. 99% accuracy. 24-hour delivery. Verified B2B leads from Apollo, ZoomInfo & LinkedIn — pay per lead, no subscription.",
       },
       { property: "og:type", content: "website" },
-      ...ogImageMeta(ogAboutPng),
+      ...ogImageMeta(ogAboutPng, matchTheme(matches)),
+
     ],
     links: [{ rel: "canonical", href: "/about" }],
     scripts: [

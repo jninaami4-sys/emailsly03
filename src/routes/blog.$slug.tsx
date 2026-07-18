@@ -3,7 +3,7 @@ import { SiteShell } from "@/components/site/SiteShell";
 import { BLOG_POSTS, formatPublishedAt, getPostBySlug, type PostBlock, type BlogPost } from "@/lib/blog-posts";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { PremiumSparkles as Sparkles } from "@/components/site/PremiumIcons";
-import { ogImageMeta, OG_IMAGES } from "@/lib/og-images";
+import { ogImageMeta, OG_IMAGES, matchTheme } from "@/lib/og-images";
 import { getBlogSeoOverride } from "@/lib/blog-seo.functions";
 import { getPublishedBlogPost } from "@/lib/blog-cms.functions";
 import { extractFaqPairs } from "@/lib/blog-markdown";
@@ -29,7 +29,7 @@ export const Route = createFileRoute("/blog/$slug")({
     }
     return { post, seo };
   },
-  head: ({ loaderData }) => {
+  head: ({ loaderData, matches }) => {
     const post = loaderData?.post;
     if (!post) {
       return { meta: [{ title: "Post not found | EmailsLy Blog" }] };
@@ -80,7 +80,7 @@ export const Route = createFileRoute("/blog/$slug")({
         { property: "og:description", content: description },
         { property: "og:type", content: "article" },
         { property: "og:url", content: canonical },
-        ...ogImageMeta(image),
+        ...ogImageMeta(image, matchTheme(matches)),
       ],
       links: [{ rel: "canonical", href: canonical }],
       scripts,

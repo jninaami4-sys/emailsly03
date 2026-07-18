@@ -5,6 +5,9 @@ import { PricingCalculator } from "@/components/site/PricingCalculator";
 import { Zap, Crown, Phone, Linkedin, PenTool, ArrowRight, CheckCircle2 } from "lucide-react";
 import { PremiumSparkles as Sparkles } from "@/components/site/PremiumIcons";
 import { AddOns } from "@/components/site/AddOns";
+import { usePricingOverrides } from "@/hooks/use-pricing-overrides";
+import { formatTierHeadline, formatTierPer, formatTierSubline } from "@/lib/service-catalog";
+
 
 export const Route = createFileRoute("/pricing")({
   head: ({ matches }) => ({

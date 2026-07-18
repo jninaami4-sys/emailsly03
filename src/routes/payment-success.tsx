@@ -828,8 +828,8 @@ function buildReceiptHtml(r: {
         </div>
         <div>
           <div class="muted">From</div>
-          <div style="font-weight:600; margin-top:4px;">EmailsLy, Inc.</div>
-          <div style="color:#4b5563;">548 Market St #92384<br />San Francisco, CA 94104</div>
+          <div style="font-weight:600; margin-top:4px;">EmailsLy</div>
+          <div style="color:#4b5563;">House 42, Road 11, Banani<br />Dhaka 1213, Bangladesh</div>
         </div>
         <div>
           <div class="muted">Order #</div>

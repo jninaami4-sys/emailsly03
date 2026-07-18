@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { SERVICES } from "./PricingCalculator";
 import { CheckCircle2, Loader2, Send } from "lucide-react";
 import { PremiumSparkles as Sparkles } from "@/components/site/PremiumIcons";
+import { isDisposableEmail, DISPOSABLE_EMAIL_MESSAGE } from "@/lib/disposable-emails";
 
 export function OrderForm() {
   const [serviceId, setServiceId] = useState("apollo");

@@ -112,7 +112,7 @@ const services: Service[] = [
     title: "Mobile Number Lookup",
     tagline: "Append verified mobile numbers to your existing contact list.",
     badge: "Append",
-    price: "$0.35",
+    price: "$0.15",
     perUnit: "per record",
     unit: "records",
     minOrder: "100 min",
@@ -124,9 +124,9 @@ const services: Service[] = [
     Icon: PremiumFileText,
     bullets: ["Cell-verified", "US + intl.", "CSV in / CSV out"],
     tiers: [
-      { qty: "100", price: "$35", unitRate: "$0.35" },
-      { qty: "500", price: "$175", unitRate: "$0.35" },
-      { qty: "1,000", price: "$350", unitRate: "$0.35" },
+      { qty: "100", price: "$15", unitRate: "$0.15" },
+      { qty: "500", price: "$75", unitRate: "$0.15" },
+      { qty: "1,000", price: "$150", unitRate: "$0.15" },
     ],
   },
   {

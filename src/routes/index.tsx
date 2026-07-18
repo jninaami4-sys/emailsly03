@@ -275,32 +275,45 @@ function Home() {
                 <p className="mt-1 text-sm text-foreground/60">250M+ contacts across 180+ countries, GDPR &amp; CCPA compliant.</p>
               </article>
 
-              <article className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] p-6">
-                <div className="pointer-events-none absolute -right-10 -top-10 size-48 rounded-full bg-indigo/20 blur-3xl" />
+              <article className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-indigo/[0.08] via-white/[0.03] to-white/[0.03] p-6">
+                <div className="pointer-events-none absolute -right-12 -top-12 size-56 rounded-full bg-indigo/15 blur-3xl" />
+                <div className="pointer-events-none absolute -bottom-8 -left-8 size-40 rounded-full bg-emerald/10 blur-3xl" />
                 <div className="relative">
-                  <div className="flex items-center gap-3">
-                    <div className="grid size-10 place-items-center rounded-xl bg-indigo/15 text-indigo">
-                      <PremiumStar className="size-5" />
+                  <div className="flex items-start justify-between">
+                    <div className="grid size-12 place-items-center rounded-2xl bg-indigo/15 text-indigo shadow-[0_0_24px_-6px_rgba(79,70,229,0.35)]">
+                      <PremiumShieldCheck className="size-6" />
                     </div>
-                    <div className="flex items-center gap-2 rounded-full border border-emerald/30 bg-emerald/10 px-2.5 py-1">
+                    <div className="flex items-center gap-2 rounded-full border border-emerald/30 bg-emerald/10 px-3 py-1.5">
                       <span className="relative flex size-2">
                         <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald opacity-75" />
                         <span className="relative inline-flex size-2 rounded-full bg-emerald" />
                       </span>
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-emerald">Live verification</span>
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-emerald">Verified live</span>
                     </div>
                   </div>
-                  <h3 className="mt-4 font-display text-lg font-bold">Data that never sleeps</h3>
-                  <p className="mt-1 text-sm text-foreground/60">Our verification pipeline runs 24/7 so every record you export is fresh.</p>
-                  <div className="mt-5 flex h-16 items-end gap-1.5">
-                    {[40, 65, 45, 80, 55, 90, 70, 100, 85, 60].map((h, i) => (
+                  <h3 className="mt-5 font-display text-xl font-bold leading-tight">Data you can trust</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-foreground/60">Every record is validated in real time across multiple sources before it reaches your inbox.</p>
+
+                  <div className="mt-5 grid grid-cols-2 gap-3">
+                    <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3">
+                      <p className="font-display text-2xl font-black text-white">99.9%</p>
+                      <p className="text-[11px] font-medium uppercase tracking-wider text-foreground/50">Accuracy</p>
+                    </div>
+                    <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3">
+                      <p className="font-display text-2xl font-black text-white">24/7</p>
+                      <p className="text-[11px] font-medium uppercase tracking-wider text-foreground/50">Validation</p>
+                    </div>
+                  </div>
+
+                  <div className="mt-5 flex h-14 items-end gap-1.5 rounded-xl border border-white/5 bg-white/[0.02] p-3">
+                    {[35, 58, 42, 75, 55, 88, 68, 100, 82, 60, 90, 72].map((h, i) => (
                       <span
                         key={i}
-                        className="w-full origin-bottom rounded-t-sm bg-indigo/60"
+                        className="w-full origin-bottom rounded-full bg-gradient-to-t from-indigo/80 to-indigo/40"
                         style={{
-                          height: `${h * 0.55}px`,
-                          opacity: 0.4 + (i / 20),
-                          animation: `pulse-bar 1.8s ease-in-out ${i * 0.1}s infinite alternate`,
+                          height: `${h * 0.42}px`,
+                          opacity: 0.5 + (i / 24),
+                          animation: `pulse-bar 2.2s ease-in-out ${i * 0.08}s infinite alternate`,
                         }}
                       />
                     ))}

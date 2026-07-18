@@ -107,7 +107,7 @@ export function CommandPalette({
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-start justify-center bg-black/60 p-4 pt-[10vh]"
+      className="admin-theme fixed inset-0 z-[100] flex items-start justify-center bg-black/60 p-4 pt-[10vh]"
       onClick={onClose}
     >
       <div

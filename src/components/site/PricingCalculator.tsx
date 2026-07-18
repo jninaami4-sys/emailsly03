@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { filterPublished, usePricingOverrides } from "@/hooks/use-pricing-overrides";
+import { SERVICE_CATALOG } from "@/lib/service-catalog";
 
 export type PriceService = {
   id: string;
@@ -14,17 +15,19 @@ export type PriceService = {
 };
 
 export const SERVICES: PriceService[] = [
-  { id: "apollo", name: "Apollo Export", rate: 0.0035, minQty: 5000, minOrder: 20, unit: "lead", helper: "$20 / 5K leads · $35 / 10K+" },
-  { id: "zoominfo", name: "ZoomInfo Data", rate: 0.02, minQty: 1000, minOrder: 20, unit: "lead" },
-  { id: "linkedin", name: "LinkedIn B2B", rate: 0.01, minQty: 5000, minOrder: 50, unit: "lead", helper: "~70% include emails" },
-  { id: "manual", name: "Manual Research", rate: 0.35, minQty: 100, minOrder: 35, unit: "lead" },
-  { id: "mobile", name: "Apollo Mobile Numbers", rate: 0.15, minQty: 100, minOrder: 25, unit: "record" },
-  { id: "pixel", name: "Facebook Pixel Setup", rate: 100, minQty: 1, minOrder: 100, unit: "setup", fixed: true },
-  { id: "ads", name: "Google Ads Setup", rate: 100, minQty: 1, minOrder: 100, unit: "setup", fixed: true },
-  { id: "tracking", name: "Server-Side Tracking", rate: 150, minQty: 1, minOrder: 150, unit: "setup", fixed: true },
-  { id: "logo", name: "Logo Design", rate: 50, minQty: 1, minOrder: 50, unit: "design", fixed: true },
-  { id: "webdesign", name: "AI Website Design", rate: 200, minQty: 1, minOrder: 200, unit: "site", fixed: true },
+  { ...SERVICE_CATALOG.apollo,    name: "Apollo Export",         helper: "$20 / 5K leads · $35 / 10K+" },
+  { ...SERVICE_CATALOG.zoominfo,  name: "ZoomInfo Data" },
+  { ...SERVICE_CATALOG.linkedin,  name: "LinkedIn B2B",          helper: "~70% include emails" },
+  { ...SERVICE_CATALOG.manual,    name: "Manual Research" },
+  { ...SERVICE_CATALOG.mobile,    name: "Apollo Mobile Numbers" },
+  { ...SERVICE_CATALOG.warmup,    name: "Mailbox Warmup",        helper: "2 mailboxes · 15-day warmup" },
+  { ...SERVICE_CATALOG.pixel,     name: "Facebook Pixel Setup" },
+  { ...SERVICE_CATALOG.ads,       name: "Google Ads Setup" },
+  { ...SERVICE_CATALOG.tracking,  name: "Server-Side Tracking" },
+  { ...SERVICE_CATALOG.logo,      name: "Logo Design" },
+  { ...SERVICE_CATALOG.webdesign, name: "AI Website Design" },
 ];
+
 
 export function PricingCalculator({ compact = false, defaultId }: { compact?: boolean; defaultId?: string }) {
   const overrides = usePricingOverrides();

@@ -5,6 +5,9 @@ import { PricingCalculator } from "@/components/site/PricingCalculator";
 import { Zap, Crown, Phone, Linkedin, PenTool, ArrowRight, CheckCircle2 } from "lucide-react";
 import { PremiumSparkles as Sparkles } from "@/components/site/PremiumIcons";
 import { AddOns } from "@/components/site/AddOns";
+import { usePricingOverrides } from "@/hooks/use-pricing-overrides";
+import { formatTierHeadline, formatTierPer, formatTierSubline } from "@/lib/service-catalog";
+
 
 export const Route = createFileRoute("/pricing")({
   head: ({ matches }) => ({
@@ -57,9 +60,6 @@ export const Route = createFileRoute("/pricing")({
 type Tier = {
   id: string;
   name: string;
-  price: string;
-  per: string;
-  min: string;
   desc?: string;
   icon: typeof Zap;
   popular?: boolean;
@@ -71,9 +71,6 @@ const DATA_TIERS: Tier[] = [
   {
     id: "apollo",
     name: "Apollo Export",
-    price: "$20",
-    per: "/ 5k leads",
-    min: "$0.0035 per lead · min 5,000",
     desc: "Standard bulk export directly from your Apollo search filters.",
     icon: Crown,
     popular: true,
@@ -83,18 +80,12 @@ const DATA_TIERS: Tier[] = [
   {
     id: "zoominfo",
     name: "ZoomInfo Data",
-    price: "$20",
-    per: "/ 1k leads",
-    min: "$0.02 per lead · min 1,000",
     icon: Phone,
     features: ["HQ phone numbers", "Real-Time Data", "Current Job Titles"],
   },
   {
     id: "linkedin",
     name: "LinkedIn B2B",
-    price: "$50",
-    per: "/ 5k leads",
-    min: "$0.01 per lead · min 5,000",
     desc: "Real-time fresh scraping from Sales Navigator searches.",
     icon: Linkedin,
     features: ["Sales-Nav filters", "Trigger events", "Real-Time Data", "Current Job Titles"],
@@ -103,9 +94,6 @@ const DATA_TIERS: Tier[] = [
   {
     id: "manual",
     name: "Manual Research",
-    price: "$35",
-    per: "/ 100 leads",
-    min: "100 leads · $0.35 per lead",
     desc: "100% human-verified research for niche or complex ICPs.",
     icon: PenTool,
     features: ["Human-verified", "Custom criteria", "48h delivery", "Any data field"],
@@ -113,7 +101,10 @@ const DATA_TIERS: Tier[] = [
 ];
 
 
+
 function Pricing() {
+  const overrides = usePricingOverrides();
+
   return (
     <SiteShell>
       {/* Hero — light panel on md+, dark on mobile, buttery gradient into next */}
@@ -202,13 +193,14 @@ function Pricing() {
                 <h3 className="font-display text-xl font-bold">{t.name}</h3>
                 <div className="mt-4">
                   <div className="flex items-baseline gap-1.5">
-                    <span className="font-display text-4xl font-bold tracking-tight">{t.price}</span>
-                    <span className="text-sm text-muted-foreground">{t.per}</span>
+                    <span className="font-display text-4xl font-bold tracking-tight">{formatTierHeadline(t.id, overrides)}</span>
+                    <span className="text-sm text-muted-foreground">{formatTierPer(t.id, overrides)}</span>
                   </div>
                   <p className="mt-2 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-                    {t.min}
+                    {formatTierSubline(t.id, overrides)}
                   </p>
                 </div>
+
                 {t.desc && (
                   <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{t.desc}</p>
                 )}

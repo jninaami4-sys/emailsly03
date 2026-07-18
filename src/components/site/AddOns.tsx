@@ -6,65 +6,33 @@ import {
   Server,
   PenTool,
   Globe2,
+  ShieldCheck,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { usePricingOverrides } from "@/hooks/use-pricing-overrides";
+import { formatAddOnPrice } from "@/lib/service-catalog";
 
 export type AddOn = {
   id: string;
   name: string;
   icon: LucideIcon;
-  price: string;
   desc: string;
   link?: string;
 };
 
 export const ADD_ONS: AddOn[] = [
-  {
-    id: "mobile",
-    name: "Apollo Mobiles",
-    icon: Smartphone,
-    price: "$0.15/record",
-    desc: "Mobile number enrichment for existing lists.",
-  },
-  {
-    id: "pixel",
-    name: "Facebook Pixel",
-    icon: MousePointerClick,
-    price: "$100 flat",
-    desc: "Expert Pixel & CAPI setup for conversion tracking.",
-  },
-  {
-    id: "ads",
-    name: "Google Ads Setup",
-    icon: LineChart,
-    price: "$100 flat",
-    desc: "High-ROAS campaign structure with tracking.",
-  },
-  {
-    id: "tracking",
-    name: "Server-Side Tracking",
-    icon: Server,
-    price: "$150 flat",
-    desc: "Bypass ad blockers with Stape.io & GTM Server.",
-  },
-  {
-    id: "logo",
-    name: "Logo Design",
-    icon: PenTool,
-    price: "$50 flat",
-    desc: "Professional brand identity design.",
-  },
-  {
-    id: "webdesign",
-    name: "AI Website Design",
-    icon: Globe2,
-    price: "starting at $200",
-    desc: "Modern, conversion-focused websites in days.",
-    link: "/website-design",
-  },
+  { id: "mobile",    name: "Apollo Mobiles",         icon: Smartphone,        desc: "Mobile number enrichment for existing lists." },
+  { id: "warmup",    name: "Mailbox Warmup",         icon: ShieldCheck,       desc: "15-day warmup with DKIM, SPF & DMARC setup." },
+  { id: "pixel",     name: "Facebook Pixel",         icon: MousePointerClick, desc: "Expert Pixel & CAPI setup for conversion tracking." },
+  { id: "ads",       name: "Google Ads Setup",       icon: LineChart,         desc: "High-ROAS campaign structure with tracking." },
+  { id: "tracking",  name: "Server-Side Tracking",   icon: Server,            desc: "Bypass ad blockers with Stape.io & GTM Server." },
+  { id: "logo",      name: "Logo Design",            icon: PenTool,           desc: "Professional brand identity design." },
+  { id: "webdesign", name: "AI Website Design",      icon: Globe2,            desc: "Modern, conversion-focused websites in days.", link: "/website-design" },
 ];
 
+
 export function AddOns() {
+  const overrides = usePricingOverrides();
   return (
     <section className="border-t border-border px-6 py-24">
       <div className="mx-auto max-w-7xl">
@@ -81,6 +49,8 @@ export function AddOns() {
         </div>
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {ADD_ONS.map((a) => {
+            const price = formatAddOnPrice(a.id, overrides);
+
             const inner = (
               <>
                 <div className="mb-5 inline-grid size-11 place-items-center rounded-xl bg-violet-soft text-violet">
@@ -89,7 +59,7 @@ export function AddOns() {
                 <div className="flex items-start justify-between gap-3">
                   <h3 className="font-display text-lg font-bold">{a.name}</h3>
                   <span className="whitespace-nowrap font-mono text-[11px] font-bold text-violet">
-                    {a.price}
+                    {price}
                   </span>
                 </div>
                 <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{a.desc}</p>

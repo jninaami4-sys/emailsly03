@@ -25,6 +25,14 @@ import {
   getGradientPreset,
   type EditableServiceCard,
 } from "@/lib/service-icons";
+import { usePricingOverrides } from "@/hooks/use-pricing-overrides";
+import {
+  SERVICE_CATALOG,
+  formatUnitPrice,
+  formatPerUnit,
+  formatMinOrder,
+} from "@/lib/service-catalog";
+
 
 
 type Service = {
@@ -186,6 +194,8 @@ export function ServicesCarousel() {
     staleTime: 60_000,
   });
 
+  const overrides = usePricingOverrides();
+
   const services = useMemo<Service[]>(() => {
     const raw = (siteContent as Record<string, { items?: EditableServiceCard[] } | undefined> | undefined)
       ?.service_cards?.items;
@@ -201,15 +211,21 @@ export function ServicesCarousel() {
               <img src={c.iconUrl} alt="" className={className} style={{ objectFit: "contain" }} />
             )
           : getServiceIcon(c.icon);
+        // Prices ALWAYS come from the canonical catalog + admin overrides so
+        // cards / order form / pricing page / invoices never drift.
+        const inCatalog = c.serviceId in SERVICE_CATALOG;
+        const price = inCatalog ? formatUnitPrice(c.serviceId, overrides) : c.price;
+        const perUnit = inCatalog ? formatPerUnit(c.serviceId, overrides) : c.perUnit;
+        const minOrder = inCatalog ? formatMinOrder(c.serviceId, overrides) : c.minOrder;
         return {
           serviceId: c.serviceId,
           title: c.title,
           tagline: c.tagline,
           badge: c.badge,
-          price: c.price,
-          perUnit: c.perUnit,
+          price,
+          perUnit,
           unit: c.unit ?? fb?.unit,
-          minOrder: c.minOrder,
+          minOrder,
           turnaround: c.turnaround,
           bullets: c.bullets,
           gradient: fb?.gradient ?? preset.gradient,
@@ -217,10 +233,27 @@ export function ServicesCarousel() {
           ring: fb?.ring ?? "ring-1 ring-white/10",
           accent: fb?.accent ?? preset.accent,
           Icon: IconCmp,
-          tiers: fb?.tiers,
+          tiers: fb?.tiers
+            ? fb.tiers.map((t) => {
+                const q = Number(t.qty.replace(/[^0-9]/g, ""));
+                const entry = SERVICE_CATALOG[c.serviceId];
+                if (!entry || !Number.isFinite(q)) return t;
+                const o = overrides.get(c.serviceId);
+                const rate = o?.rate ?? entry.rate;
+                return {
+                  qty: t.qty,
+                  price: `$${(q * rate).toLocaleString(undefined, { maximumFractionDigits: 2 })}`,
+                  unitRate: `$${rate}`,
+                };
+              })
+            : undefined,
         };
       });
-  }, [siteContent]);
+  }, [siteContent, overrides]);
+
+
+
+
 
 
   useEffect(() => {

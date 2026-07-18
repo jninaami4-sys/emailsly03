@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import type { Product } from "@/lib/products";
 import { useCart } from "@/lib/cart";
 import { ArrowUpRight, Check, Globe, ShieldCheck, X, Eye } from "lucide-react";
-import { PremiumImageIcon, PremiumUpload, PremiumFileText } from "./PremiumIcons";
+import { PremiumImageIcon, PremiumFileText } from "./PremiumIcons";
 import { ProductDetailsModal } from "./ProductDetailsModal";
 
 const accentClass: Record<Product["categoryColor"], { dot: string; ring: string; chip: string; glow: string }> = {
@@ -39,7 +39,6 @@ const coverKey = (id: string) => `product-cover:${id}`;
 
 export function ProductCard({ product }: { product: Product }) {
   const { add } = useCart();
-  const fileRef = useRef<HTMLInputElement>(null);
   const [uploadedCover, setUploadedCover] = useState<string | null>(null);
   const [added, setAdded] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
@@ -60,27 +59,6 @@ export function ProductCard({ product }: { product: Product }) {
       : null;
 
   const pricePerRecord = (product.price / product.records).toFixed(3);
-
-  const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      const dataUrl = String(reader.result);
-      try {
-        localStorage.setItem(coverKey(product.id), dataUrl);
-      } catch {}
-      setUploadedCover(dataUrl);
-    };
-    reader.readAsDataURL(file);
-  };
-
-  const clearCover = () => {
-    try {
-      localStorage.removeItem(coverKey(product.id));
-    } catch {}
-    setUploadedCover(null);
-  };
 
   const handleAdd = () => {
     add(product);
@@ -151,44 +129,6 @@ export function ProductCard({ product }: { product: Product }) {
           </span>
         </div>
 
-        {/* Upload controls (hover) */}
-        <div
-          className="absolute bottom-3 right-3 flex gap-1.5 opacity-0 transition-opacity group-hover:opacity-100"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              fileRef.current?.click();
-            }}
-            className="flex items-center gap-1 rounded-full bg-white/95 px-2.5 py-1 font-mono text-[10px] font-semibold text-ink backdrop-blur transition-colors hover:bg-white"
-            aria-label="Upload cover image"
-          >
-            <PremiumUpload className="size-3" />
-            {cover ? "Change" : "Upload"}
-          </button>
-          {uploadedCover && (
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                clearCover();
-              }}
-              className="rounded-full bg-white/95 p-1.5 text-ink backdrop-blur transition-colors hover:bg-white"
-              aria-label="Remove uploaded cover"
-            >
-              <X className="size-3" />
-            </button>
-          )}
-        </div>
-        <input
-          ref={fileRef}
-          type="file"
-          accept="image/*"
-          className="hidden"
-          onChange={handleUpload}
-        />
       </div>
 
       {/* Body */}

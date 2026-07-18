@@ -219,8 +219,9 @@ function TrackOrderPage() {
                   value={query}
                   onChange={(e) => {
                     setQuery(e.target.value);
-                    if (errorMsg) setErrorMsg(null);
+                    if (error) setError(null);
                   }}
+
                   aria-invalid={!!errorMsg}
                   aria-describedby={errorMsg ? "track-error" : undefined}
                   placeholder="LYR-000123, INV-000123, or you@company.com"

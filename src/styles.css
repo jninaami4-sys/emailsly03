@@ -247,16 +247,51 @@ html.site-light .admin-theme {
   margin-left: 0;
   box-shadow: 0 1px 3px rgba(0,0,0,0.25);
   transition: margin-left 420ms cubic-bezier(0.65, 0, 0.35, 1);
+  display: grid;
+  place-items: center;
+  color: #1f2937;
+}
+.theme-toggle__icon {
+  width: 12px;
+  height: 12px;
+  display: block;
 }
 .theme-toggle.is-on {
-  background-color: #41a63c;
+  background: linear-gradient(135deg, #7c3aed, #d946ef);
 }
 .theme-toggle.is-on .theme-toggle__circle {
   margin-left: calc(44px - (2px * 2) - 18px);
+  color: #f59e0b;
+}
+.theme-toggle:focus-visible {
+  outline: 2px solid #7c3aed;
+  outline-offset: 2px;
 }
 @media (prefers-reduced-motion: reduce) {
   .theme-toggle,
   .theme-toggle__circle { transition: none !important; }
+}
+
+/* Premium light-mode polish: soft branded ambient wash, refined shadows,
+ * gentle gradient text for headings, crisp hairline borders. */
+html.site-light body {
+  background:
+    radial-gradient(1200px 600px at 85% -10%, rgba(217, 70, 239, 0.08), transparent 60%),
+    radial-gradient(900px 500px at -10% 10%, rgba(124, 58, 237, 0.08), transparent 60%),
+    var(--background);
+}
+html.site-light .theme-midnight h1,
+html.site-light .theme-midnight h2 {
+  letter-spacing: -0.02em;
+}
+html.site-light .theme-midnight .card,
+html.site-light .theme-midnight [data-card],
+html.site-light .bg-card {
+  box-shadow:
+    0 1px 0 rgba(15, 23, 42, 0.04),
+    0 8px 24px -12px rgba(124, 58, 237, 0.15),
+    0 24px 48px -24px rgba(15, 23, 42, 0.08);
+  border-color: rgba(124, 58, 237, 0.12);
 }
 
 /*

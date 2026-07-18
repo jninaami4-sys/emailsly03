@@ -14,6 +14,7 @@ import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { openOrderDrawer } from "./OrderDrawer";
 import { motion } from "framer-motion";
+import { ThemeToggle } from "./ThemeToggle";
 
 import {
   Store,
@@ -140,6 +141,7 @@ export function Header() {
             </div>
 
             <div className="z-10 flex items-center gap-2">
+              <ThemeToggle className="mr-1" />
               <button
                 type="button"
                 onClick={open}

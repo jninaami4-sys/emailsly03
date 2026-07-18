@@ -42,7 +42,16 @@ export const Route = createFileRoute("/blog/$slug")({
     const socialTitle = seo?.social_title || post.title;
     const description = seo?.meta_description || post.excerpt;
     const canonical = seo?.canonical_url || `/blog/${post.slug}`;
-    // Build JSON-LD: Article + optional FAQPage from question-style h3s.
+    // Build JSON-LD: Article + BreadcrumbList + optional FAQPage.
+    const wordCount = (post.content as PostBlock[])
+      .map((b) => {
+        if ("text" in b && b.text) return b.text;
+        if ("items" in b && Array.isArray(b.items)) return b.items.join(" ");
+        return "";
+      })
+      .join(" ")
+      .trim()
+      .split(/\s+/).length;
     const scripts: Array<{ type: string; children: string }> = [
       {
         type: "application/ld+json",
@@ -52,8 +61,30 @@ export const Route = createFileRoute("/blog/$slug")({
           headline: post.title,
           description,
           datePublished: post.publishedAt,
-          author: { "@type": "Person", name: post.author.name },
+          dateModified: (post as { updatedAt?: string }).updatedAt || post.publishedAt,
+          author: { "@type": "Person", name: post.author.name, jobTitle: post.author.role },
+          publisher: {
+            "@type": "Organization",
+            name: "EmailsLy",
+            logo: { "@type": "ImageObject", url: "https://emailsly.com/emailsly-logo.png" },
+          },
           image,
+          mainEntityOfPage: { "@type": "WebPage", "@id": canonical },
+          articleSection: post.category,
+          wordCount,
+          inLanguage: "en",
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Home", item: "/" },
+            { "@type": "ListItem", position: 2, name: "Blog", item: "/blog" },
+            { "@type": "ListItem", position: 3, name: post.title, item: canonical },
+          ],
         }),
       },
     ];

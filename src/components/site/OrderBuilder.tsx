@@ -353,6 +353,9 @@ export function OrderBuilder() {
                       placeholder="jane@company.com"
                       className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-violet focus:ring-4 focus:ring-violet/10"
                     />
+                    {isDisposableEmail(email) && (
+                      <p className="mt-1.5 text-xs font-medium text-coral">{DISPOSABLE_EMAIL_MESSAGE}</p>
+                    )}
                   </Field>
                 </div>
               </div>

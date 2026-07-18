@@ -425,6 +425,8 @@ export function ServicesCarousel() {
           -webkit-overflow-scrolling: touch;
           overscroll-behavior-x: contain;
           overflow: visible;
+          position: relative;
+          z-index: 2;
         }
         .services-swiper-wrapper {
           isolation: isolate;
@@ -437,30 +439,31 @@ export function ServicesCarousel() {
           bottom: 4px;
           z-index: 0;
           width: min(680px, 76vw);
-          height: 96px;
+          height: 120px;
           transform: translateX(-50%);
           border-radius: 999px;
           background:
             radial-gradient(ellipse at center, color-mix(in oklab, var(--violet) 18%, transparent), transparent 66%),
             radial-gradient(ellipse at center, color-mix(in oklab, var(--magenta) 10%, transparent), transparent 72%);
           filter: blur(22px);
-          opacity: 0.9;
+          opacity: 0.72;
           pointer-events: none;
         }
         .services-swiper-wrapper::after {
           content: "";
           position: absolute;
           inset: 0;
-          z-index: 2;
+          z-index: 1;
           pointer-events: none;
           background:
-            linear-gradient(90deg, var(--background), transparent 14%, transparent 86%, var(--background)),
-            linear-gradient(180deg, transparent 72%, color-mix(in oklab, var(--background) 88%, transparent));
+            linear-gradient(90deg, var(--background), transparent 10%, transparent 90%, var(--background)),
+            linear-gradient(180deg, transparent 82%, color-mix(in oklab, var(--background) 62%, transparent));
         }
         .services-swiper .swiper-wrapper {
           transition-timing-function: cubic-bezier(0.22, 0.61, 0.36, 1);
           will-change: transform;
-          z-index: 1;
+          position: relative;
+          z-index: 2;
         }
         .services-swiper .swiper-slide {
           touch-action: pan-y;
@@ -481,14 +484,14 @@ export function ServicesCarousel() {
           border: 1px solid color-mix(in oklab, var(--foreground) 9%, transparent);
           border-radius: 999px;
           background:
-            linear-gradient(180deg, color-mix(in oklab, var(--foreground) 7%, transparent), transparent),
-            color-mix(in oklab, var(--background) 54%, transparent);
+            radial-gradient(circle at 50% 0%, color-mix(in oklab, var(--violet) 9%, transparent), transparent 70%),
+            color-mix(in oklab, var(--background) 66%, transparent);
           box-shadow:
             inset 0 1px 0 color-mix(in oklab, var(--foreground) 8%, transparent),
             0 10px 26px color-mix(in oklab, var(--background) 72%, transparent);
           backdrop-filter: blur(18px) saturate(1.1);
           -webkit-backdrop-filter: blur(18px) saturate(1.1);
-          z-index: 5;
+          z-index: 6;
         }
         .services-swiper-wrapper .swiper-pagination-bullet {
           width: 5px;

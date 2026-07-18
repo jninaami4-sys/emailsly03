@@ -22,6 +22,11 @@ export function OrderForm() {
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
+    if (isDisposableEmail(email)) {
+      setStatus("idle");
+      alert(DISPOSABLE_EMAIL_MESSAGE);
+      return;
+    }
     setStatus("sending");
     setTimeout(() => setStatus("done"), 900);
   }

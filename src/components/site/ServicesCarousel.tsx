@@ -247,6 +247,11 @@ export function ServicesCarousel() {
                 };
               })
             : undefined,
+        };
+      });
+  }, [siteContent, overrides]);
+
+
 
 
 

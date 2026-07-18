@@ -3,11 +3,14 @@ import { Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { validatePromo, type PromoResult } from "@/lib/promos.functions";
+import { recordMyOrder } from "@/lib/orders.functions";
 import { getMyReferralBalance } from "@/lib/referrals.functions";
 import { useAuth } from "@/hooks/use-auth";
 import { ReferralErrorBoundary } from "@/components/site/ReferralErrorBoundary";
 import { usePricingOverrides } from "@/hooks/use-pricing-overrides";
 import { SERVICE_CATALOG } from "@/lib/service-catalog";
+import { stripeApi } from "@/lib/api-client";
+
 
 import { isDisposableEmail, DISPOSABLE_EMAIL_MESSAGE } from "@/lib/disposable-emails";
 import {

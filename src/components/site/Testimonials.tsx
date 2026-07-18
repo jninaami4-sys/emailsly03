@@ -2,11 +2,13 @@ import React, { useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Star, Quote, Play, Pause, BadgeCheck, Users, Clock, TrendingUp } from "lucide-react";
+import { Star, Quote, Play, Pause, BadgeCheck } from "lucide-react";
 import amineVideo from "@/assets/amine-italy.mp4.asset.json";
 import aminePoster from "@/assets/amine-poster.jpg.asset.json";
 import { ReviewSubmitModal } from "@/components/site/ReviewSubmitModal";
 import { listApprovedReviews, type PublicReview } from "@/lib/reviews.functions";
+import { useSiteContent } from "@/hooks/use-site-content";
+import { TrustItemIcon } from "@/components/admin/MediaItemsEditor";
 
 // --- Types ---
 type Testimonial = {
@@ -266,6 +268,24 @@ export function Testimonials() {
   const approved = data?.reviews ?? [];
   const approvedCount = data?.count ?? 0;
 
+  // Editable content from Admin → Site Content
+  const trustContent = useSiteContent("trust") as unknown as {
+    items?: Array<{ value: string; label: string; icon?: string; iconUrl?: string; color?: string }>;
+  };
+  const trustItems = trustContent.items ?? [];
+  const testimonialsContent = useSiteContent("testimonials" as never) as unknown as {
+    heading: string;
+    subheading: string;
+    items?: Array<{ text: string; name: string; role: string; avatarUrl?: string }>;
+  };
+  const curatedFromDb: Testimonial[] = (testimonialsContent.items ?? []).map((it) => ({
+    text: it.text,
+    name: it.name,
+    role: it.role,
+    image: it.avatarUrl && it.avatarUrl.length > 0 ? it.avatarUrl : avatarFor(it.name),
+  }));
+  const curatedSource = curatedFromDb.length > 0 ? curatedFromDb : curatedTestimonials;
+
   const [open, setOpen] = useState(false);
 
   const dynamicVideos: VideoTestimonial[] = useMemo(
@@ -286,8 +306,8 @@ export function Testimonials() {
   );
 
   const allText = useMemo(
-    () => [...dynamicText, ...curatedTestimonials],
-    [dynamicText],
+    () => [...dynamicText, ...curatedSource],
+    [dynamicText, curatedSource],
   );
 
   // Distribute across 3 columns so all reviews appear.
@@ -304,7 +324,7 @@ export function Testimonials() {
   }, [allText]);
 
   const videos = [...dynamicVideos, ...staticVideoTestimonials];
-  const totalReviews = approvedCount + curatedTestimonials.length + staticVideoTestimonials.length;
+  const totalReviews = approvedCount + curatedSource.length + staticVideoTestimonials.length;
 
   return (
     <section
@@ -315,59 +335,35 @@ export function Testimonials() {
       <div className="pointer-events-none absolute left-1/2 top-0 -z-10 h-[500px] w-[900px] -translate-x-1/2 bg-[radial-gradient(circle_at_center,var(--violet-soft),transparent_70%)] opacity-60" />
 
       <div className="mx-auto max-w-7xl">
-        {/* Trust bar */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-          className="mx-auto mb-20 max-w-4xl overflow-hidden rounded-xl border border-border bg-background shadow-lg"
-        >
-          <div className="grid divide-y divide-border sm:grid-cols-3 sm:divide-x sm:divide-y-0">
-            <div className="group relative flex items-center gap-4 p-6 sm:justify-center sm:p-8">
-              <div className="grid size-12 place-items-center rounded-lg bg-violet-soft text-violet transition-colors group-hover:bg-violet group-hover:text-white">
-                <Users className="size-6" />
-              </div>
-              <div className="text-left">
-                <div className="font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-                  500+
+        {/* Trust bar — driven by Admin → Site Content → Trust stats */}
+        {trustItems.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            className="mx-auto mb-20 max-w-4xl overflow-hidden rounded-xl border border-border bg-background shadow-lg"
+          >
+            <div
+              className="grid divide-y divide-border sm:divide-x sm:divide-y-0"
+              style={{ gridTemplateColumns: `repeat(${Math.min(trustItems.length, 4)}, minmax(0, 1fr))` }}
+            >
+              {trustItems.map((item, i) => (
+                <div key={i} className="group relative flex items-center gap-4 p-6 sm:justify-center sm:p-8">
+                  <TrustItemIcon icon={item.icon} iconUrl={item.iconUrl} color={item.color} />
+                  <div className="text-left">
+                    <div className="font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+                      {item.value}
+                    </div>
+                    <p className="mt-0.5 font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                      {item.label}
+                    </p>
+                  </div>
                 </div>
-                <p className="mt-0.5 font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-                  Clients served
-                </p>
-              </div>
+              ))}
             </div>
-
-            <div className="group relative flex items-center gap-4 p-6 sm:justify-center sm:p-8">
-              <div className="grid size-12 place-items-center rounded-lg bg-coral-soft text-coral transition-colors group-hover:bg-coral group-hover:text-white">
-                <TrendingUp className="size-6" />
-              </div>
-              <div className="text-left">
-                <div className="flex items-baseline gap-1 font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-                  4.9
-                  <span className="text-base font-medium text-muted-foreground">/ 5</span>
-                </div>
-                <p className="mt-0.5 font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-                  Average verified rating
-                </p>
-              </div>
-            </div>
-
-            <div className="group relative flex items-center gap-4 p-6 sm:justify-center sm:p-8">
-              <div className="grid size-12 place-items-center rounded-lg bg-emerald-soft text-emerald transition-colors group-hover:bg-emerald group-hover:text-white">
-                <Clock className="size-6" />
-              </div>
-              <div className="text-left">
-                <div className="font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-                  24h
-                </div>
-                <p className="mt-0.5 font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-                  Standard delivery
-                </p>
-              </div>
-            </div>
-          </div>
-        </motion.div>
+          </motion.div>
+        )}
 
         {/* Header */}
         <div className="mx-auto mb-10 flex max-w-2xl flex-col items-center text-center">
@@ -381,12 +377,13 @@ export function Testimonials() {
             id="testimonials-heading"
             className="mt-5 font-display text-4xl font-bold tracking-tight text-foreground md:text-5xl"
           >
-            Loved by growth teams that ship
+            {testimonialsContent.heading}
           </h2>
           <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
-            Every review below comes from a signed-in customer. We verify before we publish.
+            {testimonialsContent.subheading}
           </p>
         </div>
+
 
         {/* Video testimonials */}
         {videos.length > 0 && (

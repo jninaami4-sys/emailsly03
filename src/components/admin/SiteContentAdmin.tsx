@@ -4,9 +4,10 @@ import { useServerFn } from "@tanstack/react-start";
 import { listSiteContent, upsertSiteContent } from "@/lib/site-content.functions";
 import { SITE_CONTENT_DEFAULTS, type SiteContentSection } from "@/lib/site-content-defaults";
 import { ServiceCardsEditor } from "@/components/admin/ServiceCardsEditor";
+import { MediaItemsEditor, type FieldDef } from "@/components/admin/MediaItemsEditor";
 import {
   Globe, Layout, BellRing, ShieldCheck, Boxes, BarChart3, HelpCircle,
-  Megaphone, PanelBottom, Sparkles, Palette, Mail, Save, Loader2, RefreshCw,
+  Megaphone, PanelBottom, Sparkles, Palette, Mail, Save, Loader2, RefreshCw, Star,
 } from "@/components/admin/AdminIcons";
 
 
@@ -20,9 +21,10 @@ type TabDef = {
 const TABS: TabDef[] = [
   { id: "hero", label: "Hero", icon: Layout, description: "Homepage hero — badge, headline, subtitle, CTAs." },
   { id: "popup", label: "Popup", icon: BellRing, description: "Welcome/promo popup shown on first visit." },
-  { id: "trust", label: "Trust", icon: ShieldCheck, description: "Trust bar stats under the hero." },
+  { id: "trust", label: "Trust stats", icon: ShieldCheck, description: "Hero stat strip & Testimonials trust bar — icons + values." },
   { id: "services", label: "Services heading", icon: Boxes, description: "Services carousel heading & subheading." },
   { id: "service_cards", label: "Service cards", icon: Boxes, description: "Every service card — icon, price, bullets, gradient." },
+  { id: "testimonials" as SiteContentSection, label: "Testimonials", icon: Star, description: "Curated homepage testimonials with avatar upload per item." },
 
   { id: "competitors", label: "Competitors", icon: BarChart3, description: "Comparison table copy vs. competitors." },
   { id: "faq", label: "FAQ", icon: HelpCircle, description: "Homepage FAQ questions & answers." },
@@ -31,6 +33,26 @@ const TABS: TabDef[] = [
   { id: "misc", label: "Misc", icon: Sparkles, description: "Misc CTA banners and one-off strings." },
   { id: "branding", label: "Branding", icon: Palette, description: "Site name, logo, favicon, tagline." },
   { id: "contact", label: "Contact", icon: Mail, description: "Contact page email, WhatsApp, calendar, hours." },
+];
+
+const TRUST_ITEM_FIELDS: FieldDef[] = [
+  { key: "value", label: "Value (e.g. 500+)", kind: "text" },
+  { key: "label", label: "Label", kind: "text" },
+  { key: "icon", label: "Icon (preset)", kind: "icon" },
+  { key: "iconUrl", label: "Custom icon / image (optional)", kind: "image", full: true },
+  { key: "color", label: "Color theme", kind: "color", full: true },
+];
+
+const TESTIMONIAL_ITEM_FIELDS: FieldDef[] = [
+  { key: "text", label: "Quote", kind: "textarea", full: true },
+  { key: "name", label: "Name", kind: "text" },
+  { key: "role", label: "Role / company", kind: "text" },
+  { key: "avatarUrl", label: "Avatar image", kind: "image", full: true },
+];
+
+const TESTIMONIAL_SCALAR_FIELDS: FieldDef[] = [
+  { key: "heading", label: "Section heading", kind: "text", full: true },
+  { key: "subheading", label: "Section subheading", kind: "textarea", full: true },
 ];
 
 // Field label overrides (defaults to Title Cased key)
@@ -126,22 +148,48 @@ export function SiteContentAdmin() {
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <Loader2 className="size-4 animate-spin" /> Loading content…
         </div>
+      ) : tab === "service_cards" ? (
+        <ServiceCardsEditor
+          key={tab}
+          initial={(data?.service_cards ?? {}) as Record<string, unknown>}
+          onSaved={() => qc.invalidateQueries({ queryKey: ["site-content"] })}
+        />
+      ) : tab === "trust" ? (
+        <MediaItemsEditor
+          key={tab}
+          section="trust"
+          title="Trust stats"
+          description="Shown in the hero stat strip and the Testimonials trust bar. Pick a preset icon or upload a custom image per item."
+          itemLabel="Stat"
+          itemFields={TRUST_ITEM_FIELDS}
+          storageFolder="trust-icons"
+          defaults={SITE_CONTENT_DEFAULTS.trust as unknown as Record<string, unknown>}
+          initial={(data?.trust ?? {}) as Record<string, unknown>}
+          makeNewItem={() => ({ value: "0", label: "New stat", icon: "sparkles", iconUrl: "", color: "indigo" })}
+          onSaved={() => qc.invalidateQueries({ queryKey: ["site-content"] })}
+        />
+      ) : tab === ("testimonials" as SiteContentSection) ? (
+        <MediaItemsEditor
+          key={tab}
+          section="testimonials"
+          title="Curated testimonials"
+          description="Text testimonials shown on the homepage scrolling wall. Upload an avatar image per person."
+          itemLabel="Testimonial"
+          scalarFields={TESTIMONIAL_SCALAR_FIELDS}
+          itemFields={TESTIMONIAL_ITEM_FIELDS}
+          storageFolder="testimonial-avatars"
+          defaults={SITE_CONTENT_DEFAULTS.testimonials as unknown as Record<string, unknown>}
+          initial={(data?.testimonials ?? {}) as Record<string, unknown>}
+          makeNewItem={() => ({ text: "", name: "", role: "", avatarUrl: "" })}
+          onSaved={() => qc.invalidateQueries({ queryKey: ["site-content"] })}
+        />
       ) : (
-        tab === "service_cards" ? (
-          <ServiceCardsEditor
-            key={tab}
-            initial={(data?.service_cards ?? {}) as Record<string, unknown>}
-            onSaved={() => qc.invalidateQueries({ queryKey: ["site-content"] })}
-          />
-        ) : (
-          <SectionEditor
-            key={tab}
-            section={tab}
-            initial={(data?.[tab] ?? {}) as Record<string, unknown>}
-            onSaved={() => qc.invalidateQueries({ queryKey: ["site-content"] })}
-          />
-        )
-
+        <SectionEditor
+          key={tab}
+          section={tab}
+          initial={(data?.[tab] ?? {}) as Record<string, unknown>}
+          onSaved={() => qc.invalidateQueries({ queryKey: ["site-content"] })}
+        />
       )}
     </div>
   );

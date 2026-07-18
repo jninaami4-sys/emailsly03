@@ -28,6 +28,22 @@ export const SITE_CONTENT_DEFAULTS = {
     stat_2_label: "leads delivered",
     stat_3_value: "24h",
     stat_3_label: "avg. delivery",
+    items: [
+      { value: "500+", label: "Clients served", icon: "user", iconUrl: "", color: "indigo" },
+      { value: "100M+", label: "Leads delivered", icon: "database", iconUrl: "", color: "blue" },
+      { value: "24h", label: "Avg. delivery", icon: "zap", iconUrl: "", color: "emerald" },
+    ],
+  },
+  testimonials: {
+    heading: "Loved by growth teams that ship",
+    subheading: "Every review below comes from a signed-in customer. We verify before we publish.",
+    items: [
+      { text: "We booked 42 qualified demos in the first three weeks. The data was cleaner than anything we've ever pulled from Apollo directly.", name: "Sarah Chen", role: "VP Growth, Northwind", avatarUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=150&h=150" },
+      { text: "Delivered in 18 hours. Bounce rate under 2%. EmailsLy is now our default outbound engine — we cancelled two other tools.", name: "Marcus Rivera", role: "Founder, Helios Labs", avatarUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=150&h=150" },
+      { text: "The mobile numbers actually connect. Our SDR team's connect rate jumped from 4% to 19% in a month. Wild ROI.", name: "Priya Anand", role: "Head of SDRs, Loomly", avatarUrl: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=150&h=150" },
+      { text: "Seamless integration with our CRM. Enriched 12k accounts overnight — no manual cleanup needed.", name: "Omar Raza", role: "CEO, Vortex", avatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=150&h=150" },
+      { text: "Our reply rate doubled and pipeline coverage tripled. EmailsLy is the quiet engine behind our Q4 number.", name: "Hassan Ali", role: "E-commerce Manager", avatarUrl: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=150&h=150" },
+    ],
   },
   services: {
     heading: "Our services",

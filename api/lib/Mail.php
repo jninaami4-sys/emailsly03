@@ -18,8 +18,9 @@ final class Mail
     {
         if (defined('SMTP_HOST') && SMTP_HOST) {
             self::sendSmtp($to, $subject, $html, $text, $kind);
+            self::log($to, $subject, $html, $kind, self::resolveFrom($kind), 'smtp');
         } else {
-            self::log($to, $subject, $html);
+            self::log($to, $subject, $html, $kind, self::resolveFrom($kind), 'log');
         }
     }
 

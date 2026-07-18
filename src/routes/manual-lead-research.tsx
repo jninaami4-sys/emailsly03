@@ -9,6 +9,7 @@ export const Route = createFileRoute("/manual-lead-research")({
       { property: "og:title", content: "Manual lead research — Human-verified" },
       { property: "og:description", content: "Human researchers build your list from scratch. Any niche, any field." },
     ],
+    links: [{ rel: "canonical", href: "/manual-lead-research" }],
   }),
   component: () => (
     <ServiceLanding

@@ -30,6 +30,7 @@ export const Route = createFileRoute("/reset-password")({
       { title: "Reset your password | EmailsLy" },
       { name: "description", content: "Set a new password for your EmailsLy account." },
     ],
+    links: [{ rel: "canonical", href: "/reset-password" }],
   }),
   component: ResetPasswordPage,
 });

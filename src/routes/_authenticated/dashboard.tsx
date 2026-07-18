@@ -29,6 +29,7 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
       { title: "Your dashboard — EmailsLy" },
       { name: "robots", content: "noindex,nofollow" },
     ],
+    links: [{ rel: "canonical", href: "/dashboard" }],
   }),
   component: DashboardPage,
 });

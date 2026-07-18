@@ -9,6 +9,7 @@ export const Route = createFileRoute("/zoominfo-leads")({
       { property: "og:title", content: "ZoomInfo verified leads" },
       { property: "og:description", content: "Enterprise-grade B2B data with direct dials — no $15k contract." },
     ],
+    links: [{ rel: "canonical", href: "/zoominfo-leads" }],
   }),
   component: () => (
     <ServiceLanding

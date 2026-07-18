@@ -12,6 +12,7 @@ export const Route = createFileRoute("/import-preview")({
       { name: "description", content: "Preview the columns and rows of a CSV or Excel file before importing anything into your account." },
       { name: "robots", content: "noindex" },
     ],
+    links: [{ rel: "canonical", href: "/import-preview" }],
   }),
   component: ImportPreviewPage,
 });

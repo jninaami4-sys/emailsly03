@@ -17,7 +17,10 @@ const BRAND = {
 } as const;
 
 export const Route = createFileRoute("/_authenticated/invoice/$orderId")({
-  head: () => ({ meta: [{ title: "Invoice" }, { name: "robots", content: "noindex,nofollow" }] }),
+  head: ({ params }) => ({
+    meta: [{ title: "Invoice" }, { name: "robots", content: "noindex,nofollow" }],
+    links: [{ rel: "canonical", href: `/invoice/${params.orderId}` }],
+  }),
   component: InvoicePage,
 });
 

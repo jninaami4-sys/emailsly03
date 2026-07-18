@@ -16,6 +16,7 @@ export const Route = createFileRoute("/contact")({
       { property: "og:description", content: "Get a custom quote. Response within 4 business hours." },
       ...ogImageMeta(OG_IMAGES.default),
     ],
+    links: [{ rel: "canonical", href: "/contact" }],
   }),
   component: Contact,
 });

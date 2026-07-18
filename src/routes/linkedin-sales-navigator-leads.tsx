@@ -9,6 +9,7 @@ export const Route = createFileRoute("/linkedin-sales-navigator-leads")({
       { property: "og:title", content: "LinkedIn Sales Navigator leads" },
       { property: "og:description", content: "Turn any Sales-Nav search into a verified CSV in 24 hours." },
     ],
+    links: [{ rel: "canonical", href: "/linkedin-sales-navigator-leads" }],
   }),
   component: () => (
     <ServiceLanding

@@ -25,6 +25,7 @@ export const Route = createFileRoute("/payment-failed")({
       { name: "description", content: "Your payment could not be processed." },
       { name: "robots", content: "noindex, nofollow" },
     ],
+    links: [{ rel: "canonical", href: "/payment-failed" }],
   }),
 });
 

@@ -36,6 +36,7 @@ export const Route = createFileRoute("/payment-success")({
       { name: "description", content: "Your order has been received and payment confirmed." },
       { name: "robots", content: "noindex, nofollow" },
     ],
+    links: [{ rel: "canonical", href: "/payment-success" }],
   }),
 });
 

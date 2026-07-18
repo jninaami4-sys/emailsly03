@@ -15,6 +15,7 @@ export const Route = createFileRoute("/store")({
       { property: "og:title", content: "Lead Store — Prebuilt B2B lead lists" },
       { property: "og:description", content: "Browse verified prebuilt B2B lead lists. Instant download after checkout." },
     ],
+    links: [{ rel: "canonical", href: "/store" }],
     scripts: [
       {
         type: "application/ld+json",

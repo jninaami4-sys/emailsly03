@@ -15,6 +15,7 @@ export const Route = createFileRoute("/track-order")({
       { property: "og:title", content: "Track your order | EmailsLy" },
       { property: "og:description", content: "Look up your EmailsLy order status in real time using your order ID or email." },
     ],
+    links: [{ rel: "canonical", href: "/track-order" }],
   }),
   pendingComponent: TrackOrderSkeleton,
   component: TrackOrderPage,

@@ -24,6 +24,7 @@ export const Route = createFileRoute("/blog")({
       },
       ...ogImageMeta(OG_IMAGES.blog),
     ],
+    links: [{ rel: "canonical", href: "/blog" }],
   }),
   component: BlogList,
 });

@@ -61,8 +61,9 @@ function Store() {
   const [category, setCategory] = useState<string>("All");
   const [query, setQuery] = useState("");
   const hydrated = useHydrated();
+  const allProducts = useAllProducts();
 
-  const filtered = PRODUCTS.filter((p) => {
+  const filtered = allProducts.filter((p) => {
     if (category !== "All" && p.category !== category) return false;
     if (query && !`${p.title} ${p.category} ${p.description}`.toLowerCase().includes(query.toLowerCase())) return false;
     return true;

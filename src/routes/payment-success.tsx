@@ -808,9 +808,8 @@ function buildReceiptHtml(r: {
     <div class="pad">
       <div class="row">
         <div class="brand">
-          <div class="mark">L</div>
+          <img src="${window.location.origin}${emailslyLogo.url}" alt="EmailsLy" style="height:40px;width:auto;object-fit:contain;" />
           <div>
-            <h1>EmailsLy</h1>
             <div class="muted">Official Receipt</div>
           </div>
         </div>

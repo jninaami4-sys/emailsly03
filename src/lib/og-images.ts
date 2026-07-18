@@ -41,42 +41,35 @@ function withThemeQuery(url: string, theme: SiteTheme): string {
 }
 
 /**
- * Pull the SSR-resolved theme out of the route match tree. The root
- * loader stores it on its match; leaf `head()` receives `matches` and
- * forwards it here.
+ * Pull the SSR-resolved theme out of the route match tree, when available.
+ * NOTE: TanStack invokes `head()` BEFORE loaders resolve during SSR, so
+ * `matches[i].loaderData` is empty here. The theme is stamped onto the
+ * SSR HTML response in `src/server.ts` (post-render rewrite) — this hook
+ * only helps on client navigations where loaderData is already hydrated.
  */
 export function matchTheme(matches: ReadonlyArray<{ routeId?: string; id?: string; loaderData?: unknown }> | undefined): SiteTheme | null {
   if (!matches || matches.length === 0) return null;
-  // The root match is always the first entry; check both possible id fields
-  // used across TanStack versions plus a broad fallback that scans for it.
-  const root =
-    matches.find((m) => m.routeId === "__root__" || m.id === "__root__") ?? matches[0];
+  const root = matches.find((m) => m.routeId === "__root__" || m.id === "__root__") ?? matches[0];
   const data = root?.loaderData as { theme?: SiteTheme } | undefined;
-  if (typeof window === "undefined") {
-    const debug = JSON.stringify({ len: matches.length, ids: matches.map((m: any) => m.routeId ?? m.id), loaderKeys: matches.map((m: any) => Object.keys(m.loaderData ?? {})), rootLoader: root?.loaderData });
-    (globalThis as any).__mt = debug;
-  }
-
-
   return data?.theme === "light" || data?.theme === "dark" ? data.theme : null;
 }
-
 
 /**
  * Build the standard social-card meta entries (og:image + twitter:image
  * + twitter:card). When a theme is provided, appends `?theme=<theme>` so
- * SSR-rendered share previews reflect the requested variant.
+ * SSR-rendered share previews reflect the requested variant. When no
+ * theme is provided at render time, the SSR pipeline (`src/server.ts`)
+ * rewrites the URLs from the incoming request's `?theme=`/cookie.
  */
 export function ogImageMeta(image: string = OG_IMAGES.default, theme?: SiteTheme | null) {
   const url = theme ? withThemeQuery(image, theme) : image;
-  const dbg = (typeof window === "undefined" ? (globalThis as any).__mt : null) as string | null;
   return [
     { name: "twitter:card", content: "summary_large_image" },
     { property: "og:image", content: url },
     { property: "og:image:width", content: "1200" },
     { property: "og:image:height", content: "630" },
     { name: "twitter:image", content: url },
-    ...(dbg ? [{ name: "x-debug-matches", content: dbg }] : []),
   ] as const;
 }
+
 

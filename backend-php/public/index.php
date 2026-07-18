@@ -172,6 +172,9 @@ $router->get   ('/api/admin/chatbot/tickets',       ['Emailsly\Controllers\Admin
 $router->get   ('/api/admin/chatbot/kb',            ['Emailsly\Controllers\Admin\ChatbotAdmin', 'listKb']);
 $router->post  ('/api/admin/chatbot/kb',            ['Emailsly\Controllers\Admin\ChatbotAdmin', 'upsertKb']);
 
+// Email / SMTP diagnostics
+$router->post  ('/api/admin/test-email',            ['Emailsly\Controllers\Admin\MailAdmin', 'testSend']);
+
 // Dispatch
 try {
     $router->dispatch(

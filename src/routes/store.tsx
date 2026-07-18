@@ -5,6 +5,7 @@ import { ProductCard } from "@/components/site/ProductCard";
 import { StoreSkeleton } from "@/components/site/StoreSkeleton";
 import { useHydrated } from "@/hooks/use-hydrated";
 import { PRODUCTS, CATEGORIES } from "@/lib/products";
+import { useAllProducts } from "@/hooks/use-all-products";
 import { Search } from "lucide-react";
 
 export const Route = createFileRoute("/store")({

@@ -54,18 +54,19 @@ type Service = {
 };
 
 const SERVICES: Service[] = [
-  { id: "apollo", name: "Apollo B2B Data", rate: 0.0035, minQty: 5000, minOrder: 20, unit: "lead", helper: "$20 / 5K · $35 / 10K+", icon: PremiumTarget, group: "data" },
-  { id: "zoominfo", name: "ZoomInfo Data", rate: 0.02, minQty: 1000, minOrder: 20, unit: "lead", icon: PremiumBuilding, group: "data" },
-  { id: "linkedin", name: "LinkedIn Lead Lists", rate: 0.01, minQty: 5000, minOrder: 50, unit: "lead", helper: "~70% include verified emails", icon: PremiumLinkedin, group: "data" },
-  { id: "manual", name: "Hand-Picked Leads", rate: 0.35, minQty: 100, minOrder: 35, unit: "lead", helper: "Min 100 leads · enter any quantity", icon: PremiumUserSearch, group: "data" },
-  { id: "mobile", name: "Apollo Mobile Numbers", rate: 0.15, minQty: 100, minOrder: 25, unit: "record", helper: "Min 100 numbers · enter any quantity", icon: PremiumPhone, group: "data" },
-  { id: "pixel", name: "Facebook Pixel", rate: 100, minQty: 1, minOrder: 100, unit: "setup", fixed: true, icon: PremiumMousePointerClick, group: "growth" },
-  { id: "warmup", name: "Mailbox Warmup + DKIM/SPF", rate: 50, minQty: 2, minOrder: 100, unit: "mailboxes", helper: "2 mailboxes · 15-day warmup · DKIM, SPF, DMARC setup", icon: PremiumShieldCheck, group: "growth" },
-  { id: "ads", name: "Google Ads Launch", rate: 100, minQty: 1, minOrder: 100, unit: "setup", fixed: true, icon: PremiumLineChart, group: "growth" },
-  { id: "tracking", name: "Server-Side Tracking", rate: 150, minQty: 1, minOrder: 150, unit: "setup", fixed: true, icon: PremiumServerCog, group: "growth" },
-  { id: "logo", name: "Logo & Brand Kit", rate: 50, minQty: 1, minOrder: 50, unit: "kit", fixed: true, icon: PremiumPenTool, group: "design" },
-  { id: "webdesign", name: "Custom Website Build", rate: 200, minQty: 1, minOrder: 200, unit: "site", fixed: true, icon: PremiumGlobe, group: "design" },
+  { id: "apollo",    name: "Apollo B2B Data",           ...SERVICE_CATALOG.apollo,    helper: "$20 / 5K · $35 / 10K+",                                          icon: PremiumTarget,             group: "data" },
+  { id: "zoominfo",  name: "ZoomInfo Data",             ...SERVICE_CATALOG.zoominfo,                                                                            icon: PremiumBuilding,           group: "data" },
+  { id: "linkedin",  name: "LinkedIn Lead Lists",       ...SERVICE_CATALOG.linkedin,  helper: "~70% include verified emails",                                   icon: PremiumLinkedin,           group: "data" },
+  { id: "manual",    name: "Hand-Picked Leads",         ...SERVICE_CATALOG.manual,    helper: "Min 100 leads · enter any quantity",                             icon: PremiumUserSearch,         group: "data" },
+  { id: "mobile",    name: "Apollo Mobile Numbers",     ...SERVICE_CATALOG.mobile,    helper: "Min 100 numbers · enter any quantity",                           icon: PremiumPhone,              group: "data" },
+  { id: "pixel",     name: "Facebook Pixel",            ...SERVICE_CATALOG.pixel,                                                                                icon: PremiumMousePointerClick,  group: "growth" },
+  { id: "warmup",    name: "Mailbox Warmup + DKIM/SPF", ...SERVICE_CATALOG.warmup,    helper: "2 mailboxes · 15-day warmup · DKIM, SPF, DMARC setup",           icon: PremiumShieldCheck,        group: "growth" },
+  { id: "ads",       name: "Google Ads Launch",         ...SERVICE_CATALOG.ads,                                                                                  icon: PremiumLineChart,          group: "growth" },
+  { id: "tracking",  name: "Server-Side Tracking",      ...SERVICE_CATALOG.tracking,                                                                             icon: PremiumServerCog,          group: "growth" },
+  { id: "logo",      name: "Logo & Brand Kit",          ...SERVICE_CATALOG.logo,                                                                                 icon: PremiumPenTool,            group: "design" },
+  { id: "webdesign", name: "Custom Website Build",      ...SERVICE_CATALOG.webdesign,                                                                            icon: PremiumGlobe,              group: "design" },
 ];
+
 
 const QTY_PRESETS = [5000, 10000, 15000, 20000, 50000, 100000, 250000, 500000, 1000000];
 const TIER_PRESETS = [100, 200, 300, 400, 500, 750, 1000, 1500, 2000, 3000, 5000, 7500, 10000];

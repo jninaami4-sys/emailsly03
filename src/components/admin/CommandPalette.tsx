@@ -155,7 +155,7 @@ export function CommandPalette({
                           }}
                           className={`flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-[13px] ${
                             active
-                              ? "bg-primary/10 text-primary ring-1 ring-primary/30"
+                              ? "bg-primary/10 text-primary"
                               : "text-foreground/75 hover:bg-secondary"
                           }`}
                         >

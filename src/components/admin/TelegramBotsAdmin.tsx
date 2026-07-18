@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { listTelegramBots, upsertTelegramBot, deleteTelegramBot, testTelegramBot } from "@/lib/admin-extras.functions";
 import { Plus, Save, Trash2, Loader2, MessageSquare } from "@/components/admin/AdminIcons";
 
@@ -26,10 +25,10 @@ const empty = {
 
 export function TelegramBotsAdmin() {
   const qc = useQueryClient();
-  const listFn = useServerFn(listTelegramBots);
-  const upFn = useServerFn(upsertTelegramBot);
-  const delFn = useServerFn(deleteTelegramBot);
-  const testFn = useServerFn(testTelegramBot);
+  const listFn = (listTelegramBots);
+  const upFn = upsertTelegramBot;
+  const delFn = deleteTelegramBot;
+  const testFn = testTelegramBot;
   const [draft, setDraft] = useState(empty);
   const [testMsg, setTestMsg] = useState<string | null>(null);
 

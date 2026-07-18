@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { Loader2, RefreshCw, Save, Upload, Database } from "@/components/admin/AdminIcons";
 import {
   adminListSampleDatasets,
@@ -49,10 +48,10 @@ async function fileToBase64(file: File): Promise<string> {
 }
 
 export function SampleDatasetsAdmin() {
-  const listFn = useServerFn(adminListSampleDatasets);
-  const upsertFn = useServerFn(adminUpsertSampleDataset);
-  const uploadFn = useServerFn(adminUploadSampleCsv);
-  const previewFn = useServerFn(adminPreviewSampleDataset);
+  const listFn = (adminListSampleDatasets);
+  const upsertFn = adminUpsertSampleDataset;
+  const uploadFn = adminUploadSampleCsv;
+  const previewFn = adminPreviewSampleDataset;
 
   const { data, isLoading, isFetching, refetch } = useQuery({
     queryKey: ["admin-sample-datasets"],
@@ -337,7 +336,7 @@ export function SampleDatasetsAdmin() {
 }
 
 export function SampleDatasetAuditLog() {
-  const listAuditFn = useServerFn(adminListSampleDatasetAudit);
+  const listAuditFn = (adminListSampleDatasetAudit);
   const { data, isLoading, isFetching, refetch, error } = useQuery({
     queryKey: ["admin-sample-dataset-audit"],
     queryFn: () => listAuditFn(),

@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { getSiteSettings } from "@/lib/site-settings.functions";
 import { getConversionEvents } from "@/lib/conversion-events.functions";
 import { primeConversionEvents } from "@/lib/tracking";
@@ -19,7 +18,7 @@ import { pageviewId, reserveEvent } from "@/lib/dedupe";
  */
 export function TrackingScripts() {
   const fn = getSiteSettings;
-  const eventsFn = useServerFn(getConversionEvents);
+  const eventsFn = (getConversionEvents);
   const { data } = useQuery({
     queryKey: ["site-settings"],
     queryFn: () => fn(),

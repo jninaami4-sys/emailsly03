@@ -1,12 +1,11 @@
 import { useRef, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { exportBackup, restoreBackup } from "@/lib/admin-extras.functions";
 import { Loader2, Upload, Database } from "@/components/admin/AdminIcons";
 
 export function BackupRestoreAdmin() {
-  const exportFn = useServerFn(exportBackup);
-  const restoreFn = useServerFn(restoreBackup);
+  const exportFn = (exportBackup);
+  const restoreFn = restoreBackup;
   const inputRef = useRef<HTMLInputElement>(null);
   const [mode, setMode] = useState<"merge" | "replace">("merge");
   const [result, setResult] = useState<any | null>(null);

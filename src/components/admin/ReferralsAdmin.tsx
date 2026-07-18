@@ -1,6 +1,5 @@
 import { Fragment, useMemo, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import {
   adminListReferrals,
   adminReferralStats,
@@ -96,16 +95,16 @@ function FlagChips({ flags }: { flags: string[] }) {
 
 export function ReferralsAdmin() {
   const qc = useQueryClient();
-  const listFn = useServerFn(adminListReferrals);
-  const statsFn = useServerFn(adminReferralStats);
-  const updateFn = useServerFn(adminUpdateReferralStatus);
-  const approveFn = useServerFn(adminApproveReferral);
-  const rejectFn = useServerFn(adminRejectReferral);
-  const funnelFn = useServerFn(adminReferralFunnel);
-  const leaderFn = useServerFn(adminReferralLeaderboard);
-  const chainFn = useServerFn(adminReferrerChain);
-  const payoutFn = useServerFn(adminMarkCreditsPaidOut);
-  const csvFn = useServerFn(adminExportOwedCsv);
+  const listFn = (adminListReferrals);
+  const statsFn = adminReferralStats;
+  const updateFn = adminUpdateReferralStatus;
+  const approveFn = adminApproveReferral;
+  const rejectFn = adminRejectReferral;
+  const funnelFn = adminReferralFunnel;
+  const leaderFn = adminReferralLeaderboard;
+  const chainFn = adminReferrerChain;
+  const payoutFn = adminMarkCreditsPaidOut;
+  const csvFn = adminExportOwedCsv;
 
   const [status, setStatus] = useState("all");
   const [reviewState, setReviewState] = useState("all");

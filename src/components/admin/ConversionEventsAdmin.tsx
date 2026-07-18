@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { Target, Plus, Save, Trash2, Loader2, ChevronDown, ChevronRight } from "@/components/admin/AdminIcons";
 import {
   listConversionEventsAdmin,
@@ -64,9 +63,9 @@ function parseParams(text: string): ParamMap {
 
 export function ConversionEventsAdmin() {
   const qc = useQueryClient();
-  const listFn = useServerFn(listConversionEventsAdmin);
-  const saveFn = useServerFn(upsertConversionEvent);
-  const delFn = useServerFn(deleteConversionEvent);
+  const listFn = (listConversionEventsAdmin);
+  const saveFn = upsertConversionEvent;
+  const delFn = deleteConversionEvent;
 
   const { data, isLoading } = useQuery({
     queryKey: ["conversion-events", "admin"],

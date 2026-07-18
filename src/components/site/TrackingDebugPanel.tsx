@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { Bug, X, Zap, ChevronDown, ChevronUp, Trash2, Play } from "lucide-react";
 import { getSiteSettings } from "@/lib/site-settings.functions";
 import { getConversionEvents } from "@/lib/conversion-events.functions";
@@ -54,7 +53,7 @@ export function TrackingDebugPanel() {
   });
 
   const settingsFn = getSiteSettings;
-  const eventsFn = useServerFn(getConversionEvents);
+  const eventsFn = getConversionEvents;
   const { data: settings } = useQuery({
     queryKey: ["site-settings"],
     queryFn: () => settingsFn(),

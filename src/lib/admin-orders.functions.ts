@@ -16,6 +16,7 @@ export const adminListOrders = createServerFn({ method: "GET" })
         status: z.string().optional(),
         search: z.string().optional(),
         limit: z.number().int().min(1).max(500).optional(),
+        view: z.enum(["active", "archived"]).optional(),
       })
       .parse(d ?? {}),
   )
@@ -24,10 +25,13 @@ export const adminListOrders = createServerFn({ method: "GET" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const sb = supabaseAdmin as any;
     let q = sb.from("orders").select("*").order("created_at", { ascending: false }).limit(data.limit ?? 200);
+    if (data.view === "archived") q = q.not("archived_at", "is", null);
+    else q = q.is("archived_at", null);
     if (data.status && data.status !== "all") q = q.eq("status", data.status);
     if (data.search) q = q.or(`email.ilike.%${data.search}%,service_label.ilike.%${data.search}%,promo_code.ilike.%${data.search}%`);
     const { data: rows, error } = await q;
     if (error) throw new Error(error.message);
+
     const list = (rows ?? []) as Array<Record<string, unknown> & { id: string; user_id: string | null }>;
     // Enrich with profile display name where available so the admin table can
     // show the customer's name (not just their email) and a stable short ID.

@@ -4,23 +4,13 @@ import { createHmac, timingSafeEqual } from "crypto";
 /**
  * Stripe webhook — the ONLY path that marks an order as paid and lets referral rewards fire.
  *
- * Expects events from a Stripe endpoint configured with your STRIPE_WEBHOOK_SECRET (added via add_secret).
- * Verifies the stripe-signature header (HMAC-SHA256 of `${timestamp}.${payload}`).
- * Handles `checkout.session.completed` and `payment_intent.succeeded`.
- *
- * The order to update is identified by (in order):
- *   - metadata.order_id
- *   - client_reference_id  (recommended: set to your app order id when creating the checkout session)
- *
- * On success:
- *   - stores Stripe session/PI id in orders.payment_ref
- *   - sets payment_status='paid' and payment_provider='stripe'
- *   - the orders_qualify_referral trigger takes it from there
- *
- * Idempotent by Stripe event.id via public.stripe_events.
+ * Every inbound POST is recorded in `public.stripe_webhook_deliveries` with the
+ * outcome (received / verified / duplicate / processed / unhandled / rejected /
+ * error) so admins have an end-to-end audit log even for rejected requests.
+ * Successful, verified events are also stored in `public.stripe_events` for
+ * idempotency.
  */
 
-// Verify Stripe's signature scheme: t=<ts>,v1=<sig>,v0=... — v1 is HMAC-SHA256(secret, `${ts}.${payload}`)
 function verifyStripeSignature(payload: string, header: string, secret: string, toleranceSec = 300) {
   if (!header) return false;
   const parts = Object.fromEntries(
@@ -45,74 +35,173 @@ function verifyStripeSignature(payload: string, header: string, secret: string, 
   }
 }
 
+type DeliveryLog = {
+  event_id: string | null;
+  event_type: string | null;
+  verified: boolean;
+  status: string;
+  http_status: number;
+  outcome: string | null;
+  error_message: string | null;
+  duration_ms: number;
+  stripe_ref: string | null;
+  matched_order_id: string | null;
+  source_ip: string | null;
+  signature_present: boolean;
+  payload_bytes: number;
+};
+
+async function logDelivery(sb: any, row: DeliveryLog) {
+  try {
+    await sb.from("stripe_webhook_deliveries").insert(row);
+  } catch {
+    // never let logging failures affect the webhook response
+  }
+}
+
 export const Route = createFileRoute("/api/public/webhooks/stripe")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const secret = process.env.STRIPE_WEBHOOK_SECRET;
-        if (!secret) return new Response("Server not configured", { status: 500 });
-
+        const startedAt = Date.now();
+        const sourceIp =
+          request.headers.get("cf-connecting-ip") ??
+          request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
+          null;
         const sig = request.headers.get("stripe-signature") ?? "";
         const raw = await request.text();
-        if (!verifyStripeSignature(raw, sig, secret)) {
-          return new Response("Invalid signature", { status: 401 });
+        const payloadBytes = raw.length;
+
+        const base: DeliveryLog = {
+          event_id: null,
+          event_type: null,
+          verified: false,
+          status: "received",
+          http_status: 200,
+          outcome: null,
+          error_message: null,
+          duration_ms: 0,
+          stripe_ref: null,
+          matched_order_id: null,
+          source_ip: sourceIp,
+          signature_present: Boolean(sig),
+          payload_bytes: payloadBytes,
+        };
+
+        const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+        const sb = supabaseAdmin as any;
+
+        const finish = async (
+          status: string,
+          httpStatus: number,
+          extra: Partial<DeliveryLog> = {},
+          body = "ok",
+        ) => {
+          await logDelivery(sb, {
+            ...base,
+            ...extra,
+            status,
+            http_status: httpStatus,
+            duration_ms: Date.now() - startedAt,
+          });
+          return new Response(body, { status: httpStatus });
+        };
+
+        const secret = process.env.STRIPE_WEBHOOK_SECRET;
+        if (!secret) {
+          return finish("error", 500, { error_message: "STRIPE_WEBHOOK_SECRET missing" }, "Server not configured");
         }
+
+        if (!verifyStripeSignature(raw, sig, secret)) {
+          return finish(
+            "rejected",
+            401,
+            { error_message: "Invalid or missing stripe-signature" },
+            "Invalid signature",
+          );
+        }
+        base.verified = true;
 
         let event: any;
         try {
           event = JSON.parse(raw);
         } catch {
-          return new Response("Bad JSON", { status: 400 });
+          return finish("error", 400, { error_message: "Malformed JSON body" }, "Bad JSON");
         }
-        if (!event?.id || !event?.type) return new Response("Bad event", { status: 400 });
+        if (!event?.id || !event?.type) {
+          return finish("error", 400, { error_message: "Missing event id/type" }, "Bad event");
+        }
+        base.event_id = event.id;
+        base.event_type = event.type;
+        const stripeRef = event?.data?.object?.id ?? null;
+        base.stripe_ref = stripeRef;
 
-        const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-        const sb = supabaseAdmin as any;
-
-        // Idempotency: insert; on conflict, we've already handled this event.
         const { error: dupErr } = await sb
           .from("stripe_events")
           .insert({ id: event.id, type: event.type, payload: event });
         if (dupErr && (dupErr as any).code === "23505") {
-          return new Response("ok (duplicate)", { status: 200 });
+          return finish("duplicate", 200, { outcome: "Already processed" }, "ok (duplicate)");
         }
         if (dupErr) {
-          return new Response(`db error: ${dupErr.message}`, { status: 500 });
+          return finish(
+            "error",
+            500,
+            { error_message: `db error: ${(dupErr as any).message}` },
+            `db error: ${(dupErr as any).message}`,
+          );
         }
 
         try {
+          let matchedOrderId: string | null = null;
+          let outcome = "processed";
           if (event.type === "checkout.session.completed") {
             const s = event.data?.object ?? {};
             if (s.payment_status !== "paid") {
-              return new Response("ok (not paid)", { status: 200 });
+              return finish("verified", 200, { outcome: "Session not paid — ignored" }, "ok (not paid)");
             }
-            await markOrderPaid(sb, {
+            matchedOrderId = await markOrderPaid(sb, {
               order_id: s.metadata?.order_id ?? s.client_reference_id ?? null,
-              stripe_ref: s.id, // cs_...
+              stripe_ref: s.id,
               user_id: s.metadata?.user_id ?? null,
               email: s.customer_details?.email ?? s.customer_email ?? null,
               amount_cents: Number.isFinite(s.amount_total) ? s.amount_total : null,
               currency: (s.currency || "usd").toUpperCase(),
             });
+            outcome = matchedOrderId ? "Order marked paid" : "No matching order";
           } else if (event.type === "payment_intent.succeeded") {
             const pi = event.data?.object ?? {};
-            await markOrderPaid(sb, {
+            matchedOrderId = await markOrderPaid(sb, {
               order_id: pi.metadata?.order_id ?? null,
-              stripe_ref: pi.id, // pi_...
+              stripe_ref: pi.id,
               user_id: pi.metadata?.user_id ?? null,
               email: pi.receipt_email ?? null,
               amount_cents: Number.isFinite(pi.amount_received) ? pi.amount_received : pi.amount,
               currency: (pi.currency || "usd").toUpperCase(),
             });
+            outcome = matchedOrderId ? "Order marked paid" : "No matching order";
           } else {
-            // Acknowledge unhandled event types so Stripe stops retrying.
-            return new Response("ok (unhandled)", { status: 200 });
+            return finish(
+              "unhandled",
+              200,
+              { outcome: `Event type not handled: ${event.type}` },
+              "ok (unhandled)",
+            );
           }
-        } catch (e: any) {
-          return new Response(`handler error: ${e?.message ?? "unknown"}`, { status: 500 });
-        }
 
-        return new Response("ok", { status: 200 });
+          return finish(
+            "processed",
+            200,
+            { matched_order_id: matchedOrderId, outcome },
+            "ok",
+          );
+        } catch (e: any) {
+          return finish(
+            "error",
+            500,
+            { error_message: `handler error: ${e?.message ?? "unknown"}` },
+            `handler error: ${e?.message ?? "unknown"}`,
+          );
+        }
       },
     },
   },
@@ -128,8 +217,7 @@ async function markOrderPaid(
     amount_cents: number | null;
     currency: string;
   },
-) {
-  // 1) Locate order: by id -> by (user_id, unpaid) latest -> by email
+): Promise<string | null> {
   let orderRow: any = null;
   if (opts.order_id) {
     const { data } = await sb.from("orders").select("*").eq("id", opts.order_id).maybeSingle();
@@ -157,9 +245,8 @@ async function markOrderPaid(
       .maybeSingle();
     if (data) orderRow = data;
   }
-  if (!orderRow) return; // nothing to do — no matching order
-
-  if (orderRow.payment_status === "paid") return;
+  if (!orderRow) return null;
+  if (orderRow.payment_status === "paid") return orderRow.id;
 
   const patch: Record<string, unknown> = {
     payment_status: "paid",
@@ -176,4 +263,5 @@ async function markOrderPaid(
     event_type: "payment_received",
     message: `Stripe payment confirmed (${opts.stripe_ref})`,
   });
+  return orderRow.id;
 }

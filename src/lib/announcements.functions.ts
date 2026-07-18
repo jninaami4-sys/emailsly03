@@ -201,12 +201,11 @@ export const whoAmIAdmin = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const email = (context.claims as { email?: string }).email ?? null;
-    const admin = (process.env.ADMIN_EMAIL || "").trim().toLowerCase();
-    const normalized = email?.trim().toLowerCase() ?? "";
-    // Preview-only: allow demo account to view (read-only) the admin UI.
-    const PREVIEW_ALLOWLIST = new Set(["demo@emailsly.app"]);
-    return {
-      email,
-      isAdmin: !!normalized && (normalized === admin || PREVIEW_ALLOWLIST.has(normalized)),
-    };
+    const { data, error } = await context.supabase.rpc("has_role", {
+      _user_id: context.userId,
+      _role: "admin",
+    });
+    if (error) throw new Error(error.message);
+    return { email, isAdmin: !!data };
   });
+

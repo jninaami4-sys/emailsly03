@@ -141,6 +141,7 @@ export function Header() {
             </div>
 
             <div className="z-10 flex items-center gap-2">
+              <ThemeToggle className="mr-1" />
               <button
                 type="button"
                 onClick={open}

@@ -334,11 +334,81 @@ html.site-light .theme-midnight h2 {
 html.site-light .theme-midnight .card,
 html.site-light .theme-midnight [data-card],
 html.site-light .bg-card {
+  background-color: #ffffff;
+  border: 1px solid rgba(124, 58, 237, 0.10);
   box-shadow:
-    0 1px 0 rgba(15, 23, 42, 0.04),
-    0 8px 24px -12px rgba(124, 58, 237, 0.15),
-    0 24px 48px -24px rgba(15, 23, 42, 0.08);
-  border-color: rgba(124, 58, 237, 0.12);
+    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 1px 2px rgba(15, 23, 42, 0.04),
+    0 10px 30px -14px rgba(124, 58, 237, 0.20),
+    0 30px 60px -30px rgba(15, 23, 42, 0.12);
+  transition: box-shadow 240ms ease, transform 240ms ease, border-color 240ms ease;
+}
+html.site-light .theme-midnight .card:hover,
+html.site-light .theme-midnight [data-card]:hover,
+html.site-light .bg-card:hover {
+  border-color: rgba(124, 58, 237, 0.22);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 2px 4px rgba(15, 23, 42, 0.05),
+    0 16px 40px -16px rgba(124, 58, 237, 0.28),
+    0 40px 70px -30px rgba(15, 23, 42, 0.14);
+}
+
+/* Premium gradient headings in light mode — subtle violet→magenta tint on
+ * h1/h2 without hurting readability. Body copy stays deep ink. */
+html.site-light h1,
+html.site-light h2 {
+  background: linear-gradient(135deg, #1a1533 0%, #4c1d95 55%, #a21caf 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  letter-spacing: -0.02em;
+}
+/* Never gradient-clip icons, buttons, or elements that must stay solid */
+html.site-light h1 svg,
+html.site-light h2 svg,
+html.site-light h1 [data-no-gradient],
+html.site-light h2 [data-no-gradient] {
+  background: none;
+  -webkit-text-fill-color: initial;
+  color: inherit;
+}
+
+/* Crisper form controls in light mode */
+html.site-light input,
+html.site-light textarea,
+html.site-light select {
+  background-color: #ffffff;
+  border-color: rgba(15, 23, 42, 0.12);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+}
+html.site-light input:focus-visible,
+html.site-light textarea:focus-visible,
+html.site-light select:focus-visible {
+  border-color: rgba(124, 58, 237, 0.55);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.14);
+}
+
+/* Primary buttons — richer premium gradient in light mode */
+html.site-light .theme-midnight .bg-primary,
+html.site-light .bg-primary {
+  background-image: linear-gradient(135deg, #7c3aed 0%, #a21caf 55%, #d946ef 100%);
+  color: #ffffff;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.35) inset,
+    0 10px 24px -12px rgba(124, 58, 237, 0.55);
+}
+html.site-light .theme-midnight .bg-primary:hover,
+html.site-light .bg-primary:hover {
+  filter: brightness(1.05);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.4) inset,
+    0 14px 30px -12px rgba(124, 58, 237, 0.65);
+}
+
+/* Muted / secondary body text — bump legibility */
+html.site-light .text-muted-foreground {
+  color: oklch(0.38 0.02 265);
 }
 
 /*

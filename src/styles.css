@@ -90,61 +90,62 @@
   --paper: oklch(0.11 0.012 275);
   --ink: oklch(0.95 0.004 275);
 
-  --background: oklch(0.11 0.012 275);     /* #0e0f15 */
-  --foreground: oklch(0.95 0.004 275);     /* #f0f1f5 */
+  --background: oklch(0.22 0.025 265);     /* lifted navy */
+  --foreground: oklch(0.97 0.004 275);
 
-  --card: oklch(0.155 0.015 275);          /* #14161f */
-  --card-foreground: oklch(0.95 0.004 275);
-  --popover: oklch(0.155 0.015 275);
-  --popover-foreground: oklch(0.95 0.004 275);
+  --card: oklch(0.27 0.03 265);            /* elevated navy card */
+  --card-foreground: oklch(0.97 0.004 275);
+  --popover: oklch(0.27 0.03 265);
+  --popover-foreground: oklch(0.97 0.004 275);
 
   /* Primary = electric blue #418df1 (reference) */
-  --primary: oklch(0.66 0.17 254);
+  --primary: oklch(0.68 0.17 254);
   --primary-foreground: oklch(1 0 0);
 
-  --secondary: oklch(0.19 0.02 275);
-  --secondary-foreground: oklch(0.95 0.004 275);
+  --secondary: oklch(0.32 0.03 265);
+  --secondary-foreground: oklch(0.97 0.004 275);
 
-  --muted: oklch(0.19 0.02 275);
-  --muted-foreground: oklch(0.61 0.02 265); /* #7e859a */
+  --muted: oklch(0.32 0.03 265);
+  --muted-foreground: oklch(0.78 0.02 265);
 
-  --accent: oklch(0.66 0.17 254);          /* same blue accent */
+  --accent: oklch(0.68 0.17 254);
   --accent-foreground: oklch(1 0 0);
 
   --destructive: oklch(0.62 0.24 15);
   --destructive-foreground: oklch(1 0 0);
 
-  --border: oklch(1 0 0 / 0.07);           /* hairline white 7% */
-  --input: oklch(1 0 0 / 0.09);
-  --ring: oklch(0.66 0.17 254);
+  --border: oklch(1 0 0 / 0.12);
+  --input: oklch(1 0 0 / 0.14);
+  --ring: oklch(0.68 0.17 254);
 
   /* Semantic brand aliases — collapsed to the single-blue reference identity */
-  --violet: oklch(0.66 0.17 254);
-  --violet-soft: oklch(0.66 0.17 254 / 0.12);
-  --magenta: oklch(0.66 0.17 254);
-  --magenta-soft: oklch(0.66 0.17 254 / 0.10);
-  --coral: oklch(0.66 0.17 254);
-  --coral-soft: oklch(0.66 0.17 254 / 0.10);
+  --violet: oklch(0.68 0.17 254);
+  --violet-soft: oklch(0.68 0.17 254 / 0.14);
+  --magenta: oklch(0.68 0.17 254);
+  --magenta-soft: oklch(0.68 0.17 254 / 0.12);
+  --coral: oklch(0.68 0.17 254);
+  --coral-soft: oklch(0.68 0.17 254 / 0.12);
   --emerald: oklch(0.72 0.15 165);
   --emerald-soft: oklch(0.72 0.15 165 / 0.15);
   --amber: oklch(0.79 0.16 78);
   --amber-soft: oklch(0.79 0.16 78 / 0.15);
 
   /* Midnight palette kept as aliases so legacy .theme-midnight users still work */
-  --midnight: oklch(0.11 0.012 275);
-  --midnight-surface: oklch(0.155 0.015 275);
-  --midnight-elev: oklch(0.19 0.02 275);
-  --midnight-line: oklch(1 0 0 / 0.07);
-  --indigo: oklch(0.66 0.17 254);
-  --indigo-soft: oklch(0.66 0.17 254 / 0.14);
+  --midnight: oklch(0.22 0.025 265);
+  --midnight-surface: oklch(0.27 0.03 265);
+  --midnight-elev: oklch(0.32 0.03 265);
+  --midnight-line: oklch(1 0 0 / 0.12);
+  --indigo: oklch(0.68 0.17 254);
+  --indigo-soft: oklch(0.68 0.17 254 / 0.16);
 
   --neon-orange: oklch(0.78 0.2 55);
   --neon-orange-soft: oklch(0.78 0.2 55 / 0.18);
-  --neon-blue: oklch(0.66 0.17 254);
-  --neon-blue-soft: oklch(0.66 0.17 254 / 0.18);
+  --neon-blue: oklch(0.68 0.17 254);
+  --neon-blue-soft: oklch(0.68 0.17 254 / 0.18);
 
   color-scheme: dark;
 }
+
 
 
 

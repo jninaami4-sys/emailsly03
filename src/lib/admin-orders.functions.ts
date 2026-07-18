@@ -16,6 +16,7 @@ export const adminListOrders = createServerFn({ method: "GET" })
         status: z.string().optional(),
         search: z.string().optional(),
         limit: z.number().int().min(1).max(500).optional(),
+        view: z.enum(["active", "archived"]).optional(),
       })
       .parse(d ?? {}),
   )
@@ -24,10 +25,13 @@ export const adminListOrders = createServerFn({ method: "GET" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const sb = supabaseAdmin as any;
     let q = sb.from("orders").select("*").order("created_at", { ascending: false }).limit(data.limit ?? 200);
+    if (data.view === "archived") q = q.not("archived_at", "is", null);
+    else q = q.is("archived_at", null);
     if (data.status && data.status !== "all") q = q.eq("status", data.status);
     if (data.search) q = q.or(`email.ilike.%${data.search}%,service_label.ilike.%${data.search}%,promo_code.ilike.%${data.search}%`);
     const { data: rows, error } = await q;
     if (error) throw new Error(error.message);
+
     const list = (rows ?? []) as Array<Record<string, unknown> & { id: string; user_id: string | null }>;
     // Enrich with profile display name where available so the admin table can
     // show the customer's name (not just their email) and a stable short ID.
@@ -321,3 +325,65 @@ export const adminDeleteOrder = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { ok: true };
   });
+
+const idsSchema = z.object({ ids: z.array(z.string().uuid()).min(1).max(500) });
+
+export const adminArchiveOrders = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d) => idsSchema.parse(d))
+  .handler(async ({ context, data }) => {
+    assertAdmin((context.claims as { email?: string }).email);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const sb = supabaseAdmin as any;
+    const now = new Date().toISOString();
+    const { error } = await sb
+      .from("orders")
+      .update({ archived_at: now, archived_by: context.userId })
+      .in("id", data.ids);
+    if (error) throw new Error(error.message);
+    const events = data.ids.map((id) => ({
+      order_id: id,
+      actor_id: context.userId,
+      actor_role: "admin",
+      event_type: "archived",
+      message: "Order archived",
+    }));
+    await sb.from("order_events").insert(events);
+    return { ok: true, count: data.ids.length };
+  });
+
+export const adminRestoreOrders = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d) => idsSchema.parse(d))
+  .handler(async ({ context, data }) => {
+    assertAdmin((context.claims as { email?: string }).email);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const sb = supabaseAdmin as any;
+    const { error } = await sb
+      .from("orders")
+      .update({ archived_at: null, archived_by: null })
+      .in("id", data.ids);
+    if (error) throw new Error(error.message);
+    const events = data.ids.map((id) => ({
+      order_id: id,
+      actor_id: context.userId,
+      actor_role: "admin",
+      event_type: "restored",
+      message: "Order restored from archive",
+    }));
+    await sb.from("order_events").insert(events);
+    return { ok: true, count: data.ids.length };
+  });
+
+export const adminDeleteOrders = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d) => idsSchema.parse(d))
+  .handler(async ({ context, data }) => {
+    assertAdmin((context.claims as { email?: string }).email);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const sb = supabaseAdmin as any;
+    const { error } = await sb.from("orders").delete().in("id", data.ids);
+    if (error) throw new Error(error.message);
+    return { ok: true, count: data.ids.length };
+  });
+

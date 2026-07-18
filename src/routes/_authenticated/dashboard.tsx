@@ -17,6 +17,7 @@ import { openOrderDrawer } from "@/components/site/OrderDrawer";
 import { Loader2, Download, Package, User as UserIcon, Receipt, RotateCcw, ExternalLink, ShoppingBag, PackageSearch, MessageCircle, BookOpen, Zap, TrendingUp, CheckCircle2, Clock, Wallet, ArrowUpRight, Copy, Gift, Headphones, ChevronRight, Search, Camera, Trash2, LifeBuoy } from "lucide-react";
 import { PremiumSparkles as Sparkles } from "@/components/site/PremiumIcons";
 import { supabase } from "@/integrations/supabase/client";
+import { uploadsApi } from "@/lib/api-client";
 import { compressImage } from "@/lib/image-compress";
 import { AvatarCropDialog } from "@/components/site/AvatarCropDialog";
 import { ShareExperienceCTA } from "@/components/site/ShareExperienceCTA";

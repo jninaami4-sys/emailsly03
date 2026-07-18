@@ -557,7 +557,7 @@ html.site-light select:disabled {
 }
 
 /* Placeholders — default browser placeholder is too pale on pearl. */
-html.site-light ::placeholder { color: #8a6a4a; opacity: 1; }
+html.site-light ::placeholder { color: #6b4a2a; opacity: 1; }
 
 /* ─────────────────────────────────────────────────────────────────────
  * Ivory & Ember — component polish
@@ -570,7 +570,7 @@ html.site-light .theme-midnight .bg-secondary,
 html.site-light .bg-secondary {
   background-image: linear-gradient(180deg, #fffaf1 0%, #f5ead6 100%);
   color: #4a2410;
-  border: 1px solid rgba(120, 53, 15, 0.14);
+  border: 1px solid rgba(120, 53, 15, 0.22);
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.9) inset,
     0 1px 2px rgba(120, 53, 15, 0.05);
@@ -587,7 +587,7 @@ html.site-light button[data-variant="outline"],
 html.site-light .theme-midnight .border-input,
 html.site-light .border-input {
   background-color: rgba(255, 252, 246, 0.85);
-  border-color: rgba(120, 53, 15, 0.18);
+  border-color: rgba(120, 53, 15, 0.32);
   color: #4a2410;
 }
 html.site-light .theme-midnight button[data-variant="outline"]:hover,
@@ -610,7 +610,7 @@ html.site-light [role="listbox"],
 html.site-light [data-sonner-toaster] [data-sonner-toast] {
   background-color: rgba(255, 252, 246, 0.88);
   color: #2b1810;
-  border: 1px solid rgba(120, 53, 15, 0.14);
+  border: 1px solid rgba(120, 53, 15, 0.22);
   backdrop-filter: blur(18px) saturate(140%);
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.9) inset,
@@ -632,7 +632,7 @@ html.site-light [role="dialog"],
 html.site-light [role="alertdialog"] {
   background-color: rgba(255, 252, 246, 0.92);
   color: #2b1810;
-  border: 1px solid rgba(120, 53, 15, 0.14);
+  border: 1px solid rgba(120, 53, 15, 0.24);
   backdrop-filter: blur(22px) saturate(140%);
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.95) inset,

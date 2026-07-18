@@ -67,7 +67,7 @@ function DashboardPage() {
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0,var(--background)_75%)]" />
         </div>
 
-        <main className="mx-auto max-w-7xl px-4 pb-24 pt-6 sm:px-6 sm:pt-10 lg:px-8">
+        <main className="mx-auto max-w-7xl overflow-x-hidden px-4 pb-24 pt-6 sm:px-6 sm:pt-10 lg:px-8">
           {/* Greeting header */}
           <section className="mb-6 flex flex-col gap-5 sm:mb-8 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex min-w-0 items-start gap-3 sm:items-center sm:gap-4">
@@ -198,8 +198,8 @@ function DashboardPage() {
           <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
             <div>
               {/* Tabs */}
-              <div className="mb-4 -mx-4 overflow-x-auto px-4 sm:mx-0 sm:overflow-visible sm:px-0 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-                <div className="flex min-w-max gap-1 rounded-2xl border border-border bg-card p-1 sm:grid sm:min-w-0 sm:grid-cols-5">
+              <div className="mb-4">
+                <div className="grid grid-cols-5 gap-1 rounded-2xl border border-border bg-card p-1">
                   <TabBtn active={tab === "orders"} onClick={() => setTab("orders")} icon={<Package className="size-4" />}>
                     Orders
                   </TabBtn>
@@ -383,17 +383,17 @@ function TabBtn({
   return (
     <button
       onClick={onClick}
-      className={`inline-flex items-center justify-center gap-2 rounded-xl px-3 py-2.5 text-sm font-semibold transition-all ${
+      className={`relative inline-flex flex-col items-center justify-center gap-1 rounded-xl px-1.5 py-2 text-[11px] font-semibold transition-all sm:flex-row sm:gap-2 sm:px-3 sm:py-2.5 sm:text-sm ${
         active
           ? "bg-gradient-to-r from-violet to-indigo text-white shadow-md shadow-violet/20"
           : "text-muted-foreground hover:bg-secondary hover:text-foreground"
       }`}
     >
       {icon}
-      <span>{children}</span>
+      <span className="leading-none">{children}</span>
       {count ? (
         <span
-          className={`grid min-w-4 place-items-center rounded-full px-1.5 py-0 font-mono text-[10px] font-bold ${
+          className={`absolute -right-0.5 -top-0.5 grid min-w-4 place-items-center rounded-full px-1 py-0 font-mono text-[9px] font-bold sm:static sm:px-1.5 sm:text-[10px] ${
             active ? "bg-white/25 text-white" : "bg-violet/15 text-violet"
           }`}
         >
@@ -444,20 +444,18 @@ function OrdersTab({ orders, loading }: { orders: any[]; loading: boolean }) {
             className="w-full rounded-xl border border-border bg-card py-2 pl-9 pr-3 text-sm focus:border-violet focus:outline-none"
           />
         </div>
-        <div className="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          <div className="flex min-w-max gap-1 rounded-xl border border-border bg-card p-1">
-            {(["all", "pending", "in_progress", "delivered", "revision_requested"] as const).map((s) => (
-              <button
-                key={s}
-                onClick={() => setFilter(s)}
-                className={`whitespace-nowrap rounded-lg px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-wider transition-colors ${
-                  filter === s ? "bg-violet text-white" : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                {s.replace("_", " ")}
-              </button>
-            ))}
-          </div>
+        <div className="flex flex-wrap gap-1 rounded-xl border border-border bg-card p-1">
+          {(["all", "pending", "in_progress", "delivered", "revision_requested"] as const).map((s) => (
+            <button
+              key={s}
+              onClick={() => setFilter(s)}
+              className={`whitespace-nowrap rounded-lg px-2.5 py-1.5 font-mono text-[10px] font-bold uppercase tracking-wider transition-colors ${
+                filter === s ? "bg-violet text-white" : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {s.replace("_", " ")}
+            </button>
+          ))}
         </div>
       </div>
 

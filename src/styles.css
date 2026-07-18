@@ -553,7 +553,147 @@ html.site-light select:disabled {
 }
 
 /* Placeholders — default browser placeholder is too pale on pearl. */
-html.site-light ::placeholder { color: #64748b; opacity: 1; }
+html.site-light ::placeholder { color: #8a6a4a; opacity: 1; }
+
+/* ─────────────────────────────────────────────────────────────────────
+ * Ivory & Ember — component polish
+ * Warm editorial glass, hairline copper borders, and consistent ambient
+ * shadows across buttons, inputs, dropdowns, modals, cards, and navbar.
+ * ────────────────────────────────────────────────────────────────────*/
+
+/* Secondary / outline / ghost buttons — warm ivory chip with copper hairline */
+html.site-light .theme-midnight .bg-secondary,
+html.site-light .bg-secondary {
+  background-image: linear-gradient(180deg, #fffaf1 0%, #f5ead6 100%);
+  color: #4a2410;
+  border: 1px solid rgba(120, 53, 15, 0.14);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 1px 2px rgba(120, 53, 15, 0.05);
+}
+html.site-light .theme-midnight .bg-secondary:hover,
+html.site-light .bg-secondary:hover {
+  border-color: rgba(201, 90, 74, 0.35);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.95) inset,
+    0 6px 16px -10px rgba(201, 90, 74, 0.35);
+}
+html.site-light .theme-midnight button[data-variant="outline"],
+html.site-light button[data-variant="outline"],
+html.site-light .theme-midnight .border-input,
+html.site-light .border-input {
+  background-color: rgba(255, 252, 246, 0.85);
+  border-color: rgba(120, 53, 15, 0.18);
+  color: #4a2410;
+}
+html.site-light .theme-midnight button[data-variant="outline"]:hover,
+html.site-light button[data-variant="outline"]:hover {
+  background-color: rgba(255, 246, 232, 0.95);
+  border-color: rgba(201, 90, 74, 0.45);
+  color: #7c2d12;
+}
+html.site-light .theme-midnight button[data-variant="ghost"]:hover,
+html.site-light button[data-variant="ghost"]:hover {
+  background-color: rgba(201, 90, 74, 0.08);
+  color: #7c2d12;
+}
+
+/* Dropdowns / menus / listboxes / popovers — warm ivory glass */
+html.site-light [data-radix-popper-content-wrapper] > *,
+html.site-light [data-popover],
+html.site-light [role="menu"],
+html.site-light [role="listbox"],
+html.site-light [data-sonner-toaster] [data-sonner-toast] {
+  background-color: rgba(255, 252, 246, 0.88);
+  color: #2b1810;
+  border: 1px solid rgba(120, 53, 15, 0.14);
+  backdrop-filter: blur(18px) saturate(140%);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 12px 28px -14px rgba(120, 53, 15, 0.20),
+    0 30px 60px -30px rgba(201, 90, 74, 0.22);
+  border-radius: 12px;
+}
+html.site-light [role="menu"] [role="menuitem"]:hover,
+html.site-light [role="menu"] [role="menuitem"][data-highlighted],
+html.site-light [role="listbox"] [role="option"]:hover,
+html.site-light [role="listbox"] [role="option"][data-highlighted],
+html.site-light [role="option"][data-state="checked"] {
+  background-color: rgba(201, 90, 74, 0.10);
+  color: #7c2d12;
+}
+
+/* Modals / dialogs — elevated ivory paper with copper glow */
+html.site-light [role="dialog"],
+html.site-light [role="alertdialog"] {
+  background-color: rgba(255, 252, 246, 0.92);
+  color: #2b1810;
+  border: 1px solid rgba(120, 53, 15, 0.14);
+  backdrop-filter: blur(22px) saturate(140%);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.95) inset,
+    0 20px 50px -20px rgba(120, 53, 15, 0.28),
+    0 50px 100px -40px rgba(201, 90, 74, 0.30);
+  border-radius: 16px;
+}
+html.site-light [data-radix-dialog-overlay],
+html.site-light [data-state="open"][class*="overlay"] {
+  background-color: rgba(43, 24, 16, 0.35);
+  backdrop-filter: blur(4px);
+}
+
+/* Card border refinement — subtle warm hairline + rounded editorial feel */
+html.site-light .theme-midnight .card,
+html.site-light .theme-midnight [data-card],
+html.site-light .bg-card {
+  border-radius: 14px;
+}
+
+/* Navbar / header — warm frosted ivory with copper hairline underline */
+html.site-light header,
+html.site-light [data-site-header],
+html.site-light nav[aria-label*="primary" i],
+html.site-light nav[aria-label*="main" i] {
+  background-color: rgba(250, 246, 239, 0.72);
+  border-bottom: 1px solid rgba(120, 53, 15, 0.10);
+  backdrop-filter: blur(16px) saturate(140%);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.7) inset;
+}
+html.site-light header a:not([class*="bg-"]):not(.btn),
+html.site-light nav a:not([class*="bg-"]):not(.btn) {
+  color: #4a2410;
+  text-decoration: none;
+}
+html.site-light header a:hover,
+html.site-light nav a:hover { color: #c95a4a; }
+html.site-light header a[aria-current="page"],
+html.site-light nav a[aria-current="page"] {
+  color: #7c2d12;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 6px;
+  text-decoration-color: #c95a4a;
+}
+
+/* Fallback when backdrop-filter is unavailable — keep warm surfaces solid */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  html.site-light header,
+  html.site-light [data-site-header],
+  html.site-light nav[aria-label*="primary" i],
+  html.site-light nav[aria-label*="main" i] {
+    background-color: #faf6ef;
+  }
+  html.site-light [role="dialog"],
+  html.site-light [role="alertdialog"],
+  html.site-light [role="menu"],
+  html.site-light [role="listbox"],
+  html.site-light [data-popover],
+  html.site-light [data-radix-popper-content-wrapper] > * {
+    background-color: #fffdf7 !important;
+  }
+}
+
+
 
 
 

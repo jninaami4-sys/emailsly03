@@ -1,12 +1,8 @@
 import { createServerFn } from "@tanstack/react-start";
+import { requireAdmin } from "@/lib/require-admin";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-function assertAdmin(email: string | undefined | null) {
-  const admin = (process.env.ADMIN_EMAIL || "").trim().toLowerCase();
-  if (!admin) throw new Error("ADMIN_EMAIL is not configured");
-  if (!email || email.trim().toLowerCase() !== admin && email.trim().toLowerCase() !== "demo@emailsly.app") throw new Error("Forbidden: admin only");
-}
 
 export type AdminReferralOrder = {
   id: string;
@@ -52,7 +48,7 @@ export const adminListReferrals = createServerFn({ method: "GET" })
       .parse(d ?? {}),
   )
   .handler(async ({ context, data }): Promise<AdminReferralRow[]> => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const sb = supabaseAdmin as any;
 
@@ -128,7 +124,7 @@ export const adminListReferrals = createServerFn({ method: "GET" })
 export const adminReferralStats = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const sb = supabaseAdmin as any;
     const { data, error } = await sb
@@ -171,7 +167,7 @@ export const adminUpdateReferralStatus = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ context, data }) => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const sb = supabaseAdmin as any;
     const patch: Record<string, unknown> = { status: data.status };
@@ -188,7 +184,7 @@ export const adminApproveReferral = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d) => z.object({ id: z.string().uuid(), notes: z.string().max(2000).optional() }).parse(d))
   .handler(async ({ context, data }) => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const sb = supabaseAdmin as any;
     const patch: Record<string, unknown> = { admin_review_state: "approved" };
@@ -203,7 +199,7 @@ export const adminRejectReferral = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d) => z.object({ id: z.string().uuid(), notes: z.string().max(2000).optional() }).parse(d))
   .handler(async ({ context, data }) => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const sb = supabaseAdmin as any;
     const patch: Record<string, unknown> = { admin_review_state: "rejected", status: "cancelled" };
@@ -241,7 +237,7 @@ export const adminReferrerChain = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d) => z.object({ referrer_id: z.string().uuid() }).parse(d))
   .handler(async ({ context, data }): Promise<ReferrerChain> => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const sb = supabaseAdmin as any;
 
@@ -319,7 +315,7 @@ export const adminReferralFunnel = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d) => z.object({ days: z.number().int().min(1).max(365).default(30) }).parse(d ?? { days: 30 }))
   .handler(async ({ context, data }) => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const sb = supabaseAdmin as any;
     const since = new Date(Date.now() - data.days * 864e5).toISOString();
@@ -355,7 +351,7 @@ export const adminReferralLeaderboard = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d) => z.object({ limit: z.number().int().min(1).max(50).default(10) }).parse(d ?? { limit: 10 }))
   .handler(async ({ context, data }) => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const sb = supabaseAdmin as any;
     const { data: credits } = await sb
@@ -410,7 +406,7 @@ export const adminMarkCreditsPaidOut = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ context, data }) => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const sb = supabaseAdmin as any;
     // Pull unpaid, positive earned credits for these users
@@ -447,7 +443,7 @@ export const adminMarkCreditsPaidOut = createServerFn({ method: "POST" })
 export const adminExportOwedCsv = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    assertAdmin((context.claims as { email?: string }).email);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const sb = supabaseAdmin as any;
     const { data: credits, error } = await sb

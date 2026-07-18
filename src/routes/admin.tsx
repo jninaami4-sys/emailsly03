@@ -440,8 +440,10 @@ function AdminPage() {
         groups={groups}
         onNavigate={setActiveId}
       />
+      <ApiDiagnosticsDrawer />
     </>
   );
+
 }
 
 function DropZone({ onFile }: { onFile: (file: File) => void }) {

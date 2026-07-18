@@ -23,7 +23,7 @@ export const ADD_ONS: AddOn[] = [
     id: "mobile",
     name: "Apollo Mobiles",
     icon: Smartphone,
-    price: "$0.35/record",
+    price: "$0.15/record",
     desc: "Mobile number enrichment for existing lists.",
   },
   {

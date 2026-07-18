@@ -33,7 +33,7 @@ INSERT INTO pricing_settings (id, service_id, name, category, rate, min_qty, min
   (UUID(), 'linkedin-leads',   'LinkedIn Sales Nav Leads', 'leads',     0.0500, 500,  25, 'Sales Nav filtered',   'USD', 1, 2),
   (UUID(), 'zoominfo-leads',   'ZoomInfo Enriched Leads',  'leads',     0.0800, 500,  40, 'Full enrichment',      'USD', 1, 3),
   (UUID(), 'email-verify',     'Email Verification',       'quality',   0.0040, 1000, 4,  'Bounce-safe',          'USD', 1, 4),
-  (UUID(), 'phone-append',     'Apollo Mobile Numbers',    'quality',   0.2500, 100,  25, 'Mobile + direct',      'USD', 1, 5),
+  (UUID(), 'phone-append',     'Apollo Mobile Numbers',    'quality',   0.1500, 100,  25, 'Mobile + direct',      'USD', 1, 5),
   (UUID(), 'icp-research',     'ICP Research Package',     'strategy',  199.00,   1, 199, 'Done-for-you',         'USD', 1, 6),
   (UUID(), 'cold-email-setup', 'Cold Email Infra Setup',   'infra',     299.00,   1, 299, 'DKIM + DMARC + warmup','USD', 1, 7),
   (UUID(), 'copywriting',      'Cold Email Copywriting',   'copy',      149.00,   1, 149, '3 sequences',          'USD', 1, 8),

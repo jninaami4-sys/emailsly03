@@ -18,7 +18,7 @@ export const SERVICES: PriceService[] = [
   { id: "zoominfo", name: "ZoomInfo Data", rate: 0.02, minQty: 1000, minOrder: 20, unit: "lead" },
   { id: "linkedin", name: "LinkedIn B2B", rate: 0.01, minQty: 5000, minOrder: 50, unit: "lead", helper: "~70% include emails" },
   { id: "manual", name: "Manual Research", rate: 0.35, minQty: 100, minOrder: 35, unit: "lead" },
-  { id: "mobile", name: "Apollo Mobile Numbers", rate: 0.25, minQty: 100, minOrder: 25, unit: "record" },
+  { id: "mobile", name: "Apollo Mobile Numbers", rate: 0.15, minQty: 100, minOrder: 25, unit: "record" },
   { id: "pixel", name: "Facebook Pixel Setup", rate: 100, minQty: 1, minOrder: 100, unit: "setup", fixed: true },
   { id: "ads", name: "Google Ads Setup", rate: 100, minQty: 1, minOrder: 100, unit: "setup", fixed: true },
   { id: "tracking", name: "Server-Side Tracking", rate: 150, minQty: 1, minOrder: 150, unit: "setup", fixed: true },

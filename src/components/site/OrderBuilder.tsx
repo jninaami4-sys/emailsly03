@@ -595,7 +595,7 @@ export function OrderBuilder() {
                           className="grid size-11 place-items-center rounded-xl text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
                           aria-label="Increase"
                         >
-                          <PremiumPremiumPlus className="size-5" />
+                          <PremiumPlus className="size-5" />
                         </button>
                       </div>
                     </div>

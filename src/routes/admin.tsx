@@ -393,7 +393,12 @@ function AdminPage() {
     overview: <AdminDashboard groups={groups} onSelect={setActiveId} userEmail={user?.email} />,
     orders: <OrdersAdmin />,
     pricing: <PricingAdmin />,
-    stripe: <StripeEventsAdmin />,
+    stripe: (
+      <div className="space-y-6">
+        <StripeWebhookDeliveriesAdmin />
+        <StripeEventsAdmin />
+      </div>
+    ),
     referrals: <ReferralsAdmin />,
     "site-content": <SiteContentAdmin />,
     brand: <BrandSettingsAdmin />,

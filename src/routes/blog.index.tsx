@@ -8,7 +8,7 @@ import { listPublishedBlogPosts } from "@/lib/blog-cms.functions";
 import { ArrowRight } from "lucide-react";
 import { PremiumSparkles as Sparkles } from "@/components/site/PremiumIcons";
 
-export const Route = createFileRoute("/blog")({
+export const Route = createFileRoute("/blog/")({
   head: ({ matches }) => ({
     meta: [
       { title: "Blog — Outbound, data, and RevOps playbooks | EmailsLy" },

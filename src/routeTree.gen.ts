@@ -30,13 +30,13 @@ import { Route as LoadingRouteImport } from './routes/loading'
 import { Route as LinkedinSalesNavigatorLeadsRouteImport } from './routes/linkedin-sales-navigator-leads'
 import { Route as ImportPreviewRouteImport } from './routes/import-preview'
 import { Route as ContactRouteImport } from './routes/contact'
-import { Route as BlogRouteImport } from './routes/blog'
 import { Route as ApolloLeadsExportRouteImport } from './routes/apollo-leads-export'
 import { Route as AdminLoginRouteImport } from './routes/admin-login'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
@@ -155,11 +155,6 @@ const ContactRoute = ContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BlogRoute = BlogRouteImport.update({
-  id: '/blog',
-  path: '/blog',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ApolloLeadsExportRoute = ApolloLeadsExportRouteImport.update({
   id: '/apollo-leads-export',
   path: '/apollo-leads-export',
@@ -189,10 +184,15 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BlogIndexRoute = BlogIndexRouteImport.update({
+  id: '/blog/',
+  path: '/blog/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BlogSlugRoute = BlogSlugRouteImport.update({
-  id: '/$slug',
-  path: '/$slug',
-  getParentRoute: () => BlogRoute,
+  id: '/blog/$slug',
+  path: '/blog/$slug',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
@@ -256,7 +256,6 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRoute
   '/admin-login': typeof AdminLoginRoute
   '/apollo-leads-export': typeof ApolloLeadsExportRoute
-  '/blog': typeof BlogRouteWithChildren
   '/contact': typeof ContactRoute
   '/import-preview': typeof ImportPreviewRoute
   '/linkedin-sales-navigator-leads': typeof LinkedinSalesNavigatorLeadsRoute
@@ -282,6 +281,7 @@ export interface FileRoutesByFullPath {
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/blog/': typeof BlogIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/invoice/$orderId': typeof AuthenticatedInvoiceOrderIdRoute
@@ -296,7 +296,6 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminRoute
   '/admin-login': typeof AdminLoginRoute
   '/apollo-leads-export': typeof ApolloLeadsExportRoute
-  '/blog': typeof BlogRouteWithChildren
   '/contact': typeof ContactRoute
   '/import-preview': typeof ImportPreviewRoute
   '/linkedin-sales-navigator-leads': typeof LinkedinSalesNavigatorLeadsRoute
@@ -322,6 +321,7 @@ export interface FileRoutesByTo {
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/blog': typeof BlogIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/invoice/$orderId': typeof AuthenticatedInvoiceOrderIdRoute
@@ -338,7 +338,6 @@ export interface FileRoutesById {
   '/admin': typeof AdminRoute
   '/admin-login': typeof AdminLoginRoute
   '/apollo-leads-export': typeof ApolloLeadsExportRoute
-  '/blog': typeof BlogRouteWithChildren
   '/contact': typeof ContactRoute
   '/import-preview': typeof ImportPreviewRoute
   '/linkedin-sales-navigator-leads': typeof LinkedinSalesNavigatorLeadsRoute
@@ -364,6 +363,7 @@ export interface FileRoutesById {
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/blog/': typeof BlogIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/_authenticated/invoice/$orderId': typeof AuthenticatedInvoiceOrderIdRoute
@@ -380,7 +380,6 @@ export interface FileRouteTypes {
     | '/admin'
     | '/admin-login'
     | '/apollo-leads-export'
-    | '/blog'
     | '/contact'
     | '/import-preview'
     | '/linkedin-sales-navigator-leads'
@@ -406,6 +405,7 @@ export interface FileRouteTypes {
     | '/.well-known/oauth-protected-resource'
     | '/dashboard'
     | '/blog/$slug'
+    | '/blog/'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/invoice/$orderId'
@@ -420,7 +420,6 @@ export interface FileRouteTypes {
     | '/admin'
     | '/admin-login'
     | '/apollo-leads-export'
-    | '/blog'
     | '/contact'
     | '/import-preview'
     | '/linkedin-sales-navigator-leads'
@@ -446,6 +445,7 @@ export interface FileRouteTypes {
     | '/.well-known/oauth-protected-resource'
     | '/dashboard'
     | '/blog/$slug'
+    | '/blog'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/invoice/$orderId'
@@ -461,7 +461,6 @@ export interface FileRouteTypes {
     | '/admin'
     | '/admin-login'
     | '/apollo-leads-export'
-    | '/blog'
     | '/contact'
     | '/import-preview'
     | '/linkedin-sales-navigator-leads'
@@ -487,6 +486,7 @@ export interface FileRouteTypes {
     | '/.well-known/oauth-protected-resource'
     | '/_authenticated/dashboard'
     | '/blog/$slug'
+    | '/blog/'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/_authenticated/invoice/$orderId'
@@ -503,7 +503,6 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRoute
   AdminLoginRoute: typeof AdminLoginRoute
   ApolloLeadsExportRoute: typeof ApolloLeadsExportRoute
-  BlogRoute: typeof BlogRouteWithChildren
   ContactRoute: typeof ContactRoute
   ImportPreviewRoute: typeof ImportPreviewRoute
   LinkedinSalesNavigatorLeadsRoute: typeof LinkedinSalesNavigatorLeadsRoute
@@ -527,6 +526,8 @@ export interface RootRouteChildren {
   ZoominfoLeadsRoute: typeof ZoominfoLeadsRoute
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  BlogSlugRoute: typeof BlogSlugRoute
+  BlogIndexRoute: typeof BlogIndexRoute
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
   ApiPublicReferralClickRoute: typeof ApiPublicReferralClickRoute
@@ -684,13 +685,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/blog': {
-      id: '/blog'
-      path: '/blog'
-      fullPath: '/blog'
-      preLoaderRoute: typeof BlogRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/apollo-leads-export': {
       id: '/apollo-leads-export'
       path: '/apollo-leads-export'
@@ -733,12 +727,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/blog/': {
+      id: '/blog/'
+      path: '/blog'
+      fullPath: '/blog/'
+      preLoaderRoute: typeof BlogIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/blog/$slug': {
       id: '/blog/$slug'
-      path: '/$slug'
+      path: '/blog/$slug'
       fullPath: '/blog/$slug'
       preLoaderRoute: typeof BlogSlugRouteImport
-      parentRoute: typeof BlogRoute
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
@@ -826,16 +827,6 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
-interface BlogRouteChildren {
-  BlogSlugRoute: typeof BlogSlugRoute
-}
-
-const BlogRouteChildren: BlogRouteChildren = {
-  BlogSlugRoute: BlogSlugRoute,
-}
-
-const BlogRouteWithChildren = BlogRoute._addFileChildren(BlogRouteChildren)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
@@ -843,7 +834,6 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRoute,
   AdminLoginRoute: AdminLoginRoute,
   ApolloLeadsExportRoute: ApolloLeadsExportRoute,
-  BlogRoute: BlogRouteWithChildren,
   ContactRoute: ContactRoute,
   ImportPreviewRoute: ImportPreviewRoute,
   LinkedinSalesNavigatorLeadsRoute: LinkedinSalesNavigatorLeadsRoute,
@@ -868,6 +858,8 @@ const rootRouteChildren: RootRouteChildren = {
   Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
+  BlogSlugRoute: BlogSlugRoute,
+  BlogIndexRoute: BlogIndexRoute,
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
   ApiPublicReferralClickRoute: ApiPublicReferralClickRoute,

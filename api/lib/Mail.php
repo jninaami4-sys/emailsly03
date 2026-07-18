@@ -42,7 +42,7 @@ final class Mail
         );
     }
 
-    private static function sendSmtp(string $to, string $subject, string $html, ?string $text): void
+    private static function sendSmtp(string $to, string $subject, string $html, ?string $text, string $kind = 'auth'): void
     {
         $secure = defined('SMTP_SECURE') ? SMTP_SECURE : '';
         $host = ($secure === 'ssl') ? 'ssl://' . SMTP_HOST : SMTP_HOST;

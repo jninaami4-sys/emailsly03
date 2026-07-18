@@ -297,16 +297,17 @@ html.site-light .admin-theme {
   .theme-toggle__circle { transition: none !important; }
 }
 
-/* Ambient background — soft indigo/teal aurora over pearl. Single hue
- * family means blend zones stay clean instead of turning gray/brown. */
+/* Ambient background — warm ivory paper with subtle rose/copper glow and
+ * a faint grain pattern for editorial texture. Different personality from
+ * the dark theme's cool aurora. */
 html.site-light body {
-  background-color: #f7faff;
+  background-color: #faf6ef;
   background-image:
-    radial-gradient(60rem 42rem at 88% -10%, rgba(59, 91, 219, 0.14), transparent 60%),
-    radial-gradient(55rem 40rem at -8% 12%, rgba(20, 184, 166, 0.13), transparent 62%),
-    radial-gradient(48rem 34rem at 50% 115%, rgba(129, 140, 248, 0.10), transparent 60%),
-    radial-gradient(rgba(30, 41, 59, 0.045) 1px, transparent 1px),
-    linear-gradient(180deg, #f7faff 0%, #eef3fb 100%);
+    radial-gradient(58rem 40rem at 92% -8%, rgba(201, 90, 74, 0.14), transparent 60%),
+    radial-gradient(52rem 38rem at -6% 14%, rgba(217, 168, 106, 0.16), transparent 62%),
+    radial-gradient(46rem 32rem at 50% 118%, rgba(180, 83, 9, 0.08), transparent 60%),
+    radial-gradient(rgba(120, 53, 15, 0.05) 1px, transparent 1px),
+    linear-gradient(180deg, #faf6ef 0%, #f3ebdc 100%);
   background-size: auto, auto, auto, 22px 22px, auto;
   background-attachment: fixed, fixed, fixed, fixed, fixed;
   background-repeat: no-repeat, no-repeat, no-repeat, repeat, no-repeat;
@@ -318,7 +319,7 @@ html.site-light body::before {
   pointer-events: none;
   z-index: 0;
   background:
-    linear-gradient(180deg, rgba(255,255,255,0.55) 0%, transparent 22%, transparent 78%, rgba(255,255,255,0.7) 100%);
+    linear-gradient(180deg, rgba(255, 250, 240, 0.5) 0%, transparent 22%, transparent 78%, rgba(255, 250, 240, 0.7) 100%);
 }
 
 html.site-light .theme-midnight h1,

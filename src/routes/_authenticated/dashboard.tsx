@@ -67,7 +67,7 @@ function DashboardPage() {
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0,var(--background)_75%)]" />
         </div>
 
-        <main className="mx-auto max-w-7xl px-4 pb-24 pt-6 sm:px-6 sm:pt-10 lg:px-8">
+        <main className="mx-auto max-w-7xl overflow-x-hidden px-4 pb-24 pt-6 sm:px-6 sm:pt-10 lg:px-8">
           {/* Greeting header */}
           <section className="mb-6 flex flex-col gap-5 sm:mb-8 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex min-w-0 items-start gap-3 sm:items-center sm:gap-4">

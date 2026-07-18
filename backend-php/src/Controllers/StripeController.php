@@ -52,26 +52,39 @@ final class StripeController
         $sig = $_SERVER['HTTP_STRIPE_SIGNATURE'] ?? '';
         $secret = $_ENV['STRIPE_WEBHOOK_SECRET'] ?? '';
         $tolerance = (int)($_ENV['STRIPE_WEBHOOK_TOLERANCE'] ?? 300);
-        if (!$this->verifyStripeSig($raw, $sig, $secret, $tolerance)) {
-            Response::unauthorized('Bad signature');
-        }
-        $ev = json_decode($raw, true);
-        if (!$ev || !isset($ev['id'])) Response::error('Bad payload');
 
-        // Idempotency — first insert wins; duplicates return 200 so Stripe stops retrying.
+        // Misconfiguration → 500 so Stripe retries after ops fixes the secret.
+        if ($secret === '') {
+            error_log('[stripe-webhook] STRIPE_WEBHOOK_SECRET not configured');
+            Response::error('Webhook secret not configured', 500);
+        }
+        // Missing/invalid signature → 400 so Stripe does NOT retry (permanent client error).
+        if ($sig === '' || !$this->verifyStripeSig($raw, $sig, $secret, $tolerance)) {
+            error_log('[stripe-webhook] signature verification failed');
+            Response::error('Invalid signature', 400);
+        }
+
+        $ev = json_decode($raw, true);
+        if (!is_array($ev) || !isset($ev['id'], $ev['type'])) {
+            Response::error('Malformed event payload', 400);
+        }
+
+        // Idempotency — first insert wins; duplicates ack with 200 so Stripe stops retrying.
         try {
             Database::pdo()->prepare('INSERT INTO stripe_events (id,type,payload) VALUES (?,?,?)')
-                ->execute([$ev['id'], $ev['type'] ?? '', $raw]);
-        } catch (\PDOException) { Response::json(['ok' => true, 'dup' => true]); return; }
+                ->execute([$ev['id'], $ev['type'], $raw]);
+        } catch (\PDOException) {
+            Response::json(['received' => true, 'duplicate' => true], 200);
+        }
 
         try {
             $this->handleEvent($ev);
         } catch (\Throwable $e) {
-            error_log('[stripe-webhook] ' . $e->getMessage());
+            // Transient/internal handler failure → 500 so Stripe retries with backoff.
+            error_log('[stripe-webhook] handler failure for ' . ($ev['id'] ?? '?') . ': ' . $e->getMessage());
             Response::error('Handler failure', 500);
-            return;
         }
-        Response::json(['ok' => true]);
+        Response::json(['received' => true], 200);
     }
 
     /** Route Stripe events to order status updates. */

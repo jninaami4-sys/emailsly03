@@ -788,5 +788,14 @@ export default {
   socialLinks: socialLinksApi,
   adminSocialLinks: adminSocialLinksApi,
   stripe: stripeApi,
+  adminReferrals: adminReferralsApi,
+  adminStripe: adminStripeApi,
+  conversionEvents: conversionEventsApi,
+  adminConversionEvents: adminConversionEventsApi,
+  adminServerTracking: adminServerTrackingApi,
+  adminPortability: adminPortabilityApi,
+  sampleDatasets: sampleDatasetsApi,
+  adminSampleDatasets: adminSampleDatasetsApi,
+  drive: driveApi,
 };
 

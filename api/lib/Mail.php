@@ -73,8 +73,9 @@ final class Mail
             $cmd(base64_encode(SMTP_USER));
             $cmd(base64_encode(SMTP_PASS));
         }
-        $from = SMTP_FROM;
+        $from = self::resolveFrom($kind);
         $fromName = defined('SMTP_FROM_NAME') ? SMTP_FROM_NAME : $from;
+
         $cmd("MAIL FROM: <$from>");
         $cmd("RCPT TO: <$to>");
         $cmd('DATA');

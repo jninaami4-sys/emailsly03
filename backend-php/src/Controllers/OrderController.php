@@ -51,6 +51,7 @@ final class OrderController
             'customer_email' => $customerEmail,
             'customer_name' => $customerName,
             'notes' => $b['notes'] ?? null,
+            'items' => $b['metadata']['items'] ?? null,
         ]);
         Response::json(['id' => $id]);
     }

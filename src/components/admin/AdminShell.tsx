@@ -121,18 +121,19 @@ export function AdminShell({
           <div className="flex items-center justify-between border-b border-border px-5 py-4">
             <Link
               to="/admin"
-              className="flex items-center gap-2.5"
+              className="flex items-center gap-3"
               onClick={() => selectItem("overview")}
             >
-              <div className="flex size-8 items-center justify-center rounded-lg bg-primary/10 ring-1 ring-primary/25">
-                <Sparkles className="size-4 text-primary" />
-              </div>
-              <div>
-                <p className="font-display text-sm font-black leading-none text-foreground">Emailsly</p>
-                <p className="mt-1 font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-muted-foreground">
-                  Control Deck
-                </p>
-              </div>
+              <img
+                src={logoAsset.url}
+                alt="Emailsly"
+                className="h-8 w-auto"
+                width={128}
+                height={32}
+              />
+              <span className="rounded-md border border-border bg-secondary px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-muted-foreground">
+                Admin
+              </span>
             </Link>
             <button
               type="button"

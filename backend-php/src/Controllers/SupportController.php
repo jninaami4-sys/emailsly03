@@ -1,6 +1,6 @@
 <?php
 namespace Emailsly\Controllers;
-use Emailsly\{Auth, Database, Request, Response};
+use Emailsly\{Auth, Database, Mailer, Request, Response};
 
 final class SupportController
 {
@@ -16,16 +16,16 @@ final class SupportController
         $c = Auth::requireUser();
         $b = Request::json();
         $id = Database::uuid();
+        $subject  = trim($b['subject'] ?? '') ?: 'No subject';
+        $desc     = $b['description'] ?? null;
+        $priority = in_array($b['priority'] ?? 'normal', ['low','normal','high','urgent'], true) ? $b['priority'] : 'normal';
         Database::pdo()->prepare(
             'INSERT INTO support_tickets (id,user_id,subject,description,category,priority,status,last_message_at)
              VALUES (?,?,?,?,?,?, "open", NOW())'
         )->execute([
-            $id, $c['sub'],
-            trim($b['subject'] ?? '') ?: 'No subject',
-            $b['description'] ?? null,
-            $b['category'] ?? null,
-            in_array($b['priority'] ?? 'normal', ['low','normal','high','urgent'], true) ? $b['priority'] : 'normal',
+            $id, $c['sub'], $subject, $desc, $b['category'] ?? null, $priority,
         ]);
+        $this->notifyTicketCreated($id, $subject, $desc, $priority, $c['email'] ?? null);
         Response::json(['id' => $id]);
     }
     public function show(array $p): void
@@ -65,6 +65,70 @@ final class SupportController
                ELSE status END
              WHERE id = ?'
         )->execute([$isAdmin ? 'admin' : 'customer', $isAdmin ? 'admin' : 'customer', $p['id']]);
+        $this->notifyTicketReply($p['id'], $body, $isAdmin);
         Response::json(['ok' => true]);
+    }
+
+    private function notifyTicketCreated(string $id, string $subject, ?string $desc, string $priority, ?string $userEmail): void
+    {
+        $ref  = substr($id, 0, 8);
+        $app  = $_ENV['APP_URL'] ?? '';
+        $mailer = Mailer::support();
+        if ($userEmail) {
+            $body = "Hi,\n\nWe've received your support request and our team will get back to you shortly.\n\n"
+                  . "Ticket: #$ref\nSubject: $subject\nPriority: $priority\n\n"
+                  . ($app ? "Track it here: $app/support/$id\n\n" : '')
+                  . "Reply to this email and we'll add it to the ticket.\n\n— Emailsly Support";
+            $mailer->send($userEmail, "Support ticket received · #$ref", $body);
+        }
+        $inbox = $_ENV['SUPPORT_ADMIN_INBOX'] ?? ($_ENV['ADMIN_EMAIL'] ?? null);
+        if ($inbox) {
+            $mailer->send(
+                $inbox,
+                "[Ticket] #$ref · $priority · $subject",
+                "New support ticket opened.\n\nRef: #$ref\nFrom: " . ($userEmail ?: 'unknown')
+                . "\nPriority: $priority\nSubject: $subject\n\n" . ($desc ?: '(no description)')
+                . ($app ? "\n\nOpen: $app/admin/support/$id" : ''),
+                false,
+                $userEmail ?: null
+            );
+        }
+    }
+
+    private function notifyTicketReply(string $ticketId, string $body, bool $isAdmin): void
+    {
+        $s = Database::pdo()->prepare(
+            'SELECT t.subject, t.user_id, u.email FROM support_tickets t
+             LEFT JOIN users u ON u.id = t.user_id WHERE t.id = ?'
+        );
+        $s->execute([$ticketId]);
+        $row = $s->fetch();
+        if (!$row) return;
+        $ref = substr($ticketId, 0, 8);
+        $app = $_ENV['APP_URL'] ?? '';
+        $mailer = Mailer::support();
+        if ($isAdmin && !empty($row['email'])) {
+            // Notify customer of admin reply
+            $mailer->send(
+                $row['email'],
+                "New reply on ticket #$ref",
+                "Hi,\n\nOur support team replied to your ticket \"{$row['subject']}\":\n\n$body\n\n"
+                . ($app ? "View the full thread: $app/support/$ticketId\n\n" : '')
+                . "— Emailsly Support"
+            );
+        } elseif (!$isAdmin) {
+            // Notify admins of customer reply
+            $inbox = $_ENV['SUPPORT_ADMIN_INBOX'] ?? ($_ENV['ADMIN_EMAIL'] ?? null);
+            if ($inbox) {
+                $mailer->send(
+                    $inbox,
+                    "[Ticket reply] #$ref · {$row['subject']}",
+                    "Customer replied on ticket #$ref (" . ($row['email'] ?: 'unknown') . "):\n\n$body"
+                    . ($app ? "\n\nOpen: $app/admin/support/$ticketId" : ''),
+                    false,
+                    $row['email'] ?: null
+                );
+            }
+        }
     }
 }

@@ -231,16 +231,16 @@
 .admin-theme button,
 .admin-theme a,
 .admin-theme div,
-.admin-theme li { font-weight: 600; font-family: inherit; }
+.admin-theme li { font-weight: 700; font-family: inherit; }
 .admin-theme strong,
-.admin-theme b { font-weight: 800; }
+.admin-theme b { font-weight: 900; }
 .admin-theme h1,
 .admin-theme h2,
 .admin-theme h3,
 .admin-theme h4,
 .admin-theme h5,
 .admin-theme h6 { font-weight: 900; letter-spacing: -0.02em; font-family: inherit; color: oklch(0.16 0.01 260); }
-.admin-theme .text-muted-foreground { color: oklch(0.48 0.012 260); font-weight: 600; }
+.admin-theme .text-muted-foreground { color: oklch(0.45 0.012 260); font-weight: 700; }
 .admin-theme .font-display { font-weight: 900; letter-spacing: -0.025em; font-family: inherit; }
 .admin-theme [data-numeric],
 .admin-theme .tabular-nums { font-variant-numeric: tabular-nums; }

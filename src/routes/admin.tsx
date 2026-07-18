@@ -402,6 +402,7 @@ function AdminPage() {
     referrals: <ReferralsAdmin />,
     "site-content": <SiteContentAdmin />,
     brand: <BrandSettingsAdmin />,
+    products: <ProductsAdmin />,
     "product-details": <ProductDetailsAdmin />,
     "product-covers": productCoverEditor,
     announcements: <AnnouncementsAdmin />,

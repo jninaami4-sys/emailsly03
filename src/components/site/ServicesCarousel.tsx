@@ -437,24 +437,56 @@ export function ServicesCarousel() {
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: 8px;
-          bottom: 14px !important;
+          gap: 7px;
+          left: 50% !important;
+          bottom: 10px !important;
+          width: auto !important;
+          min-width: 112px;
+          height: 24px;
+          padding: 0 12px;
+          transform: translateX(-50%);
+          border: 1px solid color-mix(in oklab, var(--foreground) 12%, transparent);
+          border-radius: 999px;
+          background:
+            radial-gradient(circle at 50% 0%, color-mix(in oklab, var(--violet) 16%, transparent), transparent 62%),
+            color-mix(in oklab, var(--background) 72%, transparent);
+          box-shadow:
+            inset 0 1px 0 color-mix(in oklab, var(--foreground) 9%, transparent),
+            0 14px 34px color-mix(in oklab, var(--background) 82%, transparent);
+          backdrop-filter: blur(14px) saturate(1.15);
+          -webkit-backdrop-filter: blur(14px) saturate(1.15);
+          z-index: 4;
         }
         .services-swiper-wrapper .swiper-pagination-bullet {
           width: 6px;
           height: 6px;
           margin: 0 !important;
-          background: rgba(255,255,255,0.22);
+          background: color-mix(in oklab, var(--foreground) 32%, transparent);
           opacity: 1;
           border-radius: 999px;
-          transition: all 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
+          box-shadow: none;
+          transform: scale(1);
+          transition:
+            width 0.38s cubic-bezier(0.22, 0.61, 0.36, 1),
+            background 0.38s cubic-bezier(0.22, 0.61, 0.36, 1),
+            box-shadow 0.38s cubic-bezier(0.22, 0.61, 0.36, 1),
+            opacity 0.38s cubic-bezier(0.22, 0.61, 0.36, 1);
         }
         .services-swiper-wrapper .swiper-pagination-bullet-active {
-          width: 26px;
+          width: 24px;
           height: 6px;
-          background: linear-gradient(90deg, #8b5cf6, #d946ef);
+          background: linear-gradient(
+            90deg,
+            color-mix(in oklab, var(--violet) 82%, var(--foreground) 18%),
+            color-mix(in oklab, var(--magenta) 78%, var(--foreground) 16%)
+          );
           border-radius: 999px;
-          box-shadow: 0 0 14px rgba(139,92,246,0.45), 0 0 4px rgba(217,70,239,0.35);
+          box-shadow:
+            0 0 10px color-mix(in oklab, var(--violet) 28%, transparent),
+            inset 0 1px 0 color-mix(in oklab, var(--foreground) 28%, transparent);
+        }
+        .services-swiper-wrapper .swiper-pagination-bullet:not(.swiper-pagination-bullet-active):hover {
+          background: color-mix(in oklab, var(--foreground) 48%, transparent);
         }
         .services-swiper-wrapper .swiper-pagination-bullet-active-main,
         .services-swiper-wrapper .swiper-pagination-bullet-active-prev,

@@ -420,6 +420,88 @@ html.site-light .text-muted-foreground {
   color: oklch(0.40 0.02 255);
 }
 
+/* ─────────────────────────────────────────────────────────────────────
+ * Accessibility: WCAG AA contrast pass for the Pearl & Aurora theme.
+ *
+ * The accent tokens (--magenta/teal, --emerald, --amber, --coral,
+ * --destructive) are tuned to look premium as *fills* (chips, buttons,
+ * gradients) but drop below 4.5:1 when used as plain text on the pearl
+ * surface. These overrides remap the `text-*` utilities to darker,
+ * AA-compliant shades in the same hue family — glass fills, gradient
+ * buttons, and soft-tinted backgrounds are untouched, so the premium
+ * look is preserved.
+ * ────────────────────────────────────────────────────────────────────*/
+
+/* Text-only overrides — darker hue-matched shades that pass AA on pearl. */
+html.site-light .text-violet        { color: #3730a3; }  /* indigo-800  ~9:1  */
+html.site-light .text-primary       { color: #1e3a8a; }  /* indigo-900  ~11:1 */
+html.site-light .text-magenta       { color: #0f766e; }  /* teal-700    ~5.9:1 */
+html.site-light .text-accent        { color: #0f766e; }
+html.site-light .text-emerald       { color: #047857; }  /* emerald-700 ~5.7:1 */
+html.site-light .text-coral         { color: #b91c1c; }  /* red-700     ~6.4:1 */
+html.site-light .text-amber         { color: #92400e; }  /* amber-800   ~7:1  */
+html.site-light .text-destructive   { color: #b91c1c; }
+
+/* Muted text on translucent glass — bump one step so 4.5:1 holds even
+ * when a card sits over a colored aurora blob. */
+html.site-light .text-muted-foreground { color: oklch(0.38 0.02 255); }
+
+/* Links — give inline anchors a clear color + underline in light mode.
+ * Scoped to prose/content anchors: skip anything that's styled as a
+ * button, chip, or nav item (those already have their own affordance). */
+html.site-light a:not([class*="bg-"]):not(.btn):not([data-button]):not([role="button"]):not(.no-underline) {
+  color: #1e3a8a;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(30, 58, 138, 0.35);
+  transition: color 160ms ease, text-decoration-color 160ms ease;
+}
+html.site-light a:not([class*="bg-"]):not(.btn):not([data-button]):not([role="button"]):not(.no-underline):hover {
+  color: #0f766e;
+  text-decoration-color: currentColor;
+}
+
+/* Focus — visible ring on any interactive element, above glass blur. */
+html.site-light a:focus-visible,
+html.site-light button:focus-visible,
+html.site-light [role="button"]:focus-visible,
+html.site-light summary:focus-visible {
+  outline: 2px solid #1e3a8a;
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* Disabled state — replace low-opacity fade (which crushes contrast on
+ * the indigo gradient) with a legible neutral chip that still reads as
+ * inert. Meets 3:1 non-text UI contrast + 4.5:1 label contrast. */
+html.site-light button:disabled,
+html.site-light [role="button"][aria-disabled="true"],
+html.site-light [data-disabled="true"] {
+  opacity: 1;
+  cursor: not-allowed;
+  background-image: none !important;
+  background-color: #e5e9f2 !important;
+  color: #475569 !important;                  /* slate-600 ~7:1 on #e5e9f2 */
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: none !important;
+  text-shadow: none;
+}
+html.site-light input:disabled,
+html.site-light textarea:disabled,
+html.site-light select:disabled {
+  background-color: #eef2f7 !important;
+  color: #475569 !important;
+  border-color: #cbd5e1 !important;
+  opacity: 1;
+  cursor: not-allowed;
+}
+
+/* Placeholders — default browser placeholder is too pale on pearl. */
+html.site-light ::placeholder { color: #64748b; opacity: 1; }
+
+
+
 
 
 /*

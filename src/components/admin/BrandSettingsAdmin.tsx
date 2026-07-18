@@ -406,7 +406,7 @@ function AssetField({
       <label className="mb-1 block font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
         {label}
       </label>
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-stretch">
+      <div className="flex items-stretch gap-2">
         <input
           type="url"
           value={value}
@@ -414,38 +414,37 @@ function AssetField({
           className="min-w-0 flex-1 rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-violet"
           placeholder={placeholder}
         />
-        <div className="flex items-center gap-2">
-          <input
-            ref={inputRef}
-            type="file"
-            accept={accept}
-            className="hidden"
-            onChange={(e) => {
-              const f = e.target.files?.[0];
-              if (f) void handleFile(f);
-            }}
-          />
-          <button
-            type="button"
-            onClick={() => inputRef.current?.click()}
-            disabled={uploading}
-            className="inline-flex items-center gap-2 rounded-xl border border-border bg-background px-4 py-3 text-sm font-semibold hover:border-violet disabled:opacity-60"
+        <input
+          ref={inputRef}
+          type="file"
+          accept={accept}
+          className="hidden"
+          onChange={(e) => {
+            const f = e.target.files?.[0];
+            if (f) void handleFile(f);
+          }}
+        />
+        <button
+          type="button"
+          onClick={() => inputRef.current?.click()}
+          disabled={uploading}
+          className="inline-flex shrink-0 items-center gap-2 rounded-xl border border-violet/40 bg-violet/10 px-4 py-3 text-sm font-semibold text-violet hover:bg-violet/20 disabled:opacity-60"
+          title="Upload image from your computer"
+        >
+          {uploading ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />}
+          <span className="hidden sm:inline">{uploading ? "Uploading…" : "Upload"}</span>
+        </button>
+        {value && (
+          <a
+            href={value}
+            target="_blank"
+            rel="noreferrer"
+            className="hidden shrink-0 items-center overflow-hidden rounded-xl border border-border bg-background sm:inline-flex"
+            aria-label="Preview"
           >
-            {uploading ? <Loader2 className="size-4 animate-spin" /> : null}
-            {uploading ? "Uploading…" : "Upload"}
-          </button>
-          {value && (
-            <a
-              href={value}
-              target="_blank"
-              rel="noreferrer"
-              className="hidden shrink-0 items-center overflow-hidden rounded-xl border border-border bg-background sm:inline-flex"
-              aria-label="Preview"
-            >
-              <img src={value} alt="" className="h-11 w-11 object-contain" />
-            </a>
-          )}
-        </div>
+            <img src={value} alt="" className="h-[46px] w-[46px] object-contain" />
+          </a>
+        )}
       </div>
       {err && <p className="mt-1 text-[11px] text-coral">{err}</p>}
       {hint && !err && <p className="mt-1 text-[11px] text-muted-foreground">{hint}</p>}

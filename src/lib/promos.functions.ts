@@ -11,7 +11,7 @@ import { z } from "zod";
  *    wired up, the server must recompute the discount here (or fetch the
  *    Stripe coupon by id) — never use an amount coming from the browser.
  */
-const PROMOS: Record<
+export const PROMOS: Record<
   string,
   { percent: number; maxDiscount: number; label: string }
 > = {
@@ -19,6 +19,21 @@ const PROMOS: Record<
   LAUNCH15: { percent: 15, maxDiscount: 50, label: "15% off (max $50)" },
   VIP20: { percent: 20, maxDiscount: 100, label: "20% off (max $100)" },
 };
+
+/** Server-only helper: compute a trusted discount in cents from a code + subtotal in cents. */
+export function computePromoDiscountCents(
+  code: string | null | undefined,
+  subtotalCents: number,
+): { discountCents: number; normalizedCode: string | null } {
+  if (!code) return { discountCents: 0, normalizedCode: null };
+  const normalized = code.trim().toUpperCase();
+  const promo = PROMOS[normalized];
+  if (!promo || subtotalCents <= 0) return { discountCents: 0, normalizedCode: null };
+  const raw = Math.round((subtotalCents * promo.percent) / 100);
+  const capCents = Math.round(promo.maxDiscount * 100);
+  return { discountCents: Math.min(raw, capCents), normalizedCode: normalized };
+}
+
 
 export type PromoResult =
   | {

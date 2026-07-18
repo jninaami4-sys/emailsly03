@@ -128,7 +128,7 @@ export function OrderForm() {
             <button
               type="submit"
               disabled={status !== "idle"}
-              className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-violet px-5 py-3.5 font-semibold text-white shadow-lg shadow-violet/25 transition-transform hover:scale-[1.01] disabled:opacity-70"
+              className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3.5 font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition-transform hover:scale-[1.01] disabled:opacity-70"
             >
               {status === "sending" && <Loader2 className="size-4 animate-spin" />}
               {status === "done" && <CheckCircle2 className="size-4" />}
@@ -141,9 +141,10 @@ export function OrderForm() {
           </form>
 
           {/* Summary */}
-          <aside className="relative overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-ink to-[oklch(0.28_0.05_270)] p-8 text-white">
-            <div className="absolute -right-10 -top-10 size-40 rounded-full bg-violet/40 blur-3xl" />
-            <div className="absolute -bottom-10 -left-10 size-40 rounded-full bg-coral/30 blur-3xl" />
+          <aside className="relative overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-[oklch(0.16_0.02_260)] to-[oklch(0.22_0.04_258)] p-8 text-white">
+            <div className="absolute -right-10 -top-10 size-40 rounded-full bg-primary/40 blur-3xl" />
+            <div className="absolute -bottom-10 -left-10 size-40 rounded-full bg-primary/20 blur-3xl" />
+
             <div className="relative">
               <div className="font-mono text-[10px] uppercase tracking-widest text-white/60">
                 Order summary

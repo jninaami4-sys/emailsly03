@@ -1,20 +1,39 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { listSiteContent, upsertSiteContent } from "@/lib/site-content.functions";
 import { SITE_CONTENT_DEFAULTS } from "@/lib/site-content-defaults";
 import { Palette, Save, Loader2, RefreshCw } from "@/components/admin/AdminIcons";
+import { supabase } from "@/integrations/supabase/client";
 
 type BrandingValues = {
   site_name: string;
   logo_url: string;
   footer_logo_url: string;
   favicon_url: string;
+  invoice_logo_url: string;
   tagline: string;
   primary_color: string;
   accent_color: string;
   ink_color: string;
 };
+
+// ~30 years — effectively permanent for a private bucket signed URL
+const SIGNED_URL_TTL = 60 * 60 * 24 * 365 * 30;
+
+async function uploadBrandAsset(file: File, kind: string): Promise<string> {
+  const ext = (file.name.split(".").pop() || "png").toLowerCase().replace(/[^a-z0-9]/g, "") || "png";
+  const path = `${kind}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+  const up = await supabase.storage.from("brand-assets").upload(path, file, {
+    cacheControl: "31536000",
+    upsert: false,
+    contentType: file.type || undefined,
+  });
+  if (up.error) throw up.error;
+  const signed = await supabase.storage.from("brand-assets").createSignedUrl(path, SIGNED_URL_TTL);
+  if (signed.error || !signed.data?.signedUrl) throw signed.error || new Error("Failed to sign URL");
+  return signed.data.signedUrl;
+}
 
 const HEX_RE = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i;
 

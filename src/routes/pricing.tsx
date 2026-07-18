@@ -193,13 +193,14 @@ function Pricing() {
                 <h3 className="font-display text-xl font-bold">{t.name}</h3>
                 <div className="mt-4">
                   <div className="flex items-baseline gap-1.5">
-                    <span className="font-display text-4xl font-bold tracking-tight">{t.price}</span>
-                    <span className="text-sm text-muted-foreground">{t.per}</span>
+                    <span className="font-display text-4xl font-bold tracking-tight">{formatTierHeadline(t.id, overrides)}</span>
+                    <span className="text-sm text-muted-foreground">{formatTierPer(t.id, overrides)}</span>
                   </div>
                   <p className="mt-2 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-                    {t.min}
+                    {formatTierSubline(t.id, overrides)}
                   </p>
                 </div>
+
                 {t.desc && (
                   <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{t.desc}</p>
                 )}

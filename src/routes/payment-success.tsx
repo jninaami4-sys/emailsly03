@@ -478,11 +478,14 @@ function Invoice(props: {
         {/* Left: brand + billing */}
         <div className="min-w-0">
           <div className="flex items-center gap-3">
-            <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-violet to-indigo text-white shadow-md">
-              <PremiumLogoMark className="size-6" />
-            </div>
+            <img
+              src={emailslyLogo.url}
+              alt="EmailsLy"
+              crossOrigin="anonymous"
+              className="block h-10 w-auto max-w-[160px] object-contain select-none"
+              draggable={false}
+            />
             <div className="min-w-0">
-              <div className="font-display text-lg font-bold leading-none">EmailsLy</div>
               <div className="text-[11px] uppercase tracking-widest text-neutral-500">
                 Official Receipt
               </div>

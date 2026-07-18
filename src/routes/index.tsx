@@ -105,13 +105,20 @@ export const Route = createFileRoute("/")({
 function Home() {
   const allProducts = useAllProducts();
   const featured = allProducts.filter((p) => p.featured).concat(allProducts.filter((p) => !p.featured)).slice(0, 3);
-  const trust = useSiteContent("trust");
+  const trust = useSiteContent("trust") as unknown as {
+    stat_1_value: string; stat_1_label: string;
+    stat_2_value: string; stat_2_label: string;
+    stat_3_value: string; stat_3_label: string;
+    items?: Array<{ value: string; label: string }>;
+  };
   const faqContent = useSiteContent("faq");
-  const stats = [
-    { k: trust.stat_1_value, v: trust.stat_1_label },
-    { k: trust.stat_2_value, v: trust.stat_2_label },
-    { k: trust.stat_3_value, v: trust.stat_3_label },
-  ];
+  const stats = (trust.items && trust.items.length > 0)
+    ? trust.items.map((it) => ({ k: it.value, v: it.label }))
+    : [
+        { k: trust.stat_1_value, v: trust.stat_1_label },
+        { k: trust.stat_2_value, v: trust.stat_2_label },
+        { k: trust.stat_3_value, v: trust.stat_3_label },
+      ];
   const faqs = (faqContent.items && faqContent.items.length > 0 ? faqContent.items : defaultFaqs) as Array<{ q: string; a: string }>;
 
   return (

@@ -27,6 +27,7 @@ export const Route = createFileRoute("/sample-data")({
           "Preview and download verified B2B lead samples across three sources — live from admin-managed feeds.",
       },
     ],
+    links: [{ rel: "canonical", href: "/sample-data" }],
   }),
   loader: ({ context }) => context.queryClient.ensureQueryData(sampleDatasetsQuery),
   component: SampleDataPage,

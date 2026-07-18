@@ -2,7 +2,10 @@ import { createFileRoute } from "@tanstack/react-router";
 import { LegalPage } from "@/components/site/LegalPage";
 
 export const Route = createFileRoute("/refund-policy")({
-  head: () => ({ meta: [{ title: "Refund Policy | EmailsLy" }, { name: "description", content: "Our delivery and refund policy for lead data orders." }] }),
+  head: () => ({
+    meta: [{ title: "Refund Policy | EmailsLy" }, { name: "description", content: "Our delivery and refund policy for lead data orders." }],
+    links: [{ rel: "canonical", href: "/refund-policy" }],
+  }),
   component: () => (
     <LegalPage
       title="Refund Policy"

@@ -9,6 +9,7 @@ export const Route = createFileRoute("/apollo-leads-export")({
       { property: "og:title", content: "Apollo Leads Export — Verified B2B data" },
       { property: "og:description", content: "Custom Apollo exports at $0.12/lead. No subscription." },
     ],
+    links: [{ rel: "canonical", href: "/apollo-leads-export" }],
   }),
   component: () => (
     <ServiceLanding

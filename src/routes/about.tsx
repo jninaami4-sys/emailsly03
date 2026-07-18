@@ -18,7 +18,7 @@ export const Route = createFileRoute("/about")({
       {
         name: "description",
         content:
-          "Emailsly helps outbound sales teams, agencies, and founders find verified B2B leads from Apollo, ZoomInfo, and LinkedIn — delivered in 24 hours with no subscription.",
+          "Verified B2B leads from Apollo, ZoomInfo, and LinkedIn — delivered in 24 hours. No subscription. Built for sales teams, agencies, and founders.",
       },
       {
         property: "og:title",

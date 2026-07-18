@@ -10,6 +10,7 @@ export const Route = createFileRoute("/website-design")({
       { property: "og:title", content: "B2B Website Design" },
       { property: "og:description", content: "Conversion-focused B2B websites, built to convert cold traffic." },
     ],
+    links: [{ rel: "canonical", href: "/website-design" }],
   }),
   component: WebsiteDesign,
 });

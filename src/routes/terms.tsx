@@ -2,7 +2,10 @@ import { createFileRoute } from "@tanstack/react-router";
 import { LegalPage } from "@/components/site/LegalPage";
 
 export const Route = createFileRoute("/terms")({
-  head: () => ({ meta: [{ title: "Terms of Service | EmailsLy" }, { name: "description", content: "The terms governing use of EmailsLy services." }] }),
+  head: () => ({
+    meta: [{ title: "Terms of Service | EmailsLy" }, { name: "description", content: "The terms governing use of EmailsLy services." }],
+    links: [{ rel: "canonical", href: "/terms" }],
+  }),
   component: () => (
     <LegalPage
       title="Terms of Service"

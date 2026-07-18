@@ -2,7 +2,10 @@ import { createFileRoute } from "@tanstack/react-router";
 import { LegalPage } from "@/components/site/LegalPage";
 
 export const Route = createFileRoute("/privacy-policy")({
-  head: () => ({ meta: [{ title: "Privacy Policy | EmailsLy" }, { name: "description", content: "How EmailsLy collects, uses, and protects your data." }] }),
+  head: () => ({
+    meta: [{ title: "Privacy Policy | EmailsLy" }, { name: "description", content: "How EmailsLy collects, uses, and protects your data." }],
+    links: [{ rel: "canonical", href: "/privacy-policy" }],
+  }),
   component: () => (
     <LegalPage
       title="Privacy Policy"

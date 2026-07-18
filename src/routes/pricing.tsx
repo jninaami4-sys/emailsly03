@@ -22,6 +22,7 @@ export const Route = createFileRoute("/pricing")({
       },
       ...ogImageMeta(OG_IMAGES.pricing),
     ],
+    links: [{ rel: "canonical", href: "/pricing" }],
     scripts: [
       {
         type: "application/ld+json",

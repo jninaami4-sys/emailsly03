@@ -47,12 +47,13 @@ const defaultFaqs = [
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "EmailsLy — Verified B2B leads from Apollo, ZoomInfo & LinkedIn" },
+      { title: "EmailsLy | B2B Leads from Apollo, ZoomInfo & LinkedIn" },
       { name: "description", content: "Clean, verified B2B lead exports from Apollo, ZoomInfo, and LinkedIn Sales Navigator — delivered to your CRM in 24 hours." },
       { property: "og:title", content: "EmailsLy — Verified B2B Data Platform" },
       { property: "og:description", content: "Verified leads delivered to your CRM in 24h. No manual cleaning." },
       ...ogImageMeta(OG_IMAGES.default),
     ],
+    links: [{ rel: "canonical", href: "/" }],
     scripts: [
       {
         type: "application/ld+json",

@@ -1,279 +1,89 @@
-import { createServerFn } from "@tanstack/react-start";
-import { z } from "zod";
-import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { logReferral, classifyReferralError } from "@/lib/referral-log.server";
+/**
+ * Customer-scoped orders/profile API — thin proxies to the PHP backend.
+ *
+ * Batch 3 of the Supabase → PHP/MySQL migration. These are no longer
+ * TanStack server functions — they are plain async functions that mirror
+ * the old `fn({ data })` signature so existing call sites work unchanged
+ * (just drop the `useServerFn(...)` wrapper).
+ *
+ * All auth / RLS / price-floor / promo validation now lives in the PHP
+ * controllers under /api/orders/* (server-side JWT verification via
+ * `Auth::requireUser()`).
+ */
+import { ordersApi } from "@/lib/api-client";
 
-/** List all orders the signed-in client owns (by user_id or by email). */
-export const listMyOrders = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
-  .handler(async ({ context }) => {
-    const supabase = context.supabase as any;
-    const { data, error } = await supabase
-      .from("orders")
-      .select("*")
-      .order("created_at", { ascending: false });
-    if (error) throw new Error(error.message);
-    return data ?? [];
+type Empty = Record<string, never>;
+
+export async function listMyOrders(_?: { data?: Empty }) {
+  const { orders } = await ordersApi.list();
+  return orders ?? [];
+}
+
+export async function getMyOrder(args: { data: { id: string } }) {
+  return ordersApi.get(args.data.id);
+}
+
+export async function getMyProfile(_?: { data?: Empty }) {
+  const res = await fetch("/api/profile", {
+    headers: {
+      "content-type": "application/json",
+      authorization: `Bearer ${localStorage.getItem("api_token") ?? ""}`,
+    },
+    credentials: "same-origin",
   });
+  if (!res.ok) throw new Error(`Profile ${res.status}`);
+  const j = await res.json();
+  return j.profile ?? j;
+}
 
-/** Fetch a single order (RLS enforces ownership). */
-export const getMyOrder = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
-  .inputValidator((d) => z.object({ id: z.string().uuid() }).parse(d))
-  .handler(async ({ context, data }) => {
-    const supabase = context.supabase as any;
-    const [{ data: order, error: e1 }, { data: events, error: e2 }] = await Promise.all([
-      supabase.from("orders").select("*").eq("id", data.id).maybeSingle(),
-      supabase.from("order_events").select("*").eq("order_id", data.id).order("created_at", { ascending: true }),
-    ]);
-    if (e1) throw new Error(e1.message);
-    if (e2) throw new Error(e2.message);
-    return { order, events: events ?? [] };
+export async function updateMyProfile(args: {
+  data: {
+    full_name?: string | null;
+    company?: string | null;
+    phone?: string | null;
+    country?: string | null;
+    avatar_url?: string | null;
+  };
+}) {
+  const res = await fetch("/api/profile", {
+    method: "PATCH",
+    headers: {
+      "content-type": "application/json",
+      authorization: `Bearer ${localStorage.getItem("api_token") ?? ""}`,
+    },
+    body: JSON.stringify(args.data),
+    credentials: "same-origin",
   });
+  if (!res.ok) throw new Error(`Profile update ${res.status}`);
+  return { ok: true };
+}
 
-/** Read the signed-in user's profile (creates a minimal row if missing). */
-export const getMyProfile = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
-  .handler(async ({ context }) => {
-    const supabase = context.supabase as any;
-    const email = (context.claims as { email?: string }).email ?? "";
-    const { data, error } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("user_id", context.userId)
-      .maybeSingle();
-    if (error) throw new Error(error.message);
-    if (data) return data;
-    // ensure a row exists
-    const { data: created, error: e2 } = await supabase
-      .from("profiles")
-      .insert({ user_id: context.userId, email })
-      .select()
-      .single();
-    if (e2) throw new Error(e2.message);
-    return created;
-  });
+export async function requestRevision(args: {
+  data: { order_id: string; message: string };
+}) {
+  await ordersApi.postMessage(args.data.order_id, args.data.message);
+  return { ok: true };
+}
 
-export const updateMyProfile = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
-  .inputValidator((d) =>
-    z
-      .object({
-        full_name: z.string().trim().max(120).optional().nullable(),
-        company: z.string().trim().max(160).optional().nullable(),
-        phone: z.string().trim().max(40).optional().nullable(),
-        country: z.string().trim().max(80).optional().nullable(),
-        avatar_url: z.string().trim().max(2048).url().optional().nullable(),
-      })
-      .parse(d),
-  )
-  .handler(async ({ context, data }) => {
-    const supabase = context.supabase as any;
-    const email = (context.claims as { email?: string }).email ?? "";
-    const { error } = await supabase
-      .from("profiles")
-      .upsert(
-        { user_id: context.userId, email, ...data, updated_at: new Date().toISOString() },
-        { onConflict: "user_id" },
-      );
-    if (error) throw new Error(error.message);
-    return { ok: true };
-  });
-
-/** Client asks for a revision on a delivered order. */
-export const requestRevision = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
-  .inputValidator((d) =>
-    z.object({ order_id: z.string().uuid(), message: z.string().trim().min(3).max(2000) }).parse(d),
-  )
-  .handler(async ({ context, data }) => {
-    const supabase = context.supabase as any;
-    // Ownership check — verify caller actually owns the parent order before writing.
-    const { data: owned, error: ownErr } = await supabase
-      .from("orders")
-      .select("id")
-      .eq("id", data.order_id)
-      .eq("user_id", context.userId)
-      .maybeSingle();
-    if (ownErr) throw new Error(ownErr.message);
-    if (!owned) throw new Error("Order not found");
-
-    const { error: e1 } = await supabase.from("order_events").insert({
-      order_id: data.order_id,
-      actor_id: context.userId,
-      actor_role: "client",
-      event_type: "revision_requested",
-      message: data.message,
-    });
-    if (e1) throw new Error(e1.message);
-    const { error: e2 } = await supabase.from("order_messages").insert({
-      order_id: data.order_id,
-      sender_id: context.userId,
-      sender_role: "client",
-      body: data.message,
-    });
-    if (e2) throw new Error(e2.message);
-    return { ok: true };
-  });
-
-
-
-/** Record a completed order from the payment-success page (idempotent by payment_ref). */
-export const recordMyOrder = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
-  .inputValidator((d) =>
-    z
-      .object({
-        payment_ref: z.string().min(1),
-        service_label: z.string().min(1),
-        service_id: z.string().optional().nullable(),
-        quantity: z.number().int().min(1).default(1),
-        subtotal_cents: z.number().int().min(0),
-        discount_cents: z.number().int().min(0).default(0),
-        promo_code: z.string().optional().nullable(),
-        total_cents: z.number().int().min(0),
-        currency: z.string().default("USD"),
-        payment_provider: z.string().default("stripe"),
-        credit_applied_cents: z.number().int().min(0).default(0),
-      })
-      .parse(d),
-  )
-  .handler(async ({ context, data }) => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { computePromoDiscountCents } = await import("@/lib/promos.functions");
-    const sb = supabaseAdmin as any;
-    const email = (context.claims as { email?: string }).email ?? "";
-    // idempotency: payment_ref
-    const { data: existing } = await sb
-      .from("orders")
-      .select("id")
-      .eq("payment_ref", data.payment_ref)
-      .maybeSingle();
-    if (existing) return { ok: true, id: existing.id, duplicate: true, credit_spent_cents: 0 };
-
-    // Server-side price floor — recompute base from the canonical catalog and
-    // reject any client subtotal that undercuts it. Extras (rush, verifier,
-    // tip, extra URLs) can only add to the base, never reduce it, so a
-    // subtotal below the catalog base means the client tampered with pricing.
-    const { SERVICE_CATALOG } = await import("@/lib/service-catalog");
-    const catalogEntry = data.service_id ? SERVICE_CATALOG[data.service_id] : undefined;
-    if (catalogEntry) {
-      const qty = catalogEntry.fixed ? 1 : Math.max(data.quantity, catalogEntry.minQty);
-      const baseCents = Math.round(
-        (catalogEntry.fixed
-          ? catalogEntry.minOrder
-          : Math.max(qty * catalogEntry.rate, catalogEntry.minOrder)) * 100,
-      );
-      if (data.subtotal_cents < baseCents) {
-        throw new Error("Invalid subtotal for selected service");
-      }
-    }
-
-    // Re-validate promo server-side; never trust client-supplied discount amount.
-    const { discountCents: trustedDiscount, normalizedCode } = computePromoDiscountCents(
-      data.promo_code ?? null,
-      data.subtotal_cents,
-    );
-    const cappedDiscount = Math.min(trustedDiscount, data.subtotal_cents);
-
-    // Re-derive minimum acceptable total: subtotal − trusted discount − client credit.
-    // Reject totals below this floor (client can add fees, never subtract more).
-    const minTotalCents = Math.max(
-      0,
-      data.subtotal_cents - cappedDiscount - data.credit_applied_cents,
-    );
-    const safeTotalCents = Math.max(data.total_cents, minTotalCents);
-
-    const { data: row, error } = await sb
-      .from("orders")
-      .insert({
-        user_id: context.userId,
-        email,
-        service_id: data.service_id ?? null,
-        service_label: data.service_label,
-        quantity: data.quantity,
-        subtotal_cents: data.subtotal_cents,
-        discount_cents: cappedDiscount,
-        promo_code: normalizedCode,
-        total_cents: safeTotalCents,
-        currency: data.currency,
-        status: "pending",
-        // CRITICAL: the client cannot mark an order as paid. Payment status
-        // is only ever flipped to "paid" by the verified Stripe webhook
-        // (or by an admin). This prevents a tampered checkout from creating
-        // a fake paid order by navigating directly to /payment-success.
-        payment_status: "unpaid",
-        payment_provider: data.payment_provider,
-        payment_ref: data.payment_ref,
-      })
-      .select("id")
-      .single();
-    if (error) throw new Error(error.message);
-
-    await sb.from("order_events").insert({
-      order_id: row.id,
-      actor_id: context.userId,
-      actor_role: "system",
-      event_type: "order_created",
-      message: "Order created, awaiting payment confirmation",
-    });
-
-    // Atomically spend referral credit against this order (user-scoped RPC).
-    // The RPC also writes a negative ledger row, so this log covers both the
-    // redeem call and the ledger write it triggers.
-    let creditSpent = 0;
-    if (data.credit_applied_cents > 0) {
-      const userSb = context.supabase as any;
-      const startedRedeem = Date.now();
-      logReferral({
-        event: "referral.credit.redeem",
-        status: "start",
-        user_id: context.userId,
-        order_id: row.id,
-        requested_cents: data.credit_applied_cents,
-        subtotal_cents: data.subtotal_cents,
-      });
-      const { data: spent, error: redeemErr } = await userSb.rpc("redeem_referral_credit", {
-        _order_id: row.id,
-        _requested_cents: data.credit_applied_cents,
-        _subtotal_cents: data.subtotal_cents,
-      });
-      if (redeemErr) {
-        const c = classifyReferralError(redeemErr);
-        logReferral({
-          event: "referral.credit.redeem",
-          status: "error",
-          user_id: context.userId,
-          order_id: row.id,
-          requested_cents: data.credit_applied_cents,
-          subtotal_cents: data.subtotal_cents,
-          duration_ms: Date.now() - startedRedeem,
-          error_code: c.code,
-          error_message: c.message,
-          rls_hint: c.rls_hint,
-        });
-      } else {
-        creditSpent = typeof spent === "number" ? spent : 0;
-        logReferral({
-          event: "referral.credit.redeem",
-          status: "ok",
-          user_id: context.userId,
-          order_id: row.id,
-          requested_cents: data.credit_applied_cents,
-          subtotal_cents: data.subtotal_cents,
-          spent_cents: creditSpent,
-          duration_ms: Date.now() - startedRedeem,
-        });
-        logReferral({
-          event: "referral.credit.ledger_write",
-          status: "ok",
-          user_id: context.userId,
-          order_id: row.id,
-          delta_cents: -creditSpent,
-          source: "referral_redeemed",
-        });
-      }
-    }
-
-    return { ok: true, id: row.id, duplicate: false, credit_spent_cents: creditSpent };
-  });
+export async function recordMyOrder(args: {
+  data: {
+    payment_ref: string;
+    service_label: string;
+    service_id?: string | null;
+    quantity: number;
+    subtotal_cents: number;
+    discount_cents?: number;
+    promo_code?: string | null;
+    total_cents: number;
+    currency?: string;
+    payment_provider?: string;
+    credit_applied_cents?: number;
+  };
+}) {
+  return ordersApi.create(args.data) as Promise<{
+    id: string;
+    ok?: boolean;
+    duplicate?: boolean;
+    credit_spent_cents?: number;
+  }>;
+}

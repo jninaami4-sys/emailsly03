@@ -1,13 +1,55 @@
 /**
  * Emailsly REST API client — talks to the PHP backend.
  *
- * Configure `VITE_API_BASE_URL` in `.env` (e.g. https://api.emailsly.com).
- * Falls back to `/api` for same-origin dev.
+ * Base URL resolution (first match wins):
+ *   1. Runtime override:  window.__API_BASE__            (set in index.html or by hosting)
+ *   2. Runtime meta tag:  <meta name="api-base" content="https://api.example.com">
+ *   3. Build-time env:    VITE_API_BASE_URL              (baked in during `bun run build`)
+ *   4. Same-origin fallback: "" (calls hit "/api/..." on the current host —
+ *      ideal when the PHP API is co-hosted with the SPA on cPanel).
+ *
+ * Set VITE_API_BASE_URL in a `.env.local` or `.env.production` file, e.g.:
+ *   VITE_API_BASE_URL="https://api.emailsly.com"
+ *
+ * For zero-rebuild deploys, drop this into `index.html` before the app script:
+ *   <script>window.__API_BASE__="https://api.emailsly.com";</script>
  *
  * Auth: JWT bearer token stored in localStorage under `emailsly_jwt`.
  */
 
-const BASE = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/+$/, "");
+declare global {
+  interface Window {
+    __API_BASE__?: string;
+  }
+}
+
+function resolveBase(): string {
+  // 1) Runtime global
+  if (typeof window !== "undefined" && typeof window.__API_BASE__ === "string") {
+    return window.__API_BASE__.replace(/\/+$/, "");
+  }
+  // 2) Meta tag
+  if (typeof document !== "undefined") {
+    const m = document.querySelector('meta[name="api-base"]');
+    const c = m?.getAttribute("content");
+    if (c) return c.replace(/\/+$/, "");
+  }
+  // 3) Build-time env
+  const envBase = (import.meta.env.VITE_API_BASE_URL as string | undefined) || "";
+  return envBase.replace(/\/+$/, "");
+}
+
+// Cache after first read; can be reset via setApiBase() for tests/multi-tenant.
+let BASE = resolveBase();
+
+/** Current resolved API base URL (empty string = same-origin). */
+export const getApiBase = () => BASE;
+
+/** Programmatically override the API base URL (persists for the session only). */
+export const setApiBase = (url: string) => {
+  BASE = (url || "").replace(/\/+$/, "");
+};
+
 const TOKEN_KEY = "emailsly_jwt";
 
 export const getToken = () =>

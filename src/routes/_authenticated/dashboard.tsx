@@ -16,7 +16,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { openOrderDrawer } from "@/components/site/OrderDrawer";
 import { Loader2, Download, Package, User as UserIcon, Receipt, RotateCcw, ExternalLink, ShoppingBag, PackageSearch, MessageCircle, BookOpen, Zap, TrendingUp, CheckCircle2, Clock, Wallet, ArrowUpRight, Copy, Gift, Headphones, ChevronRight, Search, Camera, Trash2, LifeBuoy } from "lucide-react";
 import { PremiumSparkles as Sparkles } from "@/components/site/PremiumIcons";
-import { supabase } from "@/integrations/supabase/client";
+
 import { uploadsApi } from "@/lib/api-client";
 import { compressImage } from "@/lib/image-compress";
 import { AvatarCropDialog } from "@/components/site/AvatarCropDialog";
@@ -988,13 +988,6 @@ function ProfileTab() {
       setAvatarUrl(res.url);
       // Persist immediately so the header/other places see the new avatar.
       await updateFn({ data: { ...form, avatar_url: res.url } });
-      try {
-        await supabase.auth.updateUser({
-          data: { full_name: form.full_name, avatar_url: res.url },
-        });
-      } catch {
-        /* non-fatal */
-      }
       qc.invalidateQueries({ queryKey: ["my-profile"] });
       const compressedKB = Math.round(compressed.bytes / 1024);
       setUploadState({ status: "idle", savedKB: Math.max(0, originalKB - compressedKB) });
@@ -1008,11 +1001,6 @@ function ProfileTab() {
     setAvatarUrl(null);
     try {
       await updateFn({ data: { ...form, avatar_url: null } });
-      try {
-        await supabase.auth.updateUser({ data: { avatar_url: null } });
-      } catch {
-        /* non-fatal */
-      }
       qc.invalidateQueries({ queryKey: ["my-profile"] });
     } catch {
       /* ignore — UI already reflects removal */

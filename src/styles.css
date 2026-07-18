@@ -1134,7 +1134,7 @@ html { scroll-behavior: smooth; }
   z-index: 1;
 }
 
-/* Admin theme: flat, no liquid-glass sheen/glow */
+/* Admin theme: flat card surface, no glass/glow */
 .admin-theme .liquid-glass,
 .admin-theme .liquid-glass::before {
   background: var(--card);

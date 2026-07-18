@@ -45,12 +45,19 @@ function withThemeQuery(url: string, theme: SiteTheme): string {
  * loader stores it on its match; leaf `head()` receives `matches` and
  * forwards it here.
  */
-export function matchTheme(matches: ReadonlyArray<{ routeId: string; loaderData?: unknown }> | undefined): SiteTheme | null {
-  if (!matches) return null;
-  const root = matches.find((m) => m.routeId === "__root__");
+export function matchTheme(matches: ReadonlyArray<{ routeId?: string; id?: string; loaderData?: unknown }> | undefined): SiteTheme | null {
+  if (!matches || matches.length === 0) return null;
+  // The root match is always the first entry; check both possible id fields
+  // used across TanStack versions plus a broad fallback that scans for it.
+  const root =
+    matches.find((m) => m.routeId === "__root__" || m.id === "__root__") ?? matches[0];
   const data = root?.loaderData as { theme?: SiteTheme } | undefined;
+  if (typeof console !== "undefined" && typeof process !== "undefined" && process.env?.DEBUG_THEME) {
+    console.log("[matchTheme]", { keys: Object.keys(root ?? {}), data });
+  }
   return data?.theme === "light" || data?.theme === "dark" ? data.theme : null;
 }
+
 
 /**
  * Build the standard social-card meta entries (og:image + twitter:image

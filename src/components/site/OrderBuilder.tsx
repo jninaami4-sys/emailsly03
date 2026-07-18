@@ -199,14 +199,6 @@ export function OrderBuilder() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [service.id, effectiveQty, extraUrls, verifier, rush, tip]);
 
-  // Keep the list of Apollo URL boxes in sync with the selected count.
-  useEffect(() => {
-    setApolloUrls((prev) => {
-      if (prev.length === extraUrls) return prev;
-      if (prev.length < extraUrls) return [...prev, ...Array(extraUrls - prev.length).fill("")];
-      return prev.slice(0, extraUrls);
-    });
-  }, [extraUrls]);
 
   const applyPromo = async () => {
     const code = promo.trim().toUpperCase();
@@ -546,30 +538,19 @@ export function OrderBuilder() {
                 {service.id === "apollo" && (
                   <div className="mt-6 space-y-6 sm:mt-8">
                     <div className="w-full rounded-2xl border border-border bg-secondary/40 p-5 sm:p-7">
-                      <span className="mb-4 block font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                      <SectionLabel icon={PremiumGlobe} rightText="One box for all links">
                         Apollo search links
-                      </span>
-                      <div className="space-y-4">
-                        {apolloUrls.map((url, i) => (
-                          <div
-                            key={i}
-                            className="relative w-full rounded-2xl border border-input bg-background p-1 shadow-sm transition-all focus-within:border-violet focus-within:ring-4 focus-within:ring-violet/10"
-                          >
-                            <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-                              #{i + 1}
-                            </span>
-                            <input
-                              type="text"
-                              value={url}
-                              onChange={(e) =>
-                                setApolloUrls((prev) => prev.map((u, idx) => (idx === i ? e.target.value : u)))
-                              }
-                              placeholder="https://app.apollo.io/#/people?..."
-                              className="w-full rounded-xl bg-transparent py-5 pl-10 pr-4 font-mono text-sm outline-none placeholder:text-muted-foreground sm:py-6"
-                            />
-                          </div>
-                        ))}
-                      </div>
+                      </SectionLabel>
+                      <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+                        Paste every Apollo URL here — one per line or separated by commas. You can paste directly from a Google Sheet.
+                      </p>
+                      <textarea
+                        value={apolloUrls}
+                        onChange={(e) => setApolloUrls(e.target.value)}
+                        placeholder="https://app.apollo.io/#/people?...&#10;https://app.apollo.io/#/people?..."
+                        rows={6}
+                        className="mt-4 w-full min-h-[160px] resize-y rounded-2xl border border-input bg-background px-4 py-4 font-mono text-sm outline-none transition-all placeholder:text-muted-foreground focus:border-violet focus:ring-4 focus:ring-violet/10"
+                      />
                     </div>
 
                     <div className="w-full rounded-2xl border border-border bg-secondary/40 p-5 sm:p-7">

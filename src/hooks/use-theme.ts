@@ -45,6 +45,46 @@ function apply(theme: SiteTheme) {
   ensureMeta("mobile-web-app-capable").setAttribute("content", "yes");
   ensureMeta("msapplication-navbutton-color").setAttribute("content", color);
   ensureMeta("color-scheme").setAttribute("content", theme === "light" ? "light" : "dark");
+  retagThemedAssets(theme);
+}
+
+/** Append/replace a `?theme=<theme>` query on themed asset URLs so the
+ *  browser re-requests favicons and share-preview images when the user
+ *  toggles. If theme-variant files are later added (e.g. /favicon-light.png)
+ *  the server can key off the query and return the matching asset. */
+function withThemeParam(url: string, theme: SiteTheme): string {
+  try {
+    const u = new URL(url, window.location.origin);
+    u.searchParams.set("theme", theme);
+    // Preserve original form: absolute stays absolute, relative stays relative.
+    return /^https?:\/\//i.test(url) ? u.toString() : u.pathname + u.search + u.hash;
+  } catch {
+    return url;
+  }
+}
+
+function retagThemedAssets(theme: SiteTheme) {
+  document
+    .querySelectorAll<HTMLLinkElement>(
+      'link[rel~="icon"], link[rel="shortcut icon"], link[rel="apple-touch-icon"], link[rel="mask-icon"]',
+    )
+    .forEach((link) => {
+      const base = link.dataset.baseHref ?? link.getAttribute("href");
+      if (!base) return;
+      link.dataset.baseHref = base;
+      link.setAttribute("href", withThemeParam(base, theme));
+    });
+
+  document
+    .querySelectorAll<HTMLMetaElement>(
+      'meta[property="og:image"], meta[name="twitter:image"], meta[property="og:image:secure_url"]',
+    )
+    .forEach((meta) => {
+      const base = meta.dataset.baseContent ?? meta.getAttribute("content");
+      if (!base) return;
+      meta.dataset.baseContent = base;
+      meta.setAttribute("content", withThemeParam(base, theme));
+    });
 }
 
 export function useTheme() {

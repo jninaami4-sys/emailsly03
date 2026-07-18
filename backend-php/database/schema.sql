@@ -580,4 +580,117 @@ CREATE TABLE product_details (
   updated_at     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
+-- =========================================================
+-- CUSTOM PRODUCTS (admin-editable product catalogue)
+-- =========================================================
+CREATE TABLE custom_products (
+  id             CHAR(36) NOT NULL PRIMARY KEY,
+  slug           VARCHAR(255) NOT NULL UNIQUE,
+  name           VARCHAR(255) NOT NULL,
+  short_desc     VARCHAR(500) NULL,
+  long_desc      LONGTEXT NULL,
+  price_cents    INT NOT NULL DEFAULT 0,
+  compare_at_cents INT NULL,
+  currency       CHAR(3) NOT NULL DEFAULT 'USD',
+  status         VARCHAR(32) NOT NULL DEFAULT 'draft',
+  category       VARCHAR(100) NULL,
+  tags           JSON NULL,
+  image_url      VARCHAR(500) NULL,
+  gallery        JSON NULL,
+  bullets        JSON NULL,
+  metadata       JSON NULL,
+  sort_order     INT NOT NULL DEFAULT 0,
+  is_featured    TINYINT(1) NOT NULL DEFAULT 0,
+  created_at     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX (status), INDEX (category)
+) ENGINE=InnoDB;
+
+-- =========================================================
+-- STORE OFFERS (promo banners)
+-- =========================================================
+CREATE TABLE store_offers (
+  id             CHAR(36) NOT NULL PRIMARY KEY,
+  title          VARCHAR(255) NOT NULL,
+  subtitle       VARCHAR(500) NULL,
+  cta_label      VARCHAR(100) NULL,
+  cta_url        VARCHAR(500) NULL,
+  coupon_code    VARCHAR(64) NULL,
+  discount_pct   DECIMAL(5,2) NULL,
+  bg_color       VARCHAR(16) NULL,
+  fg_color       VARCHAR(16) NULL,
+  starts_at      DATETIME NULL,
+  ends_at        DATETIME NULL,
+  is_active      TINYINT(1) NOT NULL DEFAULT 1,
+  sort_order     INT NOT NULL DEFAULT 0,
+  updated_at     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX (is_active)
+) ENGINE=InnoDB;
+
+-- =========================================================
+-- TELEGRAM BOTS
+-- =========================================================
+CREATE TABLE telegram_bots (
+  id             CHAR(36) NOT NULL PRIMARY KEY,
+  name           VARCHAR(255) NOT NULL,
+  bot_token      VARCHAR(255) NOT NULL,
+  chat_id        VARCHAR(64) NULL,
+  purpose        VARCHAR(64) NOT NULL DEFAULT 'notifications',
+  is_active      TINYINT(1) NOT NULL DEFAULT 1,
+  created_at     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+-- =========================================================
+-- CAMPAIGNS (marketing / email campaigns)
+-- =========================================================
+CREATE TABLE campaigns (
+  id             CHAR(36) NOT NULL PRIMARY KEY,
+  name           VARCHAR(255) NOT NULL,
+  slug           VARCHAR(255) NOT NULL UNIQUE,
+  status         VARCHAR(32) NOT NULL DEFAULT 'draft',
+  channel        VARCHAR(64) NULL,
+  subject        VARCHAR(500) NULL,
+  body           LONGTEXT NULL,
+  audience_query JSON NULL,
+  scheduled_at   DATETIME NULL,
+  sent_at        DATETIME NULL,
+  stats          JSON NULL,
+  metadata       JSON NULL,
+  created_at     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX (status)
+) ENGINE=InnoDB;
+
+-- =========================================================
+-- LEGACY ORDER IMPORTS (CSV imports of pre-launch orders)
+-- =========================================================
+CREATE TABLE legacy_order_imports (
+  id             CHAR(36) NOT NULL PRIMARY KEY,
+  batch_ref      VARCHAR(64) NULL,
+  imported_by    CHAR(36) NULL,
+  row_count      INT NOT NULL DEFAULT 0,
+  success_count  INT NOT NULL DEFAULT 0,
+  error_count    INT NOT NULL DEFAULT 0,
+  errors         JSON NULL,
+  metadata       JSON NULL,
+  created_at     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX (imported_by)
+) ENGINE=InnoDB;
+
+-- =========================================================
+-- OTP CODES (email verification 6-digit codes)
+-- =========================================================
+CREATE TABLE otp_codes (
+  id         CHAR(36) NOT NULL PRIMARY KEY,
+  email      VARCHAR(255) NOT NULL,
+  code       VARCHAR(10) NOT NULL,
+  purpose    VARCHAR(32) NOT NULL DEFAULT 'verify_email',
+  expires_at DATETIME NOT NULL,
+  consumed_at DATETIME NULL,
+  attempts   INT NOT NULL DEFAULT 0,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX (email), INDEX (expires_at)
+) ENGINE=InnoDB;
+
 SET FOREIGN_KEY_CHECKS = 1;

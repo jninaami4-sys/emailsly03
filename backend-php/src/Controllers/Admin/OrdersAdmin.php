@@ -58,4 +58,64 @@ final class OrdersAdmin
         Database::pdo()->prepare('DELETE FROM orders WHERE id = ?')->execute([$p['id']]);
         Response::json(['ok' => true]);
     }
+
+    /** Bulk actions: {ids: string[], action: 'archive'|'restore'|'delete'|'cancel'|'deliver'} */
+    public function bulk(): void
+    {
+        Auth::requireAdmin();
+        $b = Request::json();
+        $ids = array_values(array_filter((array)($b['ids'] ?? []), 'is_string'));
+        $action = (string)($b['action'] ?? '');
+        if (!$ids) Response::error('No ids');
+        $ph = implode(',', array_fill(0, count($ids), '?'));
+        $pdo = Database::pdo();
+        switch ($action) {
+            case 'archive':
+                $pdo->prepare("UPDATE orders SET status='archived' WHERE id IN ($ph)")->execute($ids);
+                break;
+            case 'restore':
+                $pdo->prepare("UPDATE orders SET status='pending' WHERE id IN ($ph) AND status='archived'")->execute($ids);
+                break;
+            case 'delete':
+                $pdo->prepare("DELETE FROM orders WHERE id IN ($ph)")->execute($ids);
+                break;
+            case 'cancel':
+                $pdo->prepare("UPDATE orders SET status='cancelled', cancelled_at = NOW() WHERE id IN ($ph)")->execute($ids);
+                break;
+            case 'deliver':
+                $pdo->prepare("UPDATE orders SET status='delivered', delivered_at = NOW() WHERE id IN ($ph)")->execute($ids);
+                break;
+            default:
+                Response::error('Unknown action');
+        }
+        Response::json(['ok' => true, 'count' => count($ids)]);
+    }
+
+    public function events(array $p): void
+    {
+        Auth::requireAdmin();
+        $s = Database::pdo()->prepare('SELECT * FROM order_events WHERE order_id = ? ORDER BY created_at DESC');
+        $s->execute([$p['id']]);
+        Response::json(['events' => $s->fetchAll()]);
+    }
+
+    public function messages(array $p): void
+    {
+        Auth::requireAdmin();
+        $s = Database::pdo()->prepare('SELECT * FROM order_messages WHERE order_id = ? ORDER BY created_at ASC');
+        $s->execute([$p['id']]);
+        Response::json(['messages' => $s->fetchAll()]);
+    }
+
+    public function postMessage(array $p): void
+    {
+        $claims = Auth::requireAdmin();
+        $b = Request::json();
+        $id = Database::uuid();
+        Database::pdo()->prepare(
+            'INSERT INTO order_messages (id, order_id, sender_id, sender_role, body, created_at)
+             VALUES (?, ?, ?, ?, ?, NOW())'
+        )->execute([$id, $p['id'], $claims['sub'] ?? null, 'admin', (string)($b['body'] ?? '')]);
+        Response::json(['id' => $id]);
+    }
 }

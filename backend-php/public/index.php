@@ -175,6 +175,45 @@ $router->post  ('/api/admin/chatbot/kb',            ['Emailsly\Controllers\Admin
 // Email / SMTP diagnostics
 $router->post  ('/api/admin/test-email',            ['Emailsly\Controllers\Admin\MailAdmin', 'testSend']);
 
+// Products (custom_products)
+$router->get   ('/api/products',                    ['Emailsly\Controllers\Admin\ProductsAdmin', 'index']); // reuses admin fetcher; public list can filter status
+$router->get   ('/api/admin/products',              ['Emailsly\Controllers\Admin\ProductsAdmin', 'index']);
+$router->post  ('/api/admin/products',              ['Emailsly\Controllers\Admin\ProductsAdmin', 'create']);
+$router->patch ('/api/admin/products/{id}',         ['Emailsly\Controllers\Admin\ProductsAdmin', 'update']);
+$router->delete('/api/admin/products/{id}',         ['Emailsly\Controllers\Admin\ProductsAdmin', 'destroy']);
+
+// Store offers
+$router->get   ('/api/offers',                      ['Emailsly\Controllers\Admin\StoreOffersAdmin', 'publicList']);
+$router->get   ('/api/admin/offers',                ['Emailsly\Controllers\Admin\StoreOffersAdmin', 'index']);
+$router->post  ('/api/admin/offers',                ['Emailsly\Controllers\Admin\StoreOffersAdmin', 'create']);
+$router->patch ('/api/admin/offers/{id}',           ['Emailsly\Controllers\Admin\StoreOffersAdmin', 'update']);
+$router->delete('/api/admin/offers/{id}',           ['Emailsly\Controllers\Admin\StoreOffersAdmin', 'destroy']);
+
+// Telegram bots
+$router->get   ('/api/admin/telegram/bots',         ['Emailsly\Controllers\Admin\TelegramBotsAdmin', 'index']);
+$router->post  ('/api/admin/telegram/bots',         ['Emailsly\Controllers\Admin\TelegramBotsAdmin', 'create']);
+$router->patch ('/api/admin/telegram/bots/{id}',    ['Emailsly\Controllers\Admin\TelegramBotsAdmin', 'update']);
+$router->delete('/api/admin/telegram/bots/{id}',    ['Emailsly\Controllers\Admin\TelegramBotsAdmin', 'destroy']);
+$router->post  ('/api/admin/telegram/test',         ['Emailsly\Controllers\Admin\TelegramBotsAdmin', 'test']);
+
+// Campaigns
+$router->get   ('/api/admin/campaigns',             ['Emailsly\Controllers\Admin\CampaignsAdmin', 'index']);
+$router->post  ('/api/admin/campaigns',             ['Emailsly\Controllers\Admin\CampaignsAdmin', 'create']);
+$router->patch ('/api/admin/campaigns/{id}',        ['Emailsly\Controllers\Admin\CampaignsAdmin', 'update']);
+$router->delete('/api/admin/campaigns/{id}',        ['Emailsly\Controllers\Admin\CampaignsAdmin', 'destroy']);
+
+// Legacy CSV imports
+$router->get   ('/api/admin/legacy-imports',        ['Emailsly\Controllers\Admin\LegacyImportsAdmin', 'index']);
+$router->post  ('/api/admin/legacy-imports',        ['Emailsly\Controllers\Admin\LegacyImportsAdmin', 'import']);
+
+// Orders bulk & timeline
+$router->post  ('/api/admin/orders/bulk',           ['Emailsly\Controllers\Admin\OrdersAdmin', 'bulk']);
+$router->get   ('/api/admin/orders/{id}/events',    ['Emailsly\Controllers\Admin\OrdersAdmin', 'events']);
+$router->get   ('/api/admin/orders/{id}/messages',  ['Emailsly\Controllers\Admin\OrdersAdmin', 'messages']);
+$router->post  ('/api/admin/orders/{id}/messages',  ['Emailsly\Controllers\Admin\OrdersAdmin', 'postMessage']);
+
+
+
 // Dispatch
 try {
     $router->dispatch(

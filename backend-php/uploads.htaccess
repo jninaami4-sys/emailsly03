@@ -1,0 +1,22 @@
+# /public_html/uploads/.htaccess
+# Serve uploaded files statically. Block PHP execution for safety.
+
+<IfModule mod_headers.c>
+    Header set Cache-Control "public, max-age=31536000, immutable"
+    Header set X-Content-Type-Options "nosniff"
+</IfModule>
+
+# Never execute code from uploads
+<FilesMatch "\.(php|php\d|phtml|pl|py|jsp|asp|aspx|sh|cgi)$">
+    Require all denied
+</FilesMatch>
+
+Options -Indexes -ExecCGI
+AddType text/plain .php .phtml .php3 .php4 .php5 .php7 .php8
+
+# Reasonable content types for common uploads
+<IfModule mod_mime.c>
+    AddType image/svg+xml .svg
+    AddType image/webp .webp
+    AddType application/json .json
+</IfModule>

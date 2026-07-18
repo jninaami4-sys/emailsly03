@@ -1,16 +1,15 @@
+import { getRequestUrl, getCookie } from "@tanstack/react-start/server";
+
 /**
  * SSR-side theme resolution for shareable Open Graph tags.
  *
- * Reads (in order):
- *   1. `?theme=light|dark` on the current request URL — lets a link
- *      explicitly force a theme for crawlers or link-preview refresh.
- *   2. `emailsly:theme` cookie — the persisted user override, mirrored
- *      into a cookie by the client `useTheme` hook so subsequent SSR
- *      renders match what the browser will show post-hydration.
+ * Priority (SSR):
+ *   1. `?theme=light|dark` on the request URL — lets a shared link force
+ *      a theme so crawlers pick up the right OG variant.
+ *   2. `emailsly:theme` cookie — the persisted user override, written by
+ *      the client hook so future SSR renders match the browser.
  *
- * When called in a client context (post-hydration navigation, module
- * evaluation in the browser), returns `null` — the client-side
- * `retagThemedAssets` handles the swap in-place.
+ * Client-side calls return `null`; the browser hook rewrites tags in place.
  */
 export type SiteTheme = "dark" | "light";
 export const THEME_COOKIE = "emailsly:theme";
@@ -19,30 +18,22 @@ function parseTheme(v: string | null | undefined): SiteTheme | null {
   return v === "light" || v === "dark" ? v : null;
 }
 
-/** Server-only. Returns the request's declared theme, or null. */
+/** Returns the request's declared theme during SSR, or null. Safe on client. */
 export function readSSRTheme(): SiteTheme | null {
   if (typeof window !== "undefined") return null;
   try {
-    // Lazy import so this module stays safe to import from client code.
-    // The require path is only resolved server-side; the isomorphic
-    // guard above short-circuits before we reach here in the browser.
-    const server = require("@tanstack/react-start/server") as {
-      getRequestUrl?: () => URL;
-      getCookie?: (name: string) => string | undefined;
-    };
-    const url = server.getRequestUrl?.();
+    const url = getRequestUrl();
     const fromQuery = parseTheme(url?.searchParams.get("theme"));
     if (fromQuery) return fromQuery;
-    const fromCookie = parseTheme(server.getCookie?.(THEME_COOKIE));
+    const fromCookie = parseTheme(getCookie(THEME_COOKIE));
     if (fromCookie) return fromCookie;
   } catch {
-    // No active request context (e.g. build-time prerender without a
-    // request scope). Fall through to null and let the client resolve.
+    // No active request scope (build-time prerender). Fall through.
   }
   return null;
 }
 
-/** Append/replace a `?theme=<theme>` query on a themed asset URL. */
+/** Append/replace `?theme=<theme>` on an asset URL. */
 export function withThemeQuery(url: string, theme: SiteTheme): string {
   try {
     const base = typeof window === "undefined" ? "https://emailsly.com" : window.location.origin;

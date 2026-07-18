@@ -1,6 +1,7 @@
 import { useEffect, useState, type ReactElement, type ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 import { haptic } from "@/lib/haptics";
+import logoAsset from "@/assets/emailsly-logo-trim.png.asset.json";
 import {
   Search, ChevronRight, ExternalLink, Layout, BarChart3, Boxes, Package,
   Users, MessageSquare, Palette, Database, LineChart, Sparkles, HelpCircle,

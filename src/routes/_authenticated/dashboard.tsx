@@ -70,7 +70,7 @@ function DashboardPage() {
         <main className="mx-auto max-w-7xl px-4 pb-24 pt-6 sm:px-6 sm:pt-10 lg:px-8">
           {/* Greeting header */}
           <section className="mb-6 flex flex-col gap-5 sm:mb-8 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex min-w-0 items-center gap-3 sm:gap-4">
+            <div className="flex min-w-0 items-start gap-3 sm:items-center sm:gap-4">
               <div className="relative shrink-0">
                 {avatarUrl ? (
                   <img
@@ -87,7 +87,7 @@ function DashboardPage() {
                   <CheckCircle2 className="size-3 text-white" />
                 </span>
               </div>
-              <div className="min-w-0">
+              <div className="min-w-0 flex-1">
                 <span className="inline-flex items-center gap-1.5 rounded-full border border-violet/25 bg-violet/10 px-2.5 py-0.5 font-mono text-[10px] font-black uppercase tracking-[0.22em] text-violet">
                   <span className="relative flex size-1.5">
                     <span className="absolute inset-0 animate-ping rounded-full bg-violet/70" />
@@ -95,9 +95,9 @@ function DashboardPage() {
                   </span>
                   Member workspace
                 </span>
-                <h1 className="mt-1.5 truncate font-display text-3xl font-black leading-[1.05] tracking-tight sm:text-4xl lg:text-[44px]">
+                <h1 className="mt-1.5 font-display text-[26px] font-black leading-[1.1] tracking-tight break-words sm:text-4xl lg:text-[44px]">
                   Welcome back,{" "}
-                  <span className="bg-gradient-to-r from-violet via-magenta to-neon-orange bg-clip-text text-transparent">
+                  <span className="break-words bg-gradient-to-r from-violet via-magenta to-neon-orange bg-clip-text text-transparent">
                     {displayName}
                   </span>
                 </h1>
@@ -106,7 +106,7 @@ function DashboardPage() {
                 </p>
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
+            <div className="grid w-full grid-cols-2 gap-2 sm:w-auto sm:flex sm:flex-wrap">
               <button
                 onClick={openOrderDrawer}
                 className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet to-indigo px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet/25 transition-transform hover:scale-[1.02]"
@@ -121,6 +121,7 @@ function DashboardPage() {
               </Link>
             </div>
           </section>
+
 
           {/* Stat cards */}
           <section className="mb-8 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">

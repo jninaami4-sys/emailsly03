@@ -281,8 +281,6 @@ function FieldRenderer({
               {"img"}
             </div>
           )}
-            </div>
-          )}
           <input
             type="file"
             accept="image/*"

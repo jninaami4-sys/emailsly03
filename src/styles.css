@@ -1145,3 +1145,25 @@ html { scroll-behavior: smooth; }
 .admin-theme .liquid-glass::before {
   content: none;
 }
+
+/* ---------- Order form: persistent violet glow on all cards ---------- */
+.order-glow-scope [class*="border-border"],
+.order-glow-scope [class*="border-input"],
+.order-glow-scope [class*="border-violet"],
+.order-glow-scope [class*="border-emerald"],
+.order-glow-scope [class*="border-dashed"] {
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--violet) 45%, transparent),
+    0 0 18px -2px color-mix(in oklab, var(--violet) 35%, transparent),
+    0 0 40px -8px color-mix(in oklab, var(--violet) 30%, transparent) !important;
+  border-color: color-mix(in oklab, var(--violet) 55%, var(--border)) !important;
+  transition: box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.order-glow-scope [class*="border-border"]:hover,
+.order-glow-scope [class*="border-input"]:hover {
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--violet) 70%, transparent),
+    0 0 26px -2px color-mix(in oklab, var(--violet) 55%, transparent),
+    0 0 60px -10px color-mix(in oklab, var(--violet) 45%, transparent) !important;
+}
+

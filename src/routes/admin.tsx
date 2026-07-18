@@ -28,6 +28,7 @@ import { BlogAnalyticsAdmin } from "@/components/admin/BlogAnalyticsAdmin";
 import { BlogPostsAdmin } from "@/components/admin/BlogPostsAdmin";
 import { EmailTestAdmin } from "@/components/admin/EmailTestAdmin";
 import { MailLogsAdmin } from "@/components/admin/MailLogsAdmin";
+import { DnsCheckAdmin } from "@/components/admin/DnsCheckAdmin";
 import { StoreOffersAdmin } from "@/components/admin/StoreOffersAdmin";
 import { TelegramBotsAdmin } from "@/components/admin/TelegramBotsAdmin";
 import { BackupRestoreAdmin } from "@/components/admin/BackupRestoreAdmin";
@@ -387,6 +388,7 @@ function AdminPage() {
         { id: "backup-restore", label: "Backup / Restore", desc: "Download or restore a JSON backup of site data.", icon: Database, keywords: "backup restore json export" },
         { id: "email-test", label: "Email Diagnostics", desc: "Send test emails through each SMTP sender.", icon: Mail, keywords: "email smtp test diagnostics deliverability" },
         { id: "mail-logs", label: "Mail Log", desc: "Recent auth & order email sends with metadata and preview.", icon: Mail, keywords: "mail log emails sent history outbox" },
+        { id: "dns-check", label: "Email DNS Checker", desc: "Verify SPF, DKIM, and DMARC records for your sender domain.", icon: Mail, keywords: "spf dkim dmarc dns deliverability" },
       ],
     },
   ];
@@ -430,6 +432,7 @@ function AdminPage() {
     telegram: <TelegramBotsAdmin />,
     "email-test": <EmailTestAdmin />,
     "mail-logs": <MailLogsAdmin />,
+    "dns-check": <DnsCheckAdmin />,
   };
 
   return (

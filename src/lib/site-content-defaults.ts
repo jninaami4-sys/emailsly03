@@ -1,5 +1,7 @@
 // Default site content — used as fallback when a section isn't set in DB.
 // Editable via Admin → Site Content.
+import { DEFAULT_SERVICE_CARDS } from "@/lib/service-icons";
+
 
 export const SITE_CONTENT_DEFAULTS = {
   hero: {

@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ogImageMeta, OG_IMAGES } from "@/lib/og-images";
+import { ogImageMeta, OG_IMAGES, matchTheme } from "@/lib/og-images";
 import { SiteShell } from "@/components/site/SiteShell";
 import { ProductCard } from "@/components/site/ProductCard";
 import { PRODUCTS } from "@/lib/products";
@@ -45,13 +45,14 @@ const defaultFaqs = [
 ];
 
 export const Route = createFileRoute("/")({
-  head: () => ({
+  head: ({ matches }) => ({
     meta: [
       { title: "EmailsLy | B2B Leads from Apollo, ZoomInfo & LinkedIn" },
       { name: "description", content: "Clean, verified B2B lead exports from Apollo, ZoomInfo, and LinkedIn Sales Navigator — delivered to your CRM in 24 hours." },
       { property: "og:title", content: "EmailsLy — Verified B2B Data Platform" },
       { property: "og:description", content: "Verified leads delivered to your CRM in 24h. No manual cleaning." },
-      ...ogImageMeta(OG_IMAGES.default),
+      ...ogImageMeta(OG_IMAGES.default, matchTheme(matches)),
+
     ],
     links: [{ rel: "canonical", href: "/" }],
     scripts: [

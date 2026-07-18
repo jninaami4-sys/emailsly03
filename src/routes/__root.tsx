@@ -80,9 +80,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "Verified B2B lead data. Pay per lead, no subscription, 24-hour delivery, 99% accuracy.",
       },
       { property: "og:type", content: "website" },
-      { name: "theme-color", content: "#7C3AED" },
-      // og:image / twitter:image are set per-leaf-route via ogImageMeta()
-      // from '@/lib/og-images' so each page can pick a branded template.
+      // theme-color, color-scheme, apple-mobile-web-app-status-bar-style,
+      // <html class="site-light">, and og:image?theme=<t> are stamped
+      // per-request in src/server.ts based on ?theme=/cookie so SSR HTML
+      // and share previews always match the requested theme, even though
+      // TanStack calls head() before loaders resolve.
+      { name: "theme-color", content: "#0a0b14" },
+      { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
+      { name: "color-scheme", content: "dark" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -105,11 +110,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   errorComponent: ErrorComponent,
 });
 
+
+
 function RootShell({ children }: { children: ReactNode }) {
+  // The <html> class + data-theme is rewritten server-side per-request in
+  // src/server.ts based on ?theme=/cookie; the pre-hydration script below
+  // handles the client bootstrap. Rendering neither here avoids a
+  // hydration mismatch when the SSR rewrite has flipped the class.
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
-        {/* Applies the persisted theme class before hydration to prevent flash */}
         <script dangerouslySetInnerHTML={{ __html: themeBootScript }} />
         <HeadContent />
       </head>
@@ -120,6 +130,8 @@ function RootShell({ children }: { children: ReactNode }) {
     </html>
   );
 }
+
+
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();

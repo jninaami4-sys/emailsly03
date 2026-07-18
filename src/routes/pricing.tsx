@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ogImageMeta, OG_IMAGES } from "@/lib/og-images";
+import { ogImageMeta, OG_IMAGES, matchTheme } from "@/lib/og-images";
 import { SiteShell } from "@/components/site/SiteShell";
 import { PricingCalculator } from "@/components/site/PricingCalculator";
 import { Zap, Crown, Phone, Linkedin, PenTool, ArrowRight, CheckCircle2 } from "lucide-react";
@@ -7,7 +7,7 @@ import { PremiumSparkles as Sparkles } from "@/components/site/PremiumIcons";
 import { AddOns } from "@/components/site/AddOns";
 
 export const Route = createFileRoute("/pricing")({
-  head: () => ({
+  head: ({ matches }) => ({
     meta: [
       { title: "Pricing — Simple, Honest Pricing | EmailsLy" },
       {
@@ -20,7 +20,8 @@ export const Route = createFileRoute("/pricing")({
         property: "og:description",
         content: "B2B leads at a fraction of the cost. Pay per lead, no subscription.",
       },
-      ...ogImageMeta(OG_IMAGES.pricing),
+      ...ogImageMeta(OG_IMAGES.pricing, matchTheme(matches)),
+
     ],
     links: [{ rel: "canonical", href: "/pricing" }],
     scripts: [

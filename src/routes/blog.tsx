@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { ogImageMeta, OG_IMAGES } from "@/lib/og-images";
+import { ogImageMeta, OG_IMAGES, matchTheme } from "@/lib/og-images";
 import { SiteShell } from "@/components/site/SiteShell";
 import { BLOG_POSTS, formatPublishedAt, type BlogPost } from "@/lib/blog-posts";
 import { listPublishedBlogPosts } from "@/lib/blog-cms.functions";
@@ -9,7 +9,7 @@ import { ArrowRight } from "lucide-react";
 import { PremiumSparkles as Sparkles } from "@/components/site/PremiumIcons";
 
 export const Route = createFileRoute("/blog")({
-  head: () => ({
+  head: ({ matches }) => ({
     meta: [
       { title: "Blog — Outbound, data, and RevOps playbooks | EmailsLy" },
       {
@@ -22,7 +22,8 @@ export const Route = createFileRoute("/blog")({
         property: "og:description",
         content: "Deliverability, ICP, RevOps — practical guides from the EmailsLy team.",
       },
-      ...ogImageMeta(OG_IMAGES.blog),
+      ...ogImageMeta(OG_IMAGES.blog, matchTheme(matches)),
+
     ],
     links: [{ rel: "canonical", href: "/blog" }],
   }),

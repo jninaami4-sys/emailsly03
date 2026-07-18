@@ -28,19 +28,19 @@ export function OrderForm() {
   return (
     <section id="order" className="relative overflow-hidden px-6 py-24">
       {/* Decorative blobs */}
-      <div className="pointer-events-none absolute -left-24 top-10 size-72 rounded-full bg-violet-soft blur-3xl" />
-      <div className="pointer-events-none absolute -right-16 bottom-0 size-80 rounded-full bg-coral-soft blur-3xl" />
+      <div className="pointer-events-none absolute -left-24 top-10 size-72 rounded-full bg-primary/15 blur-3xl" />
+      <div className="pointer-events-none absolute -right-16 bottom-0 size-80 rounded-full bg-primary/10 blur-3xl" />
 
       <div className="relative mx-auto max-w-6xl">
         <div className="mb-10 text-center">
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-violet/20 bg-violet-soft px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-wider text-violet">
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-wider text-primary">
             <Sparkles className="size-3" /> Place your order
           </div>
           <h2 className="font-display text-3xl font-bold lg:text-5xl">
             Start your{" "}
             <span className="relative inline-block">
-              <span className="relative z-10 italic text-violet">order</span>
-              <span className="absolute -bottom-1 left-0 h-3 w-full -rotate-1 bg-coral-soft" />
+              <span className="relative z-10 italic text-primary">order</span>
+              <span className="absolute -bottom-1 left-0 h-3 w-full -rotate-1 bg-primary/15" />
             </span>{" "}
             below
           </h2>
@@ -128,7 +128,7 @@ export function OrderForm() {
             <button
               type="submit"
               disabled={status !== "idle"}
-              className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-violet px-5 py-3.5 font-semibold text-white shadow-lg shadow-violet/25 transition-transform hover:scale-[1.01] disabled:opacity-70"
+              className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3.5 font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition-transform hover:scale-[1.01] disabled:opacity-70"
             >
               {status === "sending" && <Loader2 className="size-4 animate-spin" />}
               {status === "done" && <CheckCircle2 className="size-4" />}
@@ -141,9 +141,10 @@ export function OrderForm() {
           </form>
 
           {/* Summary */}
-          <aside className="relative overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-ink to-[oklch(0.28_0.05_270)] p-8 text-white">
-            <div className="absolute -right-10 -top-10 size-40 rounded-full bg-violet/40 blur-3xl" />
-            <div className="absolute -bottom-10 -left-10 size-40 rounded-full bg-coral/30 blur-3xl" />
+          <aside className="relative overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-[oklch(0.16_0.02_260)] to-[oklch(0.22_0.04_258)] p-8 text-white">
+            <div className="absolute -right-10 -top-10 size-40 rounded-full bg-primary/40 blur-3xl" />
+            <div className="absolute -bottom-10 -left-10 size-40 rounded-full bg-primary/20 blur-3xl" />
+
             <div className="relative">
               <div className="font-mono text-[10px] uppercase tracking-widest text-white/60">
                 Order summary
@@ -188,7 +189,7 @@ export function OrderForm() {
 }
 
 const inputClass =
-  "w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-sm outline-none transition-colors focus:border-violet focus:ring-2 focus:ring-violet/20";
+  "w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-sm outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20";
 
 function Field({
   label,
@@ -205,7 +206,7 @@ function Field({
     <label className={`block ${className}`}>
       <span className="mb-1.5 block font-mono text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
         {label}
-        {required && <span className="ml-1 text-coral">*</span>}
+        {required && <span className="ml-1 text-primary">*</span>}
       </span>
       {children}
     </label>

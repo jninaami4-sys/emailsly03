@@ -563,8 +563,8 @@ export function OrderBuilder() {
                     <Field label="Apollo search links">
                       <textarea
                         placeholder="https://app.apollo.io/#/people?..."
-                        rows={2}
-                        className="w-full resize-none rounded-xl border border-input bg-background px-4 py-3 font-mono text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-violet focus:ring-4 focus:ring-violet/10"
+                        rows={5}
+                        className="w-full min-h-[120px] resize-y rounded-xl border border-input bg-background px-4 py-3 font-mono text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-violet focus:ring-4 focus:ring-violet/10"
                       />
                     </Field>
                   </div>

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { upsertSiteContent } from "@/lib/site-content.functions";
-import { supabase } from "@/integrations/supabase/client";
+import { uploadsApi } from "@/lib/api-client";
 import { Save, Loader2 } from "@/components/admin/AdminIcons";
 import {
   SERVICE_ICON_KEYS,
@@ -11,20 +11,15 @@ import {
   getGradientPreset,
 } from "@/lib/service-icons";
 
-const SIGNED_URL_TTL = 60 * 60 * 24 * 365 * 30;
-
 async function uploadImage(file: File, folder: string): Promise<string> {
   const ext = (file.name.split(".").pop() || "png").toLowerCase().replace(/[^a-z0-9]/g, "") || "png";
   const path = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-  const up = await supabase.storage.from("brand-assets").upload(path, file, {
-    cacheControl: "31536000",
-    upsert: false,
+  const res = await uploadsApi.upload("brand-assets", file, {
+    path,
     contentType: file.type || undefined,
+    cacheControl: "31536000",
   });
-  if (up.error) throw up.error;
-  const signed = await supabase.storage.from("brand-assets").createSignedUrl(path, SIGNED_URL_TTL);
-  if (signed.error || !signed.data?.signedUrl) throw signed.error || new Error("Failed to sign URL");
-  return signed.data.signedUrl;
+  return res.url;
 }
 
 export type FieldDef = {

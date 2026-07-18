@@ -361,3 +361,95 @@ function ColorField({
     </div>
   );
 }
+
+function AssetField({
+  label,
+  hint,
+  value,
+  onChange,
+  kind,
+  accept,
+  placeholder,
+}: {
+  label: string;
+  hint?: string;
+  value: string;
+  onChange: (v: string) => void;
+  kind: string;
+  accept: string;
+  placeholder?: string;
+}) {
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+
+  async function handleFile(file: File) {
+    setErr(null);
+    if (file.size > 5 * 1024 * 1024) {
+      setErr("File is larger than 5 MB. Please compress or resize it.");
+      return;
+    }
+    setUploading(true);
+    try {
+      const url = await uploadBrandAsset(file, kind);
+      onChange(url);
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : "Upload failed");
+    } finally {
+      setUploading(false);
+      if (inputRef.current) inputRef.current.value = "";
+    }
+  }
+
+  return (
+    <div>
+      <label className="mb-1 block font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+        {label}
+      </label>
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-stretch">
+        <input
+          type="url"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className="min-w-0 flex-1 rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-violet"
+          placeholder={placeholder}
+        />
+        <div className="flex items-center gap-2">
+          <input
+            ref={inputRef}
+            type="file"
+            accept={accept}
+            className="hidden"
+            onChange={(e) => {
+              const f = e.target.files?.[0];
+              if (f) void handleFile(f);
+            }}
+          />
+          <button
+            type="button"
+            onClick={() => inputRef.current?.click()}
+            disabled={uploading}
+            className="inline-flex items-center gap-2 rounded-xl border border-border bg-background px-4 py-3 text-sm font-semibold hover:border-violet disabled:opacity-60"
+          >
+            {uploading ? <Loader2 className="size-4 animate-spin" /> : null}
+            {uploading ? "Uploading…" : "Upload"}
+          </button>
+          {value && (
+            <a
+              href={value}
+              target="_blank"
+              rel="noreferrer"
+              className="hidden shrink-0 items-center overflow-hidden rounded-xl border border-border bg-background sm:inline-flex"
+              aria-label="Preview"
+            >
+              <img src={value} alt="" className="h-11 w-11 object-contain" />
+            </a>
+          )}
+        </div>
+      </div>
+      {err && <p className="mt-1 text-[11px] text-coral">{err}</p>}
+      {hint && !err && <p className="mt-1 text-[11px] text-muted-foreground">{hint}</p>}
+    </div>
+  );
+}
+

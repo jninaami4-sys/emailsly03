@@ -13,6 +13,8 @@ import ogBlogAsset from "@/assets/og-blog.png.asset.json";
  */
 const SITE_ORIGIN = "https://emailsly.com";
 
+export type SiteTheme = "dark" | "light";
+
 function absolute(url: string): string {
   if (/^https?:\/\//i.test(url)) return url;
   return `${SITE_ORIGIN}${url.startsWith("/") ? "" : "/"}${url}`;
@@ -26,16 +28,42 @@ export const OG_IMAGES = {
 
 export type OgImageKey = keyof typeof OG_IMAGES;
 
+/** Append/replace `?theme=<theme>` on an absolute asset URL. */
+function withThemeQuery(url: string, theme: SiteTheme): string {
+  try {
+    const u = new URL(url);
+    u.searchParams.set("theme", theme);
+    return u.toString();
+  } catch {
+    const sep = url.includes("?") ? "&" : "?";
+    return `${url}${sep}theme=${theme}`;
+  }
+}
+
+/**
+ * Pull the SSR-resolved theme out of the route match tree. The root
+ * loader stores it on its match; leaf `head()` receives `matches` and
+ * forwards it here.
+ */
+export function matchTheme(matches: ReadonlyArray<{ routeId: string; loaderData?: unknown }> | undefined): SiteTheme | null {
+  if (!matches) return null;
+  const root = matches.find((m) => m.routeId === "__root__");
+  const data = root?.loaderData as { theme?: SiteTheme } | undefined;
+  return data?.theme === "light" || data?.theme === "dark" ? data.theme : null;
+}
+
 /**
  * Build the standard social-card meta entries (og:image + twitter:image
- * + twitter:card). Spread the result into a route's `meta` array.
+ * + twitter:card). When a theme is provided, appends `?theme=<theme>` so
+ * SSR-rendered share previews reflect the requested variant.
  */
-export function ogImageMeta(image: string = OG_IMAGES.default) {
+export function ogImageMeta(image: string = OG_IMAGES.default, theme?: SiteTheme | null) {
+  const url = theme ? withThemeQuery(image, theme) : image;
   return [
     { name: "twitter:card", content: "summary_large_image" },
-    { property: "og:image", content: image },
+    { property: "og:image", content: url },
     { property: "og:image:width", content: "1200" },
     { property: "og:image:height", content: "630" },
-    { name: "twitter:image", content: image },
+    { name: "twitter:image", content: url },
   ] as const;
 }

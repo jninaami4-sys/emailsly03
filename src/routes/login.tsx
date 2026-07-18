@@ -98,12 +98,13 @@ function AuthPage() {
     setOtpError(null);
     setOtpBusy(true);
     try {
-      const { error } = await supabase.auth.verifyOtp({
-        email: pendingVerify,
-        token,
-        type: "signup",
-      });
-      if (error) throw error;
+      await authApi.verifyOtp(pendingVerify, token);
+      // After verification, log in so we have a session.
+      try {
+        await authApi.login({ email: pendingVerify, password });
+      } catch {
+        /* if login fails (e.g. password changed), send to sign-in */
+      }
       const target = search.redirect && search.redirect.startsWith("/") ? search.redirect : "/";
       window.location.replace(target);
     } catch (err) {
@@ -118,16 +119,7 @@ function AuthPage() {
     window.localStorage.setItem("lyra_remember_me", rememberMe ? "true" : "false");
   }, [rememberMe]);
 
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    if (!rememberMe && window.localStorage.getItem("lyra_remember_me") === "false") {
-      const handleUnload = () => {
-        supabase.auth.signOut({ scope: "local" });
-      };
-      window.addEventListener("beforeunload", handleUnload);
-      return () => window.removeEventListener("beforeunload", handleUnload);
-    }
-  }, [rememberMe]);
+
 
 
   useEffect(() => {

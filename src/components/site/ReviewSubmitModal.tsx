@@ -227,19 +227,16 @@ function SubmitFlow({
         const base = `${user.id}/${crypto.randomUUID()}`;
         const vPath = `${base}.${compressed.ext}`;
         const pPath = `${base}.jpg`;
-        const up1 = await supabase.storage
-          .from("reviews")
-          .upload(vPath, compressed.video, {
-            contentType: compressed.mimeType,
-            upsert: false,
-          });
-        if (up1.error) throw new Error(up1.error.message);
-        const up2 = await supabase.storage
-          .from("reviews")
-          .upload(pPath, compressed.poster, { contentType: "image/jpeg", upsert: false });
-        if (up2.error) throw new Error(up2.error.message);
-        videoPath = vPath;
-        posterPath = pPath;
+        const up1 = await uploadsApi.upload("reviews", compressed.video, {
+          path: vPath,
+          contentType: compressed.mimeType,
+        });
+        const up2 = await uploadsApi.upload("reviews", compressed.poster, {
+          path: pPath,
+          contentType: "image/jpeg",
+        });
+        videoPath = up1.path;
+        posterPath = up2.path;
       }
 
       await submitFn({

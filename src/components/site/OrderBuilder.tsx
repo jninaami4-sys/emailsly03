@@ -884,6 +884,7 @@ export function OrderBuilder() {
                     unit: service.unit,
                     base: base.toFixed(2),
                     extraUrls: String(extraUrls),
+                    apolloUrls: apolloUrls || undefined,
                     verifier: verifier ? "1" : "0",
                     rush: rush ? "1" : "0",
                     rushFee: rushFee.toFixed(2),

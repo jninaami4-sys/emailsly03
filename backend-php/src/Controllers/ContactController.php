@@ -1,11 +1,12 @@
 <?php
 namespace Emailsly\Controllers;
-use Emailsly\{Database, Mailer, Request, Response};
+use Emailsly\{Database, Mailer, RateLimit, Request, Response};
 
 final class ContactController
 {
     public function submit(): void
     {
+        RateLimit::check('contact_submit', 5, 600);
         $b = Request::json();
         $id = Database::uuid();
         Database::pdo()->prepare(

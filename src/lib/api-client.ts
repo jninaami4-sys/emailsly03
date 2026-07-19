@@ -403,9 +403,10 @@ export const adminLegacyImportsApi = {
 
 // -------- Admin — Backup / Restore --------
 export const adminBackupApi = {
-  export: () => g<{ backup: any }>("/api/admin/backup"),
-  import: (backup: unknown) => j("/api/admin/restore", { backup }),
+  export: () => g<{ backup: any }>("/api/admin/backup/export"),
+  import: (backup: unknown) => j("/api/admin/backup/restore", { backup }),
 };
+
 
 // -------- Site content (public + admin) --------
 export const siteContentApi = {
@@ -483,10 +484,12 @@ export const blogSeoApi = {
   get: (slug: string) => g<{ override: any | null }>(`/api/blog/seo/${encodeURIComponent(slug)}`),
 };
 export const adminBlogSeoApi = {
-  list: () => g<{ overrides: any[] }>("/api/admin/blog/seo"),
-  upsert: (body: unknown) => j("/api/admin/blog/seo", body, "PUT"),
-  destroy: (slug: string) => del(`/api/admin/blog/seo/${encodeURIComponent(slug)}`),
+  list: () => g<{ overrides: any[] }>("/api/admin/blog-seo"),
+  upsert: (body: { slug: string } & Record<string, unknown>) =>
+    j(`/api/admin/blog-seo/${encodeURIComponent(body.slug)}`, body, "PUT"),
+  destroy: (slug: string) => del(`/api/admin/blog-seo/${encodeURIComponent(slug)}`),
 };
+
 
 // -------- Blog analytics --------
 export const blogAnalyticsApi = {
@@ -503,8 +506,9 @@ export const adminBlogAnalyticsApi = {
   summary: (query?: { days?: number }) =>
     g<{ rows: any[] }>("/api/admin/blog/analytics/summary", query),
   forSlug: (query: { slug: string; days?: number }) =>
-    g<{ report: any }>("/api/admin/blog/analytics/slug", query),
+    g<{ report: any }>(`/api/admin/blog/analytics/${encodeURIComponent(query.slug)}`, { days: query.days }),
 };
+
 
 // -------- Product details (extended per-slug CMS) --------
 export const productDetailsApi = {
@@ -620,7 +624,8 @@ export const adminChatbotApi = {
   ticketsList: () => g<{ tickets: any[] }>("/api/admin/chatbot/tickets"),
   ticketUpdate: (id: string, body: unknown) => patch(`/api/admin/chatbot/tickets/${id}`, body),
   telegramWebhook: (webhookUrl: string) =>
-    j<{ ok: boolean; description?: string }>("/api/admin/chatbot/telegram-webhook", { webhookUrl }),
+    j<{ ok: boolean; description?: string }>("/api/public/telegram/webhook", { webhookUrl }),
+
   syncKb: () => j<{ ok: true; inserted: number; removed: number; categories: Record<string, number> }>(
     "/api/admin/chatbot/kb/sync",
     {},
@@ -640,8 +645,9 @@ export const adminUsersApi = {
   list: (query?: { q?: string }) => g<{ users: any[] }>("/api/admin/users", query),
   update: (id: string, body: unknown) => patch(`/api/admin/users/${id}`, body),
   setRole: (id: string, role: "admin" | "user", enabled: boolean) =>
-    j("/api/admin/users/roles", { user_id: id, role, enabled }),
+    j(`/api/admin/users/${id}/roles`, { role, enabled }),
 };
+
 
 // -------- Analytics --------
 export const adminAnalyticsApi = {
@@ -703,10 +709,11 @@ export const adminConversionEventsApi = {
 
 // -------- Admin — Server-side tracking config --------
 export const adminServerTrackingApi = {
-  get: () => g<{ config: any }>("/api/admin/server-tracking/config"),
-  update: (body: unknown) => patch("/api/admin/server-tracking/config", body),
+  get: () => g<{ config: any }>("/api/admin/server-tracking"),
+  update: (body: unknown) => api("/api/admin/server-tracking", { method: "PUT", body }),
   log: () => g<{ events: any[] }>("/api/admin/server-tracking/log"),
 };
+
 
 // -------- Admin — Data portability (bulk import / export) --------
 export const adminPortabilityApi = {

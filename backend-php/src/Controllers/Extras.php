@@ -1138,4 +1138,81 @@ final class Extras
         $s->execute($args);
         Response::json(['deliveries' => $s->fetchAll()]);
     }
+
+    // ---------- Admin: order stats ----------
+    public function adminOrdersStats(): void
+    {
+        Auth::requireAdmin();
+        $pdo = self::pdo();
+        $row = $pdo->query("SELECT
+            COUNT(*) AS total_orders,
+            SUM(CASE WHEN payment_status='paid' THEN 1 ELSE 0 END) AS paid_count,
+            COALESCE(SUM(CASE WHEN payment_status='paid' THEN total_cents ELSE 0 END),0) AS revenue_cents,
+            COALESCE(SUM(CASE WHEN payment_status='paid' AND created_at >= DATE_FORMAT(NOW() ,'%Y-%m-01') THEN total_cents ELSE 0 END),0) AS revenue_month_cents,
+            COALESCE(SUM(CASE WHEN payment_status='refunded' THEN total_cents ELSE 0 END),0) AS refunded_cents,
+            COALESCE(AVG(CASE WHEN payment_status='paid' THEN total_cents END),0) AS avg_order_cents
+        FROM orders")->fetch();
+        $byStatus = [];
+        foreach ($pdo->query("SELECT status, COUNT(*) c FROM orders GROUP BY status") as $r) {
+            $byStatus[(string)$r['status']] = (int)$r['c'];
+        }
+        Response::json([
+            'total_orders'        => (int)($row['total_orders'] ?? 0),
+            'paid_count'          => (int)($row['paid_count'] ?? 0),
+            'revenue_cents'       => (int)($row['revenue_cents'] ?? 0),
+            'revenue_month_cents' => (int)($row['revenue_month_cents'] ?? 0),
+            'refunded_cents'      => (int)($row['refunded_cents'] ?? 0),
+            'avg_order_cents'     => (int)round((float)($row['avg_order_cents'] ?? 0)),
+            'by_status'           => $byStatus,
+        ]);
+    }
+
+    // ---------- Admin: magic-link (password reset email) ----------
+    public function adminUsersMagicLink(): void
+    {
+        Auth::requireAdmin();
+        $b = Request::json();
+        $email = trim((string)($b['email'] ?? ''));
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) Response::error('Invalid email', 400);
+        $token = bin2hex(random_bytes(24));
+        $s = self::pdo()->prepare('INSERT INTO password_resets (email, token, expires_at) VALUES (?, ?, DATE_ADD(NOW(), INTERVAL 1 HOUR))');
+        try { $s->execute([$email, $token]); } catch (\Throwable $e) { /* table optional */ }
+        $base = rtrim((string)($_ENV['APP_URL'] ?? ''), '/');
+        $link = $base . '/reset-password?token=' . $token;
+        Mailer::send('auth', $email, 'Your sign-in link', "Sign in: $link\n\nExpires in 1 hour.");
+        Response::json(['ok' => true]);
+    }
+
+    // ---------- Admin: campaign preview ----------
+    public function adminCampaignsPreview(): void
+    {
+        Auth::requireAdmin();
+        $b = Request::json();
+        $subject = (string)($b['subject'] ?? '');
+        $html    = (string)($b['html'] ?? $b['body'] ?? '');
+        $sampleTo = (string)($b['to'] ?? $_ENV['ADMIN_EMAIL'] ?? '');
+        if ($sampleTo && filter_var($sampleTo, FILTER_VALIDATE_EMAIL)) {
+            Mailer::send('orders', $sampleTo, '[Preview] ' . $subject, $html);
+        }
+        Response::json(['ok' => true, 'preview_subject' => $subject, 'preview_html' => $html]);
+    }
+
+    // ---------- Public: referral click ping ----------
+    public function referralClick(): void
+    {
+        $b = Request::json();
+        $code    = trim((string)($b['code'] ?? ''));
+        $visitor = trim((string)($b['visitor_id'] ?? ''));
+        if ($code === '') Response::error('Missing code', 400);
+        try {
+            $s = self::pdo()->prepare(
+                'INSERT INTO referral_clicks (code, visitor_id, click_day, created_at)
+                 VALUES (?, ?, CURDATE(), NOW())
+                 ON DUPLICATE KEY UPDATE visitor_id = visitor_id'
+            );
+            $s->execute([$code, $visitor]);
+        } catch (\Throwable $e) { /* table optional / dedupe */ }
+        Response::json(['ok' => true]);
+    }
 }
+

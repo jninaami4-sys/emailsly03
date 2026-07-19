@@ -42,12 +42,8 @@ import { Route as ApiHealthRouteImport } from './routes/api/health'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
-import { Route as ApiPublicReferralClickRouteImport } from './routes/api/public/referral-click'
 import { Route as AuthenticatedInvoiceOrderIdRouteImport } from './routes/_authenticated/invoice.$orderId'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
-import { Route as ApiPublicWebhooksStripeRouteImport } from './routes/api/public/webhooks/stripe'
-import { Route as ApiPublicTelegramWebhookRouteImport } from './routes/api/public/telegram/webhook'
-import { Route as ApiPublicHooksKbSyncRouteImport } from './routes/api/public/hooks/kb-sync'
 
 const ZoominfoLeadsRoute = ZoominfoLeadsRouteImport.update({
   id: '/zoominfo-leads',
@@ -216,11 +212,6 @@ const Char91DotmcpChar93ListToolsRoute =
     path: '/.mcp/list-tools',
     getParentRoute: () => rootRouteImport,
   } as any)
-const ApiPublicReferralClickRoute = ApiPublicReferralClickRouteImport.update({
-  id: '/api/public/referral-click',
-  path: '/api/public/referral-click',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AuthenticatedInvoiceOrderIdRoute =
   AuthenticatedInvoiceOrderIdRouteImport.update({
     id: '/invoice/$orderId',
@@ -233,22 +224,6 @@ const Char91DotmcpChar93InvokeToolToolRoute =
     path: '/.mcp/invoke-tool/$tool',
     getParentRoute: () => rootRouteImport,
   } as any)
-const ApiPublicWebhooksStripeRoute = ApiPublicWebhooksStripeRouteImport.update({
-  id: '/api/public/webhooks/stripe',
-  path: '/api/public/webhooks/stripe',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicTelegramWebhookRoute =
-  ApiPublicTelegramWebhookRouteImport.update({
-    id: '/api/public/telegram/webhook',
-    path: '/api/public/telegram/webhook',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicHooksKbSyncRoute = ApiPublicHooksKbSyncRouteImport.update({
-  id: '/api/public/hooks/kb-sync',
-  path: '/api/public/hooks/kb-sync',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -285,10 +260,6 @@ export interface FileRoutesByFullPath {
   '/blog/': typeof BlogIndexRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/invoice/$orderId': typeof AuthenticatedInvoiceOrderIdRoute
-  '/api/public/referral-click': typeof ApiPublicReferralClickRoute
-  '/api/public/hooks/kb-sync': typeof ApiPublicHooksKbSyncRoute
-  '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
-  '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -325,10 +296,6 @@ export interface FileRoutesByTo {
   '/blog': typeof BlogIndexRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/invoice/$orderId': typeof AuthenticatedInvoiceOrderIdRoute
-  '/api/public/referral-click': typeof ApiPublicReferralClickRoute
-  '/api/public/hooks/kb-sync': typeof ApiPublicHooksKbSyncRoute
-  '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
-  '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -367,10 +334,6 @@ export interface FileRoutesById {
   '/blog/': typeof BlogIndexRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/_authenticated/invoice/$orderId': typeof AuthenticatedInvoiceOrderIdRoute
-  '/api/public/referral-click': typeof ApiPublicReferralClickRoute
-  '/api/public/hooks/kb-sync': typeof ApiPublicHooksKbSyncRoute
-  '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
-  '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -409,10 +372,6 @@ export interface FileRouteTypes {
     | '/blog/'
     | '/.mcp/invoke-tool/$tool'
     | '/invoice/$orderId'
-    | '/api/public/referral-click'
-    | '/api/public/hooks/kb-sync'
-    | '/api/public/telegram/webhook'
-    | '/api/public/webhooks/stripe'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -449,10 +408,6 @@ export interface FileRouteTypes {
     | '/blog'
     | '/.mcp/invoke-tool/$tool'
     | '/invoice/$orderId'
-    | '/api/public/referral-click'
-    | '/api/public/hooks/kb-sync'
-    | '/api/public/telegram/webhook'
-    | '/api/public/webhooks/stripe'
   id:
     | '__root__'
     | '/'
@@ -490,10 +445,6 @@ export interface FileRouteTypes {
     | '/blog/'
     | '/.mcp/invoke-tool/$tool'
     | '/_authenticated/invoice/$orderId'
-    | '/api/public/referral-click'
-    | '/api/public/hooks/kb-sync'
-    | '/api/public/telegram/webhook'
-    | '/api/public/webhooks/stripe'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -530,10 +481,6 @@ export interface RootRouteChildren {
   BlogSlugRoute: typeof BlogSlugRoute
   BlogIndexRoute: typeof BlogIndexRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
-  ApiPublicReferralClickRoute: typeof ApiPublicReferralClickRoute
-  ApiPublicHooksKbSyncRoute: typeof ApiPublicHooksKbSyncRoute
-  ApiPublicTelegramWebhookRoute: typeof ApiPublicTelegramWebhookRoute
-  ApiPublicWebhooksStripeRoute: typeof ApiPublicWebhooksStripeRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -769,13 +716,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/referral-click': {
-      id: '/api/public/referral-click'
-      path: '/api/public/referral-click'
-      fullPath: '/api/public/referral-click'
-      preLoaderRoute: typeof ApiPublicReferralClickRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/_authenticated/invoice/$orderId': {
       id: '/_authenticated/invoice/$orderId'
       path: '/invoice/$orderId'
@@ -788,27 +728,6 @@ declare module '@tanstack/react-router' {
       path: '/.mcp/invoke-tool/$tool'
       fullPath: '/.mcp/invoke-tool/$tool'
       preLoaderRoute: typeof Char91DotmcpChar93InvokeToolToolRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/webhooks/stripe': {
-      id: '/api/public/webhooks/stripe'
-      path: '/api/public/webhooks/stripe'
-      fullPath: '/api/public/webhooks/stripe'
-      preLoaderRoute: typeof ApiPublicWebhooksStripeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/telegram/webhook': {
-      id: '/api/public/telegram/webhook'
-      path: '/api/public/telegram/webhook'
-      fullPath: '/api/public/telegram/webhook'
-      preLoaderRoute: typeof ApiPublicTelegramWebhookRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/hooks/kb-sync': {
-      id: '/api/public/hooks/kb-sync'
-      path: '/api/public/hooks/kb-sync'
-      fullPath: '/api/public/hooks/kb-sync'
-      preLoaderRoute: typeof ApiPublicHooksKbSyncRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -862,10 +781,6 @@ const rootRouteChildren: RootRouteChildren = {
   BlogSlugRoute: BlogSlugRoute,
   BlogIndexRoute: BlogIndexRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
-  ApiPublicReferralClickRoute: ApiPublicReferralClickRoute,
-  ApiPublicHooksKbSyncRoute: ApiPublicHooksKbSyncRoute,
-  ApiPublicTelegramWebhookRoute: ApiPublicTelegramWebhookRoute,
-  ApiPublicWebhooksStripeRoute: ApiPublicWebhooksStripeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

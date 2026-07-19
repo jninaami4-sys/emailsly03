@@ -110,6 +110,8 @@ export function OrderBuilder() {
   const [step, setStep] = useState(1);
   const [serviceId, setServiceId] = useState("apollo");
   const service = services.find((s) => s.id === serviceId) ?? services[0] ?? SERVICES[0];
+  const NON_LEAD_SERVICE_IDS = new Set(["warmup", "mailbox_warmup", "logo", "webdesign"]);
+  const isNonLeadService = NON_LEAD_SERVICE_IDS.has(service.id);
   useEffect(() => {
     if (service && service.id !== serviceId) setServiceId(service.id);
   }, [service, serviceId]);
@@ -119,6 +121,9 @@ export function OrderBuilder() {
   const [apolloUrls, setApolloUrls] = useState("");
   const [verifier, setVerifier] = useState(false);
   const [rush, setRush] = useState(false);
+  useEffect(() => {
+    if (isNonLeadService) setVerifier(false);
+  }, [isNonLeadService]);
   const [tip, setTip] = useState(0);
   const [promo, setPromo] = useState("");
   const [promoApplied, setPromoApplied] = useState<PromoResult | null>(null);
@@ -269,6 +274,7 @@ export function OrderBuilder() {
           <p className="mt-3 text-sm leading-relaxed text-muted-foreground sm:text-base">
             Four quick steps. No hidden fees, no back-and-forth — see your exact price the moment you finish.
           </p>
+          {!isNonLeadService && (
           <div className="mt-4 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 font-mono text-[10px] font-semibold uppercase tracking-widest text-muted-foreground sm:gap-x-8 sm:gap-y-3 sm:text-[11px]">
             <span className="inline-flex items-center gap-1.5 sm:gap-2">
               <PremiumBadgeCheck className="size-3.5 text-emerald sm:size-4" /> 99% verified data
@@ -282,6 +288,7 @@ export function OrderBuilder() {
               <PremiumShieldCheck className="size-3.5 text-coral sm:size-4" /> Pay after preview
             </span>
           </div>
+          )}
         </div>
 
         {/* Stepper — mobile/tablet only */}
@@ -483,7 +490,7 @@ export function OrderBuilder() {
                       </div>
                     </div>
 
-                    {service.id !== "manual" && service.id !== "mobile" && (
+                    {service.id !== "manual" && service.id !== "mobile" && !isNonLeadService && (
                       <div className="mt-6 sm:mt-8">
                         <SectionLabel icon={PremiumTag}>Price comparison</SectionLabel>
                         <div className="grid gap-3 grid-cols-2">
@@ -549,7 +556,7 @@ export function OrderBuilder() {
 
                     </div>
 
-                    {service.id !== "manual" && service.id !== "mobile" && (
+                    {service.id !== "manual" && service.id !== "mobile" && !isNonLeadService && (
                       <div className="mt-6 sm:mt-8">
                         <SectionLabel icon={PremiumTag}>Price comparison</SectionLabel>
                         <div className="grid gap-3 grid-cols-2">
@@ -633,15 +640,17 @@ export function OrderBuilder() {
                   subtitle="Optional upgrades that make the delivery faster and cleaner."
                   isDesktop={isDesktop}
                 />
-                <div className="mt-6 grid gap-3 sm:mt-8 md:grid-cols-2">
-                  <AddonToggle
-                    active={verifier}
-                    onToggle={() => setVerifier((v) => !v)}
-                    title="MillionVerifier"
-                    sub="99% deliverability estimate"
-                    price="+$0.002 / lead"
-                    accent="emerald"
-                  />
+                <div className={`mt-6 grid gap-3 sm:mt-8 ${isNonLeadService ? "" : "md:grid-cols-2"}`}>
+                  {!isNonLeadService && (
+                    <AddonToggle
+                      active={verifier}
+                      onToggle={() => setVerifier((v) => !v)}
+                      title="MillionVerifier"
+                      sub="99% deliverability estimate"
+                      price="+$0.002 / lead"
+                      accent="emerald"
+                    />
+                  )}
                   <AddonToggle
                     active={rush}
                     onToggle={() => setRush((r) => !r)}

@@ -637,15 +637,17 @@ export function OrderBuilder() {
                   subtitle="Optional upgrades that make the delivery faster and cleaner."
                   isDesktop={isDesktop}
                 />
-                <div className="mt-6 grid gap-3 sm:mt-8 md:grid-cols-2">
-                  <AddonToggle
-                    active={verifier}
-                    onToggle={() => setVerifier((v) => !v)}
-                    title="MillionVerifier"
-                    sub="99% deliverability estimate"
-                    price="+$0.002 / lead"
-                    accent="emerald"
-                  />
+                <div className={`mt-6 grid gap-3 sm:mt-8 ${isNonLeadService ? "" : "md:grid-cols-2"}`}>
+                  {!isNonLeadService && (
+                    <AddonToggle
+                      active={verifier}
+                      onToggle={() => setVerifier((v) => !v)}
+                      title="MillionVerifier"
+                      sub="99% deliverability estimate"
+                      price="+$0.002 / lead"
+                      accent="emerald"
+                    />
+                  )}
                   <AddonToggle
                     active={rush}
                     onToggle={() => setRush((r) => !r)}

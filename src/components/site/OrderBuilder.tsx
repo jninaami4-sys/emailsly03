@@ -553,7 +553,7 @@ export function OrderBuilder() {
 
                     </div>
 
-                    {service.id !== "manual" && service.id !== "mobile" && (
+                    {service.id !== "manual" && service.id !== "mobile" && !isNonLeadService && (
                       <div className="mt-6 sm:mt-8">
                         <SectionLabel icon={PremiumTag}>Price comparison</SectionLabel>
                         <div className="grid gap-3 grid-cols-2">

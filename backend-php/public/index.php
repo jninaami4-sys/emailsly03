@@ -353,6 +353,14 @@ $router->get   ('/api/admin/mail-logs',              ['Emailsly\Controllers\Admi
 $router->post  ('/api/admin/mail-logs/clear',        ['Emailsly\Controllers\Admin\MailAdmin', 'clearLogs']);
 $router->get   ('/api/admin/dns-check',              ['Emailsly\Controllers\Admin\MailAdmin', 'dnsCheck']);
 
+// Extra admin/public endpoints
+$router->get   ('/api/admin/orders/stats',           [Extras::class, 'adminOrdersStats']);
+$router->post  ('/api/admin/users/magic-link',       [Extras::class, 'adminUsersMagicLink']);
+$router->post  ('/api/admin/campaigns/preview',      [Extras::class, 'adminCampaignsPreview']);
+$router->post  ('/api/public/referral-click',        [Extras::class, 'referralClick']);
+
+
+
 
 
 

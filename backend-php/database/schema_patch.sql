@@ -1,11 +1,21 @@
 -- =========================================================
--- Emailsly schema patch (Batch: gap closure)
--- Idempotent-ish additions for endpoint coverage.
--- Requires MySQL 8.0.29+ (ADD COLUMN IF NOT EXISTS).
--- Safe to run multiple times.
+-- Emailsly schema UPGRADE PATCH
+--
+-- ⚠️  DO NOT RUN THIS ON A FRESH INSTALL.
+--     Fresh installs need ONLY schema.sql + seed.sql, both of which
+--     already contain every column and table added below.
+--
+-- Run this file ONCE against databases that were created BEFORE the
+-- gap-closure batch shipped and are missing the newer columns / tables.
+--
+-- On re-run, MySQL will complain "Duplicate column name ..." for columns
+-- that already exist. Those errors are expected and safe to ignore — the
+-- CREATE TABLE IF NOT EXISTS blocks and any successful ALTERs still apply.
+-- Import with phpMyAdmin's "Continue on error" or:
+--     mysql --force -u user -p dbname < schema_patch.sql
 -- =========================================================
 
--- Rate limiter (MySQL-backed, shared-hosting friendly).
+-- New tables (safe on both fresh and upgraded databases).
 CREATE TABLE IF NOT EXISTS rate_limits (
   bucket        VARCHAR(64) NOT NULL,
   ip            VARCHAR(64) NOT NULL,
@@ -16,7 +26,6 @@ CREATE TABLE IF NOT EXISTS rate_limits (
   KEY idx_window (window_start)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Mail delivery log (used by /api/admin/mail-logs, MailLogsAdmin).
 CREATE TABLE IF NOT EXISTS mail_logs (
   id           CHAR(36) NOT NULL PRIMARY KEY,
   kind         VARCHAR(32) NOT NULL,
@@ -29,7 +38,6 @@ CREATE TABLE IF NOT EXISTS mail_logs (
   KEY idx_kind_created (kind, created_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Stripe webhook delivery log (used by /api/admin/stripe/deliveries).
 CREATE TABLE IF NOT EXISTS stripe_webhook_deliveries (
   id              CHAR(36) NOT NULL PRIMARY KEY,
   event_id        VARCHAR(128) NULL,
@@ -43,56 +51,50 @@ CREATE TABLE IF NOT EXISTS stripe_webhook_deliveries (
   KEY idx_status (status)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Users: email verification timestamp used by OTP flow.
-ALTER TABLE users            ADD COLUMN IF NOT EXISTS email_verified_at DATETIME NULL;
+-- Column additions. Each on its own line so a duplicate-column error on
+-- one line does not skip the others. Portable ADD COLUMN syntax (no
+-- IF NOT EXISTS — that is MariaDB-only, real MySQL 8.x rejects it).
 
--- Site settings: extra logo asset slots the admin panel uploads.
-ALTER TABLE site_settings    ADD COLUMN IF NOT EXISTS invoice_logo_url VARCHAR(500) NULL;
-ALTER TABLE site_settings    ADD COLUMN IF NOT EXISTS footer_logo_url  VARCHAR(500) NULL;
+ALTER TABLE users            ADD COLUMN email_verified_at DATETIME NULL;
 
--- Chatbot config: greeting / human hours + freeform config blob.
-ALTER TABLE chatbot_config   ADD COLUMN IF NOT EXISTS greeting          TEXT NULL;
-ALTER TABLE chatbot_config   ADD COLUMN IF NOT EXISTS human_hours_note  VARCHAR(500) NULL;
-ALTER TABLE chatbot_config   ADD COLUMN IF NOT EXISTS config            JSON NULL;
+ALTER TABLE site_settings    ADD COLUMN invoice_logo_url VARCHAR(500) NULL;
+ALTER TABLE site_settings    ADD COLUMN footer_logo_url  VARCHAR(500) NULL;
 
--- Chatbot orders/tickets: authenticated user linkage + payload.
-ALTER TABLE chatbot_orders   ADD COLUMN IF NOT EXISTS user_id  CHAR(36) NULL;
-ALTER TABLE chatbot_orders   ADD COLUMN IF NOT EXISTS payload  JSON     NULL;
-ALTER TABLE chatbot_tickets  ADD COLUMN IF NOT EXISTS user_id   CHAR(36) NULL;
-ALTER TABLE chatbot_tickets  ADD COLUMN IF NOT EXISTS ticket_no VARCHAR(32) NULL;
-ALTER TABLE chatbot_tickets  ADD COLUMN IF NOT EXISTS body      TEXT NULL;
+ALTER TABLE chatbot_config   ADD COLUMN greeting         TEXT NULL;
+ALTER TABLE chatbot_config   ADD COLUMN human_hours_note VARCHAR(500) NULL;
+ALTER TABLE chatbot_config   ADD COLUMN config           JSON NULL;
 
--- Sample datasets: extended shape for the admin CMS editor.
-ALTER TABLE sample_datasets  ADD COLUMN IF NOT EXISTS source       VARCHAR(64) NULL;
-ALTER TABLE sample_datasets  ADD COLUMN IF NOT EXISTS filename     VARCHAR(255) NULL;
-ALTER TABLE sample_datasets  ADD COLUMN IF NOT EXISTS storage_path VARCHAR(500) NULL;
-ALTER TABLE sample_datasets  ADD COLUMN IF NOT EXISTS data         JSON NULL;
-ALTER TABLE sample_datasets  ADD COLUMN IF NOT EXISTS meta         JSON NULL;
-ALTER TABLE sample_datasets  ADD COLUMN IF NOT EXISTS is_active    TINYINT(1) NOT NULL DEFAULT 1;
+ALTER TABLE chatbot_orders   ADD COLUMN user_id  CHAR(36) NULL;
+ALTER TABLE chatbot_orders   ADD COLUMN payload  JSON     NULL;
 
--- Sample dataset audit: actor id column referenced by extras controller.
-ALTER TABLE sample_dataset_audit ADD COLUMN IF NOT EXISTS actor_id CHAR(36) NULL;
+ALTER TABLE chatbot_tickets  ADD COLUMN user_id   CHAR(36)    NULL;
+ALTER TABLE chatbot_tickets  ADD COLUMN ticket_no VARCHAR(32) NULL;
+ALTER TABLE chatbot_tickets  ADD COLUMN body      TEXT        NULL;
 
--- Product details: slug + JSON blob for the new admin CMS.
-ALTER TABLE product_details  ADD COLUMN IF NOT EXISTS slug VARCHAR(128) NULL;
-ALTER TABLE product_details  ADD COLUMN IF NOT EXISTS data JSON NULL;
-CREATE INDEX IF NOT EXISTS product_details_slug_idx ON product_details (slug);
+ALTER TABLE sample_datasets  ADD COLUMN source       VARCHAR(64)  NULL;
+ALTER TABLE sample_datasets  ADD COLUMN filename     VARCHAR(255) NULL;
+ALTER TABLE sample_datasets  ADD COLUMN storage_path VARCHAR(500) NULL;
+ALTER TABLE sample_datasets  ADD COLUMN data         JSON NULL;
+ALTER TABLE sample_datasets  ADD COLUMN meta         JSON NULL;
+ALTER TABLE sample_datasets  ADD COLUMN is_active    TINYINT(1) NOT NULL DEFAULT 1;
 
--- Reviews: moderation reason column.
-ALTER TABLE reviews          ADD COLUMN IF NOT EXISTS moderation_reason VARCHAR(500) NULL;
+ALTER TABLE sample_dataset_audit ADD COLUMN actor_id CHAR(36) NULL;
 
--- Conversion events: turn into a definitions table (admin-editable).
-ALTER TABLE conversion_events ADD COLUMN IF NOT EXISTS name        VARCHAR(255) NULL;
-ALTER TABLE conversion_events ADD COLUMN IF NOT EXISTS event_type  VARCHAR(64) NULL;
-ALTER TABLE conversion_events ADD COLUMN IF NOT EXISTS sort_order  INT NOT NULL DEFAULT 0;
-ALTER TABLE conversion_events ADD COLUMN IF NOT EXISTS is_active   TINYINT(1) NOT NULL DEFAULT 1;
-ALTER TABLE conversion_events ADD COLUMN IF NOT EXISTS config      JSON NULL;
+ALTER TABLE product_details  ADD COLUMN slug VARCHAR(128) NULL;
+ALTER TABLE product_details  ADD COLUMN data JSON NULL;
+CREATE INDEX product_details_slug_idx ON product_details (slug);
 
--- Server tracking config: mirror admin-form field names.
-ALTER TABLE server_tracking_config ADD COLUMN IF NOT EXISTS is_enabled TINYINT(1) NOT NULL DEFAULT 0;
-ALTER TABLE server_tracking_config ADD COLUMN IF NOT EXISTS config     JSON NULL;
+ALTER TABLE reviews          ADD COLUMN moderation_reason VARCHAR(500) NULL;
 
--- Referrals: reviewer notes + payout batch id linkage.
-ALTER TABLE referral_credits         ADD COLUMN IF NOT EXISTS batch_id CHAR(36) NULL;
-ALTER TABLE referral_payout_batches  ADD COLUMN IF NOT EXISTS created_by CHAR(36) NULL;
-ALTER TABLE referral_payout_batches  ADD COLUMN IF NOT EXISTS notes      TEXT NULL;
+ALTER TABLE conversion_events ADD COLUMN name        VARCHAR(255) NULL;
+ALTER TABLE conversion_events ADD COLUMN event_type  VARCHAR(64)  NULL;
+ALTER TABLE conversion_events ADD COLUMN sort_order  INT NOT NULL DEFAULT 0;
+ALTER TABLE conversion_events ADD COLUMN is_active   TINYINT(1) NOT NULL DEFAULT 1;
+ALTER TABLE conversion_events ADD COLUMN config      JSON NULL;
+
+ALTER TABLE server_tracking_config ADD COLUMN is_enabled TINYINT(1) NOT NULL DEFAULT 0;
+ALTER TABLE server_tracking_config ADD COLUMN config     JSON NULL;
+
+ALTER TABLE referral_credits         ADD COLUMN batch_id CHAR(36) NULL;
+ALTER TABLE referral_payout_batches  ADD COLUMN created_by CHAR(36) NULL;
+ALTER TABLE referral_payout_batches  ADD COLUMN notes      TEXT NULL;

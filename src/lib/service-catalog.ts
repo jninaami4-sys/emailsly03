@@ -14,11 +14,11 @@ export type CatalogEntry = {
   id: string;
   /** Per-unit price in USD. For `fixed` services this is the flat price. */
   rate: number;
-  /** Minimum quantity (units or mailboxes). */
+  /** Minimum quantity (units or domains). */
   minQty: number;
   /** Minimum order total in USD. */
   minOrder: number;
-  /** Singular unit label used in copy (lead, record, setup, kit, site, mailboxes). */
+  /** Singular unit label used in copy (lead, record, setup, kit, site, domains). */
   unit: string;
   /** True for flat-priced services (setup fees, one-off builds). */
   fixed?: boolean;
@@ -74,7 +74,7 @@ export function formatUnitPrice(id: string, overrides?: Map<string, PricingOverr
   return `$${e.rate}`;
 }
 
-/** "per lead", "flat", "2 mailboxes · 15 days" etc. */
+/** "per lead", "flat", "2 domains · 15 days" etc. */
 export function formatPerUnit(id: string, overrides?: Map<string, PricingOverride>): string {
   const e = applyCatalogOverride(id, overrides);
   if (!e) return "";
@@ -83,7 +83,7 @@ export function formatPerUnit(id: string, overrides?: Map<string, PricingOverrid
   return `per ${e.unit}`;
 }
 
-/** "5,000 min", "Single site", "2 mailboxes min". */
+/** "5,000 min", "Single site", "2 domains min". */
 export function formatMinOrder(id: string, overrides?: Map<string, PricingOverride>): string {
   const e = applyCatalogOverride(id, overrides);
   if (!e) return "";

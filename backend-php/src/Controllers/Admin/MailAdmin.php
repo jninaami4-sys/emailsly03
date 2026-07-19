@@ -94,7 +94,7 @@ final class MailAdmin
             <tr><td style="padding:10px 14px;"><strong>Sent at</strong></td><td style="padding:10px 14px;">{$when}</td></tr>
           </table>
         </td></tr>
-        HTML
+HTML
         . ($safe !== '' ? "<tr><td style=\"padding:16px 32px 0;color:#334155;font-size:14px;line-height:1.55;\">{$safe}</td></tr>" : '')
         . <<<HTML
         <tr><td style="padding:20px 32px 28px;color:#94a3b8;font-size:12px;">

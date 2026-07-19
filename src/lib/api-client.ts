@@ -641,8 +641,9 @@ export const adminUsersApi = {
   list: (query?: { q?: string }) => g<{ users: any[] }>("/api/admin/users", query),
   update: (id: string, body: unknown) => patch(`/api/admin/users/${id}`, body),
   setRole: (id: string, role: "admin" | "user", enabled: boolean) =>
-    j("/api/admin/users/roles", { user_id: id, role, enabled }),
+    j(`/api/admin/users/${id}/roles`, { role, enabled }),
 };
+
 
 // -------- Analytics --------
 export const adminAnalyticsApi = {

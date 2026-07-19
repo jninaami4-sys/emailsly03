@@ -1,6 +1,6 @@
 <?php
 namespace Emailsly\Controllers;
-use Emailsly\{Auth, Database, Request, Response};
+use Emailsly\{Auth, Database, RateLimit, Request, Response};
 
 final class ReviewController
 {
@@ -13,6 +13,7 @@ final class ReviewController
     }
     public function create(): void
     {
+        RateLimit::check('review_create', 3, 3600);
         $c = Auth::optionalClaims();
         $b = Request::json();
         Database::pdo()->prepare(

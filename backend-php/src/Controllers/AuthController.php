@@ -1,12 +1,13 @@
 <?php
 namespace Emailsly\Controllers;
 
-use Emailsly\{Auth, Database, Mailer, Request, Response};
+use Emailsly\{Auth, Database, Mailer, RateLimit, Request, Response};
 
 final class AuthController
 {
     public function register(): void
     {
+        RateLimit::check('auth_register', 10, 3600);
         $b = Request::json();
         $email = strtolower(trim($b['email'] ?? ''));
         $password = (string)($b['password'] ?? '');
@@ -54,6 +55,7 @@ final class AuthController
 
     public function login(): void
     {
+        RateLimit::check('auth_login', 10, 300);
         $b = Request::json();
         $email = strtolower(trim($b['email'] ?? ''));
         $password = (string)($b['password'] ?? '');
@@ -107,6 +109,7 @@ final class AuthController
 
     public function forgotPassword(): void
     {
+        RateLimit::check('auth_forgot', 5, 3600);
         $b = Request::json();
         $email = strtolower(trim($b['email'] ?? ''));
         $pdo = Database::pdo();

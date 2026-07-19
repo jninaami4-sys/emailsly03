@@ -93,15 +93,106 @@ final class OrderController
         $c = Auth::requireUser();
         $b = Request::json();
         $id = Database::uuid();
+
+        $customerEmail = $b['customer_email'] ?? $c['email'] ?? null;
+        $customerName  = $b['customer_name'] ?? null;
+        $currency      = $b['currency'] ?? 'USD';
+        $service       = $b['service'] ?? ($b['service_label'] ?? null);
+        $notes         = $b['notes'] ?? null;
+        $metadata      = is_array($b['metadata'] ?? null) ? $b['metadata'] : [];
+
+        // ---- Store-cart path: items[] present ----
+        // Server recomputes the total from authoritative prices so the client
+        // can never undercut. For each item, if `product_id` matches a row in
+        // `custom_products`, use the DB price_cents; otherwise fall back to
+        // the client-supplied unit_cents but clamp it to a sane per-unit ceiling.
+        // A 2.9% + $0.30 processing fee is then added to match the cart UI.
+        $items = (isset($b['items']) && is_array($b['items'])) ? $b['items'] : null;
+        if ($items !== null && count($items) > 0) {
+            $pdo = Database::pdo();
+            $lookup = $pdo->prepare('SELECT price_cents, name FROM custom_products WHERE id = ? LIMIT 1');
+            $qtyTotal = 0;
+            $subtotal = 0;
+            $verified = [];
+            foreach ($items as $it) {
+                $pid   = isset($it['product_id']) ? (string)$it['product_id'] : '';
+                $iqty  = max(1, (int)($it['quantity'] ?? 1));
+                $ititle = (string)($it['title'] ?? $it['name'] ?? 'Item');
+                $unit  = max(0, (int)($it['unit_cents'] ?? 0));
+                $source = 'client';
+                if ($pid !== '') {
+                    $lookup->execute([$pid]);
+                    $row = $lookup->fetch();
+                    if ($row) {
+                        $unit  = (int)$row['price_cents'];
+                        $ititle = $row['name'] ?: $ititle;
+                        $source = 'db';
+                    }
+                }
+                // Sanity ceiling — $10,000/unit — to bound trust in client price
+                // for static catalog items not yet stored in custom_products.
+                if ($unit > 1000000) $unit = 1000000;
+                $qtyTotal += $iqty;
+                $subtotal += $unit * $iqty;
+                $verified[] = [
+                    'product_id'   => $pid,
+                    'title'        => $ititle,
+                    'quantity'     => $iqty,
+                    'unit_cents'   => $unit,
+                    'line_cents'   => $unit * $iqty,
+                    'price_source' => $source,
+                ];
+            }
+            $fee   = (int)round($subtotal * 0.029 + 30); // 2.9% + $0.30
+            $total = $subtotal + $fee;
+            $disc  = 0;
+            $qty   = max(1, $qtyTotal);
+            $unitAvg = (int)round($subtotal / $qty);
+            $metadata['source']         = $b['source'] ?? 'store';
+            $metadata['items']          = $verified;
+            $metadata['fee_cents']      = $fee;
+            $metadata['subtotal_cents'] = $subtotal;
+            if ($service === null || $service === '') {
+                $first = $verified[0]['title'] ?? 'Store order';
+                $service = count($verified) > 1
+                    ? "Lead Store: $first +" . (count($verified) - 1) . ' more'
+                    : "Lead Store: $first";
+            }
+            Database::pdo()->prepare(
+                'INSERT INTO orders (id,user_id,service,service_id,quantity,unit_cents,subtotal_cents,discount_cents,total_cents,currency,customer_email,customer_name,notes,metadata,status,payment_status)
+                 VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?, "pending","unpaid")'
+            )->execute([
+                $id, $c['sub'], $service, null,
+                $qty, $unitAvg, $subtotal, $disc, $total,
+                $currency, $customerEmail, $customerName, $notes,
+                json_encode($metadata),
+            ]);
+            $this->logEvent($id, $c['sub'], 'created', 'Store order placed');
+            $this->sendOrderConfirmation([
+                'id'             => $id,
+                'service'        => $service,
+                'quantity'       => $qty,
+                'total_cents'    => $total,
+                'currency'       => $currency,
+                'customer_email' => $customerEmail,
+                'customer_name'  => $customerName,
+                'notes'          => $notes,
+                'items'          => array_map(fn($v) => [
+                    'name'     => $v['title'],
+                    'quantity' => $v['quantity'],
+                    'price'    => '$' . number_format($v['line_cents'] / 100, 2),
+                ], $verified),
+            ]);
+            Response::json(['id' => $id]);
+            return;
+        }
+
+        // ---- Legacy order-builder path (unchanged shape) ----
         $qty = max(1, (int)($b['quantity'] ?? 1));
         $unit = max(0, (int)($b['unit_cents'] ?? 0));
         $sub = $qty * $unit;
         $disc = max(0, (int)($b['discount_cents'] ?? 0));
         $total = max(0, $sub - $disc);
-        $customerEmail = $b['customer_email'] ?? $c['email'] ?? null;
-        $customerName  = $b['customer_name'] ?? null;
-        $service       = $b['service'] ?? null;
-        $currency      = $b['currency'] ?? 'USD';
         Database::pdo()->prepare(
             'INSERT INTO orders (id,user_id,service,service_id,quantity,unit_cents,subtotal_cents,discount_cents,total_cents,currency,customer_email,customer_name,notes,metadata,status,payment_status)
              VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?, "pending","unpaid")'
@@ -111,8 +202,8 @@ final class OrderController
             $currency,
             $customerEmail,
             $customerName,
-            $b['notes'] ?? null,
-            isset($b['metadata']) ? json_encode($b['metadata']) : null,
+            $notes,
+            !empty($metadata) ? json_encode($metadata) : null,
         ]);
         $this->logEvent($id, $c['sub'], 'created', 'Order placed');
         $this->sendOrderConfirmation([
@@ -123,8 +214,8 @@ final class OrderController
             'currency' => $currency,
             'customer_email' => $customerEmail,
             'customer_name' => $customerName,
-            'notes' => $b['notes'] ?? null,
-            'items' => $b['metadata']['items'] ?? null,
+            'notes' => $notes,
+            'items' => $metadata['items'] ?? null,
         ]);
         Response::json(['id' => $id]);
     }

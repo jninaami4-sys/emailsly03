@@ -1,9 +1,16 @@
-import { X, Minus, Plus, ShoppingBag, Lock, ArrowRight } from "lucide-react";
+import { X, Minus, Plus, ShoppingBag, Lock, ArrowRight, Loader2 } from "lucide-react";
 import { useCart } from "@/lib/cart";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
+import { useAuth } from "@/hooks/use-auth";
+import { ordersApi, stripeApi } from "@/lib/api-client";
 
 export function CartDrawer() {
   const { isOpen, close, items, remove, setQty, subtotal, clear } = useCart();
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -18,10 +25,61 @@ export function CartDrawer() {
     };
   }, [isOpen, close]);
 
+  useEffect(() => {
+    if (!isOpen) setError(null);
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   const fee = subtotal > 0 ? Math.round((subtotal * 0.029 + 0.3) * 100) / 100 : 0;
   const total = subtotal + fee;
+
+  const handleCheckout = async () => {
+    setError(null);
+    if (!user) {
+      close();
+      navigate({ to: "/login", search: { redirect: "/store" } as never });
+      return;
+    }
+    if (items.length === 0) return;
+    setBusy(true);
+    try {
+      const firstTitle = items[0]?.product.title ?? "Store order";
+      const label =
+        items.length > 1
+          ? `Lead Store: ${firstTitle} +${items.length - 1} more`
+          : `Lead Store: ${firstTitle}`;
+      const totalQty = items.reduce((n, i) => n + i.quantity, 0);
+      const payload = {
+        service: label,
+        service_label: label,
+        quantity: totalQty,
+        subtotal_cents: Math.round(subtotal * 100),
+        total_cents: Math.round(total * 100),
+        currency: "USD",
+        payment_provider: "stripe",
+        source: "store",
+        customer_email: user.email ?? undefined,
+        customer_name: (user.user_metadata?.full_name as string | undefined) ?? undefined,
+        notes: `Store cart: ${items.length} product(s), ${totalQty} unit(s)`,
+        items: items.map(({ product, quantity }) => ({
+          product_id: product.id,
+          title: product.title,
+          quantity,
+          unit_cents: Math.round(product.price * 100),
+        })),
+      };
+      const created = await ordersApi.create(payload);
+      const { url } = await stripeApi.checkout(created.id);
+      if (!url) throw new Error("No checkout URL returned");
+      window.location.href = url;
+    } catch (e) {
+      setError(
+        e instanceof Error ? e.message : "Could not start checkout. Please try again.",
+      );
+      setBusy(false);
+    }
+  };
 
   return (
     <div className="fixed inset-0 z-50">
@@ -125,18 +183,28 @@ export function CartDrawer() {
                   <span className="font-display text-2xl font-bold">${total.toFixed(2)}</span>
                 </div>
               </div>
+              {error && (
+                <p className="mt-3 rounded-lg border border-coral/30 bg-coral-soft px-3 py-2 text-xs font-medium text-coral">
+                  {error}
+                </p>
+              )}
               <button
-                disabled
-                className="slide-btn mt-4 w-full"
-                title="Payments not yet enabled"
+                onClick={handleCheckout}
+                disabled={busy}
+                className="slide-btn mt-4 w-full disabled:cursor-not-allowed disabled:opacity-60"
+                title={user ? "Checkout with Stripe" : "Sign in to checkout"}
               >
                 <span className="slide-btn-decor" aria-hidden />
                 <span className="slide-btn-content justify-between">
                   <span className="slide-btn-icon">
-                    <Lock className="size-4" />
+                    {busy ? <Loader2 className="size-4 animate-spin" /> : <Lock className="size-4" />}
                   </span>
                   <span className="slide-btn-text flex-1 justify-center">
-                    Checkout · Stripe coming soon
+                    {busy
+                      ? "Redirecting to Stripe…"
+                      : user
+                        ? "Checkout · Secure payment"
+                        : "Sign in to checkout"}
                   </span>
                   <span className="slide-btn-icon" style={{ background: "color-mix(in oklab, var(--violet) 88%, black)" }}>
                     <ArrowRight className="size-4" />
@@ -145,7 +213,8 @@ export function CartDrawer() {
               </button>
               <button
                 onClick={clear}
-                className="mt-2 w-full rounded-xl border border-border py-2 text-xs font-medium text-muted-foreground hover:bg-background"
+                disabled={busy}
+                className="mt-2 w-full rounded-xl border border-border py-2 text-xs font-medium text-muted-foreground hover:bg-background disabled:opacity-60"
               >
                 Clear cart
               </button>

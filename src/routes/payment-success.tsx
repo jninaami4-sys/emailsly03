@@ -6,6 +6,7 @@ import { PremiumLogoMark } from "@/components/site/PremiumIcons";
 import { EmailslyLoaderInline } from "@/components/site/EmailslyLoaderInline";
 const emailslyLogo = { url: "/emailsly-logo-trim.png" };
 import { useAuth } from "@/hooks/use-auth";
+import { useCart } from "@/lib/cart";
 
 
 export const Route = createFileRoute("/payment-success")({
@@ -54,9 +55,15 @@ function PaymentSuccessPage() {
   const search = Route.useSearch();
   const [now] = useState(() => new Date());
   const [loading, setLoading] = useState(true);
+  const { clear: clearCart } = useCart();
   useEffect(() => {
     const t = window.setTimeout(() => setLoading(false), 700);
     return () => window.clearTimeout(t);
+  }, []);
+  // Clear the cart once payment is confirmed so items don't linger post-purchase.
+  useEffect(() => {
+    clearCart();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const { user: _user } = useAuth();
   const orderId = useMemo(() => search.order || genOrderId(), [search.order]);

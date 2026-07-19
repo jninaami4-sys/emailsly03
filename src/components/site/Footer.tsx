@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { PaymentLogos } from "./PaymentLogos";
 import { PremiumSparkles, PremiumShieldCheck, PremiumArrowRight } from "./PremiumIcons";
@@ -5,6 +6,8 @@ import { SocialIcons } from "./SocialIcons";
 
 import { openConsentPreferences } from "@/lib/consent";
 import { useSiteContent } from "@/hooks/use-site-content";
+import { contactApi } from "@/lib/api-client";
+import fallbackLogo from "@/assets/emailsly-logo-trim.png.asset.json";
 
 const productLinks = [
   { to: "/store", label: "Lead Store" },
@@ -34,8 +37,30 @@ export function Footer() {
   const logoUrl =
     (branding.footer_logo_url || "").trim() ||
     (branding.logo_url || "").trim() ||
-    "/__l5e/assets-v1/cefa0fcb-c63a-417d-9b6c-f4b799342926/emailsly-logo-trim.png";
+    fallbackLogo.url;
   const siteName = branding.site_name || "EmailsLy";
+  const [nlEmail, setNlEmail] = useState("");
+  const [nlState, setNlState] = useState<"idle" | "sending" | "ok" | "error">("idle");
+  const [nlError, setNlError] = useState<string | null>(null);
+  const submitNewsletter = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (nlState === "sending") return;
+    setNlState("sending");
+    setNlError(null);
+    try {
+      await contactApi.submit({
+        name: "Newsletter signup",
+        email: nlEmail,
+        message: "Newsletter subscription",
+        source: "newsletter",
+      });
+      setNlState("ok");
+      setNlEmail("");
+    } catch (err) {
+      setNlState("error");
+      setNlError(err instanceof Error ? err.message : "Something went wrong");
+    }
+  };
   return (
     <footer data-site-footer className="relative overflow-hidden bg-ink text-white/70">
       {/* soft violet glow, matches homepage editorial system */}
@@ -61,23 +86,40 @@ export function Footer() {
               Join 4,000+ paid operators who get the market edge before the week starts.
             </p>
           </div>
-          <form
-            className="flex w-full max-w-md flex-col gap-3 sm:flex-row"
-            onSubmit={(e) => e.preventDefault()}
-          >
-            <input
-              type="email"
-              required
-              placeholder="work@company.com"
-              className="flex-1 rounded-full border border-white/10 bg-white/5 px-5 py-3.5 text-white placeholder:text-white/40 outline-none transition-colors focus:border-violet focus:bg-white/[0.08]"
-            />
-            <button
-              type="submit"
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-violet px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-violet/25 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-violet/30"
+          <div className="w-full max-w-md">
+            <form
+              className="flex w-full flex-col gap-3 sm:flex-row"
+              onSubmit={submitNewsletter}
             >
-              Subscribe <PremiumArrowRight className="size-4" />
-            </button>
-          </form>
+              <input
+                type="email"
+                required
+                value={nlEmail}
+                onChange={(e) => setNlEmail(e.target.value)}
+                disabled={nlState === "sending"}
+                placeholder="work@company.com"
+                className="flex-1 rounded-full border border-white/10 bg-white/5 px-5 py-3.5 text-white placeholder:text-white/40 outline-none transition-colors focus:border-violet focus:bg-white/[0.08] disabled:opacity-60"
+              />
+              <button
+                type="submit"
+                disabled={nlState === "sending"}
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-violet px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-violet/25 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-violet/30 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0"
+              >
+                {nlState === "sending" ? "Subscribing…" : "Subscribe"}{" "}
+                <PremiumArrowRight className="size-4" />
+              </button>
+            </form>
+            {nlState === "ok" && (
+              <p className="mt-3 text-sm text-emerald" role="status">
+                You're in! Check your inbox for a welcome note.
+              </p>
+            )}
+            {nlState === "error" && (
+              <p className="mt-3 text-sm text-coral" role="alert">
+                {nlError || "Couldn't sign you up right now. Please try again."}
+              </p>
+            )}
+          </div>
         </div>
 
         {/* Social row */}

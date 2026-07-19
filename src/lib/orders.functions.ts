@@ -10,7 +10,7 @@
  * controllers under /api/orders/* (server-side JWT verification via
  * `Auth::requireUser()`).
  */
-import { ordersApi } from "@/lib/api-client";
+import { ordersApi, authApi } from "@/lib/api-client";
 
 type Empty = Record<string, never>;
 
@@ -34,16 +34,8 @@ export async function getMyOrder(args: { data: { id: string } }) {
 }
 
 export async function getMyProfile(_?: { data?: Empty }) {
-  const res = await fetch("/api/profile", {
-    headers: {
-      "content-type": "application/json",
-      authorization: `Bearer ${localStorage.getItem("api_token") ?? ""}`,
-    },
-    credentials: "same-origin",
-  });
-  if (!res.ok) throw new Error(`Profile ${res.status}`);
-  const j = await res.json();
-  return j.profile ?? j;
+  const r = (await authApi.me()) as { profile?: unknown; user?: unknown };
+  return r.profile ?? r.user ?? r;
 }
 
 export async function updateMyProfile(args: {
@@ -55,16 +47,7 @@ export async function updateMyProfile(args: {
     avatar_url?: string | null;
   };
 }) {
-  const res = await fetch("/api/profile", {
-    method: "PATCH",
-    headers: {
-      "content-type": "application/json",
-      authorization: `Bearer ${localStorage.getItem("api_token") ?? ""}`,
-    },
-    body: JSON.stringify(args.data),
-    credentials: "same-origin",
-  });
-  if (!res.ok) throw new Error(`Profile update ${res.status}`);
+  await authApi.updateMe(args.data as Record<string, unknown>);
   return { ok: true };
 }
 

@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 import { BLOG_POSTS } from "@/lib/blog-posts";
 
-const BASE_URL = "";
+const BASE_URL = "https://emailsly.com";
 
 const paths = [
   { path: "/", priority: "1.0", changefreq: "weekly" as const },

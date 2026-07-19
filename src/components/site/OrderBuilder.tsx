@@ -110,8 +110,11 @@ export function OrderBuilder() {
   const [step, setStep] = useState(1);
   const [serviceId, setServiceId] = useState("apollo");
   const service = services.find((s) => s.id === serviceId) ?? services[0] ?? SERVICES[0];
-  const NON_LEAD_SERVICE_IDS = new Set(["warmup", "mailbox_warmup", "logo", "webdesign"]);
-  const isNonLeadService = NON_LEAD_SERVICE_IDS.has(service.id);
+  // Non-lead = any service that isn't a lead/contact export.
+  // Catalog groups "growth" (ads, pixel, tracking, warmup, mailbox_warmup)
+  // and "design" (logo, webdesign) are all non-lead setup/creative services.
+  // Only group "data" (apollo, zoominfo, linkedin, manual, mobile) delivers leads.
+  const isNonLeadService = service.group !== "data";
   useEffect(() => {
     if (service && service.id !== serviceId) setServiceId(service.id);
   }, [service, serviceId]);

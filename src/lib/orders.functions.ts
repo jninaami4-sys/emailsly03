@@ -33,8 +33,8 @@ export async function getMyOrder(args: { data: { id: string } }) {
   return { order, events };
 }
 
-export async function getMyProfile(_?: { data?: Empty }) {
-  const r = (await authApi.me()) as { profile?: unknown; user?: unknown };
+export async function getMyProfile(_?: { data?: Empty }): Promise<any> {
+  const r = (await authApi.me()) as { profile?: any; user?: any };
   return r.profile ?? r.user ?? r;
 }
 

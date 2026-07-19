@@ -4,9 +4,6 @@ import { SiteShell } from "@/components/site/SiteShell";
 import { ProductCard } from "@/components/site/ProductCard";
 import { PRODUCTS } from "@/lib/products";
 import { useAllProducts } from "@/hooks/use-all-products";
-import rawApollo from "@/lib/apollo-leads-raw.json";
-import rawLinkedin from "@/lib/linkedin-leads-raw.json";
-import rawZoominfo from "@/lib/zoominfo-leads-raw.json";
 import { openOrderDrawer } from "@/components/site/OrderDrawer";
 
 import {
@@ -27,14 +24,6 @@ import { ServicesCarousel } from "@/components/site/ServicesCarousel";
 import { useSiteContent } from "@/hooks/use-site-content";
 
 
-type RawData = {
-  headers: string[];
-  rows: Record<string, string | number | boolean>[];
-};
-const apolloData = rawApollo as RawData;
-const linkedinData = rawLinkedin as RawData;
-const zoominfoData = rawZoominfo as RawData;
-const totalRows = apolloData.rows.length + linkedinData.rows.length + zoominfoData.rows.length;
 
 const defaultFaqs = [
   { q: "How fast will I receive my data?", a: "Most orders are delivered within 24 hours. Larger or custom research orders may take 48–72 hours. You'll get an email update at every step." },

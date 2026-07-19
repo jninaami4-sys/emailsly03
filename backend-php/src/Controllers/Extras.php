@@ -654,10 +654,11 @@ final class Extras
         $tok = bin2hex(random_bytes(16));
         $id  = Database::uuid();
         self::pdo()->prepare(
-            'INSERT INTO chatbot_conversations (id, session_token, visitor_name, visitor_email, order_ref)
+            'INSERT INTO chatbot_conversations (id, session_token, visitor_name, visitor_email, metadata)
              VALUES (?,?,?,?,?)
              ON DUPLICATE KEY UPDATE session_token = session_token'
-        )->execute([$id, $sessionId, $b['visitorName'] ?? null, $b['email'] ?? null, $b['orderId'] ?? null]);
+        )->execute([$id, $sessionId, $b['visitorName'] ?? null, $b['email'] ?? null,
+                    isset($b['orderId']) ? json_encode(['order_ref' => $b['orderId']]) : null]);
         Response::json(['conversation' => [
             'id' => $id, 'session_id' => $sessionId, 'session_token' => $tok,
         ]]);

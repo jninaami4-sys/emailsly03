@@ -257,7 +257,6 @@ CREATE TABLE social_links (
 -- REVIEWS
 -- =========================================================
 CREATE TABLE reviews (
-CREATE TABLE reviews (
   id                CHAR(36) NOT NULL PRIMARY KEY,
   user_id           CHAR(36) NULL,
   order_id          CHAR(36) NULL,

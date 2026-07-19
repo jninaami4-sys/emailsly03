@@ -79,12 +79,13 @@ export function formatUnitPrice(id: string, overrides?: Map<string, PricingOverr
 export function formatPerUnit(id: string, overrides?: Map<string, PricingOverride>): string {
   const e = applyCatalogOverride(id, overrides);
   if (!e) return "";
-  if (id === "warmup") return `${e.minQty} domains · 15 days`;
+  if (id === "warmup") return "per domain · 15-day warmup";
+  if (id === "mailbox_warmup") return "per mailbox";
   if (e.fixed) return "flat";
   return `per ${e.unit}`;
 }
 
-/** "5,000 min", "Single site", "2 domains min". */
+/** "5,000 min", "Single site", "1 domain min". */
 export function formatMinOrder(id: string, overrides?: Map<string, PricingOverride>): string {
   const e = applyCatalogOverride(id, overrides);
   if (!e) return "";
@@ -99,7 +100,7 @@ export function formatAddOnPrice(id: string, overrides?: Map<string, PricingOver
   const e = applyCatalogOverride(id, overrides);
   if (!e) return "";
   if (id === "webdesign") return `starting at ${formatUSD(e.rate, { compactWholes: true })}`;
-  if (id === "warmup") return `${formatUSD(e.rate * e.minQty, { compactWholes: true })} flat`;
+  if (id === "warmup") return `${formatUSD(e.rate * 2, { compactWholes: true })} / 2 domains`;
   if (e.fixed) return `${formatUSD(e.rate, { compactWholes: true })} flat`;
   return `$${e.rate}/${e.unit}`;
 }

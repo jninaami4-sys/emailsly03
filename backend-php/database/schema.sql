@@ -431,6 +431,7 @@ CREATE TABLE chatbot_orders (
   id               CHAR(36) NOT NULL PRIMARY KEY,
   conversation_id  CHAR(36) NULL,
   order_id         CHAR(36) NULL,
+  user_id          CHAR(36) NULL,
   customer_name    VARCHAR(255) NULL,
   customer_email   VARCHAR(255) NULL,
   service          VARCHAR(255) NULL,
@@ -438,6 +439,7 @@ CREATE TABLE chatbot_orders (
   currency         CHAR(3) NOT NULL DEFAULT 'USD',
   notes            TEXT NULL,
   status           VARCHAR(32) NOT NULL DEFAULT 'new',
+  payload          JSON NULL,
   metadata         JSON NULL,
   created_at       DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at       DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP

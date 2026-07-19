@@ -230,6 +230,8 @@ CREATE TABLE site_settings (
   brand_tagline            VARCHAR(255) NULL,
   brand_logo_url           VARCHAR(500) NULL,
   brand_logo_white_url     VARCHAR(500) NULL,
+  invoice_logo_url         VARCHAR(500) NULL,
+  footer_logo_url          VARCHAR(500) NULL,
   favicon_url              VARCHAR(500) NULL,
   support_show_category    TINYINT(1) NOT NULL DEFAULT 0,
   contact_email            VARCHAR(255) NULL,

@@ -475,13 +475,16 @@ CREATE TABLE chatbot_kb (
 ) ENGINE=InnoDB;
 
 CREATE TABLE chatbot_config (
-  id             TINYINT(1) NOT NULL PRIMARY KEY DEFAULT 1,
-  welcome_message TEXT NULL,
-  bot_name       VARCHAR(64) NOT NULL DEFAULT 'Emailsly',
-  bot_avatar     VARCHAR(500) NULL,
-  enabled        TINYINT(1) NOT NULL DEFAULT 1,
-  metadata       JSON NULL,
-  updated_at     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  id               TINYINT(1) NOT NULL PRIMARY KEY DEFAULT 1,
+  welcome_message  TEXT NULL,
+  bot_name         VARCHAR(64) NOT NULL DEFAULT 'Emailsly',
+  bot_avatar       VARCHAR(500) NULL,
+  enabled          TINYINT(1) NOT NULL DEFAULT 1,
+  greeting         TEXT NULL,
+  human_hours_note VARCHAR(500) NULL,
+  config           JSON NULL,
+  metadata         JSON NULL,
+  updated_at       DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
 CREATE TABLE chatbot_telegram_map (
@@ -503,6 +506,12 @@ CREATE TABLE sample_datasets (
   file_url     VARCHAR(500) NOT NULL,
   file_type    VARCHAR(16) NOT NULL DEFAULT 'csv',
   is_public    TINYINT(1) NOT NULL DEFAULT 1,
+  is_active    TINYINT(1) NOT NULL DEFAULT 1,
+  source       VARCHAR(64) NULL,
+  filename     VARCHAR(255) NULL,
+  storage_path VARCHAR(500) NULL,
+  data         JSON NULL,
+  meta         JSON NULL,
   created_at   DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at   DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
@@ -511,6 +520,7 @@ CREATE TABLE sample_dataset_audit (
   id           CHAR(36) NOT NULL PRIMARY KEY,
   dataset_id   CHAR(36) NULL,
   user_id      CHAR(36) NULL,
+  actor_id     CHAR(36) NULL,
   ip_address   VARCHAR(64) NULL,
   user_agent   VARCHAR(255) NULL,
   action       VARCHAR(32) NOT NULL DEFAULT 'download',
@@ -524,6 +534,8 @@ CREATE TABLE sample_dataset_audit (
 CREATE TABLE conversion_events (
   id           CHAR(36) NOT NULL PRIMARY KEY,
   event_name   VARCHAR(64) NOT NULL,
+  name         VARCHAR(255) NULL,
+  event_type   VARCHAR(64) NULL,
   session_id   VARCHAR(64) NULL,
   user_id      CHAR(36) NULL,
   value_cents  INT NULL,
@@ -533,6 +545,9 @@ CREATE TABLE conversion_events (
   utm          JSON NULL,
   ip_address   VARCHAR(64) NULL,
   user_agent   VARCHAR(255) NULL,
+  sort_order   INT NOT NULL DEFAULT 0,
+  is_active    TINYINT(1) NOT NULL DEFAULT 1,
+  config       JSON NULL,
   metadata     JSON NULL,
   created_at   DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   INDEX (event_name), INDEX (created_at)
@@ -559,21 +574,23 @@ CREATE TABLE server_event_log (
 ) ENGINE=InnoDB;
 
 CREATE TABLE server_tracking_config (
-  id                    TINYINT(1) NOT NULL PRIMARY KEY DEFAULT 1,
-  ga4_measurement_id    VARCHAR(64) NULL,
-  ga4_api_secret        VARCHAR(255) NULL,
-  meta_pixel_id         VARCHAR(64) NULL,
-  meta_access_token     VARCHAR(500) NULL,
-  meta_test_event_code  VARCHAR(64) NULL,
-  tiktok_pixel_id       VARCHAR(64) NULL,
-  tiktok_access_token   VARCHAR(500) NULL,
-  linkedin_partner_id   VARCHAR(64) NULL,
+  id                     TINYINT(1) NOT NULL PRIMARY KEY DEFAULT 1,
+  ga4_measurement_id     VARCHAR(64) NULL,
+  ga4_api_secret         VARCHAR(255) NULL,
+  meta_pixel_id          VARCHAR(64) NULL,
+  meta_access_token      VARCHAR(500) NULL,
+  meta_test_event_code   VARCHAR(64) NULL,
+  tiktok_pixel_id        VARCHAR(64) NULL,
+  tiktok_access_token    VARCHAR(500) NULL,
+  linkedin_partner_id    VARCHAR(64) NULL,
   linkedin_conversion_id VARCHAR(64) NULL,
-  linkedin_access_token VARCHAR(500) NULL,
-  reddit_pixel_id       VARCHAR(64) NULL,
+  linkedin_access_token  VARCHAR(500) NULL,
+  reddit_pixel_id        VARCHAR(64) NULL,
   reddit_conversion_token VARCHAR(500) NULL,
-  enabled               TINYINT(1) NOT NULL DEFAULT 0,
-  updated_at            DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  enabled                TINYINT(1) NOT NULL DEFAULT 0,
+  is_enabled             TINYINT(1) NOT NULL DEFAULT 0,
+  config                 JSON NULL,
+  updated_at             DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
 -- =========================================================

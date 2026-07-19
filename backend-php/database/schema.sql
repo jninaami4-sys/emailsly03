@@ -599,14 +599,17 @@ CREATE TABLE server_tracking_config (
 CREATE TABLE product_details (
   id             CHAR(36) NOT NULL PRIMARY KEY,
   service_id     VARCHAR(64) NOT NULL UNIQUE,
+  slug           VARCHAR(128) NULL,
   headline       VARCHAR(255) NULL,
   subheadline    VARCHAR(500) NULL,
   bullets        JSON NULL,
   hero_image     VARCHAR(500) NULL,
   gallery        JSON NULL,
   faq            JSON NULL,
+  data           JSON NULL,
   metadata       JSON NULL,
-  updated_at     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  updated_at     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX product_details_slug_idx (slug)
 ) ENGINE=InnoDB;
 
 -- =========================================================

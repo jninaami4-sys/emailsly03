@@ -16,7 +16,7 @@ const paths = [
   { path: "/manual-lead-research", priority: "0.8", changefreq: "monthly" as const },
   { path: "/website-design", priority: "0.6", changefreq: "monthly" as const },
   { path: "/contact", priority: "0.6", changefreq: "monthly" as const },
-  { path: "/track-order", priority: "0.4", changefreq: "monthly" as const },
+  // /track-order removed — auth-only route, not for indexing.
   { path: "/privacy-policy", priority: "0.3", changefreq: "yearly" as const },
   { path: "/terms", priority: "0.3", changefreq: "yearly" as const },
   { path: "/refund-policy", priority: "0.3", changefreq: "yearly" as const },

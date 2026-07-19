@@ -19,8 +19,25 @@ final class Request
 
     public static function ip(): string
     {
-        return $_SERVER['HTTP_X_FORWARDED_FOR']
-            ?? $_SERVER['REMOTE_ADDR']
-            ?? '0.0.0.0';
+        $remote = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+
+        // Only trust X-Forwarded-For when the operator has explicitly
+        // opted in (front-end proxy / load-balancer). Otherwise the
+        // header is client-controlled and would let attackers rotate
+        // "IPs" to bypass the rate limiter.
+        $trustProxy = ($_ENV['TRUST_PROXY'] ?? getenv('TRUST_PROXY') ?? '0');
+        if ((string)$trustProxy !== '1') {
+            return $remote;
+        }
+
+        $xff = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? '';
+        if ($xff === '') return $remote;
+
+        // First entry is the original client; the rest are proxy hops.
+        $first = trim(explode(',', $xff)[0]);
+        if ($first !== '' && filter_var($first, FILTER_VALIDATE_IP)) {
+            return $first;
+        }
+        return $remote;
     }
 }

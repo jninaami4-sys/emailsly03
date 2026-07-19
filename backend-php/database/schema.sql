@@ -725,4 +725,48 @@ CREATE TABLE otp_codes (
   INDEX (email), INDEX (expires_at)
 ) ENGINE=InnoDB;
 
+-- =========================================================
+-- RATE LIMITER (MySQL-backed, shared-hosting friendly)
+-- =========================================================
+CREATE TABLE IF NOT EXISTS rate_limits (
+  bucket        VARCHAR(64) NOT NULL,
+  ip            VARCHAR(64) NOT NULL,
+  action        VARCHAR(64) NOT NULL,
+  window_start  BIGINT NOT NULL,
+  count         INT UNSIGNED NOT NULL DEFAULT 0,
+  PRIMARY KEY (bucket, ip, action, window_start),
+  KEY idx_window (window_start)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- =========================================================
+-- MAIL DELIVERY LOG (admin mail-logs viewer)
+-- =========================================================
+CREATE TABLE IF NOT EXISTS mail_logs (
+  id           CHAR(36) NOT NULL PRIMARY KEY,
+  kind         VARCHAR(32) NOT NULL,
+  to_email     VARCHAR(255) NOT NULL,
+  subject      VARCHAR(500) NULL,
+  status       VARCHAR(32) NOT NULL DEFAULT 'sent',
+  error        TEXT NULL,
+  metadata     JSON NULL,
+  created_at   DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  KEY idx_kind_created (kind, created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- =========================================================
+-- STRIPE WEBHOOK DELIVERIES (admin stripe events viewer)
+-- =========================================================
+CREATE TABLE IF NOT EXISTS stripe_webhook_deliveries (
+  id              CHAR(36) NOT NULL PRIMARY KEY,
+  event_id        VARCHAR(128) NULL,
+  event_type      VARCHAR(128) NULL,
+  status          VARCHAR(32) NOT NULL,
+  http_status     INT NULL,
+  error           TEXT NULL,
+  payload_snippet TEXT NULL,
+  created_at      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  KEY idx_type (event_type),
+  KEY idx_status (status)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 SET FOREIGN_KEY_CHECKS = 1;

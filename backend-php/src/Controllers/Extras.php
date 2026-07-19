@@ -463,7 +463,7 @@ final class Extras
         $limit = max(1, min(100, (int)($_GET['limit'] ?? 20)));
         $s = self::pdo()->query(
             "SELECT r.referrer_id, u.email, p.full_name, COUNT(*) as total,
-                    SUM(CASE WHEN r.status='approved' THEN 1 ELSE 0 END) as approved
+                    SUM(CASE WHEN r.admin_review_state='approved' THEN 1 ELSE 0 END) as approved
              FROM referrals r
              LEFT JOIN users u ON u.id = r.referrer_id
              LEFT JOIN profiles p ON p.user_id = r.referrer_id

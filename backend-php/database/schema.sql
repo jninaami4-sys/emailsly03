@@ -448,8 +448,11 @@ CREATE TABLE chatbot_orders (
 CREATE TABLE chatbot_tickets (
   id               CHAR(36) NOT NULL PRIMARY KEY,
   conversation_id  CHAR(36) NULL,
+  user_id          CHAR(36) NULL,
+  ticket_no        VARCHAR(32) NULL,
   subject          VARCHAR(255) NULL,
   description      TEXT NULL,
+  body             TEXT NULL,
   status           VARCHAR(32) NOT NULL DEFAULT 'open',
   priority         VARCHAR(16) NOT NULL DEFAULT 'normal',
   assigned_to      CHAR(36) NULL,

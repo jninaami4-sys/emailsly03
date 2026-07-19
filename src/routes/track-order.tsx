@@ -1,10 +1,11 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 
 import { SiteShell } from "@/components/site/SiteShell";
 import { TrackOrderSkeleton } from "@/components/site/TrackOrderSkeleton";
 import { TrackResultSkeleton } from "@/components/site/TrackResultSkeleton";
 import { useHydrated } from "@/hooks/use-hydrated";
+import { useAuth } from "@/hooks/use-auth";
 import { Search, Package, Database, ShieldCheck, Truck, Check, Clock, Mail, Hash, AlertCircle, ArrowRight, RefreshCcw } from "lucide-react";
 import { PremiumSparkles as Sparkles } from "@/components/site/PremiumIcons";
 import { ordersApi, ApiError, getApiBase } from "@/lib/api-client";
@@ -14,9 +15,10 @@ export const Route = createFileRoute("/track-order")({
   head: () => ({
     meta: [
       { title: "Track your order | EmailsLy" },
-      { name: "description", content: "Look up your EmailsLy order status in real time using your order ID or email." },
+      { name: "description", content: "Sign in to look up your EmailsLy order status in real time." },
       { property: "og:title", content: "Track your order | EmailsLy" },
-      { property: "og:description", content: "Look up your EmailsLy order status in real time using your order ID or email." },
+      { property: "og:description", content: "Sign in to look up your EmailsLy order status in real time." },
+      { name: "robots", content: "noindex" },
     ],
     links: [{ rel: "canonical", href: "/track-order" }],
   }),

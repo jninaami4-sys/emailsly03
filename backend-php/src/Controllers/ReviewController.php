@@ -1,6 +1,6 @@
 <?php
 namespace Emailsly\Controllers;
-use Emailsly\{Auth, Database, Request, Response};
+use Emailsly\{Auth, Database, RateLimit, Request, Response};
 
 final class ReviewController
 {

@@ -257,23 +257,25 @@ CREATE TABLE social_links (
 -- REVIEWS
 -- =========================================================
 CREATE TABLE reviews (
-  id            CHAR(36) NOT NULL PRIMARY KEY,
-  user_id       CHAR(36) NULL,
-  order_id      CHAR(36) NULL,
-  author_name   VARCHAR(255) NULL,
-  author_email  VARCHAR(255) NULL,
-  author_avatar VARCHAR(500) NULL,
-  rating        TINYINT NOT NULL DEFAULT 5,
-  title         VARCHAR(255) NULL,
-  body          TEXT NULL,
-  media_url     VARCHAR(500) NULL,
-  status        ENUM('pending','approved','rejected') NOT NULL DEFAULT 'pending',
-  featured      TINYINT(1) NOT NULL DEFAULT 0,
-  service_id    VARCHAR(64) NULL,
-  metadata      JSON NULL,
-  approved_at   DATETIME NULL,
-  created_at    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+CREATE TABLE reviews (
+  id                CHAR(36) NOT NULL PRIMARY KEY,
+  user_id           CHAR(36) NULL,
+  order_id          CHAR(36) NULL,
+  author_name       VARCHAR(255) NULL,
+  author_email      VARCHAR(255) NULL,
+  author_avatar     VARCHAR(500) NULL,
+  rating            TINYINT NOT NULL DEFAULT 5,
+  title             VARCHAR(255) NULL,
+  body              TEXT NULL,
+  media_url         VARCHAR(500) NULL,
+  status            ENUM('pending','approved','rejected') NOT NULL DEFAULT 'pending',
+  featured          TINYINT(1) NOT NULL DEFAULT 0,
+  service_id        VARCHAR(64) NULL,
+  moderation_reason VARCHAR(500) NULL,
+  metadata          JSON NULL,
+  approved_at       DATETIME NULL,
+  created_at        DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at        DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   INDEX (status), INDEX (rating)
 ) ENGINE=InnoDB;
 

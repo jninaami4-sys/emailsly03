@@ -55,6 +55,7 @@ final class AuthController
 
     public function login(): void
     {
+        RateLimit::check('auth_login', 10, 300);
         $b = Request::json();
         $email = strtolower(trim($b['email'] ?? ''));
         $password = (string)($b['password'] ?? '');

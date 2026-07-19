@@ -6,6 +6,7 @@ import { PremiumLogoMark } from "@/components/site/PremiumIcons";
 import { EmailslyLoaderInline } from "@/components/site/EmailslyLoaderInline";
 const emailslyLogo = { url: "/emailsly-logo-trim.png" };
 import { useAuth } from "@/hooks/use-auth";
+import { useCart } from "@/lib/cart";
 
 
 export const Route = createFileRoute("/payment-success")({

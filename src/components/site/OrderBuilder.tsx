@@ -64,7 +64,7 @@ const SERVICES: Service[] = [
   { ...SERVICE_CATALOG.manual,    name: "Hand-Picked Leads",         helper: "Min 100 leads · enter any quantity",                   icon: PremiumUserSearch,         group: "data" },
   { ...SERVICE_CATALOG.mobile,    name: "Apollo Mobile Numbers",     helper: "Min 100 numbers · enter any quantity",                 icon: PremiumPhone,              group: "data" },
   { ...SERVICE_CATALOG.pixel,     name: "Facebook Pixel",                                                                            icon: PremiumMousePointerClick,  group: "growth" },
-  { ...SERVICE_CATALOG.warmup,    name: "Mailbox Warmup + DKIM/SPF", helper: "2 mailboxes · 15-day warmup · DKIM, SPF, DMARC setup", icon: PremiumShieldCheck,        group: "growth" },
+  { ...SERVICE_CATALOG.warmup,    name: "Domain DNS Setup & Warmup", helper: "2 domains · 15-day warmup · DKIM, SPF, DMARC setup ($50 / 2 domains)", icon: PremiumShieldCheck,        group: "growth" },
   { ...SERVICE_CATALOG.ads,       name: "Google Ads Launch",                                                                         icon: PremiumLineChart,          group: "growth" },
   { ...SERVICE_CATALOG.tracking,  name: "Server-Side Tracking",                                                                      icon: PremiumServerCog,          group: "growth" },
   { ...SERVICE_CATALOG.logo,      name: "Logo & Brand Kit",                                                                          icon: PremiumPenTool,            group: "design" },
@@ -515,16 +515,16 @@ export function OrderBuilder() {
                       <input
                         type="range"
                         min={service.minQty}
-                        max={service.unit === "mailboxes" ? 100 : 1_000_000}
-                        step={service.unit === "mailboxes" ? 1 : Math.max(Math.round(service.minQty / 20), 1)}
+                        max={service.unit === "domains" ? 100 : 1_000_000}
+                        step={service.unit === "domains" ? 2 : Math.max(Math.round(service.minQty / 20), 1)}
                         value={effectiveQty}
                         onChange={(e) => setQuantity(Number(e.target.value))}
                         className="mt-4 w-full accent-violet"
                         aria-label="Quantity"
                       />
                       <div className="mt-4 flex flex-wrap gap-1.5">
-                        {(service.unit === "mailboxes"
-                          ? [2, 5, 10, 20, 50, 100]
+                        {(service.unit === "domains"
+                          ? [2, 4, 6, 10, 20, 50]
                           : QTY_PRESETS
                         )
                           .filter((q) => q >= service.minQty)
@@ -539,7 +539,7 @@ export function OrderBuilder() {
                                   : "bg-background text-muted-foreground hover:bg-secondary hover:text-foreground"
                               }`}
                             >
-                              {service.unit === "mailboxes" ? q.toString() : formatCompact(q)}
+                              {service.unit === "domains" ? q.toString() : formatCompact(q)}
                             </button>
                           ))}
                       </div>

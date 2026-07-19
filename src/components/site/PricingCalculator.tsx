@@ -20,7 +20,7 @@ export const SERVICES: PriceService[] = [
   { ...SERVICE_CATALOG.linkedin,  name: "LinkedIn B2B",          helper: "~70% include emails" },
   { ...SERVICE_CATALOG.manual,    name: "Manual Research" },
   { ...SERVICE_CATALOG.mobile,    name: "Apollo Mobile Numbers" },
-  { ...SERVICE_CATALOG.warmup,    name: "Mailbox Warmup",        helper: "2 mailboxes · 15-day warmup" },
+  { ...SERVICE_CATALOG.warmup,    name: "Domain DNS Setup & Warmup", helper: "2 domains · 15-day warmup + DKIM/SPF/DMARC" },
   { ...SERVICE_CATALOG.pixel,     name: "Facebook Pixel Setup" },
   { ...SERVICE_CATALOG.ads,       name: "Google Ads Setup" },
   { ...SERVICE_CATALOG.tracking,  name: "Server-Side Tracking" },

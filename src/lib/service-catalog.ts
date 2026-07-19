@@ -14,11 +14,11 @@ export type CatalogEntry = {
   id: string;
   /** Per-unit price in USD. For `fixed` services this is the flat price. */
   rate: number;
-  /** Minimum quantity (units or mailboxes). */
+  /** Minimum quantity (units or domains). */
   minQty: number;
   /** Minimum order total in USD. */
   minOrder: number;
-  /** Singular unit label used in copy (lead, record, setup, kit, site, mailboxes). */
+  /** Singular unit label used in copy (lead, record, setup, kit, site, domains). */
   unit: string;
   /** True for flat-priced services (setup fees, one-off builds). */
   fixed?: boolean;
@@ -30,7 +30,7 @@ export const SERVICE_CATALOG: Record<string, CatalogEntry> = {
   linkedin:  { id: "linkedin",  rate: 0.01,   minQty: 5000, minOrder: 50,  unit: "lead" },
   manual:    { id: "manual",    rate: 0.35,   minQty: 100,  minOrder: 35,  unit: "lead" },
   mobile:    { id: "mobile",    rate: 0.15,   minQty: 100,  minOrder: 15,  unit: "record" },
-  warmup:    { id: "warmup",    rate: 50,     minQty: 2,    minOrder: 100, unit: "mailboxes" },
+  warmup:    { id: "warmup",    rate: 25,     minQty: 2,    minOrder: 50,  unit: "domains" },
   pixel:     { id: "pixel",     rate: 100,    minQty: 1,    minOrder: 100, unit: "setup", fixed: true },
   ads:       { id: "ads",       rate: 100,    minQty: 1,    minOrder: 100, unit: "setup", fixed: true },
   tracking:  { id: "tracking",  rate: 150,    minQty: 1,    minOrder: 150, unit: "setup", fixed: true },
@@ -74,16 +74,16 @@ export function formatUnitPrice(id: string, overrides?: Map<string, PricingOverr
   return `$${e.rate}`;
 }
 
-/** "per lead", "flat", "2 mailboxes · 15 days" etc. */
+/** "per lead", "flat", "2 domains · 15 days" etc. */
 export function formatPerUnit(id: string, overrides?: Map<string, PricingOverride>): string {
   const e = applyCatalogOverride(id, overrides);
   if (!e) return "";
-  if (id === "warmup") return `${e.minQty} mailboxes · 15 days`;
+  if (id === "warmup") return `${e.minQty} domains · 15 days`;
   if (e.fixed) return "flat";
   return `per ${e.unit}`;
 }
 
-/** "5,000 min", "Single site", "2 mailboxes min". */
+/** "5,000 min", "Single site", "2 domains min". */
 export function formatMinOrder(id: string, overrides?: Map<string, PricingOverride>): string {
   const e = applyCatalogOverride(id, overrides);
   if (!e) return "";

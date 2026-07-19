@@ -4,9 +4,9 @@ import { ServiceLanding } from "@/components/site/ServiceLanding";
 export const Route = createFileRoute("/apollo-leads-export")({
   head: () => ({
     meta: [
-      { title: "Apollo Leads Export — Verified B2B data | EmailsLy" },
+      { title: "Apollo Leads Export — Verified B2B Leads | EmailsLy" },
       { name: "description", content: "Custom Apollo.io lead exports. Verified emails, direct dials, firmographics. Pay per lead, delivered in 24 hours." },
-      { property: "og:title", content: "Apollo Leads Export — Verified B2B data" },
+      { property: "og:title", content: "Apollo Leads Export — Verified B2B Leads" },
       { property: "og:description", content: "Custom Apollo exports at $0.12/lead. No subscription." },
     ],
     links: [{ rel: "canonical", href: "/apollo-leads-export" }],

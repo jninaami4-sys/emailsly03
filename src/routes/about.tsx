@@ -14,7 +14,7 @@ import {
 export const Route = createFileRoute("/about")({
   head: ({ matches }) => ({
     meta: [
-      { title: "About EmailsLy — Verified B2B Lead Data Platform" },
+      { title: "About EmailsLy — Verified B2B Leads Platform" },
       {
         name: "description",
         content:
@@ -22,7 +22,7 @@ export const Route = createFileRoute("/about")({
       },
       {
         property: "og:title",
-        content: "About EmailsLy — Verified B2B Lead Data Platform",
+        content: "About EmailsLy — Verified B2B Leads Platform",
       },
       {
         property: "og:description",

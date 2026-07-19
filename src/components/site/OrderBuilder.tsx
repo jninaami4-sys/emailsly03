@@ -115,15 +115,15 @@ export function OrderBuilder() {
   useEffect(() => {
     if (service && service.id !== serviceId) setServiceId(service.id);
   }, [service, serviceId]);
-  useEffect(() => {
-    if (isNonLeadService) setVerifier(false);
-  }, [isNonLeadService]);
   const [mobileGroup, setMobileGroup] = useState<"data" | "growth" | "design">(service.group);
   const [quantity, setQuantity] = useState(service.minQty);
   const [extraUrls, setExtraUrls] = useState(1);
   const [apolloUrls, setApolloUrls] = useState("");
   const [verifier, setVerifier] = useState(false);
   const [rush, setRush] = useState(false);
+  useEffect(() => {
+    if (isNonLeadService) setVerifier(false);
+  }, [isNonLeadService]);
   const [tip, setTip] = useState(0);
   const [promo, setPromo] = useState("");
   const [promoApplied, setPromoApplied] = useState<PromoResult | null>(null);

@@ -504,8 +504,9 @@ export const adminBlogAnalyticsApi = {
   summary: (query?: { days?: number }) =>
     g<{ rows: any[] }>("/api/admin/blog/analytics/summary", query),
   forSlug: (query: { slug: string; days?: number }) =>
-    g<{ report: any }>("/api/admin/blog/analytics/slug", query),
+    g<{ report: any }>(`/api/admin/blog/analytics/${encodeURIComponent(query.slug)}`, { days: query.days }),
 };
+
 
 // -------- Product details (extended per-slug CMS) --------
 export const productDetailsApi = {

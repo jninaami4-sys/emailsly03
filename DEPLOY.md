@@ -49,7 +49,7 @@ Upload the `backend-php/` folder to `/home/<user>/api-emailsly/` (or wherever �
    - `UPLOADS_PUBLIC_URL=https://emailsly.com/uploads`
    - `APP_URL=https://emailsly.com`, `API_URL=https://api.emailsly.com`
    - `CORS_ORIGINS=https://emailsly.com,https://www.emailsly.com`
-   - `ADMIN_EMAIL=ahsanulhridoy229@gmail.com` (already in project secrets)
+   - `ADMIN_EMAIL=admin@yourdomain.com`
 
 4. **Permissions:**
    ```bash
@@ -67,6 +67,8 @@ Upload the `backend-php/` folder to `/home/<user>/api-emailsly/` (or wherever �
 2. **Import** `backend-php/database/schema.sql` (creates 44 tables).
 3. **Import** `backend-php/database/seed.sql` (creates the seed admin `admin@emailsly.com` / `ChangeMe!2026`, default pricing, site settings, chatbot config).
 4. **Immediately** log in and change the admin password (or update the row before importing seed).
+
+> **⚠️ SECURITY: The seed admin password `ChangeMe!2026` MUST be rotated before the site goes live.** Anyone with the deploy guide knows this credential — rotate it in `Profile → Security` (or via phpMyAdmin) as your first action after import.
 
 Verify with a test call:
 ```

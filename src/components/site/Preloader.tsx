@@ -413,7 +413,7 @@ function EmailslyWordmark({ reduced }: { reduced: boolean }) {
           initial={{ opacity: 0, y: 14, filter: "blur(6px)" }}
           animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
           transition={{ duration: 0.6, delay: baseDelay + i * 0.05, ease: EASE }}
-          style={{ color: NAVY === NAVY ? "#efeaff" : NAVY }}
+          style={{ color: "#efeaff" }}
         >
           {l}
         </motion.span>

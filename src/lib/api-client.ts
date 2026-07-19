@@ -484,10 +484,12 @@ export const blogSeoApi = {
   get: (slug: string) => g<{ override: any | null }>(`/api/blog/seo/${encodeURIComponent(slug)}`),
 };
 export const adminBlogSeoApi = {
-  list: () => g<{ overrides: any[] }>("/api/admin/blog/seo"),
-  upsert: (body: unknown) => j("/api/admin/blog/seo", body, "PUT"),
-  destroy: (slug: string) => del(`/api/admin/blog/seo/${encodeURIComponent(slug)}`),
+  list: () => g<{ overrides: any[] }>("/api/admin/blog-seo"),
+  upsert: (body: { slug: string } & Record<string, unknown>) =>
+    j(`/api/admin/blog-seo/${encodeURIComponent(body.slug)}`, body, "PUT"),
+  destroy: (slug: string) => del(`/api/admin/blog-seo/${encodeURIComponent(slug)}`),
 };
+
 
 // -------- Blog analytics --------
 export const blogAnalyticsApi = {

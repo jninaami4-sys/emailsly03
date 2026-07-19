@@ -411,7 +411,7 @@ function TrackOrderPage() {
               {[
                 { icon: Hash, title: "Find your ID", desc: "It's in the confirmation email subject line (LYR-…)." },
                 { icon: Clock, title: "Live status", desc: "See exactly which stage your order is in right now." },
-                { icon: ShieldCheck, title: "No account needed", desc: "Quick lookup — no login, no password reset dance." },
+                { icon: ShieldCheck, title: "Account-only", desc: "Sign-in required — you'll only ever see your own orders." },
               ].map(({ icon: Icon, title, desc }) => (
                 <div key={title} className="rounded-2xl border border-border bg-card/60 p-4 backdrop-blur">
                   <div className="mb-2 grid size-9 place-items-center rounded-lg bg-violet-soft text-violet">

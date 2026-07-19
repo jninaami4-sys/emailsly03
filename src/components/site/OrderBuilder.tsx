@@ -507,7 +507,7 @@ export function OrderBuilder() {
                       <div className="flex items-baseline justify-between">
                         <div className="font-display text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
                           {effectiveQty.toLocaleString()}
-                          <span className="ml-2 font-sans text-sm font-medium text-muted-foreground">{service.unit}s</span>
+                          <span className="ml-2 font-sans text-sm font-medium text-muted-foreground">{service.unit === "mailbox" ? (effectiveQty === 1 ? "mailbox" : "mailboxes") : `${service.unit}s`}</span>
                         </div>
                         <div className="hidden font-mono text-xs text-muted-foreground sm:block">
                           ${service.rate.toFixed(4)} / {service.unit}

@@ -61,11 +61,24 @@ type ErrorState = {
 
 function TrackOrderPage() {
   const hydrated = useHydrated();
+  const { user, loading: authLoading } = useAuth();
+  const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const [result, setResult] = useState<Lookup | null>(null);
   const [error, setError] = useState<ErrorState | null>(null);
   const [loading, setLoading] = useState(false);
   const [lastQuery, setLastQuery] = useState<string | null>(null);
+
+  // Auth gate: Track Order is authenticated-only. Once the auth state is
+  // resolved, unauthenticated visitors are bounced to /login with a
+  // same-origin return path. The login route already validates that the
+  // redirect param starts with "/".
+  useEffect(() => {
+    if (!hydrated || authLoading) return;
+    if (!user) {
+      void navigate({ to: "/login", search: { redirect: "/track-order" } });
+    }
+  }, [hydrated, authLoading, user, navigate]);
 
   const detectKind = (q: string): "order" | "invoice" | "email" | "unknown" => {
     if (q.includes("@")) return /\S+@\S+\.\S+/.test(q) ? "email" : "unknown";

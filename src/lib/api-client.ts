@@ -624,7 +624,8 @@ export const adminChatbotApi = {
   ticketsList: () => g<{ tickets: any[] }>("/api/admin/chatbot/tickets"),
   ticketUpdate: (id: string, body: unknown) => patch(`/api/admin/chatbot/tickets/${id}`, body),
   telegramWebhook: (webhookUrl: string) =>
-    j<{ ok: boolean; description?: string }>("/api/admin/chatbot/telegram-webhook", { webhookUrl }),
+    j<{ ok: boolean; description?: string }>("/api/public/telegram/webhook", { webhookUrl }),
+
   syncKb: () => j<{ ok: true; inserted: number; removed: number; categories: Record<string, number> }>(
     "/api/admin/chatbot/kb/sync",
     {},

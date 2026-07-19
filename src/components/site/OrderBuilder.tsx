@@ -64,7 +64,8 @@ const SERVICES: Service[] = [
   { ...SERVICE_CATALOG.manual,    name: "Hand-Picked Leads",         helper: "Min 100 leads · enter any quantity",                   icon: PremiumUserSearch,         group: "data" },
   { ...SERVICE_CATALOG.mobile,    name: "Apollo Mobile Numbers",     helper: "Min 100 numbers · enter any quantity",                 icon: PremiumPhone,              group: "data" },
   { ...SERVICE_CATALOG.pixel,     name: "Facebook Pixel",                                                                            icon: PremiumMousePointerClick,  group: "growth" },
-  { ...SERVICE_CATALOG.warmup,    name: "Domain DNS Setup & Warmup", helper: "2 domains · 15-day warmup · DKIM, SPF, DMARC setup ($50 / 2 domains)", icon: PremiumShieldCheck,        group: "growth" },
+  { ...SERVICE_CATALOG.warmup,         name: "Domain DNS Setup & Warmup", helper: "$80 / 2 domains · from $40 / 1 domain · DKIM, SPF, DMARC + 15-day warmup", icon: PremiumShieldCheck,        group: "growth" },
+  { ...SERVICE_CATALOG.mailbox_warmup, name: "Email Warmup",             helper: "$20 per mailbox · warm individual inboxes on same or different domains", icon: PremiumShieldCheck,        group: "growth" },
   { ...SERVICE_CATALOG.ads,       name: "Google Ads Launch",                                                                         icon: PremiumLineChart,          group: "growth" },
   { ...SERVICE_CATALOG.tracking,  name: "Server-Side Tracking",                                                                      icon: PremiumServerCog,          group: "growth" },
   { ...SERVICE_CATALOG.logo,      name: "Logo & Brand Kit",                                                                          icon: PremiumPenTool,            group: "design" },
@@ -506,7 +507,7 @@ export function OrderBuilder() {
                       <div className="flex items-baseline justify-between">
                         <div className="font-display text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
                           {effectiveQty.toLocaleString()}
-                          <span className="ml-2 font-sans text-sm font-medium text-muted-foreground">{service.unit}s</span>
+                          <span className="ml-2 font-sans text-sm font-medium text-muted-foreground">{service.unit === "mailbox" ? (effectiveQty === 1 ? "mailbox" : "mailboxes") : `${service.unit}s`}</span>
                         </div>
                         <div className="hidden font-mono text-xs text-muted-foreground sm:block">
                           ${service.rate.toFixed(4)} / {service.unit}
@@ -515,16 +516,18 @@ export function OrderBuilder() {
                       <input
                         type="range"
                         min={service.minQty}
-                        max={service.unit === "domains" ? 100 : 1_000_000}
-                        step={service.unit === "domains" ? 2 : Math.max(Math.round(service.minQty / 20), 1)}
+                        max={service.unit === "domain" || service.unit === "mailbox" ? 100 : 1_000_000}
+                        step={service.unit === "domain" || service.unit === "mailbox" ? 1 : Math.max(Math.round(service.minQty / 20), 1)}
                         value={effectiveQty}
                         onChange={(e) => setQuantity(Number(e.target.value))}
                         className="mt-4 w-full accent-violet"
                         aria-label="Quantity"
                       />
                       <div className="mt-4 flex flex-wrap gap-1.5">
-                        {(service.unit === "domains"
-                          ? [2, 4, 6, 10, 20, 50]
+                        {(service.id === "warmup"
+                          ? [1, 2, 4, 6, 10, 20]
+                          : service.id === "mailbox_warmup"
+                          ? [1, 2, 5, 10, 20]
                           : QTY_PRESETS
                         )
                           .filter((q) => q >= service.minQty)
@@ -539,7 +542,7 @@ export function OrderBuilder() {
                                   : "bg-background text-muted-foreground hover:bg-secondary hover:text-foreground"
                               }`}
                             >
-                              {service.unit === "domains" ? q.toString() : formatCompact(q)}
+                              {service.unit === "domain" || service.unit === "mailbox" ? q.toString() : formatCompact(q)}
                             </button>
                           ))}
                       </div>

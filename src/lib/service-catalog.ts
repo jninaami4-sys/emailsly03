@@ -30,7 +30,8 @@ export const SERVICE_CATALOG: Record<string, CatalogEntry> = {
   linkedin:  { id: "linkedin",  rate: 0.01,   minQty: 5000, minOrder: 50,  unit: "lead" },
   manual:    { id: "manual",    rate: 0.35,   minQty: 100,  minOrder: 35,  unit: "lead" },
   mobile:    { id: "mobile",    rate: 0.15,   minQty: 100,  minOrder: 15,  unit: "record" },
-  warmup:    { id: "warmup",    rate: 25,     minQty: 2,    minOrder: 50,  unit: "domains" },
+  warmup:          { id: "warmup",          rate: 40, minQty: 1, minOrder: 40, unit: "domain" },
+  mailbox_warmup:  { id: "mailbox_warmup",  rate: 20, minQty: 1, minOrder: 20, unit: "mailbox" },
   pixel:     { id: "pixel",     rate: 100,    minQty: 1,    minOrder: 100, unit: "setup", fixed: true },
   ads:       { id: "ads",       rate: 100,    minQty: 1,    minOrder: 100, unit: "setup", fixed: true },
   tracking:  { id: "tracking",  rate: 150,    minQty: 1,    minOrder: 150, unit: "setup", fixed: true },
@@ -78,12 +79,13 @@ export function formatUnitPrice(id: string, overrides?: Map<string, PricingOverr
 export function formatPerUnit(id: string, overrides?: Map<string, PricingOverride>): string {
   const e = applyCatalogOverride(id, overrides);
   if (!e) return "";
-  if (id === "warmup") return `${e.minQty} domains · 15 days`;
+  if (id === "warmup") return "per domain · 15-day warmup";
+  if (id === "mailbox_warmup") return "per mailbox";
   if (e.fixed) return "flat";
   return `per ${e.unit}`;
 }
 
-/** "5,000 min", "Single site", "2 domains min". */
+/** "5,000 min", "Single site", "1 domain min". */
 export function formatMinOrder(id: string, overrides?: Map<string, PricingOverride>): string {
   const e = applyCatalogOverride(id, overrides);
   if (!e) return "";
@@ -98,7 +100,7 @@ export function formatAddOnPrice(id: string, overrides?: Map<string, PricingOver
   const e = applyCatalogOverride(id, overrides);
   if (!e) return "";
   if (id === "webdesign") return `starting at ${formatUSD(e.rate, { compactWholes: true })}`;
-  if (id === "warmup") return `${formatUSD(e.rate * e.minQty, { compactWholes: true })} flat`;
+  if (id === "warmup") return `${formatUSD(e.rate * 2, { compactWholes: true })} / 2 domains`;
   if (e.fixed) return `${formatUSD(e.rate, { compactWholes: true })} flat`;
   return `$${e.rate}/${e.unit}`;
 }
@@ -129,6 +131,7 @@ export function formatTierSubline(id: string, overrides?: Map<string, PricingOve
 function pluralize(unit: string, n: number): string {
   if (n === 1) return unit;
   if (unit.endsWith("s")) return unit;
+  if (unit.endsWith("x") || unit.endsWith("ch") || unit.endsWith("sh")) return `${unit}es`;
   return `${unit}s`;
 }
 

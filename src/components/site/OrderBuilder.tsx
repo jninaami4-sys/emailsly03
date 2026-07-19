@@ -271,6 +271,7 @@ export function OrderBuilder() {
           <p className="mt-3 text-sm leading-relaxed text-muted-foreground sm:text-base">
             Four quick steps. No hidden fees, no back-and-forth — see your exact price the moment you finish.
           </p>
+          {!isNonLeadService && (
           <div className="mt-4 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 font-mono text-[10px] font-semibold uppercase tracking-widest text-muted-foreground sm:gap-x-8 sm:gap-y-3 sm:text-[11px]">
             <span className="inline-flex items-center gap-1.5 sm:gap-2">
               <PremiumBadgeCheck className="size-3.5 text-emerald sm:size-4" /> 99% verified data
@@ -284,6 +285,7 @@ export function OrderBuilder() {
               <PremiumShieldCheck className="size-3.5 text-coral sm:size-4" /> Pay after preview
             </span>
           </div>
+          )}
         </div>
 
         {/* Stepper — mobile/tablet only */}

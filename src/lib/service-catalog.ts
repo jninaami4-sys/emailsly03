@@ -78,7 +78,7 @@ export function formatUnitPrice(id: string, overrides?: Map<string, PricingOverr
 export function formatPerUnit(id: string, overrides?: Map<string, PricingOverride>): string {
   const e = applyCatalogOverride(id, overrides);
   if (!e) return "";
-  if (id === "warmup") return `${e.minQty} mailboxes · 15 days`;
+  if (id === "warmup") return `${e.minQty} domains · 15 days`;
   if (e.fixed) return "flat";
   return `per ${e.unit}`;
 }

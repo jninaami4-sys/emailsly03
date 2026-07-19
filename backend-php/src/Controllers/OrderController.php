@@ -102,36 +102,32 @@ final class OrderController
         $metadata      = is_array($b['metadata'] ?? null) ? $b['metadata'] : [];
 
         // ---- Store-cart path: items[] present ----
-        // Server recomputes the total from authoritative prices so the client
-        // can never undercut. For each item, if `product_id` matches a row in
-        // `custom_products`, use the DB price_cents; otherwise fall back to
-        // the client-supplied unit_cents but clamp it to a sane per-unit ceiling.
+        // EVERY item MUST resolve to a row in custom_products. Prices come
+        // exclusively from the DB — the client cannot supply, hint, or
+        // override unit_cents. Unknown product_id => reject the whole order.
         // A 2.9% + $0.30 processing fee is then added to match the cart UI.
         $items = (isset($b['items']) && is_array($b['items'])) ? $b['items'] : null;
         if ($items !== null && count($items) > 0) {
             $pdo = Database::pdo();
-            $lookup = $pdo->prepare('SELECT price_cents, name FROM custom_products WHERE id = ? LIMIT 1');
+            $lookup = $pdo->prepare("SELECT price_cents, name FROM custom_products WHERE id = ? AND status = 'published' LIMIT 1");
             $qtyTotal = 0;
             $subtotal = 0;
             $verified = [];
             foreach ($items as $it) {
                 $pid   = isset($it['product_id']) ? (string)$it['product_id'] : '';
                 $iqty  = max(1, (int)($it['quantity'] ?? 1));
-                $ititle = (string)($it['title'] ?? $it['name'] ?? 'Item');
-                $unit  = max(0, (int)($it['unit_cents'] ?? 0));
-                $source = 'client';
-                if ($pid !== '') {
-                    $lookup->execute([$pid]);
-                    $row = $lookup->fetch();
-                    if ($row) {
-                        $unit  = (int)$row['price_cents'];
-                        $ititle = $row['name'] ?: $ititle;
-                        $source = 'db';
-                    }
+                if ($pid === '') {
+                    Response::json(['error' => 'Missing product_id on cart item'], 400);
+                    return;
                 }
-                // Sanity ceiling — $10,000/unit — to bound trust in client price
-                // for static catalog items not yet stored in custom_products.
-                if ($unit > 1000000) $unit = 1000000;
+                $lookup->execute([$pid]);
+                $row = $lookup->fetch();
+                if (!$row) {
+                    Response::json(['error' => "Unknown product $pid — refresh the store"], 400);
+                    return;
+                }
+                $unit   = (int)$row['price_cents'];
+                $ititle = (string)$row['name'];
                 $qtyTotal += $iqty;
                 $subtotal += $unit * $iqty;
                 $verified[] = [
@@ -140,7 +136,7 @@ final class OrderController
                     'quantity'     => $iqty,
                     'unit_cents'   => $unit,
                     'line_cents'   => $unit * $iqty,
-                    'price_source' => $source,
+                    'price_source' => 'db',
                 ];
             }
             $fee   = (int)round($subtotal * 0.029 + 30); // 2.9% + $0.30

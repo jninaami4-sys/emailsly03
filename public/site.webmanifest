@@ -1,7 +1,7 @@
 {
   "name": "EmailsLy",
   "short_name": "EmailsLy",
-  "description": "Verified B2B lead data, on-demand.",
+  "description": "Verified B2B leads, on-demand.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0A0A1F",

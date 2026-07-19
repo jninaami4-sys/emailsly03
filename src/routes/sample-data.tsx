@@ -14,7 +14,7 @@ const sampleDatasetsQuery = queryOptions({
 export const Route = createFileRoute("/sample-data")({
   head: () => ({
     meta: [
-      { title: "Live sample data — Apollo, LinkedIn, ZoomInfo | EmailsLy" },
+      { title: "Live sample leads — Apollo, LinkedIn, ZoomInfo | EmailsLy" },
       {
         name: "description",
         content:

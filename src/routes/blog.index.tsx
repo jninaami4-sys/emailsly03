@@ -10,13 +10,13 @@ import { PremiumSparkles as Sparkles } from "@/components/site/PremiumIcons";
 export const Route = createFileRoute("/blog/")({
   head: ({ matches }) => ({
     meta: [
-      { title: "Blog — Outbound, data, and RevOps playbooks | EmailsLy" },
+      { title: "Blog — Outbound & RevOps playbooks | EmailsLy" },
       {
         name: "description",
         content:
           "Field-tested playbooks on cold email deliverability, B2B data sources, ICP scoring, and CRM operations from the EmailsLy team.",
       },
-      { property: "og:title", content: "EmailsLy Blog — Outbound & data playbooks" },
+      { property: "og:title", content: "EmailsLy Blog — Outbound & RevOps playbooks" },
       {
         property: "og:description",
         content: "Deliverability, ICP, RevOps — practical guides from the EmailsLy team.",

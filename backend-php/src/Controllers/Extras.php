@@ -828,7 +828,7 @@ final class Extras
         $b = Request::json();
         $url = (string)($b['webhookUrl'] ?? '');
         // Set webhook on the first active bot's token.
-        $token = self::pdo()->query('SELECT token FROM telegram_bots WHERE is_active = 1 ORDER BY created_at LIMIT 1')->fetchColumn();
+        $token = self::pdo()->query('SELECT bot_token FROM telegram_bots WHERE is_active = 1 ORDER BY created_at LIMIT 1')->fetchColumn();
         if (!$token || !$url) Response::json(['ok' => false, 'description' => 'No active bot or url']);
         $r = @file_get_contents("https://api.telegram.org/bot$token/setWebhook?url=" . urlencode($url));
         $d = json_decode((string)$r, true) ?: ['ok' => false];

@@ -13,6 +13,7 @@ final class ReviewController
     }
     public function create(): void
     {
+        RateLimit::check('review_create', 3, 3600);
         $c = Auth::optionalClaims();
         $b = Request::json();
         Database::pdo()->prepare(

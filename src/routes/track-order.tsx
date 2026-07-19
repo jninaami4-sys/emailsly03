@@ -194,7 +194,7 @@ function TrackOrderPage() {
   const errorMsg = error?.message ?? null;
 
 
-  if (!hydrated) {
+  if (!hydrated || authLoading || !user) {
     return (
       <SiteShell>
         <TrackOrderSkeleton />

@@ -63,10 +63,19 @@ Upload the `backend-php/` folder to `/home/<user>/api-emailsly/` (or wherever �
 
 ## 3. Import the database
 
+**Fresh install (new database):**
+
 1. cPanel → *phpMyAdmin* → select your DB.
-2. **Import** `backend-php/database/schema.sql` (creates 44 tables).
+2. **Import** `backend-php/database/schema.sql` (creates all tables — includes every column and helper table the app needs).
 3. **Import** `backend-php/database/seed.sql` (creates the seed admin `admin@emailsly.com` / `ChangeMe!2026`, default pricing, site settings, chatbot config).
 4. **Immediately** log in and change the admin password (or update the row before importing seed).
+
+Do **NOT** run `schema_patch.sql` on a fresh install — everything it adds is already in `schema.sql`.
+
+**Upgrading an existing database created before the gap-closure batch:**
+
+1. cPanel → *phpMyAdmin* → select your DB → **Import** `backend-php/database/schema_patch.sql`.
+2. On re-run you may see "Duplicate column name" errors for columns that already exist — those are expected and safe. Use phpMyAdmin's "Continue on error" checkbox, or via CLI: `mysql --force -u user -p dbname < schema_patch.sql`.
 
 > **⚠️ SECURITY: The seed admin password `ChangeMe!2026` MUST be rotated before the site goes live.** Anyone with the deploy guide knows this credential — rotate it in `Profile → Security` (or via phpMyAdmin) as your first action after import.
 

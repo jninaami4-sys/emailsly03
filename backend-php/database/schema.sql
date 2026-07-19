@@ -10,13 +10,14 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- USERS + PROFILES + ROLES
 -- =========================================================
 CREATE TABLE users (
-  id             CHAR(36) NOT NULL PRIMARY KEY,
-  email          VARCHAR(255) NOT NULL UNIQUE,
-  password_hash  VARCHAR(255) NOT NULL,
-  email_verified TINYINT(1) NOT NULL DEFAULT 0,
-  created_at     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  last_login_at  DATETIME NULL
+  id                CHAR(36) NOT NULL PRIMARY KEY,
+  email             VARCHAR(255) NOT NULL UNIQUE,
+  password_hash     VARCHAR(255) NOT NULL,
+  email_verified    TINYINT(1) NOT NULL DEFAULT 0,
+  email_verified_at DATETIME NULL,
+  created_at        DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at        DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  last_login_at     DATETIME NULL
 ) ENGINE=InnoDB;
 
 CREATE TABLE password_resets (
@@ -229,6 +230,8 @@ CREATE TABLE site_settings (
   brand_tagline            VARCHAR(255) NULL,
   brand_logo_url           VARCHAR(500) NULL,
   brand_logo_white_url     VARCHAR(500) NULL,
+  invoice_logo_url         VARCHAR(500) NULL,
+  footer_logo_url          VARCHAR(500) NULL,
   favicon_url              VARCHAR(500) NULL,
   support_show_category    TINYINT(1) NOT NULL DEFAULT 0,
   contact_email            VARCHAR(255) NULL,
@@ -254,23 +257,24 @@ CREATE TABLE social_links (
 -- REVIEWS
 -- =========================================================
 CREATE TABLE reviews (
-  id            CHAR(36) NOT NULL PRIMARY KEY,
-  user_id       CHAR(36) NULL,
-  order_id      CHAR(36) NULL,
-  author_name   VARCHAR(255) NULL,
-  author_email  VARCHAR(255) NULL,
-  author_avatar VARCHAR(500) NULL,
-  rating        TINYINT NOT NULL DEFAULT 5,
-  title         VARCHAR(255) NULL,
-  body          TEXT NULL,
-  media_url     VARCHAR(500) NULL,
-  status        ENUM('pending','approved','rejected') NOT NULL DEFAULT 'pending',
-  featured      TINYINT(1) NOT NULL DEFAULT 0,
-  service_id    VARCHAR(64) NULL,
-  metadata      JSON NULL,
-  approved_at   DATETIME NULL,
-  created_at    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  id                CHAR(36) NOT NULL PRIMARY KEY,
+  user_id           CHAR(36) NULL,
+  order_id          CHAR(36) NULL,
+  author_name       VARCHAR(255) NULL,
+  author_email      VARCHAR(255) NULL,
+  author_avatar     VARCHAR(500) NULL,
+  rating            TINYINT NOT NULL DEFAULT 5,
+  title             VARCHAR(255) NULL,
+  body              TEXT NULL,
+  media_url         VARCHAR(500) NULL,
+  status            ENUM('pending','approved','rejected') NOT NULL DEFAULT 'pending',
+  featured          TINYINT(1) NOT NULL DEFAULT 0,
+  service_id        VARCHAR(64) NULL,
+  moderation_reason VARCHAR(500) NULL,
+  metadata          JSON NULL,
+  approved_at       DATETIME NULL,
+  created_at        DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at        DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   INDEX (status), INDEX (rating)
 ) ENGINE=InnoDB;
 
@@ -356,6 +360,7 @@ CREATE TABLE referral_credits (
   source        VARCHAR(64) NOT NULL,
   referral_id   CHAR(36) NULL,
   order_id      CHAR(36) NULL,
+  batch_id      CHAR(36) NULL,
   notes         VARCHAR(500) NULL,
   metadata      JSON NULL,
   created_at    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -389,6 +394,8 @@ CREATE TABLE referral_payout_batches (
   total_cents    INT NOT NULL DEFAULT 0,
   currency       CHAR(3) NOT NULL DEFAULT 'USD',
   processed_at   DATETIME NULL,
+  created_by     CHAR(36) NULL,
+  notes          TEXT NULL,
   metadata       JSON NULL,
   created_at     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
@@ -424,6 +431,7 @@ CREATE TABLE chatbot_orders (
   id               CHAR(36) NOT NULL PRIMARY KEY,
   conversation_id  CHAR(36) NULL,
   order_id         CHAR(36) NULL,
+  user_id          CHAR(36) NULL,
   customer_name    VARCHAR(255) NULL,
   customer_email   VARCHAR(255) NULL,
   service          VARCHAR(255) NULL,
@@ -431,6 +439,7 @@ CREATE TABLE chatbot_orders (
   currency         CHAR(3) NOT NULL DEFAULT 'USD',
   notes            TEXT NULL,
   status           VARCHAR(32) NOT NULL DEFAULT 'new',
+  payload          JSON NULL,
   metadata         JSON NULL,
   created_at       DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at       DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -439,8 +448,11 @@ CREATE TABLE chatbot_orders (
 CREATE TABLE chatbot_tickets (
   id               CHAR(36) NOT NULL PRIMARY KEY,
   conversation_id  CHAR(36) NULL,
+  user_id          CHAR(36) NULL,
+  ticket_no        VARCHAR(32) NULL,
   subject          VARCHAR(255) NULL,
   description      TEXT NULL,
+  body             TEXT NULL,
   status           VARCHAR(32) NOT NULL DEFAULT 'open',
   priority         VARCHAR(16) NOT NULL DEFAULT 'normal',
   assigned_to      CHAR(36) NULL,
@@ -463,13 +475,16 @@ CREATE TABLE chatbot_kb (
 ) ENGINE=InnoDB;
 
 CREATE TABLE chatbot_config (
-  id             TINYINT(1) NOT NULL PRIMARY KEY DEFAULT 1,
-  welcome_message TEXT NULL,
-  bot_name       VARCHAR(64) NOT NULL DEFAULT 'Emailsly',
-  bot_avatar     VARCHAR(500) NULL,
-  enabled        TINYINT(1) NOT NULL DEFAULT 1,
-  metadata       JSON NULL,
-  updated_at     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  id               TINYINT(1) NOT NULL PRIMARY KEY DEFAULT 1,
+  welcome_message  TEXT NULL,
+  bot_name         VARCHAR(64) NOT NULL DEFAULT 'Emailsly',
+  bot_avatar       VARCHAR(500) NULL,
+  enabled          TINYINT(1) NOT NULL DEFAULT 1,
+  greeting         TEXT NULL,
+  human_hours_note VARCHAR(500) NULL,
+  config           JSON NULL,
+  metadata         JSON NULL,
+  updated_at       DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
 CREATE TABLE chatbot_telegram_map (
@@ -491,6 +506,12 @@ CREATE TABLE sample_datasets (
   file_url     VARCHAR(500) NOT NULL,
   file_type    VARCHAR(16) NOT NULL DEFAULT 'csv',
   is_public    TINYINT(1) NOT NULL DEFAULT 1,
+  is_active    TINYINT(1) NOT NULL DEFAULT 1,
+  source       VARCHAR(64) NULL,
+  filename     VARCHAR(255) NULL,
+  storage_path VARCHAR(500) NULL,
+  data         JSON NULL,
+  meta         JSON NULL,
   created_at   DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at   DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
@@ -499,6 +520,7 @@ CREATE TABLE sample_dataset_audit (
   id           CHAR(36) NOT NULL PRIMARY KEY,
   dataset_id   CHAR(36) NULL,
   user_id      CHAR(36) NULL,
+  actor_id     CHAR(36) NULL,
   ip_address   VARCHAR(64) NULL,
   user_agent   VARCHAR(255) NULL,
   action       VARCHAR(32) NOT NULL DEFAULT 'download',
@@ -512,6 +534,8 @@ CREATE TABLE sample_dataset_audit (
 CREATE TABLE conversion_events (
   id           CHAR(36) NOT NULL PRIMARY KEY,
   event_name   VARCHAR(64) NOT NULL,
+  name         VARCHAR(255) NULL,
+  event_type   VARCHAR(64) NULL,
   session_id   VARCHAR(64) NULL,
   user_id      CHAR(36) NULL,
   value_cents  INT NULL,
@@ -521,6 +545,9 @@ CREATE TABLE conversion_events (
   utm          JSON NULL,
   ip_address   VARCHAR(64) NULL,
   user_agent   VARCHAR(255) NULL,
+  sort_order   INT NOT NULL DEFAULT 0,
+  is_active    TINYINT(1) NOT NULL DEFAULT 1,
+  config       JSON NULL,
   metadata     JSON NULL,
   created_at   DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   INDEX (event_name), INDEX (created_at)
@@ -547,21 +574,23 @@ CREATE TABLE server_event_log (
 ) ENGINE=InnoDB;
 
 CREATE TABLE server_tracking_config (
-  id                    TINYINT(1) NOT NULL PRIMARY KEY DEFAULT 1,
-  ga4_measurement_id    VARCHAR(64) NULL,
-  ga4_api_secret        VARCHAR(255) NULL,
-  meta_pixel_id         VARCHAR(64) NULL,
-  meta_access_token     VARCHAR(500) NULL,
-  meta_test_event_code  VARCHAR(64) NULL,
-  tiktok_pixel_id       VARCHAR(64) NULL,
-  tiktok_access_token   VARCHAR(500) NULL,
-  linkedin_partner_id   VARCHAR(64) NULL,
+  id                     TINYINT(1) NOT NULL PRIMARY KEY DEFAULT 1,
+  ga4_measurement_id     VARCHAR(64) NULL,
+  ga4_api_secret         VARCHAR(255) NULL,
+  meta_pixel_id          VARCHAR(64) NULL,
+  meta_access_token      VARCHAR(500) NULL,
+  meta_test_event_code   VARCHAR(64) NULL,
+  tiktok_pixel_id        VARCHAR(64) NULL,
+  tiktok_access_token    VARCHAR(500) NULL,
+  linkedin_partner_id    VARCHAR(64) NULL,
   linkedin_conversion_id VARCHAR(64) NULL,
-  linkedin_access_token VARCHAR(500) NULL,
-  reddit_pixel_id       VARCHAR(64) NULL,
+  linkedin_access_token  VARCHAR(500) NULL,
+  reddit_pixel_id        VARCHAR(64) NULL,
   reddit_conversion_token VARCHAR(500) NULL,
-  enabled               TINYINT(1) NOT NULL DEFAULT 0,
-  updated_at            DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  enabled                TINYINT(1) NOT NULL DEFAULT 0,
+  is_enabled             TINYINT(1) NOT NULL DEFAULT 0,
+  config                 JSON NULL,
+  updated_at             DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
 -- =========================================================
@@ -570,14 +599,17 @@ CREATE TABLE server_tracking_config (
 CREATE TABLE product_details (
   id             CHAR(36) NOT NULL PRIMARY KEY,
   service_id     VARCHAR(64) NOT NULL UNIQUE,
+  slug           VARCHAR(128) NULL,
   headline       VARCHAR(255) NULL,
   subheadline    VARCHAR(500) NULL,
   bullets        JSON NULL,
   hero_image     VARCHAR(500) NULL,
   gallery        JSON NULL,
   faq            JSON NULL,
+  data           JSON NULL,
   metadata       JSON NULL,
-  updated_at     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  updated_at     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX product_details_slug_idx (slug)
 ) ENGINE=InnoDB;
 
 -- =========================================================
@@ -692,5 +724,49 @@ CREATE TABLE otp_codes (
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   INDEX (email), INDEX (expires_at)
 ) ENGINE=InnoDB;
+
+-- =========================================================
+-- RATE LIMITER (MySQL-backed, shared-hosting friendly)
+-- =========================================================
+CREATE TABLE IF NOT EXISTS rate_limits (
+  bucket        VARCHAR(64) NOT NULL,
+  ip            VARCHAR(64) NOT NULL,
+  action        VARCHAR(64) NOT NULL,
+  window_start  BIGINT NOT NULL,
+  count         INT UNSIGNED NOT NULL DEFAULT 0,
+  PRIMARY KEY (bucket, ip, action, window_start),
+  KEY idx_window (window_start)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- =========================================================
+-- MAIL DELIVERY LOG (admin mail-logs viewer)
+-- =========================================================
+CREATE TABLE IF NOT EXISTS mail_logs (
+  id           CHAR(36) NOT NULL PRIMARY KEY,
+  kind         VARCHAR(32) NOT NULL,
+  to_email     VARCHAR(255) NOT NULL,
+  subject      VARCHAR(500) NULL,
+  status       VARCHAR(32) NOT NULL DEFAULT 'sent',
+  error        TEXT NULL,
+  metadata     JSON NULL,
+  created_at   DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  KEY idx_kind_created (kind, created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- =========================================================
+-- STRIPE WEBHOOK DELIVERIES (admin stripe events viewer)
+-- =========================================================
+CREATE TABLE IF NOT EXISTS stripe_webhook_deliveries (
+  id              CHAR(36) NOT NULL PRIMARY KEY,
+  event_id        VARCHAR(128) NULL,
+  event_type      VARCHAR(128) NULL,
+  status          VARCHAR(32) NOT NULL,
+  http_status     INT NULL,
+  error           TEXT NULL,
+  payload_snippet TEXT NULL,
+  created_at      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  KEY idx_type (event_type),
+  KEY idx_status (status)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 SET FOREIGN_KEY_CHECKS = 1;

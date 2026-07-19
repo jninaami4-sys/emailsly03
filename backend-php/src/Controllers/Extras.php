@@ -23,10 +23,12 @@ final class Extras
         $email = strtolower(trim($b['email'] ?? ''));
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) Response::error('Invalid email');
         $code = str_pad((string)random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+        // otp_codes.code is VARCHAR(10) — store the 6-digit code in plaintext
+        // (short-lived, rate-limited, single-use).
         self::pdo()->prepare(
             'INSERT INTO otp_codes (id, email, code, purpose, expires_at)
              VALUES (?,?,?, "signup", DATE_ADD(NOW(), INTERVAL 15 MINUTE))'
-        )->execute([Database::uuid(), $email, password_hash($code, PASSWORD_BCRYPT)]);
+        )->execute([Database::uuid(), $email, $code]);
         Mailer::auth()->send(
             $email,
             'Your Emailsly verification code',
@@ -44,13 +46,13 @@ final class Extras
         if (!$email || !$code) Response::error('Missing email or code');
         $s = self::pdo()->prepare(
             'SELECT id, code FROM otp_codes
-             WHERE email = ? AND purpose = "signup" AND used_at IS NULL AND expires_at > NOW()
+             WHERE email = ? AND purpose = "signup" AND consumed_at IS NULL AND expires_at > NOW()
              ORDER BY created_at DESC LIMIT 5'
         );
         $s->execute([$email]);
         foreach ($s->fetchAll() as $row) {
-            if (password_verify($code, $row['code'])) {
-                self::pdo()->prepare('UPDATE otp_codes SET used_at = NOW() WHERE id = ?')->execute([$row['id']]);
+            if (hash_equals((string)$row['code'], $code)) {
+                self::pdo()->prepare('UPDATE otp_codes SET consumed_at = NOW() WHERE id = ?')->execute([$row['id']]);
                 self::pdo()->prepare('UPDATE users SET email_verified_at = COALESCE(email_verified_at, NOW()) WHERE email = ?')
                     ->execute([$email]);
                 Response::json(['ok' => true, 'verified' => true]);

@@ -15,6 +15,79 @@ final class OrderController
         Response::json(['orders' => $s->fetchAll()]);
     }
 
+    /**
+     * Authenticated order tracker.
+     *
+     * Track Order is NOT a guest surface. This endpoint requires a valid
+     * JWT and will only ever return orders that belong to the authenticated
+     * user — the caller's supplied `query` is used to disambiguate among
+     * THEIR orders (order id / short ref), never to look up someone else's
+     * order by guessing an id or email.
+     */
+    public function track(): void
+    {
+        $c = Auth::requireUser();
+        $b = Request::json();
+        $q = trim((string)($b['query'] ?? ''));
+        if ($q === '') Response::error('Missing lookup value');
+
+        // Look up by exact id, prefix of id (short ref like "LYR-XXXXXXXX"),
+        // or the customer_email field — but always scoped to this user_id.
+        // Email input is only accepted when it matches the authenticated
+        // user's own email (case-insensitive), so no one can enumerate
+        // orders by pasting somebody else's address.
+        $userEmail = strtolower((string)($c['email'] ?? ''));
+        $qLower    = strtolower($q);
+        $shortRef  = preg_replace('/^(lyr|inv)[-_]?/i', '', $q);
+
+        $sql = 'SELECT * FROM orders
+                WHERE user_id = :uid
+                  AND (
+                    id = :exact
+                    OR LOWER(SUBSTRING(id, 1, 8)) = LOWER(:short)
+                    OR (LOWER(customer_email) = :email AND :email <> \'\')
+                  )
+                ORDER BY created_at DESC
+                LIMIT 1';
+        $s = Database::pdo()->prepare($sql);
+        $s->execute([
+            'uid'   => $c['sub'],
+            'exact' => $q,
+            'short' => $shortRef,
+            // Only allow email lookup when the caller supplied their own address.
+            'email' => ($qLower === $userEmail) ? $userEmail : '',
+        ]);
+        $o = $s->fetch();
+        if (!$o) Response::notFound('Order');
+
+        // Derive a coarse stage index from status for the tracker UI.
+        $stageMap = [
+            'pending'    => 0,
+            'processing' => 1,
+            'verifying'  => 2,
+            'delivered'  => 3,
+            'completed'  => 3,
+        ];
+        $stageIndex = $stageMap[strtolower((string)$o['status'])] ?? 0;
+
+        Response::json([
+            'order' => [
+                'id'             => $o['id'],
+                'order_id'       => $o['id'],
+                'service'        => $o['service'],
+                'quantity'       => $o['quantity'],
+                'placed_at'      => $o['created_at'],
+                'created_at'     => $o['created_at'],
+                'eta'            => $o['eta'] ?? null,
+                'email'          => $o['customer_email'],
+                'status'         => $o['status'],
+                'stage_index'    => $stageIndex,
+            ],
+            'stageIndex' => $stageIndex,
+        ]);
+    }
+
+
     public function create(): void
     {
         $c = Auth::requireUser();

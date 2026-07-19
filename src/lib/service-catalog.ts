@@ -30,7 +30,7 @@ export const SERVICE_CATALOG: Record<string, CatalogEntry> = {
   linkedin:  { id: "linkedin",  rate: 0.01,   minQty: 5000, minOrder: 50,  unit: "lead" },
   manual:    { id: "manual",    rate: 0.35,   minQty: 100,  minOrder: 35,  unit: "lead" },
   mobile:    { id: "mobile",    rate: 0.15,   minQty: 100,  minOrder: 15,  unit: "record" },
-  warmup:    { id: "warmup",    rate: 50,     minQty: 2,    minOrder: 100, unit: "mailboxes" },
+  warmup:    { id: "warmup",    rate: 25,     minQty: 2,    minOrder: 50,  unit: "domains" },
   pixel:     { id: "pixel",     rate: 100,    minQty: 1,    minOrder: 100, unit: "setup", fixed: true },
   ads:       { id: "ads",       rate: 100,    minQty: 1,    minOrder: 100, unit: "setup", fixed: true },
   tracking:  { id: "tracking",  rate: 150,    minQty: 1,    minOrder: 150, unit: "setup", fixed: true },

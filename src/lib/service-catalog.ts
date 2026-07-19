@@ -131,6 +131,7 @@ export function formatTierSubline(id: string, overrides?: Map<string, PricingOve
 function pluralize(unit: string, n: number): string {
   if (n === 1) return unit;
   if (unit.endsWith("s")) return unit;
+  if (unit.endsWith("x") || unit.endsWith("ch") || unit.endsWith("sh")) return `${unit}es`;
   return `${unit}s`;
 }
 

@@ -109,6 +109,7 @@ final class AuthController
 
     public function forgotPassword(): void
     {
+        RateLimit::check('auth_forgot', 5, 3600);
         $b = Request::json();
         $email = strtolower(trim($b['email'] ?? ''));
         $pdo = Database::pdo();

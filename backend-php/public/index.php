@@ -61,6 +61,7 @@ $router->patch('/api/profiles/me',        ['Emailsly\Controllers\ProfileControll
 // Orders
 $router->get ('/api/orders',              ['Emailsly\Controllers\OrderController', 'listMine']);
 $router->post('/api/orders',              ['Emailsly\Controllers\OrderController', 'create']);
+$router->post('/api/orders/track',        ['Emailsly\Controllers\OrderController', 'track']);
 $router->get ('/api/orders/{id}',         ['Emailsly\Controllers\OrderController', 'show']);
 $router->post('/api/orders/{id}/messages',['Emailsly\Controllers\OrderController', 'postMessage']);
 

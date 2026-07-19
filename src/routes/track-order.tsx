@@ -1,10 +1,11 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 
 import { SiteShell } from "@/components/site/SiteShell";
 import { TrackOrderSkeleton } from "@/components/site/TrackOrderSkeleton";
 import { TrackResultSkeleton } from "@/components/site/TrackResultSkeleton";
 import { useHydrated } from "@/hooks/use-hydrated";
+import { useAuth } from "@/hooks/use-auth";
 import { Search, Package, Database, ShieldCheck, Truck, Check, Clock, Mail, Hash, AlertCircle, ArrowRight, RefreshCcw } from "lucide-react";
 import { PremiumSparkles as Sparkles } from "@/components/site/PremiumIcons";
 import { ordersApi, ApiError, getApiBase } from "@/lib/api-client";
@@ -14,9 +15,10 @@ export const Route = createFileRoute("/track-order")({
   head: () => ({
     meta: [
       { title: "Track your order | EmailsLy" },
-      { name: "description", content: "Look up your EmailsLy order status in real time using your order ID or email." },
+      { name: "description", content: "Sign in to look up your EmailsLy order status in real time." },
       { property: "og:title", content: "Track your order | EmailsLy" },
-      { property: "og:description", content: "Look up your EmailsLy order status in real time using your order ID or email." },
+      { property: "og:description", content: "Sign in to look up your EmailsLy order status in real time." },
+      { name: "robots", content: "noindex" },
     ],
     links: [{ rel: "canonical", href: "/track-order" }],
   }),
@@ -59,11 +61,24 @@ type ErrorState = {
 
 function TrackOrderPage() {
   const hydrated = useHydrated();
+  const { user, loading: authLoading } = useAuth();
+  const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const [result, setResult] = useState<Lookup | null>(null);
   const [error, setError] = useState<ErrorState | null>(null);
   const [loading, setLoading] = useState(false);
   const [lastQuery, setLastQuery] = useState<string | null>(null);
+
+  // Auth gate: Track Order is authenticated-only. Once the auth state is
+  // resolved, unauthenticated visitors are bounced to /login with a
+  // same-origin return path. The login route already validates that the
+  // redirect param starts with "/".
+  useEffect(() => {
+    if (!hydrated || authLoading) return;
+    if (!user) {
+      void navigate({ to: "/login", search: { redirect: "/track-order" } });
+    }
+  }, [hydrated, authLoading, user, navigate]);
 
   const detectKind = (q: string): "order" | "invoice" | "email" | "unknown" => {
     if (q.includes("@")) return /\S+@\S+\.\S+/.test(q) ? "email" : "unknown";
@@ -179,7 +194,7 @@ function TrackOrderPage() {
   const errorMsg = error?.message ?? null;
 
 
-  if (!hydrated) {
+  if (!hydrated || authLoading || !user) {
     return (
       <SiteShell>
         <TrackOrderSkeleton />
@@ -396,7 +411,7 @@ function TrackOrderPage() {
               {[
                 { icon: Hash, title: "Find your ID", desc: "It's in the confirmation email subject line (LYR-…)." },
                 { icon: Clock, title: "Live status", desc: "See exactly which stage your order is in right now." },
-                { icon: ShieldCheck, title: "No account needed", desc: "Quick lookup — no login, no password reset dance." },
+                { icon: ShieldCheck, title: "Account-only", desc: "Sign-in required — you'll only ever see your own orders." },
               ].map(({ icon: Icon, title, desc }) => (
                 <div key={title} className="rounded-2xl border border-border bg-card/60 p-4 backdrop-blur">
                   <div className="mb-2 grid size-9 place-items-center rounded-lg bg-violet-soft text-violet">

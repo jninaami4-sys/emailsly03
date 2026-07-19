@@ -360,6 +360,7 @@ CREATE TABLE referral_credits (
   source        VARCHAR(64) NOT NULL,
   referral_id   CHAR(36) NULL,
   order_id      CHAR(36) NULL,
+  batch_id      CHAR(36) NULL,
   notes         VARCHAR(500) NULL,
   metadata      JSON NULL,
   created_at    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,

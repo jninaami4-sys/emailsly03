@@ -7,7 +7,7 @@ import { SocialIcons } from "./SocialIcons";
 import { openConsentPreferences } from "@/lib/consent";
 import { useSiteContent } from "@/hooks/use-site-content";
 import { contactApi } from "@/lib/api-client";
-import fallbackLogo from "@/assets/emailsly-logo-trim.png.asset.json";
+const fallbackLogo = { url: "/emailsly-logo-trim.png" };
 
 const productLinks = [
   { to: "/store", label: "Lead Store" },

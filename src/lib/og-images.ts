@@ -1,6 +1,6 @@
-import ogDefaultAsset from "@/assets/og-emailsly.png.asset.json";
-import ogPricingAsset from "@/assets/og-pricing.png.asset.json";
-import ogBlogAsset from "@/assets/og-blog.png.asset.json";
+const ogDefaultAsset = { url: "/og-emailsly.png" };
+const ogPricingAsset = { url: "/og-pricing.png" };
+const ogBlogAsset = { url: "/og-blog.png" };
 
 /**
  * Branded Open Graph / Twitter card templates.

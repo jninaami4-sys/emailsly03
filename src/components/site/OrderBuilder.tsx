@@ -516,16 +516,18 @@ export function OrderBuilder() {
                       <input
                         type="range"
                         min={service.minQty}
-                        max={service.unit === "domains" ? 100 : 1_000_000}
-                        step={service.unit === "domains" ? 2 : Math.max(Math.round(service.minQty / 20), 1)}
+                        max={service.unit === "domain" || service.unit === "mailbox" ? 100 : 1_000_000}
+                        step={service.unit === "domain" || service.unit === "mailbox" ? 1 : Math.max(Math.round(service.minQty / 20), 1)}
                         value={effectiveQty}
                         onChange={(e) => setQuantity(Number(e.target.value))}
                         className="mt-4 w-full accent-violet"
                         aria-label="Quantity"
                       />
                       <div className="mt-4 flex flex-wrap gap-1.5">
-                        {(service.unit === "domains"
-                          ? [2, 4, 6, 10, 20, 50]
+                        {(service.id === "warmup"
+                          ? [1, 2, 4, 6, 10, 20]
+                          : service.id === "mailbox_warmup"
+                          ? [1, 2, 5, 10, 20]
                           : QTY_PRESETS
                         )
                           .filter((q) => q >= service.minQty)
@@ -540,7 +542,7 @@ export function OrderBuilder() {
                                   : "bg-background text-muted-foreground hover:bg-secondary hover:text-foreground"
                               }`}
                             >
-                              {service.unit === "domains" ? q.toString() : formatCompact(q)}
+                              {service.unit === "domain" || service.unit === "mailbox" ? q.toString() : formatCompact(q)}
                             </button>
                           ))}
                       </div>

@@ -115,6 +115,9 @@ export function OrderBuilder() {
   useEffect(() => {
     if (service && service.id !== serviceId) setServiceId(service.id);
   }, [service, serviceId]);
+  useEffect(() => {
+    if (isNonLeadService) setVerifier(false);
+  }, [isNonLeadService]);
   const [mobileGroup, setMobileGroup] = useState<"data" | "growth" | "design">(service.group);
   const [quantity, setQuantity] = useState(service.minQty);
   const [extraUrls, setExtraUrls] = useState(1);

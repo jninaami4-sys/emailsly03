@@ -22,7 +22,8 @@ export type AddOn = {
 
 export const ADD_ONS: AddOn[] = [
   { id: "mobile",    name: "Apollo Mobiles",         icon: Smartphone,        desc: "Mobile number enrichment for existing lists." },
-  { id: "warmup",    name: "Domain DNS Setup & Warmup", icon: ShieldCheck,       desc: "DKIM, SPF & DMARC setup + 15-day warmup for 2 domains." },
+  { id: "warmup",         name: "Domain DNS Setup & Warmup", icon: ShieldCheck,       desc: "DKIM, SPF & DMARC + 15-day warmup — $40 per domain." },
+  { id: "mailbox_warmup", name: "Email Warmup",              icon: ShieldCheck,       desc: "Warm individual mailboxes on same or different domains." },
   { id: "pixel",     name: "Facebook Pixel",         icon: MousePointerClick, desc: "Expert Pixel & CAPI setup for conversion tracking." },
   { id: "ads",       name: "Google Ads Setup",       icon: LineChart,         desc: "High-ROAS campaign structure with tracking." },
   { id: "tracking",  name: "Server-Side Tracking",   icon: Server,            desc: "Bypass ad blockers with Stape.io & GTM Server." },

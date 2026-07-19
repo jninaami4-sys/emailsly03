@@ -1,3 +1,5 @@
+> **⚠️ DEPRECATED — do not deploy this folder.** This `api/` folder is an early "Batch 1" prototype (auth + uploads + settings only). The production backend is **`backend-php/`** — follow **`DEPLOY.md`** in the repo root. Deploying `api/` will leave most of the site's endpoints (orders, blog, chatbot, referrals, Stripe…) missing.
+
 # Emailsly PHP + MySQL API
 
 Zero-dependency PHP 8.1+ backend. Drop the `api/` folder into your webroot, point Apache/Nginx to it, and the frontend can call it via `VITE_API_BASE_URL`.

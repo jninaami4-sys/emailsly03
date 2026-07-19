@@ -394,6 +394,8 @@ CREATE TABLE referral_payout_batches (
   total_cents    INT NOT NULL DEFAULT 0,
   currency       CHAR(3) NOT NULL DEFAULT 'USD',
   processed_at   DATETIME NULL,
+  created_by     CHAR(36) NULL,
+  notes          TEXT NULL,
   metadata       JSON NULL,
   created_at     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;

@@ -60,7 +60,7 @@ export function CartDrawer() {
         payment_provider: "stripe",
         source: "store",
         customer_email: user.email ?? undefined,
-        customer_name: user.name ?? undefined,
+        customer_name: (user.user_metadata?.full_name as string | undefined) ?? undefined,
         notes: `Store cart: ${items.length} product(s), ${totalQty} unit(s)`,
         items: items.map(({ product, quantity }) => ({
           product_id: product.id,

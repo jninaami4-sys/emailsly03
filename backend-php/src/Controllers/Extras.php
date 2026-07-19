@@ -404,7 +404,11 @@ final class Extras
         Auth::requireAdmin();
         $b = Request::json();
         $f = []; $v = [];
-        foreach (['status','review_state','notes'] as $k)
+        // Real column is admin_review_state; accept legacy `review_state` alias from the client.
+        if (array_key_exists('review_state', $b) && !array_key_exists('admin_review_state', $b)) {
+            $b['admin_review_state'] = $b['review_state'];
+        }
+        foreach (['status','admin_review_state','notes'] as $k)
             if (array_key_exists($k, $b)) { $f[] = "$k = ?"; $v[] = $b[$k]; }
         if ($f) {
             $v[] = $p['id'];
@@ -416,7 +420,7 @@ final class Extras
     {
         Auth::requireAdmin();
         $b = Request::json();
-        self::pdo()->prepare('UPDATE referrals SET status = "approved", review_state = "reviewed", notes = ? WHERE id = ?')
+        self::pdo()->prepare('UPDATE referrals SET status = "rewarded", admin_review_state = "approved", notes = ? WHERE id = ?')
             ->execute([$b['notes'] ?? null, $p['id']]);
         Response::json(['ok' => true]);
     }
@@ -424,7 +428,7 @@ final class Extras
     {
         Auth::requireAdmin();
         $b = Request::json();
-        self::pdo()->prepare('UPDATE referrals SET status = "rejected", review_state = "reviewed", notes = ? WHERE id = ?')
+        self::pdo()->prepare('UPDATE referrals SET status = "cancelled", admin_review_state = "rejected", notes = ? WHERE id = ?')
             ->execute([$b['notes'] ?? null, $p['id']]);
         Response::json(['ok' => true]);
     }
@@ -450,7 +454,7 @@ final class Extras
             'days'      => $days,
             'clicks'    => (int)$pdo->query("SELECT COUNT(*) FROM referral_clicks WHERE created_at > DATE_SUB(NOW(), INTERVAL $days DAY)")->fetchColumn(),
             'signups'   => (int)$pdo->query("SELECT COUNT(*) FROM referrals WHERE created_at > DATE_SUB(NOW(), INTERVAL $days DAY)")->fetchColumn(),
-            'approved'  => (int)$pdo->query("SELECT COUNT(*) FROM referrals WHERE status = 'approved' AND created_at > DATE_SUB(NOW(), INTERVAL $days DAY)")->fetchColumn(),
+            'approved'  => (int)$pdo->query("SELECT COUNT(*) FROM referrals WHERE admin_review_state = 'approved' AND created_at > DATE_SUB(NOW(), INTERVAL $days DAY)")->fetchColumn(),
         ]]);
     }
     public function adminReferralLeaderboard(): void

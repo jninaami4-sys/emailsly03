@@ -108,7 +108,7 @@ function Pricing() {
   return (
     <SiteShell>
       {/* Hero — light panel on md+, dark on mobile, buttery gradient into next */}
-      <section className="relative px-4 pt-14 pb-24 md:px-6 md:pt-20 md:pb-32">
+      <section className="relative isolate overflow-x-clip px-4 pt-14 pb-24 md:px-6 md:pt-20 md:pb-32">
         {/* Mobile ambient glow */}
         <div className="pointer-events-none absolute left-1/2 top-0 -z-10 h-[600px] w-[1000px] -translate-x-1/2 bg-[radial-gradient(circle_at_center,var(--violet-soft),transparent_70%)] opacity-70 md:hidden" />
 

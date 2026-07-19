@@ -326,10 +326,12 @@ export const authApi = {
 
 // -------- Orders (customer) --------
 export const ordersApi = {
+  // Authenticated tracking — server filters by JWT subject and only returns
+  // orders owned by the caller. No guest lookup surface.
   track: (query: string) =>
     api<{ order: any; stageIndex: number; stages?: any[] }>(
-      `/api/public/track`,
-      { method: "POST", body: { query }, auth: false },
+      `/api/orders/track`,
+      { method: "POST", body: { query }, auth: true },
     ),
 
   list: (query?: { from?: string; to?: string; status?: string }) =>

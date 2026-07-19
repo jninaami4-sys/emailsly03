@@ -403,9 +403,10 @@ export const adminLegacyImportsApi = {
 
 // -------- Admin — Backup / Restore --------
 export const adminBackupApi = {
-  export: () => g<{ backup: any }>("/api/admin/backup"),
-  import: (backup: unknown) => j("/api/admin/restore", { backup }),
+  export: () => g<{ backup: any }>("/api/admin/backup/export"),
+  import: (backup: unknown) => j("/api/admin/backup/restore", { backup }),
 };
+
 
 // -------- Site content (public + admin) --------
 export const siteContentApi = {

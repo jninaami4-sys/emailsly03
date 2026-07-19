@@ -1,7 +1,7 @@
 <?php
 namespace Emailsly\Controllers\Admin;
 
-use Emailsly\{Auth, Mailer, Request, Response};
+use Emailsly\{Auth, Database, Mailer, Request, Response};
 
 /**
  * Admin utility: send a test email through any configured SMTP channel so

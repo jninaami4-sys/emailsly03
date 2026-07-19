@@ -110,6 +110,8 @@ export function OrderBuilder() {
   const [step, setStep] = useState(1);
   const [serviceId, setServiceId] = useState("apollo");
   const service = services.find((s) => s.id === serviceId) ?? services[0] ?? SERVICES[0];
+  const NON_LEAD_SERVICE_IDS = new Set(["warmup", "mailbox_warmup", "logo", "webdesign"]);
+  const isNonLeadService = NON_LEAD_SERVICE_IDS.has(service.id);
   useEffect(() => {
     if (service && service.id !== serviceId) setServiceId(service.id);
   }, [service, serviceId]);

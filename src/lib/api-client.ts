@@ -705,10 +705,11 @@ export const adminConversionEventsApi = {
 
 // -------- Admin — Server-side tracking config --------
 export const adminServerTrackingApi = {
-  get: () => g<{ config: any }>("/api/admin/server-tracking/config"),
-  update: (body: unknown) => patch("/api/admin/server-tracking/config", body),
+  get: () => g<{ config: any }>("/api/admin/server-tracking"),
+  update: (body: unknown) => api("/api/admin/server-tracking", { method: "PUT", body }),
   log: () => g<{ events: any[] }>("/api/admin/server-tracking/log"),
 };
+
 
 // -------- Admin — Data portability (bulk import / export) --------
 export const adminPortabilityApi = {

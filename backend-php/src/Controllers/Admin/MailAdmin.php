@@ -117,4 +117,76 @@ HTML;
         if ($extra !== '') $out .= "\n$extra\n";
         return $out;
     }
+
+    /** GET /api/admin/mail-logs?kind=&limit= */
+    public function logs(): void
+    {
+        Auth::requireAdmin();
+        $kind  = isset($_GET['kind']) && $_GET['kind'] !== '' ? (string)$_GET['kind'] : null;
+        $limit = max(1, min(500, (int)($_GET['limit'] ?? 100)));
+        $pdo   = Database::pdo();
+        if ($kind) {
+            $s = $pdo->prepare('SELECT * FROM mail_logs WHERE kind = ? ORDER BY created_at DESC LIMIT ' . $limit);
+            $s->execute([$kind]);
+        } else {
+            $s = $pdo->query('SELECT * FROM mail_logs ORDER BY created_at DESC LIMIT ' . $limit);
+        }
+        Response::json(['logs' => $s->fetchAll()]);
+    }
+
+    /** POST /api/admin/mail-logs/clear */
+    public function clearLogs(): void
+    {
+        Auth::requireAdmin();
+        $b = Request::json();
+        $kind = $b['kind'] ?? null;
+        $pdo  = Database::pdo();
+        if ($kind) {
+            $s = $pdo->prepare('DELETE FROM mail_logs WHERE kind = ?');
+            $s->execute([$kind]);
+        } else {
+            $pdo->exec('DELETE FROM mail_logs');
+        }
+        Response::json(['ok' => true]);
+    }
+
+    /** GET /api/admin/dns-check?domain=mail.emailsly.com */
+    public function dnsCheck(): void
+    {
+        Auth::requireAdmin();
+        $domain = trim((string)($_GET['domain'] ?? ($_ENV['MAIL_DOMAIN'] ?? 'mail.emailsly.com')));
+        if (!$domain) Response::error('Missing domain');
+        $selector = trim((string)($_GET['dkim_selector'] ?? 'default'));
+
+        $checks = [
+            'domain'   => $domain,
+            'selector' => $selector,
+            'records'  => [
+                'spf'   => self::dnsFirst($domain, DNS_TXT, fn($r) => str_contains(($r['txt'] ?? ''), 'v=spf1')),
+                'dmarc' => self::dnsFirst("_dmarc.$domain", DNS_TXT, fn($r) => str_contains(($r['txt'] ?? ''), 'v=DMARC1')),
+                'dkim'  => self::dnsFirst("{$selector}._domainkey.$domain", DNS_TXT, fn($r) => str_contains(($r['txt'] ?? ''), 'v=DKIM1')),
+                'mx'    => self::dnsAll($domain, DNS_MX),
+            ],
+            'recommended' => [
+                'spf'   => 'v=spf1 include:_spf.mail.emailsly.com ~all',
+                'dmarc' => 'v=DMARC1; p=quarantine; rua=mailto:postmaster@emailsly.com',
+                'dkim'  => 'Configure DKIM in your mail provider and publish the TXT for '
+                          . "{$selector}._domainkey.{$domain}",
+            ],
+        ];
+        Response::json($checks);
+    }
+
+    private static function dnsFirst(string $host, int $type, callable $match): array
+    {
+        $records = @dns_get_record($host, $type) ?: [];
+        foreach ($records as $r) {
+            if ($match($r)) return ['present' => true, 'value' => $r['txt'] ?? $r];
+        }
+        return ['present' => false, 'value' => null];
+    }
+    private static function dnsAll(string $host, int $type): array
+    {
+        return ['records' => @dns_get_record($host, $type) ?: []];
+    }
 }
